@@ -2,7 +2,8 @@
     "name": "Script.GameInfo",
     "rootNamespace": "",
     "references": [
-        "GUID:0eed957a026b42e4c9a6a91bc28d4a41"
+        "GUID:0eed957a026b42e4c9a6a91bc28d4a41",
+        "GUID:a377e2677a309924f862c77c2e14f6c1"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

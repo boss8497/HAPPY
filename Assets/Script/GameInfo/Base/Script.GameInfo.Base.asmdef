@@ -1,3 +1,17 @@
 {
-	"name": "Script.GameInfo.Interface"
+    "name": "Script.GameInfo.Interface",
+    "rootNamespace": "",
+    "references": [
+        "GUID:a377e2677a309924f862c77c2e14f6c1",
+        "GUID:8381d25136c024c47bc141aa127149b3"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

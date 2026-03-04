@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace Script.Utility {
-    public interface IPoolable {
+    public interface IClassPool {
         void OnRent();   // Get 직후
         void OnReturn(); // Release 직전 (정리)
     }
@@ -15,12 +15,12 @@ namespace Script.Utility {
 
             if (Pools.TryGetValue(type, out var stack) && stack.Count > 0) {
                 var obj = (T)stack.Pop();
-                if (obj is IPoolable p) p.OnRent();
+                if (obj is IClassPool p) p.OnRent();
                 return obj;
             }
 
             var created = new T();
-            if (created is IPoolable cp) cp.OnRent();
+            if (created is IClassPool cp) cp.OnRent();
             return created;
         }
         
@@ -31,20 +31,20 @@ namespace Script.Utility {
 
             if (Pools.TryGetValue(type, out var stack) && stack.Count > 0) {
                 var obj = (T)stack.Pop();
-                if (obj is IPoolable p) p.OnRent();
+                if (obj is IClassPool p) p.OnRent();
                 return obj;
             }
 
             var created = factory();
             if (created == null) throw new InvalidOperationException("factory returned null.");
-            if (created is IPoolable cp) cp.OnRent();
+            if (created is IClassPool cp) cp.OnRent();
             return created;
         }
 
         public static void Release<T>(T obj) where T : class {
             if (obj == null) return;
 
-            if (obj is IPoolable p) p.OnReturn();
+            if (obj is IClassPool p) p.OnReturn();
 
             var type = typeof(T);
             if (!Pools.TryGetValue(type, out var stack)) {

@@ -21,7 +21,7 @@ namespace Script.Utility {
             return new();
         }
 
-        public static void Release<T>(List<T> list) {
+        public static void Return<T>(List<T> list) {
             if (list == null) return;
             list.Clear();
 
