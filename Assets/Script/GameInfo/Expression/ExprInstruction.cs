@@ -1,18 +1,19 @@
 ﻿using System.Runtime.CompilerServices;
 
 namespace Expression {
-    public readonly struct ExprInstruction {
-        public readonly Operator Op;
+    [System.Serializable]
+    public struct ExprInstruction {
+        public Operator Op;
 
         // PushConst
-        public readonly double Const;
+        public double Const;
 
         // PushVar
-        public readonly int Key;
+        public int Key;
 
         // CallFunc
-        public readonly ExprFunction Func;
-        public readonly byte         Arity; // 인자 개수 (Min/Max 가변 포함)
+        public ExprFunction Func;
+        public byte         Arity; // 인자 개수 (Min/Max 가변 포함)
 
         private ExprInstruction(Operator op, double c, int key, ExprFunction func, byte arity) {
             Op    = op;
