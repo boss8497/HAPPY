@@ -16,7 +16,7 @@ namespace Expression {
             ValueStack.Value.Pop();
         }
 
-        public static bool TryGetValue(string name, out double value) {
+        public static bool TryGetValue(ReadOnlySpan<char> name, out double value) {
             value = 0;
             var key = ValueStringKey.GetKey(name);
             if (ValueStack.Value != null) {
