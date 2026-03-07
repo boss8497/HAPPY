@@ -13,13 +13,21 @@ namespace Expression {
         private static          int    _nextId;
         private static readonly object _lock = new();
 
-        // 기존 API 유지
+        public static string GetName(int value) {
+            lock (_lock) {
+                foreach (var kvp in StringKeyCache) {
+                    if (kvp.Value == value)
+                        return kvp.Key;
+                }
+            }
+            throw new KeyNotFoundException($"Key {value} not found.");
+        }
+        
         public static int GetKey(string name) {
             if (name == null) throw new ArgumentNullException(nameof(name));
             return GetKey(name.AsSpan());
         }
 
-        // 새 API: ReadOnlySpan<char>
         public static int GetKey(ReadOnlySpan<char> name) {
             if (name.Length == 0) throw new ArgumentException("Key name is empty.", nameof(name));
 
@@ -37,7 +45,6 @@ namespace Expression {
                 StringKeyCache.Add(s, key);
                 return key;
 #else
-                // 폴백: span -> string 변환 (조회도 할당 1회)
                 string s = name.ToString();
                 if (StringKeyCache.TryGetValue(s, out int key))
                     return key;

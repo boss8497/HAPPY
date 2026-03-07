@@ -16,6 +16,42 @@ MonoBehaviour:
   - <UID>k__BackingField: 0
     <ID>k__BackingField: Test
     <Name>k__BackingField: 
+    Test:
+      _code:
+      - Op: 1
+        Const: 0
+        Key: 0
+        Func: 0
+        Arity: 0
+      - Op: 0
+        Const: 2
+        Key: 0
+        Func: 0
+        Arity: 0
+      - Op: 2
+        Const: 0
+        Key: 0
+        Func: 0
+        Arity: 0
+      - Op: 0
+        Const: 10
+        Key: 0
+        Func: 0
+        Arity: 0
+      - Op: 4
+        Const: 0
+        Key: 0
+        Func: 0
+        Arity: 0
+      _maxStack: 2
   - <UID>k__BackingField: 1
     <ID>k__BackingField: Second
     <Name>k__BackingField: 
+    Test:
+      _code:
+      - Op: 0
+        Const: 0
+        Key: 0
+        Func: 0
+        Arity: 0
+      _maxStack: 1
