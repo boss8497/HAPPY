@@ -8,7 +8,7 @@ using UnityEngine.Localization;
 using UnityEngine.Localization.Metadata;
 using UnityEngine.Localization.Tables;
 
-namespace Script.Utility {
+namespace Script.Utility.Editor {
     public static class LocalizeUtility {
         private const           string           LocalizationDirectory = "Assets/Localization";
         private static readonly LocaleIdentifier KoreanLocale          = new("ko");

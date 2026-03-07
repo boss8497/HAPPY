@@ -1,6 +1,4 @@
-using UnityEngine;
-using Script.Utility;
-using System.Collections.Generic;
+using Script.Utility.Runtime;
 
 namespace Script.GameInfo.Base {
     public static class ComponentExtension {

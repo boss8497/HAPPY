@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Script.Utility {
+namespace Script.Utility.Runtime {
     public interface IClassPool {
         void OnRent();   // Get 직후
         void OnReturn(); // Release 직전 (정리)

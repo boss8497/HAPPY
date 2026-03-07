@@ -1,5 +1,5 @@
 ﻿using Script.GameInfo.Attribute;
-using Script.Utility;
+using Script.Utility.Editor;
 using Sirenix.OdinInspector.Editor;
 using Sirenix.OdinInspector.Editor.ValueResolvers;
 using UnityEngine;

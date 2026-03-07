@@ -1,11 +1,13 @@
 {
-    "name": "Script.Utility",
+    "name": "Script.Utility.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:2e77701fe0ceda44fb763f03ee704c37",
-        "GUID:eec0964c48f6f4e40bc3ec2257ccf8c5"
+        "GUID:eec0964c48f6f4e40bc3ec2257ccf8c5",
+        "GUID:2e77701fe0ceda44fb763f03ee704c37"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

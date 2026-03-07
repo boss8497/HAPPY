@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Script.Utility {
+namespace Script.Utility.Runtime {
     public static class ListPool {
         private static readonly Dictionary<Type, Stack<IList>> Pools = new Dictionary<Type, Stack<IList>>(64);
 
