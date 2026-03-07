@@ -1,0 +1,241 @@
+UNIT_BOMI_WATER.png
+	size: 512, 512
+	filter: Linear, Linear
+arm_back_acc_R_01
+	bounds: 8, 87, 11, 22
+	offsets: 66, 19, 113, 60
+arm_front_L_01
+	bounds: 180, 197, 72, 21
+	offsets: 21, 19, 113, 60
+arm_front_R_01
+	bounds: 20, 76, 72, 33
+	offsets: 21, 13, 113, 60
+arm_front_acc_R_01
+	bounds: 251, 84, 11, 25
+	offsets: 66, 16, 113, 60
+body_back_01
+	bounds: 89, 84, 55, 77
+	offsets: 20, 23, 92, 123
+	rotate: 270
+body_back_acc_01
+	bounds: 489, 188, 16, 17
+	offsets: 42, 45, 92, 123
+body_back_skirt_R_01
+	bounds: 170, 74, 59, 55
+	offsets: 10, 0, 92, 123
+body_front_01
+	bounds: 434, 85, 55, 78
+	offsets: 20, 22, 92, 123
+	rotate: 90
+body_front_skirt_R_01
+	bounds: 229, 38, 74, 64
+	offsets: 10, 0, 92, 123
+chest_01
+	bounds: 184, 315, 9, 3
+	offsets: 9, 16, 46, 49
+chest_L_01
+	bounds: 36, 46, 24, 30
+	offsets: 10, 9, 43, 48
+chest_R_01
+	bounds: 454, 244, 25, 33
+	offsets: 12, 9, 46, 49
+foot_back_R_01
+	bounds: 422, 2, 33, 26
+	offsets: 9, 5, 53, 48
+foot_front_L_01
+	bounds: 105, 0, 33, 26
+	offsets: 9, 7, 53, 48
+foot_front_R_01
+	bounds: 456, 1, 33, 26
+	offsets: 9, 5, 53, 48
+hair_back_01
+	bounds: 178, 219, 109, 99
+	offsets: 11, 135, 168, 234
+	rotate: 180
+hair_front_01
+	bounds: 283, 220, 104, 98
+	offsets: 6, 5, 119, 120
+hair_front_02
+	bounds: 305, 75, 51, 86
+	offsets: 6, 22, 70, 112
+	rotate: 270
+hair_front_03
+	bounds: 210, 108, 44, 82
+	offsets: 8, 40, 67, 139
+	rotate: 270
+hand_A_01
+	bounds: 211, 24, 42, 31
+	offsets: 11, 17, 64, 59
+hand_A_02
+	bounds: 0, 148, 42, 31
+	offsets: 11, 17, 64, 59
+hand_B_01
+	bounds: 71, 8, 34, 31
+	offsets: 11, 17, 64, 59
+	rotate: 90
+hand_B_02
+	bounds: 104, 27, 44, 31
+	offsets: 11, 17, 64, 59
+	rotate: 180
+hand_B_02_IN
+	bounds: 288, 4, 40, 29
+	offsets: 13, 19, 64, 59
+hand_B_03
+	bounds: 431, 29, 44, 31
+	offsets: 11, 17, 64, 59
+hand_B_04
+	bounds: 390, 1, 31, 31
+	offsets: 11, 17, 64, 59
+hand_B_S_01
+	bounds: 36, 10, 35, 32
+	offsets: 11, 16, 64, 59
+hand_B_S_02
+	bounds: 0, 10, 34, 28
+	offsets: 12, 20, 64, 59
+hand_B_S_03
+	bounds: 476, 28, 35, 32
+	offsets: 11, 16, 64, 59
+hand_B_S_04
+	bounds: 390, 33, 39, 33
+	offsets: 13, 16, 64, 59
+hand_B_S_05
+	bounds: 356, 8, 33, 33
+	offsets: 12, 12, 64, 59
+hand_C_01
+	bounds: 391, 67, 42, 42
+	offsets: 12, 9, 64, 59
+hand_C_02
+	bounds: 262, 72, 42, 42
+	offsets: 12, 9, 64, 59
+hand_C_04
+	bounds: 130, 60, 36, 43
+	offsets: 13, 12, 64, 59
+	rotate: 90
+hand_C_05
+	bounds: 0, 265, 36, 43
+	offsets: 13, 12, 64, 59
+hand_D_01
+	bounds: 309, 34, 35, 40
+	offsets: 12, 16, 64, 59
+hand_D_02
+	bounds: 175, 38, 35, 40
+	offsets: 12, 16, 64, 59
+hand_D_02_IN
+	bounds: 278, 298, 34, 20
+	offsets: 13, 35, 64, 59
+hand_D_03
+	bounds: 0, 39, 35, 40
+	offsets: 12, 16, 64, 59
+hand_D_in_01
+	bounds: 345, 42, 45, 44
+	offsets: 8, 15, 64, 59
+	rotate: 90
+hand_G_01
+	bounds: 64, 44, 40, 37
+	offsets: 12, 10, 64, 59
+head_eye_A_01
+	bounds: 88, 176, 88, 70
+	offsets: 7, 12, 105, 85
+head_eye_A_02
+	bounds: 0, 110, 87, 34
+	offsets: 7, 18, 105, 85
+head_eye_A_03
+	bounds: 288, 121, 87, 34
+	offsets: 7, 18, 105, 85
+head_eye_A_D_01
+	bounds: 379, 126, 87, 34
+	offsets: 7, 18, 105, 85
+head_eye_A_S_01
+	bounds: 130, 130, 87, 34
+	offsets: 7, 18, 105, 85
+head_eye_A_S_02
+	bounds: 45, 144, 87, 34
+	offsets: 7, 18, 105, 85
+head_eye_B_01
+	bounds: 309, 156, 87, 34
+	offsets: 7, 18, 105, 85
+head_eyebrow_01
+	bounds: 383, 229, 89, 70
+	offsets: 6, 12, 105, 85
+	rotate: 270
+head_front_01
+	bounds: 0, 176, 88, 70
+	offsets: 7, 12, 105, 85
+head_front_acc_011
+	bounds: 438, 61, 58, 38
+	offsets: 20, 32, 105, 85
+	rotate: 180
+head_front_acc_02
+	bounds: 0, 309, 38, 9
+	offsets: 27, 58, 105, 85
+head_front_acc_03
+	bounds: 250, 7, 29, 36
+	offsets: 76, 23, 105, 85
+	rotate: 90
+head_front_acc_04
+	bounds: 149, 9, 28, 36
+	offsets: 2, 23, 105, 85
+	rotate: 90
+head_mouth_00
+	bounds: 451, 286, 32, 14
+	offsets: 0, 8, 32, 28
+	rotate: 90
+head_mouth_01
+	bounds: 322, 3, 32, 14
+	offsets: 0, 8, 32, 28
+head_mouth_02
+	bounds: 187, 10, 32, 14
+	offsets: 0, 8, 32, 28
+head_mouth_03
+	bounds: 323, 106, 32, 14
+	offsets: 0, 10, 32, 28
+head_mouth_04
+	bounds: 392, 111, 32, 14
+	offsets: 0, 10, 32, 28
+head_mouth_05
+	bounds: 473, 140, 32, 14
+	offsets: 0, 10, 32, 28
+head_mouth_06
+	bounds: 152, 166, 32, 14
+	offsets: 0, 10, 32, 28
+head_mouth_07
+	bounds: 455, 191, 32, 14
+	offsets: 0, 10, 32, 28
+head_mouth_08
+	bounds: 0, 250, 32, 14
+	offsets: 0, 10, 32, 28
+leg_back_L_01
+	bounds: 253, 181, 38, 113
+	offsets: 12, 8, 59, 131
+	rotate: 90
+leg_back_R_01
+	bounds: 186, 153, 42, 114
+	offsets: 11, 10, 66, 132
+	rotate: 90
+leg_back_acc_L_01
+	bounds: 314, 302, 21, 16
+	offsets: 21, 16, 59, 131
+leg_front_L_01
+	bounds: 471, 205, 38, 113
+	offsets: 12, 8, 59, 131
+	rotate: 180
+leg_front_L_S_01
+	bounds: 366, 195, 38, 113
+	offsets: 12, 8, 59, 131
+	rotate: 90
+leg_front_R_01
+	bounds: 398, 156, 42, 114
+	offsets: 11, 10, 66, 132
+	rotate: 90
+leg_front_R_acc_01
+	bounds: 371, 302, 19, 16
+	offsets: 35, 15, 66, 132
+weapon_01
+	bounds: 38, 246, 146, 72
+	offsets: 21, 21, 188, 114
+weapon_acc_01
+	bounds: 72, 235, 21, 11
+	offsets: 55, 63, 188, 114
+weapon_acc_02
+	bounds: 452, 235, 24, 8
+	offsets: 52, 62, 188, 114
