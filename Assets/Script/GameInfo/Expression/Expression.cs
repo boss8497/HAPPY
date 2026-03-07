@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using MessagePack;
 using UnityEngine;
 
 namespace Expression {
@@ -15,39 +16,40 @@ namespace Expression {
 
         Neg,
 
-        CallFunc // 함수 호출 (arity + funcId)
+        CallFunc // 함수 호출
     }
 
     /// <summary>
     /// 컴파일된(불변) 수식. 생성 시 컴파일되고, 런타임에서는 Calc만 호출.
     /// </summary>
-    
+    [MessagePackObject(AllowPrivate = true)]
     [System.Serializable]
-    public sealed class Expression {
-        public ExprInstruction[] Code     => _code;
-        public int               MaxStack => _maxStack;
+    public partial class Expression {
+        [IgnoreMember]
+        public ExpressionValue[] Code => _code;
+
+        [IgnoreMember]
+        public int MaxStack => _maxStack;
 
         [SerializeField]
-        private ExprInstruction[] _code;
+        [Key(0)] private ExpressionValue[] _code;
+
         [SerializeField]
-        private int               _maxStack;
-        
-        
+        [Key(1)] private int _maxStack;
+
+
         public static implicit operator Expression(string s) => new(s);
 
-        // ✅ 생성 시 바로 컴파일
         public Expression(string expression) {
             if (expression == null) throw new ArgumentNullException(nameof(expression));
             CompileInto(expression.AsSpan(), out _code, out _maxStack);
         }
 
-        // ✅ Span 버전도 제공 (에디터/툴에서 유용)
         public Expression(ReadOnlySpan<char> expression) {
             CompileInto(expression, out _code, out _maxStack);
         }
 
-        // (필요하면) 이미 컴파일된 코드를 주입하는 생성자도 유지 가능
-        public Expression(ExprInstruction[] code, int maxStack) {
+        public Expression(ExpressionValue[] code, int maxStack) {
             _code     = code ?? throw new ArgumentNullException(nameof(code));
             _maxStack = Math.Max(1, maxStack);
         }
@@ -153,9 +155,6 @@ namespace Expression {
             }
         }
 
-        // ===========================
-        // 아래는 "ExpressionCompiler 기능"을 Expression 안으로 흡수한 부분
-        // ===========================
 
         private enum OperatorKind : byte {
             Plus,
@@ -185,10 +184,10 @@ namespace Expression {
                 _                                       => 0
             };
 
-        private static void CompileInto(ReadOnlySpan<char> expression, out ExprInstruction[] code, out int maxStack) {
+        private static void CompileInto(ReadOnlySpan<char> expression, out ExpressionValue[] code, out int maxStack) {
             var tokens = Tokenizer.Tokenize(expression, out int tokenCount);
 
-            var output       = new List<ExprInstruction>(tokenCount * 2);
+            var output       = new List<ExpressionValue>(tokenCount * 2);
             var ops          = new Stack<OperatorEntry>(Math.Max(8, tokenCount));
             var funcArgCount = new Stack<int>();
 
@@ -203,14 +202,14 @@ namespace Expression {
 
                 switch (t.Kind) {
                     case Tokenizer.TokenKind.Number:
-                        output.Add(ExprInstruction.ConstVal(t.Number));
+                        output.Add(ExpressionValue.ConstVal(t.Number));
                         sp++;
                         if (sp > maxSp) maxSp = sp;
                         prevCanBeUnary = false;
                         break;
 
                     case Tokenizer.TokenKind.Var:
-                        output.Add(ExprInstruction.Var(t.Key));
+                        output.Add(ExpressionValue.Var(t.Key));
                         sp++;
                         if (sp > maxSp) maxSp = sp;
                         prevCanBeUnary = false;
@@ -264,7 +263,7 @@ namespace Expression {
 
                             ValidateArity(f, arity);
 
-                            output.Add(ExprInstruction.Call(f, (byte)arity));
+                            output.Add(ExpressionValue.Call(f, (byte)arity));
                             sp -= (arity - 1);
                         }
 
@@ -324,25 +323,25 @@ namespace Expression {
             maxStack = Math.Max(1, maxSp);
         }
 
-        private static void EmitOp(OperatorEntry op, List<ExprInstruction> output, ref int sp) {
+        private static void EmitOp(OperatorEntry op, List<ExpressionValue> output, ref int sp) {
             switch (op.Kind) {
                 case OperatorKind.Plus:
-                    output.Add(ExprInstruction.OpOnly(Operator.Add));
+                    output.Add(ExpressionValue.OpOnly(Operator.Add));
                     sp--;
                     break;
                 case OperatorKind.Minus:
-                    output.Add(ExprInstruction.OpOnly(Operator.Sub));
+                    output.Add(ExpressionValue.OpOnly(Operator.Sub));
                     sp--;
                     break;
                 case OperatorKind.Star:
-                    output.Add(ExprInstruction.OpOnly(Operator.Mul));
+                    output.Add(ExpressionValue.OpOnly(Operator.Mul));
                     sp--;
                     break;
                 case OperatorKind.Slash:
-                    output.Add(ExprInstruction.OpOnly(Operator.Div));
+                    output.Add(ExpressionValue.OpOnly(Operator.Div));
                     sp--;
                     break;
-                case OperatorKind.Neg: output.Add(ExprInstruction.OpOnly(Operator.Neg)); break;
+                case OperatorKind.Neg: output.Add(ExpressionValue.OpOnly(Operator.Neg)); break;
                 default:
                     throw new InvalidOperationException($"Invalid op kind: {op.Kind}");
             }

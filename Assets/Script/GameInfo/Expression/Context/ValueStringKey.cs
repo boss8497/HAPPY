@@ -4,7 +4,11 @@ using System.Collections.Generic;
 namespace Expression {
     public static class ValueStringKey {
         // Ordinal 권장 (빠르고 문화권 영향 없음)
-        private static readonly Dictionary<string, int> StringKeyCache = new(StringComparer.Ordinal);
+        private static readonly Dictionary<string, int> StringKeyCache = new(StringComparer.Ordinal) {
+            { "level", 0 },
+            { "grade", 1 },
+            { "tier", 2 },
+        };
 
         private static          int    _nextId;
         private static readonly object _lock = new();

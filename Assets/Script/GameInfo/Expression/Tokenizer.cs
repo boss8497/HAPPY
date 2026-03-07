@@ -17,7 +17,7 @@ namespace Expression {
             End
         }
 
-        public readonly struct Token {
+        public struct Token {
             public readonly TokenKind    Kind;
             public readonly double       Number;
             public readonly int          Key;
