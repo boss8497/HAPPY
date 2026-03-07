@@ -28,6 +28,9 @@ namespace Script.GameInfo.Expression.Editor {
             public string LastDecompiled; // 현재 Expression에서 역표시한 문자열
             public string LastError;      // 컴파일 에러
             public int    LastCodeHash;   // code 변경 감지
+            
+            public bool   ShowDisasm = false;
+            public bool   ShowHelp   = false;
         }
 
         protected override void DrawPropertyLayout(GUIContent label) {
@@ -99,13 +102,16 @@ namespace Script.GameInfo.Expression.Editor {
             if (!string.IsNullOrEmpty(st.LastError)) {
                 SirenixEditorGUI.MessageBox(st.LastError, MessageType.Error);
             }
-
-            // 디스어셈블(RPN)도 같이 보고 싶으면(원하면 제거 가능)
+            
             SirenixEditorGUI.DrawThickHorizontalSeparator();
-            GUILayout.Label("Bytecode (RPN)", EditorStyles.miniBoldLabel);
 
-            string rpn = Disasm(expr.Code);
-            SirenixEditorFields.TextField(rpn, GUILayout.MinHeight(90));
+            // 접기/펼치기: Bytecode
+            st.ShowDisasm = SirenixEditorGUI.Foldout(st.ShowDisasm, "Bytecode (RPN)");
+            if (st.ShowDisasm)
+            {
+                string rpn = Disasm(expr.Code);
+                SirenixEditorFields.TextField(rpn, GUILayout.MinHeight(90));
+            }
 
             SirenixEditorGUI.EndBox();
         }
