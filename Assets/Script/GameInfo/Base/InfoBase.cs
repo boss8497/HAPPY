@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Script.GameInfo.Base {
     [System.Serializable]
-    public abstract class InfoBase {
+    public abstract class InfoBase{
         [field: SerializeField]
         public int    UID { get; set; }
         [field: SerializeField]
