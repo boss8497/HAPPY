@@ -1,0 +1,19 @@
+{
+    "name": "Script.Table.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:68740c49ada94b64b897f21d3887b217",
+        "GUID:0eed957a026b42e4c9a6a91bc28d4a41"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

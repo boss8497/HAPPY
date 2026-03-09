@@ -383,7 +383,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &4854373590163035804
+--- !u!1001 &1322944728
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -393,11 +393,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 458745030248606733, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.38693
       objectReference: {fileID: 0}
     - target: {fileID: 458745030248606733, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1.70355
       objectReference: {fileID: 0}
     - target: {fileID: 458745030248606733, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
       propertyPath: m_LocalPosition.z
@@ -432,9 +432,29 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 690941546561559160, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
-      propertyPath: serializationData.Prefab
-      value: 
-      objectReference: {fileID: 690941546561559160, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
+      propertyPath: maxRange
+      value: 0.8000001
+      objectReference: {fileID: 0}
+    - target: {fileID: 690941546561559160, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
+      propertyPath: loopOption
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 690941546561559160, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
+      propertyPath: animationName
+      value: RUN
+      objectReference: {fileID: 0}
+    - target: {fileID: 690941546561559160, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
+      propertyPath: currentAnimationTime
+      value: 0.116
+      objectReference: {fileID: 0}
+    - target: {fileID: 2732726741803365579, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
+      propertyPath: timeScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2732726741803365579, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
+      propertyPath: initialFlipX
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3512830536168565172, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -454,4 +474,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 961739753}
   - {fileID: 203844589}
-  - {fileID: 4854373590163035804}
+  - {fileID: 1322944728}
