@@ -1,11 +1,14 @@
 ﻿using System;
 using Script.GameInfo.Info.Character.Transition;
+using UnityEngine;
 
 namespace Script.GameInfo.Info.Character.Node {
-    public class NodeBase {
+    [System.Serializable]
+    public abstract class NodeBase {
         public Guid   Guid = Guid.NewGuid();
-        public string Id;
+        public string id;
         
-        public TransitionBase[] Transitions;
+        [SerializeReference]
+        public TransitionBase[] transitions;
     }
 }

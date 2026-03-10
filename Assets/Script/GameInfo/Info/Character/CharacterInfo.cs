@@ -2,6 +2,7 @@ using System;
 using Script.GameInfo.Base;
 using Expression;
 using UnityEngine;
+using AnimationEvent = Script.GameInfo.Info.Character.Animation.AnimationEvent;
 
 namespace Script.GameInfo.Info.Character {
     [System.Serializable]

@@ -3,6 +3,7 @@ using Script.GameInfo.Table.Interface;
 namespace Script.GameInfo.Table {
     public partial class GameInfoManager {
         public static readonly string[] AddressableKeys = new string[] {
+            "BehaviourTable",
             "CharacterTable",
         };
     }

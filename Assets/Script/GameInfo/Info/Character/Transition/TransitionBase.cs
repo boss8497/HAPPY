@@ -7,11 +7,12 @@ namespace Script.GameInfo.Info.Character.Transition {
         End,
     }
     
-    public class TransitionBase {
+    [System.Serializable]
+    public abstract class TransitionBase {
         public Guid   Guid = Guid.NewGuid();
-        public string Id;
-        public TransitionTiming Timing;
+        public string id;
+        public TransitionTiming timing;
         
-        public Guid ToNodeGuid;
+        public Guid nextNodeGuid;
     }
 }
