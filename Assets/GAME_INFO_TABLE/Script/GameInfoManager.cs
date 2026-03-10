@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
 using Script.GameInfo.Base;
 using Script.GameInfo.Table.Interface;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Pool;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 
 namespace Script.GameInfo.Table {
     public partial class GameInfoManager : IGameInfoManager {
-        private readonly Dictionary<string, TableBase>                       _tables  = new();
-        private readonly Dictionary<string, AsyncOperationHandle<TableBase>> _handles = new();
+        private readonly Dictionary<string, CacheTable>                      _cacheTables       = new();
+        private readonly Dictionary<Type, CacheTable>                        _cacheTablesByType = new();
+        
+        private readonly Dictionary<string, AsyncOperationHandle<TableBase>> _handles           = new();
 
         private IGameInfoManager _instance;
         public IGameInfoManager Instance {
@@ -19,15 +24,17 @@ namespace Script.GameInfo.Table {
                     _instance = new GameInfoManager();
                     _instance.Load();
                 }
+
                 return _instance;
             }
         }
-        
         private bool _dirty;
 
+        
+        
         public async UniTask LoadAsync() {
             foreach (var key in AddressableKeys) {
-                if (_tables.TryGetValue(key, out var cached))
+                if (_cacheTables.ContainsKey(key))
                     continue;
 
                 var handle = Addressables.LoadAssetAsync<TableBase>(key);
@@ -36,15 +43,18 @@ namespace Script.GameInfo.Table {
                 if (handle.Status != AsyncOperationStatus.Succeeded)
                     throw new Exception($"Load failed: {key}");
 
-                _tables[key]  = handle.Result;
-                _handles[key] = handle;
+                _cacheTables[key] = new CacheTable(key, handle.Result);
+                _cacheTablesByType[handle.Result.ElementType] = _cacheTables[key];
+                _handles[key]     = handle;
             }
+
         }
-        
+
         public void Load() {
             foreach (var key in AddressableKeys) {
-                if (_tables.TryGetValue(key, out var cached))
+                if (_cacheTables.ContainsKey(key))
                     continue;
+
 
                 var handle = Addressables.LoadAssetAsync<TableBase>(key);
                 handle.WaitForCompletion();
@@ -52,9 +62,29 @@ namespace Script.GameInfo.Table {
                 if (handle.Status != AsyncOperationStatus.Succeeded)
                     throw new Exception($"Load failed: {key}");
 
-                _tables[key]  = handle.Result;
-                _handles[key] = handle;
+                _cacheTables[key]                             = new CacheTable(key, handle.Result);
+                _cacheTablesByType[handle.Result.ElementType] = _cacheTables[key];
+                _handles[key]                                 = handle;
             }
+        }
+
+        public T Get<T>(int uid) where T : InfoBase {
+            var type = typeof(T);
+            if (_cacheTablesByType.TryGetValue(type, out var cacheTable)) {
+                return cacheTable.Get<T>(uid);
+            }
+            return null;
+        }
+        
+        [CanBeNull]
+        public List<T> GetCollection<T>() where T : InfoBase {
+            var type = typeof(T);
+            
+            if (_cacheTablesByType.TryGetValue(type, out var cacheTable)) {
+                return cacheTable.GetCollection<T>();
+            }
+
+            return null;
         }
 
         public async UniTask Flush() {
@@ -74,7 +104,11 @@ namespace Script.GameInfo.Table {
                 if (_handles.TryGetValue(key, out var handle)) {
                     Addressables.Release(handle);
                     _handles.Remove(key);
-                    _tables.Remove(key);
+                    if (_cacheTables.TryGetValue(key, out var cacheTable)) {
+                        _cacheTablesByType.Remove(cacheTable.Table.ElementType);
+                        cacheTable.Release();
+                    }
+                    _cacheTables.Remove(key);
                 }
             }
         }
