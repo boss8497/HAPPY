@@ -44,7 +44,7 @@ MonoBehaviour:
         Func: 0
         Arity: 0
       _maxStack: 2
-    animationEvents: []
+    behaviourId: 0
   - <UID>k__BackingField: 1
     <ID>k__BackingField: Second
     <Name>k__BackingField: 
@@ -56,4 +56,4 @@ MonoBehaviour:
         Func: 0
         Arity: 0
       _maxStack: 1
-    animationEvents: []
+    behaviourId: 0

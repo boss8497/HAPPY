@@ -17,8 +17,8 @@ namespace Script.GameInfo.Table {
         
         private readonly Dictionary<string, AsyncOperationHandle<TableBase>> _handles           = new();
 
-        private IGameInfoManager _instance;
-        public IGameInfoManager Instance {
+        private static IGameInfoManager _instance;
+        public static IGameInfoManager Instance {
             get {
                 if (_instance == null) {
                     _instance = new GameInfoManager();
@@ -76,15 +76,14 @@ namespace Script.GameInfo.Table {
             return null;
         }
         
-        [CanBeNull]
-        public List<T> GetCollection<T>() where T : InfoBase {
+        public T[] GetCollection<T>() where T : InfoBase {
             var type = typeof(T);
             
             if (_cacheTablesByType.TryGetValue(type, out var cacheTable)) {
                 return cacheTable.GetCollection<T>();
             }
 
-            return null;
+            return Array.Empty<T>();
         }
 
         public async UniTask Flush() {

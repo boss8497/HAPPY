@@ -7,5 +7,7 @@ namespace Script.GameInfo.Base {
         public abstract InfoBase[] Infos { get; }
         
         public abstract Type ElementType { get; }
+        
+        public abstract T[] GetCollection<T>() where T : InfoBase;
     }
 }

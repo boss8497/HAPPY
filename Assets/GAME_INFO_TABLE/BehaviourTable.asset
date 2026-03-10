@@ -21,7 +21,7 @@ MonoBehaviour:
       type: {class: BehaviourInfo, ns: Script.GameInfo.Info.Character.Behaviour, asm: Script.GameInfo}
       data:
         <UID>k__BackingField: 0
-        <ID>k__BackingField: 
+        <ID>k__BackingField: HAHAHAH
         <Name>k__BackingField: 
         nodes:
         - rid: 2451557121443496030

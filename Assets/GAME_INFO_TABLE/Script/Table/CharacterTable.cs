@@ -16,7 +16,13 @@ namespace Script.GameInfo.Table {
                 return _type;
             }
         }
-        
+
+        public override T[] GetCollection<T>() {
+            if(CharacterInfos is T[] collection)
+                return collection;
+            return Array.Empty<T>();
+        }
+
         [NonSerialized]
         private Type _type;
 

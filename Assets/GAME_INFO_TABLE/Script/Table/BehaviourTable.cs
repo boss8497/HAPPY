@@ -16,6 +16,12 @@ namespace Script.GameInfo.Table {
                 return _type;
             }
         }
+        
+        public override T[] GetCollection<T>() {
+            if(Behaviours is T[] collection)
+                return collection;
+            return Array.Empty<T>();
+        }
 
         private Type _type;
 

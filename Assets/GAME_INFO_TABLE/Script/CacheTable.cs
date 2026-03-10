@@ -30,12 +30,8 @@ namespace Script.GameInfo.Table {
         }
 
         [CanBeNull]
-        public List<T> GetCollection<T>() where T : InfoBase {
-            if (_infos is List<T> list) {
-                return list;
-            }
-
-            return null;
+        public T[] GetCollection<T>() where T : InfoBase {
+            return _tableBase.GetCollection<T>();
         }
 
         public void Release() {
