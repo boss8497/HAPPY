@@ -13,6 +13,6 @@ namespace Script.GameInfo.Info.Character.Transition {
         public string id;
         public TransitionTiming timing;
         
-        public Guid nextNodeGuid;
+        public Guid NextNodeGuid;
     }
 }
