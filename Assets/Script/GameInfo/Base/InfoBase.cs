@@ -8,6 +8,7 @@ namespace Script.GameInfo.Base {
     public abstract class InfoBase{
         [field: SerializeField]
         public int    UID { get; set; }
+        
         [field: SerializeField]
         public string ID  { get; set; }
 
