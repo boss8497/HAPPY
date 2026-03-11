@@ -433,7 +433,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 690941546561559160, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
       propertyPath: maxRange
-      value: 3.0000002
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 690941546561559160, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
       propertyPath: loopOption
@@ -441,7 +441,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 690941546561559160, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
       propertyPath: animationName
-      value: VICTORY
+      value: AIR
       objectReference: {fileID: 0}
     - target: {fileID: 690941546561559160, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
       propertyPath: currentAnimationTime
