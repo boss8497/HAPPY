@@ -1,4 +1,5 @@
 ﻿using System;
+using Script.GameInfo.Attribute;
 
 namespace Script.GameInfo.Info.Character.Transition {
     public enum TransitionTiming {
@@ -13,6 +14,7 @@ namespace Script.GameInfo.Info.Character.Transition {
         public string id;
         public TransitionTiming timing;
         
-        public Guid NextNodeGuid;
+        [NextNode]
+        public SerializeGuid nextNodeGuid;
     }
 }

@@ -24,8 +24,8 @@ MonoBehaviour:
         <ID>k__BackingField: BASE_BEHAVIOUR
         <Name>k__BackingField: "\uAE30\uBCF8_\uCE90\uB9AD\uD130"
         nodes:
-        - rid: 2451557121443496030
         - rid: 2451557160006975579
+        - rid: 2451557121443496030
     - rid: 2451557121443496030
       type: {class: WaitNode, ns: Script.GameInfo.Info.Character.Node, asm: Script.GameInfo}
       data:

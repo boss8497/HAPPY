@@ -11,6 +11,7 @@ namespace Script.GameInfo.Info.Character {
         [field: SerializeField]
         public Expression.Expression Test = new("1 + 2 * 3");
         
+        [SerializeReference]
         public AnimationEvent[] animationEvents = Array.Empty<AnimationEvent>();
         
         [Behaviour]
