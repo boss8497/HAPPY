@@ -23,7 +23,8 @@
         "Sirenix.OdinInspector.Editor.dll",
         "Sirenix.Serialization.dll",
         "Sirenix.Serialization.Config.dll",
-        "System.Runtime.CompilerServices.Unsafe.dll"
+        "System.Runtime.CompilerServices.Unsafe.dll",
+        "Sirenix.Utilities.Editor.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],

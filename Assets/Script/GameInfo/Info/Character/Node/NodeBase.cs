@@ -5,8 +5,8 @@ using UnityEngine;
 namespace Script.GameInfo.Info.Character.Node {
     [System.Serializable]
     public abstract class NodeBase {
-        public Guid   Guid = Guid.NewGuid();
-        public string id;
+        public SerializeGuid guid = SerializeGuid.NewGuid();
+        public string        id;
         
         [SerializeReference]
         public TransitionBase[] transitions;

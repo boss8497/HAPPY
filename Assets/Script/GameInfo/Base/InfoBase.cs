@@ -18,5 +18,15 @@ namespace Script.GameInfo.Base {
 
         [field: SerializeField]
         public IComponent[] Components { get; set; } = Array.Empty<IComponent>();
+
+        public virtual bool ValidData() {
+            if (ValidUid(UID)) return false;
+            return true;
+        }
+
+        public static bool ValidUid(int uid) {
+            if (uid < 0) return false;
+            return true;
+        }
     }
 }

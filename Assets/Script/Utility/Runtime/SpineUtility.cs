@@ -12,7 +12,7 @@ namespace Script.Utility.Runtime {
         public static float GetAnimationTime(this SkeletonAnimation skeletonAnimation, string aniName) {
             if (skeletonAnimation == null) return 0;
             var entry = skeletonAnimation.AnimationState.Data.SkeletonData.FindAnimation(aniName);
-            return entry != null ? entry.Duration : 0;
+            return entry?.Duration ?? 0;
         }
     }
 }

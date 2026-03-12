@@ -21,12 +21,18 @@ MonoBehaviour:
       type: {class: BehaviourInfo, ns: Script.GameInfo.Info.Character.Behaviour, asm: Script.GameInfo}
       data:
         <UID>k__BackingField: 0
-        <ID>k__BackingField: HAHAHAH
-        <Name>k__BackingField: 
+        <ID>k__BackingField: BASE_BEHAVIOUR
+        <Name>k__BackingField: "\uAE30\uBCF8_\uCE90\uB9AD\uD130"
         nodes:
         - rid: 2451557121443496030
+        - rid: 2451557160006975579
     - rid: 2451557121443496030
       type: {class: WaitNode, ns: Script.GameInfo.Info.Character.Node, asm: Script.GameInfo}
+      data:
+        id: 
+        transitions: []
+    - rid: 2451557160006975579
+      type: {class: StartNode, ns: Script.GameInfo.Info.Character.Node, asm: Script.GameInfo}
       data:
         id: 
         transitions: []
