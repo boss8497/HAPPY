@@ -29,10 +29,20 @@ MonoBehaviour:
     - rid: 2451557121443496030
       type: {class: WaitNode, ns: Script.GameInfo.Info.Character.Node, asm: Script.GameInfo}
       data:
+        guid:
+          v0: 2931728015
+          v1: 1113497005
+          v2: 1751304862
+          v3: 667699728
         id: 
         transitions: []
     - rid: 2451557160006975579
       type: {class: StartNode, ns: Script.GameInfo.Info.Character.Node, asm: Script.GameInfo}
       data:
+        guid:
+          v0: 3415603771
+          v1: 1149492715
+          v2: 3971692692
+          v3: 3351773846
         id: 
         transitions: []

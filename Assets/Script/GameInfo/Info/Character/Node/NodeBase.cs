@@ -1,5 +1,4 @@
-﻿using System;
-using Script.GameInfo.Info.Character.Transition;
+﻿using Script.GameInfo.Info.Character.Transition;
 using UnityEngine;
 
 namespace Script.GameInfo.Info.Character.Node {

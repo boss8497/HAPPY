@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Script.GameInfo.Info {
     [Serializable]
-    public sealed class SerializeGuid : ISerializationCallbackReceiver, IEquatable<SerializeGuid> {
+    public struct SerializeGuid : ISerializationCallbackReceiver, IEquatable<SerializeGuid> {
         [SerializeField] private uint v0;
         [SerializeField] private uint v1;
         [SerializeField] private uint v2;
@@ -27,34 +27,35 @@ namespace Script.GameInfo.Info {
                 WriteGuidToFields(value);
             }
         }
+
         public bool IsEmpty => Value == Guid.Empty;
 
-        public SerializeGuid() {
-            _value      = Guid.Empty;
-            _cacheValid = true;
-            WriteGuidToFields(_value);
-        }
-
         public SerializeGuid(Guid value) {
-            _value      = value;
-            _cacheValid = true;
             v0         = 0;
             v1         = 0;
             v2         = 0;
             v3         = 0;
+            _value      = value;
+            _cacheValid = true;
             WriteGuidToFields(value);
         }
 
         public static SerializeGuid NewGuid() {
-            return new (Guid.NewGuid());
+            return new SerializeGuid(Guid.NewGuid());
         }
 
-        public void SetNewGuid() {
-            Value = Guid.NewGuid();
+        public static SerializeGuid Empty() {
+            return new SerializeGuid(Guid.Empty);
         }
 
-        public void Clear() {
-            Value = Guid.Empty;
+        public void OnBeforeSerialize() {
+            if (_cacheValid)
+                WriteGuidToFields(_value);
+        }
+
+        public void OnAfterDeserialize() {
+            _value      = ReadGuidFromFields();
+            _cacheValid = true;
         }
 
         public override string ToString() {
@@ -62,9 +63,6 @@ namespace Script.GameInfo.Info {
         }
 
         public bool Equals(SerializeGuid other) {
-            if (ReferenceEquals(other, null))
-                return false;
-
             return Value.Equals(other.Value);
         }
 
@@ -76,61 +74,42 @@ namespace Script.GameInfo.Info {
             return Value.GetHashCode();
         }
 
-        public static implicit operator Guid(SerializeGuid value) {
-            return value?.Value ?? Guid.Empty;
-        }
-
-        public static implicit operator SerializeGuid(Guid value) {
-            return new (value);
-        }
-
-        public void OnBeforeSerialize() {
-            // 현재 캐시 값을 직렬화 필드로 반영
-            if (_cacheValid)
-                WriteGuidToFields(_value);
-        }
-
-        public void OnAfterDeserialize() {
-            // 역직렬화
-            _value      = ReadGuidFromFields();
-            _cacheValid = true;
-        }
+        public static implicit operator Guid(SerializeGuid value) => value.Value;
+        public static implicit operator SerializeGuid(Guid value) => new SerializeGuid(value);
 
         private void WriteGuidToFields(Guid guid) {
-            Span<byte> bytes = stackalloc byte[16];
-            guid.TryWriteBytes(bytes);
+            var bytes = guid.ToByteArray();
 
-            v0 = ToUInt32(bytes.Slice(0, 4));
-            v1 = ToUInt32(bytes.Slice(4, 4));
-            v2 = ToUInt32(bytes.Slice(8, 4));
-            v3 = ToUInt32(bytes.Slice(12, 4));
+            v0 = ToUInt32(bytes, 0);
+            v1 = ToUInt32(bytes, 4);
+            v2 = ToUInt32(bytes, 8);
+            v3 = ToUInt32(bytes, 12);
         }
 
         private Guid ReadGuidFromFields() {
-            Span<byte> bytes = stackalloc byte[16];
+            var bytes = new byte[16];
 
-            WriteUInt32(bytes.Slice(0, 4), v0);
-            WriteUInt32(bytes.Slice(4, 4), v1);
-            WriteUInt32(bytes.Slice(8, 4), v2);
-            WriteUInt32(bytes.Slice(12, 4), v3);
+            WriteUInt32(bytes, 0, v0);
+            WriteUInt32(bytes, 4, v1);
+            WriteUInt32(bytes, 8, v2);
+            WriteUInt32(bytes, 12, v3);
 
             return new Guid(bytes);
         }
 
-        private static uint ToUInt32(ReadOnlySpan<byte> bytes) {
+        private static uint ToUInt32(byte[] bytes, int offset) {
             return (uint)(
-                             bytes[0]
-                           | (bytes[1] << 8)
-                           | (bytes[2] << 16)
-                           | (bytes[3] << 24)
-                         );
+                             bytes[offset]
+                           | (bytes[offset + 1] << 8)
+                           | (bytes[offset + 2] << 16)
+                           | (bytes[offset + 3] << 24));
         }
 
-        private static void WriteUInt32(Span<byte> bytes, uint value) {
-            bytes[0] = (byte)(value);
-            bytes[1] = (byte)(value >> 8);
-            bytes[2] = (byte)(value >> 16);
-            bytes[3] = (byte)(value >> 24);
+        private static void WriteUInt32(byte[] bytes, int offset, uint value) {
+            bytes[offset]     = (byte)value;
+            bytes[offset + 1] = (byte)(value >> 8);
+            bytes[offset + 2] = (byte)(value >> 16);
+            bytes[offset + 3] = (byte)(value >> 24);
         }
     }
 }
