@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CharacterTable
   m_EditorClassIdentifier: Script.GameInfo::Script.GameInfo.Table.CharacterTable
   CharacterInfos:
-  - <UID>k__BackingField: 0
+  - <UID>k__BackingField: 1
     <ID>k__BackingField: BOMI
     <Name>k__BackingField: "\uBCF4\uBBF8"
     Test:
@@ -44,4 +44,4 @@ MonoBehaviour:
         Func: 0
         Arity: 0
       _maxStack: 2
-    behaviourId: -1
+    behaviourId: 1

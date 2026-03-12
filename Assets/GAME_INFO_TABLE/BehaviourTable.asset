@@ -20,7 +20,7 @@ MonoBehaviour:
     - rid: 2451557121443496028
       type: {class: BehaviourInfo, ns: Script.GameInfo.Info.Character.Behaviour, asm: Script.GameInfo}
       data:
-        <UID>k__BackingField: 0
+        <UID>k__BackingField: 1
         <ID>k__BackingField: BASE_BEHAVIOUR
         <Name>k__BackingField: "\uAE30\uBCF8_\uCE90\uB9AD\uD130"
         nodes:

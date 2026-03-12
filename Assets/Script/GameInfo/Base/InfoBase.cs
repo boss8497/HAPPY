@@ -25,7 +25,7 @@ namespace Script.GameInfo.Base {
         }
 
         public static bool ValidUid(int uid) {
-            if (uid < 0) return false;
+            if (uid <= 0) return false;
             return true;
         }
     }

@@ -28,7 +28,7 @@ namespace Script.Editor.Attribute {
         }
 
         protected override int GetUid(BehaviourInfo value) {
-            return value?.UID ?? -1;
+            return value?.UID ?? 0;
         }
     }
 }

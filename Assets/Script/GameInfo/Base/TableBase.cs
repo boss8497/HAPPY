@@ -19,12 +19,12 @@ namespace Script.GameInfo.Base {
             var oldInfos = Infos;
             var index    = Array.FindIndex(oldInfos, x => x != null && x.UID == newInfo.UID);
 
-            if (index >= 0) {
+            if (index > 0) {
                 oldInfos[index] = newInfo;
             }
             else {
                 Array.Resize(ref oldInfos, oldInfos.Length + 1);
-                newInfo.UID  = oldInfos.Length; // 새로운 UID 할당 (예시로 배열 길이를 사용)
+                newInfo.UID  = oldInfos.Length;
                 oldInfos[^1] = newInfo;
             }
 

@@ -14,14 +14,14 @@ namespace Script.Editor.Attribute {
         protected int UID {
             get {
                 if (Property.ValueEntry == null) {
-                    return -1;
+                    return 0;
                 }
 
                 if (Property.ValueEntry.TypeOfValue == typeof(int)) {
                     return (int)Property.ValueEntry.WeakSmartValue;
                 }
 
-                return -1;
+                return 0;
             }
             set {
                 if (Property.ValueEntry.TypeOfValue == typeof(int)) {
@@ -34,7 +34,7 @@ namespace Script.Editor.Attribute {
 
 
         protected override void Initialize() {
-            if (UID != -1) {
+            if (UID > 0) {
                 Info = GameInfoManager.Instance.Get<TInfo>(UID);
             }
         }
@@ -51,14 +51,14 @@ namespace Script.Editor.Attribute {
                 var selector = new TSelector();
                 selector.SelectionConfirmed += selection => {
                     Info = selection.FirstOrDefault();
-                    UID   = Info != null ? GetUid(Info) : -1;
+                    UID   = Info != null ? GetUid(Info) : 0;
                 };
                 selector.ShowInPopup(rect);
             }
 
             if (GUILayout.Button("Reset", GUILayout.Width(50))) {
                 Info = null;
-                UID   = -1;
+                UID   = 0;
             }
 
             EditorGUILayout.EndHorizontal();
