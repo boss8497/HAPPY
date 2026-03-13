@@ -1,29 +1,92 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Script.GamePlay.Character.Interface;
 using Script.GameInfo.Info.Character;
+using Script.GameInfo.Info.Character.Node;
 using Script.Utility.Runtime;
+using UnityEngine;
 
 namespace Script.GamePlay.Character {
-    
     [Serializable]
     public class CharacterBehaviour : IClassPool {
         private BehaviourInfo _info;
         private ICharacter    _character;
-
-        private Dictionary<Guid, ClientNodeBase> _nodes;
         
+        private ClientNodeBase[]                 _nodes;
+        private Dictionary<Guid, ClientNodeBase> _nodesByGuid;
+
+
+        private ClientNodeBase          _currentNode;
+        private CancellationTokenSource _nodeCts;
+
+
+        //public
+        public ICharacter Character => _character;
+
+
         public void Initialize(BehaviourInfo info, ICharacter character) {
             _info      = info;
             _character = character;
+
+            _nodes = info.nodes.Select(n => {
+                             var node = Create(this, n);
+                             node.Initialize();
+                             return node;
+                         })
+                         .ToArray();
+            _nodesByGuid = _nodes.ToDictionary(r => r.NodeBase.guid.Value, r => r);
         }
 
-        
-        
+        public void Start() {
+            _currentNode = _nodes.FirstOrDefault(r => r is ClientStartNode);
+            if (_currentNode == null) {
+                Debug.LogError($"시작 노드를 찾지 못했습니다. 시작 노드를 추가해주세요.");
+                return;
+            }
+
+            _nodeCts = new();
+            _currentNode.Start(_nodeCts.Token).Forget();
+        }
+
+        public async UniTask Stop() {
+            if (_nodeCts is { IsCancellationRequested: false }) {
+                _nodeCts.Cancel();
+                await UniTask.WaitWhile(() => _nodes.All(a => a.IsPlay));
+                _nodeCts.Dispose();
+                _nodeCts = null;
+            }
+        }
+
+
+        public static ClientNodeBase Create(CharacterBehaviour characterBehaviour, NodeBase nodeBase) {
+            var type = nodeBase.GetType();
+
+            return type switch {
+                var t when t == typeof(StartNode) => new ClientStartNode(characterBehaviour, nodeBase),
+                var t when t == typeof(WaitNode)  => new ClientWaitNode(characterBehaviour, nodeBase),
+                _                                 => null
+            };
+        }
+
+        public void OnTransition(ClientNodeBase node, ClientTransitionBase transition) {
+            Task.Run(async () => { await Stop(); }).Wait();
+
+            if (_nodesByGuid.TryGetValue(transition.NextNodeGuid, out var nextNode) == false) {
+                Debug.LogError($"다음 노드를 찾지 못했습니다. 노드 UID: {node.NodeBase.id}");
+                return;
+            }
+
+            _currentNode = nextNode;
+            _nodeCts     = new();
+            _currentNode.Start(_nodeCts.Token).Forget();
+        }
+
         //<summary> Called when the character is rented from the pool. </summary>
-        public void OnRent() {
-        }
-        public void OnReturn() {
-        }
+        public void OnRent()   { }
+        public void OnReturn() { }
     }
 }

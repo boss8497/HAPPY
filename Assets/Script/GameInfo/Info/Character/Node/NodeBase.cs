@@ -5,7 +5,7 @@ namespace Script.GameInfo.Info.Character {
     public abstract class NodeBase {
         public SerializeGuid guid = SerializeGuid.NewGuid();
         public string        id;
-        
+
         [SerializeReference]
         public TransitionBase[] transitions;
     }
