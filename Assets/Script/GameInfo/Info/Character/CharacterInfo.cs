@@ -1,9 +1,7 @@
 using System;
 using Script.GameInfo.Base;
-using Expression;
 using Script.GameInfo.Attribute;
 using UnityEngine;
-using AnimationEvent = Script.GameInfo.Info.Character.Animation.AnimationEvent;
 
 namespace Script.GameInfo.Info.Character {
     [System.Serializable]

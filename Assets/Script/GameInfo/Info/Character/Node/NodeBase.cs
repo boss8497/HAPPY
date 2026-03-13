@@ -1,7 +1,6 @@
-﻿using Script.GameInfo.Info.Character.Transition;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Script.GameInfo.Info.Character.Node {
+namespace Script.GameInfo.Info.Character {
     [System.Serializable]
     public abstract class NodeBase {
         public SerializeGuid guid = SerializeGuid.NewGuid();

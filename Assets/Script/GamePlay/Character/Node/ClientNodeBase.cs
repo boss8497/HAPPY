@@ -1,4 +1,4 @@
-﻿namespace Script.GamePlay.Character.Node {
+﻿namespace Script.GamePlay.Character {
     public abstract class ClientNodeBase {
         
     }

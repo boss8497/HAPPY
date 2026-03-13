@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Script.GameInfo.Info.Character.Animation {
+namespace Script.GameInfo.Info.Character {
     [System.Serializable]
     public abstract class AnimationEvent {
         public SerializeGuid guid = SerializeGuid.NewGuid();

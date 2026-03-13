@@ -1,7 +1,6 @@
-﻿using System;
-using Script.GameInfo.Attribute;
+﻿using Script.GameInfo.Attribute;
 
-namespace Script.GameInfo.Info.Character.Transition {
+namespace Script.GameInfo.Info.Character {
     public enum TransitionTiming {
         Being,
         Update,
@@ -10,9 +9,14 @@ namespace Script.GameInfo.Info.Character.Transition {
     
     [System.Serializable]
     public abstract class TransitionBase {
-        public Guid   Guid = Guid.NewGuid();
-        public string id;
+        public SerializeGuid    guid = SerializeGuid.NewGuid();
+        public string           id;
         public TransitionTiming timing;
+
+        //비교 값
+        public bool value;
+        //우선 순위
+        public byte priority;
         
         [NextNode]
         public SerializeGuid nextNodeGuid;

@@ -1,6 +1,5 @@
 ﻿using Script.GameInfo.Attribute;
 using Script.GameInfo.Info.Character;
-using Script.GameInfo.Info.Character.Behaviour;
 using Script.GameInfo.Table;
 using Sirenix.OdinInspector.Editor;
 

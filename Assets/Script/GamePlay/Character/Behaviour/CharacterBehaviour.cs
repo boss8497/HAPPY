@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Script.GameInfo.Info.Character.Behaviour;
 using Script.GamePlay.Character.Interface;
-using Script.GamePlay.Character.Node;
+using Script.GameInfo.Info.Character;
 using Script.Utility.Runtime;
 
-namespace Script.GamePlay.Character.Behaviour {
+namespace Script.GamePlay.Character {
     
     [Serializable]
     public class CharacterBehaviour : IClassPool {
