@@ -14,7 +14,7 @@ namespace Script.GamePlay.Character {
         }
 
         protected override UniTask Update(CancellationToken cts) {
-            throw new System.NotImplementedException();
+            return UniTask.CompletedTask;
         }
     }
 }

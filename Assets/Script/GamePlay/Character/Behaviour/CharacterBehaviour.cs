@@ -14,8 +14,8 @@ namespace Script.GamePlay.Character {
     [Serializable]
     public class CharacterBehaviour : IClassPool {
         private BehaviourInfo _info;
-        private ICharacter    _character;
-        
+        private Character     _character;
+
         private ClientNodeBase[]                 _nodes;
         private Dictionary<Guid, ClientNodeBase> _nodesByGuid;
 
@@ -25,10 +25,10 @@ namespace Script.GamePlay.Character {
 
 
         //public
-        public ICharacter Character => _character;
+        public Character Character => _character;
 
 
-        public void Initialize(BehaviourInfo info, ICharacter character) {
+        public void Initialize(BehaviourInfo info, Character character) {
             _info      = info;
             _character = character;
 
@@ -55,7 +55,7 @@ namespace Script.GamePlay.Character {
         public async UniTask Stop() {
             if (_nodeCts is { IsCancellationRequested: false }) {
                 _nodeCts.Cancel();
-                await UniTask.WaitWhile(() => _nodes.All(a => a.IsPlay));
+                await UniTask.WaitWhile(() => _nodes.All(a => !a.IsPlay));
                 _nodeCts.Dispose();
                 _nodeCts = null;
             }
@@ -72,8 +72,8 @@ namespace Script.GamePlay.Character {
             };
         }
 
-        public void OnTransition(ClientNodeBase node, ClientTransitionBase transition) {
-            Task.Run(async () => { await Stop(); }).Wait();
+        public async UniTask OnTransition(ClientNodeBase node, ClientTransitionBase transition) {
+            await Stop();
 
             if (_nodesByGuid.TryGetValue(transition.NextNodeGuid, out var nextNode) == false) {
                 Debug.LogError($"다음 노드를 찾지 못했습니다. 노드 UID: {node.NodeBase.id}");

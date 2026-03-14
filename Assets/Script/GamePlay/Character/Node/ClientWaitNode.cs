@@ -10,8 +10,15 @@ namespace Script.GamePlay.Character {
         public override void Initialize() {
         }
 
-        protected override UniTask Update(CancellationToken cts) {
-            throw new System.NotImplementedException();
+        protected override void Enter() {
+            _characterBehaviour.Character.SetAnimation(nameof(AnimationName.IDLE), true);
+        }
+
+        protected override async UniTask Update(CancellationToken cts) {
+            while (!cts.IsCancellationRequested) {
+                
+                await UniTask.DelayFrame(DefaultDelayFrame, cancellationToken: cts);
+            }
         }
     }
 }

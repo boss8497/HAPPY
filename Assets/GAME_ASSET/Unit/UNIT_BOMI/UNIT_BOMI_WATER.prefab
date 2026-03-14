@@ -199,4 +199,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a32985908460c7543a6c2562a6bfdedd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Script.GamePlay.Character::Script.GamePlay.Character.Character
-  characterInfoUid: 0
+  characterInfoUid: 1
+  _skeletonAnimation: {fileID: 2732726741803365579}

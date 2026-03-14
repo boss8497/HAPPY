@@ -11,6 +11,13 @@ using UnityEngine;
 using CharacterInfo = Script.GameInfo.Info.Character.CharacterInfo;
 
 namespace Script.GamePlay.Character {
+    public enum AnimationName {
+        IDLE,
+        RUN,
+        ATTACK,
+        STAND,
+    }
+    
     public class Character : MonoBehaviour, ICharacter {
         #region GameInfo
 
@@ -56,6 +63,7 @@ namespace Script.GamePlay.Character {
 
         #region GamePlay
 
+        [SerializeField]
         private CharacterBehaviour _characterBehaviour;
         public  CharacterBehaviour CharacterBehaviour => _characterBehaviour;
 
@@ -96,6 +104,8 @@ namespace Script.GamePlay.Character {
                     _skeletonAnimation = GetComponentInChildren<SkeletonAnimation>();
                 }
             }
+            
+            _characterBehaviour.Start();
         }
 
         /// <summary> 오브젝트가 파괴 됐을때 호출 </summary>
@@ -120,7 +130,7 @@ namespace Script.GamePlay.Character {
 
             //애니메이션이 같으면
             var currentAnimation = SkeletonAnimation.AnimationState.GetCurrent(0);
-            if (animationName.Equals(currentAnimation.Animation.Name) && currentAnimation.Loop == loop) {
+            if (currentAnimation != null && animationName.Equals(currentAnimation.Animation.Name) && currentAnimation.Loop == loop) {
                 return 0;
             }
 

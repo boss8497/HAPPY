@@ -1,6 +1,4 @@
 ﻿namespace Script.GameInfo.Info.Character {
     [System.Serializable]
-    public class SystemControl : TransitionBase {
-        
-    }
+    public class EndTransition : TransitionBase { }
 }

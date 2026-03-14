@@ -13,52 +13,54 @@ MonoBehaviour:
   m_Name: BehaviourTable
   m_EditorClassIdentifier: Script.Table::Script.GameInfo.Table.BehaviourTable
   Behaviours:
-  - rid: 2451557121443496028
+  - rid: 2451557219312599040
   references:
     version: 2
     RefIds:
-    - rid: 2451557121443496028
-      type: {class: BehaviourInfo, ns: Script.GameInfo.Info.Character.Behaviour, asm: Script.GameInfo}
+    - rid: 2451557219312599040
+      type: {class: BehaviourInfo, ns: Script.GameInfo.Info.Character, asm: Script.GameInfo}
       data:
         <UID>k__BackingField: 1
-        <ID>k__BackingField: BASE_BEHAVIOUR
-        <Name>k__BackingField: "\uAE30\uBCF8_\uCE90\uB9AD\uD130"
+        <ID>k__BackingField: CharacterBase
+        <Name>k__BackingField: "\uCE90\uB9AD\uD130_\uAE30\uBCF8"
         nodes:
-        - rid: 2451557160006975579
-        - rid: 2451557121443496030
-    - rid: 2451557121443496030
+        - rid: 2451557219312599044
+        - rid: 2451557219312599041
+    - rid: 2451557219312599041
       type: {class: WaitNode, ns: Script.GameInfo.Info.Character.Node, asm: Script.GameInfo}
       data:
         guid:
-          v0: 2931728015
-          v1: 1113497005
-          v2: 1751304862
-          v3: 667699728
-        id: Wait
+          v0: 2871299344
+          v1: 1245686449
+          v2: 3263266976
+          v3: 3800206938
+        id: WAIT
         transitions: []
-    - rid: 2451557160006975579
+    - rid: 2451557219312599044
       type: {class: StartNode, ns: Script.GameInfo.Info.Character.Node, asm: Script.GameInfo}
       data:
         guid:
-          v0: 3415603771
-          v1: 1149492715
-          v2: 3971692692
-          v3: 3351773846
-        id: Start
+          v0: 2353827298
+          v1: 1182415949
+          v2: 3698794114
+          v3: 3336087439
+        id: START
         transitions:
-        - rid: 2451557179831353441
-    - rid: 2451557179831353441
-      type: {class: PlayerControl, ns: Script.GameInfo.Info.Character.Transition, asm: Script.GameInfo}
+        - rid: 2451557219312599045
+    - rid: 2451557219312599045
+      type: {class: EndTransition, ns: Script.GameInfo.Info.Character, asm: Script.GameInfo}
       data:
         guid:
-          v0: 3887823514
-          v1: 1293873385
-          v2: 1424405916
-          v3: 2101077813
-        id: 
-        timing: 0
+          v0: 1489838440
+          v1: 1265924400
+          v2: 1260143505
+          v3: 1576386748
+        id: WAIT
+        timing: 2
+        value: 0
+        priority: 0
         nextNodeGuid:
-          v0: 0
-          v1: 0
-          v2: 0
-          v3: 0
+          v0: 2871299344
+          v1: 1245686449
+          v2: 3263266976
+          v3: 3800206938

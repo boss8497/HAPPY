@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Info.Character;
@@ -8,67 +9,86 @@ using Script.GameInfo.Info.Character;
 namespace Script.GamePlay.Character {
     [Serializable]
     public abstract class ClientNodeBase {
-        private static readonly int DefaultDelayFrame = 4;
-        
-        private CharacterBehaviour _characterBehaviour;
-        private NodeBase           _nodeBase;
+        protected static readonly int DefaultDelayFrame = 4;
+
+        protected CharacterBehaviour _characterBehaviour;
+        protected NodeBase           _nodeBase;
 
         protected Dictionary<TransitionTiming, ClientTransitionBase[]> _transitionBases;
 
-        protected bool              isPlay;
         protected CancellationToken playCts;
 
         //public
         public CharacterBehaviour CharacterBehaviour => _characterBehaviour;
         public NodeBase           NodeBase           => _nodeBase;
-        public bool               IsPlay             => isPlay;
+        public bool               IsPlay             => playCts.IsCancellationRequested == false;
 
         protected ClientNodeBase(CharacterBehaviour characterBehaviour, NodeBase nodeBase) {
             _characterBehaviour = characterBehaviour;
             _nodeBase           = nodeBase;
 
             _transitionBases = _nodeBase.transitions.GroupBy(t => t.timing)
-                                        .ToDictionary(g => g.Key, g => g.Select(Create).ToArray());
+                                        .ToDictionary(g => g.Key, g => g.Select(s => Create(this, s))
+                                                                        .OrderByDescending(o => o.Priority)
+                                                                        .ToArray());
         }
 
-        private static ClientTransitionBase Create(TransitionBase transitionBase) {
+        private static ClientTransitionBase Create(ClientNodeBase nodeBase, TransitionBase transitionBase) {
             var type = transitionBase.GetType();
 
             return type switch {
-                var t when t == typeof(PlayerControl) => new ClientPlayerControl(),
-                var t when t == typeof(SystemControl) => new ClientSystemControl(),
+                var t when t == typeof(PlayerControl) => new ClientPlayerControl(nodeBase, transitionBase),
+                var t when t == typeof(SystemControl) => new ClientSystemControl(nodeBase, transitionBase),
+                var t when t == typeof(EndTransition) => new ClientEndTransition(nodeBase, transitionBase),
                 _                                     => null
             };
         }
-        
-        
+
+
         //실행 순서 Initialize -> Enter -> Start -> End
         public abstract void Initialize();
 
-        protected virtual void Enter() {
-        }
+        protected virtual void Enter() { }
 
-        public UniTask Start(CancellationToken cts = default) {
+        public async UniTask Start(CancellationToken cts = default) {
+            var beginTransition = CheckTransition(TransitionTiming.Being);
+            if (beginTransition != null) {
+                _characterBehaviour.OnTransition(this, beginTransition).Forget();
+                return;
+            }
+            
+            Enter();
+
             playCts = cts;
             UpdateTransition(playCts).Forget();
-            Update(playCts).Forget();
 
-            return UniTask.CompletedTask;
+
+            await Update(playCts);
+            if (!cts.IsCancellationRequested) {
+                var endTransition = CheckTransition(TransitionTiming.End);
+                if (endTransition != null) {
+                    _characterBehaviour.OnTransition(this, endTransition).Forget();
+                }
+            }
         }
 
-        private async UniTask UpdateTransition(CancellationToken cts) {
+        public void Stop() { }
+
+        private async UniTask<ClientTransitionBase> UpdateTransition(CancellationToken cts) {
             while (!cts.IsCancellationRequested) {
                 var transition = CheckTransition(TransitionTiming.Update);
                 if (transition != null) {
-                    break;
+                    return transition;
                 }
 
                 await UniTask.DelayFrame(DefaultDelayFrame, cancellationToken: cts);
             }
+
+            return null;
         }
 
         private ClientTransitionBase CheckTransition(TransitionTiming timing) {
-            if (_transitionBases.TryGetValue(TransitionTiming.Update, out var clientTransitions) == false) {
+            if (_transitionBases.TryGetValue(timing, out var clientTransitions) == false) {
                 return null;
             }
 
@@ -76,8 +96,7 @@ namespace Script.GamePlay.Character {
         }
 
         protected abstract UniTask Update(CancellationToken cts);
-        
-        protected virtual void End() {
-        }
+
+        protected virtual void End() { }
     }
 }

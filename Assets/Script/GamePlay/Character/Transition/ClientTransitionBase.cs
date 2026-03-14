@@ -6,20 +6,19 @@ namespace Script.GamePlay.Character {
     public abstract class ClientTransitionBase {
         private ClientNodeBase _node;
         private TransitionBase _transitionBase;
-        
+
         public bool          Value        => _transitionBase?.value ?? false;
         public SerializeGuid NextNodeGuid => _transitionBase.nextNodeGuid;
+        public int           Priority     => _transitionBase?.priority ?? 0;
 
-        public virtual void Initialize(ClientNodeBase node, TransitionBase transitionBase) {
-            _node = node;
+        public ClientTransitionBase(ClientNodeBase node, TransitionBase transitionBase) {
+            _node           = node;
             _transitionBase = transitionBase;
         }
 
-        public virtual void Release() {
-            
-        }
+        public virtual void Release() { }
 
-        
+
         public abstract bool OnTrigger();
     }
 }
