@@ -2,9 +2,8 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-namespace Script.GamePlay.Character {
+namespace Script.GamePlay.Input {
     public sealed class PlayerControls : IPlayerControls {
         private readonly PlayerControlMap _controlMap = new();
 

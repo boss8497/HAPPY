@@ -5,9 +5,11 @@ using Script.GameInfo.Base;
 using Script.GameInfo.Info.Character;
 using Script.GameInfo.Table;
 using Script.GamePlay.Character.Interface;
+using Script.GamePlay.Input;
 using Script.Utility.Runtime;
 using Spine.Unity;
 using UnityEngine;
+using VContainer;
 using CharacterInfo = Script.GameInfo.Info.Character.CharacterInfo;
 
 namespace Script.GamePlay.Character {
@@ -17,8 +19,31 @@ namespace Script.GamePlay.Character {
         ATTACK,
         STAND,
     }
-    
+
     public class Character : MonoBehaviour, ICharacter {
+        
+        
+        //<summary>
+        // Inject
+        //</summary>
+        #region Injection
+
+        private IPlayerControls _playerControls;
+        public  IPlayerControls PlayerControls => _playerControls;
+
+        [Inject]
+        public void Constructor(
+            IPlayerControls playerControls
+        ) {
+            _playerControls = playerControls;
+        }
+
+        #endregion
+
+
+        //<summary>
+        // GameInfo
+        //</summary>
         #region GameInfo
 
         [Character]
@@ -65,7 +90,8 @@ namespace Script.GamePlay.Character {
 
         [SerializeField]
         private CharacterBehaviour _characterBehaviour;
-        public  CharacterBehaviour CharacterBehaviour => _characterBehaviour;
+
+        public CharacterBehaviour CharacterBehaviour => _characterBehaviour;
 
 
         [SerializeField]
@@ -74,6 +100,7 @@ namespace Script.GamePlay.Character {
         public SkeletonAnimation SkeletonAnimation => _skeletonAnimation;
 
         private string[] _animationNames;
+
         public string[] SpineAnimationNames {
             get {
                 _animationNames ??= SkeletonAnimation?.Skeleton.Data.Animations.Select(s => s.Name).ToArray() ?? Array.Empty<string>();
@@ -104,7 +131,7 @@ namespace Script.GamePlay.Character {
                     _skeletonAnimation = GetComponentInChildren<SkeletonAnimation>();
                 }
             }
-            
+
             _characterBehaviour.Start();
         }
 

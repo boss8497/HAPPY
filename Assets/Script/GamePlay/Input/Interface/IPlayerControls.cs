@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Script.GamePlay.Character {
+namespace Script.GamePlay.Input {
     public interface IPlayerControls : IDisposable {
         Vector2 Move         { get; }
         bool    JumpPressed  { get; }
