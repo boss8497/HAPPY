@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Script.GameInfo.Table {
     [System.Serializable]
     [CreateAssetMenu(fileName = "StatusTable", menuName = "Data/Table/StatusTable")]
-    public class StatusTable : TableBase {
+    public partial class StatusTable : TableBase {
         public override InfoBase[] Infos {
             get => StatusInfos.OfType<InfoBase>().ToArray();
             set {

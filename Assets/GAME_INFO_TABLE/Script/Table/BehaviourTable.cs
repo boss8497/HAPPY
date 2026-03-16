@@ -7,7 +7,7 @@ using Script.GameInfo.Info.Character;
 namespace Script.GameInfo.Table {
     [System.Serializable]
     [CreateAssetMenu(fileName = "BehaviourTable", menuName = "Data/Table/BehaviourTable")]
-    public class BehaviourTable : TableBase {
+    public partial class BehaviourTable : TableBase {
         public override InfoBase[] Infos {
             get => Behaviours.OfType<InfoBase>().ToArray();
             set {
@@ -33,6 +33,7 @@ namespace Script.GameInfo.Table {
             }
         }
 
+        [NonSerialized]
         private Type _type;
 
         [SerializeReference]
