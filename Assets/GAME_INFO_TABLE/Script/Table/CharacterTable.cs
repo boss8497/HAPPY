@@ -7,7 +7,7 @@ using CharacterInfo = Script.GameInfo.Info.Character.CharacterInfo;
 namespace Script.GameInfo.Table {
     
     [System.Serializable]
-    [CreateAssetMenu(fileName = "CharacterTable", menuName = "Data/CharacterTable")]
+    [CreateAssetMenu(fileName = "CharacterTable", menuName = "Data/Table/CharacterTable")]
     public class CharacterTable : TableBase {
         public override InfoBase[] Infos {
             get => CharacterInfos.OfType<InfoBase>().ToArray();

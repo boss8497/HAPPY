@@ -29,7 +29,6 @@ namespace Script.GamePlay.Character {
         #region Injection
 
         private IPlayerControls _playerControls;
-        public  IPlayerControls PlayerControls => _playerControls;
 
         [Inject]
         public void Constructor(
@@ -38,6 +37,9 @@ namespace Script.GamePlay.Character {
             _playerControls = playerControls;
         }
 
+        
+        public  IPlayerControls PlayerControls => _playerControls;
+        
         #endregion
 
 

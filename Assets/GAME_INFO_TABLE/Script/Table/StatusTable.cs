@@ -1,46 +1,45 @@
 ﻿using System;
 using System.Linq;
 using Script.GameInfo.Base;
+using Script.GameInfo.Info.Stat;
 using UnityEngine;
-using Script.GameInfo.Info.Character;
 
 namespace Script.GameInfo.Table {
     [System.Serializable]
-    [CreateAssetMenu(fileName = "BehaviourTable", menuName = "Data/Table/BehaviourTable")]
-    public class BehaviourTable : TableBase {
+    [CreateAssetMenu(fileName = "StatusTable", menuName = "Data/Table/StatusTable")]
+    public class StatusTable : TableBase {
         public override InfoBase[] Infos {
-            get => Behaviours.OfType<InfoBase>().ToArray();
+            get => StatusInfos.OfType<InfoBase>().ToArray();
             set {
                 if (value == null) {
-                    Behaviours = Array.Empty<BehaviourInfo>();
+                    StatusInfos = Array.Empty<StatusInfo>();
                     return;
                 }
 
-                var behaviourInfos = value.OfType<BehaviourInfo>().ToArray();
+                var behaviourInfos = value.OfType<StatusInfo>().ToArray();
                 if (behaviourInfos.Length != value.Length) {
                     Debug.LogError("모든 요소가 BehaviourInfo 타입이 아닙니다.");
                     return;
                 }
 
-                Behaviours = behaviourInfos;
+                StatusInfos = behaviourInfos;
             }
         }
 
         public override Type ElementType {
             get {
-                _type ??= typeof(BehaviourInfo);
+                _type ??= typeof(StatusInfo);
                 return _type;
             }
         }
 
+        [NonSerialized]
         private Type _type;
 
-        [SerializeReference]
-        public BehaviourInfo[] Behaviours = Array.Empty<BehaviourInfo>();
-
+        public StatusInfo[] StatusInfos = Array.Empty<StatusInfo>();
 
         public override T[] GetCollection<T>() {
-            if (Behaviours is T[] collection)
+            if (StatusInfos is T[] collection)
                 return collection;
             return Array.Empty<T>();
         }

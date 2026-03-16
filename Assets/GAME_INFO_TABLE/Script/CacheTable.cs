@@ -17,8 +17,8 @@ namespace Script.GameInfo.Table {
         public CacheTable(string key, TableBase tableBase) {
             _key       = key;
             _tableBase = tableBase;
-            _infos     = _tableBase.Infos.ToList();
-            _infoByUid = _tableBase.Infos.ToDictionary(i => i.UID, i => i);
+            _infos     = _tableBase.Infos?.ToList() ??  new List<InfoBase>();
+            _infoByUid = _tableBase.Infos?.ToDictionary(i => i.UID, i => i) ?? new();
         }
 
         public T Get<T>(int uid) where T : InfoBase {

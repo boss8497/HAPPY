@@ -4,7 +4,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Script.GamePlay.Input {
-    public sealed class PlayerControls : IPlayerControls {
+    public class PlayerControls : IPlayerControls {
         private readonly PlayerControlMap _controlMap = new();
 
         private CancellationTokenSource _cts;
@@ -23,6 +23,10 @@ namespace Script.GamePlay.Input {
         public bool    JumpReleased => _jumpReleased;
         public bool    HasMoveInput => _move.sqrMagnitude > 0.0001f;
         public bool    HasAnyInput  => _hasAnyInput;
+
+        public PlayerControls() {
+            Initialize();
+        }
 
         public void Initialize() {
             if (_initialized)
@@ -60,17 +64,21 @@ namespace Script.GamePlay.Input {
             _move     = player.Move.ReadValue<Vector2>();
             _jumpHeld = player.Jump.IsPressed();
 
-            if (_move.sqrMagnitude > 0.0001f)
+            if (_move.sqrMagnitude > 0.0001f) {
                 _hasAnyInput = true;
+                Debug.Log($"Move: {_move}");
+            }
 
             if (player.Jump.WasPressedThisFrame()) {
                 _jumpPressed = true;
                 _hasAnyInput = true;
+                Debug.Log($"Jump!!");
             }
 
             if (player.Jump.WasReleasedThisFrame()) {
                 _jumpReleased = true;
                 _hasAnyInput  = true;
+                Debug.Log($"Release Jump!!");
             }
 
             if (_jumpHeld)
