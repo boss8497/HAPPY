@@ -66,9 +66,12 @@ namespace Script.GamePlay.Character {
             var type = nodeBase.GetType();
 
             return type switch {
-                var t when t == typeof(StartNode) => new ClientStartNode(characterBehaviour, nodeBase),
-                var t when t == typeof(WaitNode)  => new ClientWaitNode(characterBehaviour, nodeBase),
-                _                                 => null
+                var t when t == typeof(StartNode)         => new ClientStartNode(characterBehaviour, nodeBase),
+                var t when t == typeof(WaitNode)          => new ClientWaitNode(characterBehaviour, nodeBase),
+                var t when t == typeof(DieNode)           => new ClientDieNode(characterBehaviour, nodeBase),
+                var t when t == typeof(PlayerControlNode) => new ClientPlayerControlNode(characterBehaviour, nodeBase),
+                var t when t == typeof(SystemControlNode) => new ClientSystemControlNode(characterBehaviour, nodeBase),
+                _                                         => null
             };
         }
 

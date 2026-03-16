@@ -40,6 +40,7 @@ namespace Script.GamePlay.Character {
                 var t when t == typeof(PlayerControl) => new ClientPlayerControl(nodeBase, transitionBase),
                 var t when t == typeof(SystemControl) => new ClientSystemControl(nodeBase, transitionBase),
                 var t when t == typeof(EndTransition) => new ClientEndTransition(nodeBase, transitionBase),
+                var t when t == typeof(DieTransition) => new ClientDieTransition(nodeBase, transitionBase),
                 _                                     => null
             };
         }
@@ -56,7 +57,7 @@ namespace Script.GamePlay.Character {
                 _characterBehaviour.OnTransition(this, beginTransition).Forget();
                 return;
             }
-            
+
             Enter();
 
             playCts = cts;

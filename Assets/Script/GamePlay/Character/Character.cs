@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Expression;
+using R3;
 using Script.GameInfo.Attribute;
 using Script.GameInfo.Base;
 using Script.GameInfo.Info.Character;
@@ -17,19 +18,11 @@ using VContainer;
 using CharacterInfo = Script.GameInfo.Info.Character.CharacterInfo;
 
 namespace Script.GamePlay.Character {
-    public enum AnimationName {
-        IDLE,
-        RUN,
-        ATTACK,
-        STAND,
-    }
-
     public class Character : MonoBehaviour, ICharacter {
-        
-        
         //<summary>
         // Inject
         //</summary>
+
         #region Injection
 
         private IPlayerControls _playerControls;
@@ -41,15 +34,16 @@ namespace Script.GamePlay.Character {
             _playerControls = playerControls;
         }
 
-        
-        public  IPlayerControls PlayerControls => _playerControls;
-        
+
+        public IPlayerControls PlayerControls => _playerControls;
+
         #endregion
 
 
         //<summary>
         // GameInfo
         //</summary>
+
         #region GameInfo
 
         [Character]
@@ -57,6 +51,7 @@ namespace Script.GamePlay.Character {
 
 
         private CharacterInfo _characterInfo;
+
         public CharacterInfo CharacterCharacterInfo {
             get {
                 if (InfoBase.ValidUid(characterInfoUid) == false) {
@@ -72,6 +67,7 @@ namespace Script.GamePlay.Character {
         }
 
         private BehaviourInfo _behaviourInfo;
+
         public BehaviourInfo BehaviourInfo {
             get {
                 if (CharacterCharacterInfo == null) return null;
@@ -94,15 +90,18 @@ namespace Script.GamePlay.Character {
 
         [SerializeField]
         private CharacterBehaviour _characterBehaviour;
+
         public CharacterBehaviour CharacterBehaviour => _characterBehaviour;
 
 
         [SerializeField]
         private SkeletonAnimation _skeletonAnimation;
+
         public SkeletonAnimation SkeletonAnimation => _skeletonAnimation;
 
-        
+
         private string[] _animationNames;
+
         public string[] SpineAnimationNames {
             get {
                 _animationNames ??= SkeletonAnimation?.Skeleton.Data.Animations.Select(s => s.Name).ToArray() ?? Array.Empty<string>();
@@ -114,8 +113,21 @@ namespace Script.GamePlay.Character {
 
         [ShowInInspector]
         private Status _status;
-        public  Status Status => _status;
+
+        public Status Status => _status;
+
+        #endregion
+
+
+        #region GamePlayReactiveProperty
+
+        public ReactiveProperty<double> Health { get; set; } = new();
+
+
+        public ReadOnlyReactiveProperty<bool> IsDie { get; private set; }
+
         
+        private DisposableBag _reactiveDisposableBag;
         #endregion
 
 
@@ -141,20 +153,31 @@ namespace Script.GamePlay.Character {
                     _skeletonAnimation = GetComponentInChildren<SkeletonAnimation>();
                 }
             }
-            
+
             //스텟 초기화
             InitializeStatus();
-            
+
             //FSM 실행
             _characterBehaviour.Start();
         }
 
         private void InitializeStatus() {
-            
             using var _ = CreateValueContext();
             foreach (var statusUid in _characterInfo.statusUids) {
                 _status.Add(GameInfoManager.Instance.Get<StatusInfo>(statusUid));
             }
+        }
+
+        private void InitializeReactiveProperty() {
+            _reactiveDisposableBag.Dispose();
+            _reactiveDisposableBag = new DisposableBag();
+
+            IsDie = Health.Select(i => i <= 0)
+                          .DistinctUntilChanged()
+                          .ToReadOnlyReactiveProperty()
+                          .AddTo(ref _reactiveDisposableBag);
+            
+            Health.OnNext(Status.Hp);
         }
 
         // Character Pool에 등록 시 꼭 실행
@@ -192,18 +215,11 @@ namespace Script.GamePlay.Character {
         }
 
 
-        
-        
-        
-        
-        
-        
-        
         //일단을 1로 설정
         private ValueContext CreateValueContext(
-            int levelOffset       = 0,
-            int gradeOffset       = 0,
-            int tierOffset        = 0
+            int levelOffset = 0,
+            int gradeOffset = 0,
+            int tierOffset  = 0
         ) {
             return new(
                 new ValueProvider()
