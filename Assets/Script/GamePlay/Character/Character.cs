@@ -1,12 +1,16 @@
 using System;
 using System.Linq;
+using Expression;
 using Script.GameInfo.Attribute;
 using Script.GameInfo.Base;
 using Script.GameInfo.Info.Character;
+using Script.GameInfo.Info.Stat;
 using Script.GameInfo.Table;
 using Script.GamePlay.Character.Interface;
 using Script.GamePlay.Input;
+using Script.GamePlay.Stat;
 using Script.Utility.Runtime;
+using Sirenix.OdinInspector;
 using Spine.Unity;
 using UnityEngine;
 using VContainer;
@@ -53,7 +57,6 @@ namespace Script.GamePlay.Character {
 
 
         private CharacterInfo _characterInfo;
-
         public CharacterInfo CharacterCharacterInfo {
             get {
                 if (InfoBase.ValidUid(characterInfoUid) == false) {
@@ -69,7 +72,6 @@ namespace Script.GamePlay.Character {
         }
 
         private BehaviourInfo _behaviourInfo;
-
         public BehaviourInfo BehaviourInfo {
             get {
                 if (CharacterCharacterInfo == null) return null;
@@ -92,17 +94,15 @@ namespace Script.GamePlay.Character {
 
         [SerializeField]
         private CharacterBehaviour _characterBehaviour;
-
         public CharacterBehaviour CharacterBehaviour => _characterBehaviour;
 
 
         [SerializeField]
         private SkeletonAnimation _skeletonAnimation;
-
         public SkeletonAnimation SkeletonAnimation => _skeletonAnimation;
 
+        
         private string[] _animationNames;
-
         public string[] SpineAnimationNames {
             get {
                 _animationNames ??= SkeletonAnimation?.Skeleton.Data.Animations.Select(s => s.Name).ToArray() ?? Array.Empty<string>();
@@ -111,6 +111,11 @@ namespace Script.GamePlay.Character {
             set => _animationNames = value;
         }
 
+
+        [ShowInInspector]
+        private Status _status;
+        public  Status Status => _status;
+        
         #endregion
 
 
@@ -122,9 +127,12 @@ namespace Script.GamePlay.Character {
 
         #region Interface
 
+        //캐릭터 소환시 꼭 실행
         public void Initialize() {
             _characterBehaviour ??= ClassPool.Get<CharacterBehaviour>();
             _characterBehaviour.Initialize(BehaviourInfo, this);
+
+            _status ??= ClassPool.Get<Status>();
 
             //Spine 컴포넌트
             if (_skeletonAnimation == null) {
@@ -133,15 +141,32 @@ namespace Script.GamePlay.Character {
                     _skeletonAnimation = GetComponentInChildren<SkeletonAnimation>();
                 }
             }
-
+            
+            //스텟 초기화
+            InitializeStatus();
+            
+            //FSM 실행
             _characterBehaviour.Start();
         }
 
-        /// <summary> 오브젝트가 파괴 됐을때 호출 </summary>
+        private void InitializeStatus() {
+            
+            using var _ = CreateValueContext();
+            foreach (var statusUid in _characterInfo.statusUids) {
+                _status.Add(GameInfoManager.Instance.Get<StatusInfo>(statusUid));
+            }
+        }
+
+        // Character Pool에 등록 시 꼭 실행
         public void Release() {
             if (_characterBehaviour != null) {
                 ClassPool.Release<CharacterBehaviour>(_characterBehaviour);
                 _characterBehaviour = null;
+            }
+
+            if (_status != null) {
+                ClassPool.Release<Status>(_status);
+                _status = null;
             }
         }
 
@@ -167,6 +192,26 @@ namespace Script.GamePlay.Character {
         }
 
 
+        
+        
+        
+        
+        
+        
+        
+        //일단을 1로 설정
+        private ValueContext CreateValueContext(
+            int levelOffset       = 0,
+            int gradeOffset       = 0,
+            int tierOffset        = 0
+        ) {
+            return new(
+                new ValueProvider()
+                    .Add("level", 1 + levelOffset)
+                    .Add("grade", 1 + gradeOffset)
+                    .Add("tier", 1 + tierOffset)
+            );
+        }
         //end class
     }
 }

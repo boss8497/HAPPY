@@ -16,32 +16,9 @@ MonoBehaviour:
   - <UID>k__BackingField: 1
     <ID>k__BackingField: BOMI
     <Name>k__BackingField: "\uBCF4\uBBF8"
-    Test:
-      _code:
-      - Op: 1
-        Const: 0
-        Key: 0
-        Func: 0
-        Arity: 0
-      - Op: 0
-        Const: 2
-        Key: 0
-        Func: 0
-        Arity: 0
-      - Op: 2
-        Const: 0
-        Key: 0
-        Func: 0
-        Arity: 0
-      - Op: 0
-        Const: 10
-        Key: 0
-        Func: 0
-        Arity: 0
-      - Op: 4
-        Const: 0
-        Key: 0
-        Func: 0
-        Arity: 0
-      _maxStack: 2
+    animationEvents: []
     behaviourId: 1
+    statusUids: 0100000002000000
+  references:
+    version: 2
+    RefIds: []

@@ -1,5 +1,5 @@
 {
-    "name": "Script.GamePlay",
+    "name": "Script.GamePlay.Stat",
     "rootNamespace": "",
     "references": [
         "GUID:72d1fea872bd7a449bf3818f2b0a6708",

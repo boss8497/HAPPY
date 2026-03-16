@@ -1,6 +1,7 @@
 using System;
 using Script.GameInfo.Base;
 using Script.GameInfo.Attribute;
+using Script.GameInfo.Info.Stat;
 using UnityEngine;
 
 namespace Script.GameInfo.Info.Character {
@@ -11,5 +12,8 @@ namespace Script.GameInfo.Info.Character {
         
         [Behaviour]
         public int behaviourId;
+
+        [Status]
+        public int[] statusUids = Array.Empty<int>();
     }
 }

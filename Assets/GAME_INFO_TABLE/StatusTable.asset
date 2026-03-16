@@ -18,7 +18,7 @@ MonoBehaviour:
     <Name>k__BackingField: "\uAE30\uBCF8_\uCE90\uB9AD\uD130"
     levelType: 0
     status:
-    - type: 0
+    - type: 1
       isPercent: 0
       expression:
         _code:
@@ -28,7 +28,7 @@ MonoBehaviour:
           Func: 0
           Arity: 0
         _maxStack: 1
-    - type: 5
+    - type: 6
       isPercent: 0
       expression:
         _code:
@@ -38,12 +38,47 @@ MonoBehaviour:
           Func: 0
           Arity: 0
         _maxStack: 1
-    - type: 4
+    - type: 5
       isPercent: 0
       expression:
         _code:
         - Op: 0
           Const: 3
+          Key: 0
+          Func: 0
+          Arity: 0
+        _maxStack: 1
+  - <UID>k__BackingField: 2
+    <ID>k__BackingField: Character_Base_PercentStatus
+    <Name>k__BackingField: "\uAE30\uBCF8_\uBE44\uC728_\uCE90\uB9AD\uD130"
+    levelType: 0
+    status:
+    - type: 1
+      isPercent: 1
+      expression:
+        _code:
+        - Op: 0
+          Const: 1
+          Key: 0
+          Func: 0
+          Arity: 0
+        _maxStack: 1
+    - type: 6
+      isPercent: 1
+      expression:
+        _code:
+        - Op: 0
+          Const: 1
+          Key: 0
+          Func: 0
+          Arity: 0
+        _maxStack: 1
+    - type: 5
+      isPercent: 1
+      expression:
+        _code:
+        - Op: 0
+          Const: 1
           Key: 0
           Func: 0
           Arity: 0
