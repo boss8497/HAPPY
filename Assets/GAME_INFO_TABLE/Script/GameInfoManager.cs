@@ -107,6 +107,9 @@ namespace Script.GameInfo.Table {
                     _cacheTables.Remove(key);
                 }
             }
+            
+            _cacheTables.Clear();
+            _cacheTablesByType.Clear();
         }
     }
 }

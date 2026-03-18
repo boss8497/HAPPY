@@ -16,6 +16,7 @@ namespace Script.GamePlay.Character {
 
         protected Dictionary<TransitionTiming, ClientTransitionBase[]> _transitionBases;
 
+        protected long              nodeGeneration;
         protected CancellationToken playCts;
 
         //public
@@ -52,6 +53,8 @@ namespace Script.GamePlay.Character {
         protected virtual void Enter() { }
 
         public async UniTask Start(CancellationToken cts = default) {
+            var currentGeneration = ++nodeGeneration;
+
             var beginTransition = CheckTransition(TransitionTiming.Being);
             if (beginTransition != null) {
                 _characterBehaviour.OnTransition(this, beginTransition).Forget();
@@ -61,11 +64,11 @@ namespace Script.GamePlay.Character {
             Enter();
 
             playCts = cts;
-            UpdateTransition(playCts).Forget();
+            UpdateTransition(currentGeneration, playCts).Forget();
 
 
             await Update(playCts);
-            if (!cts.IsCancellationRequested) {
+            if (!cts.IsCancellationRequested && currentGeneration == nodeGeneration) {
                 var endTransition = CheckTransition(TransitionTiming.End);
                 if (endTransition != null) {
                     _characterBehaviour.OnTransition(this, endTransition).Forget();
@@ -73,12 +76,13 @@ namespace Script.GamePlay.Character {
             }
         }
 
-        public void Stop() { }
+        public virtual void Stop() { }
 
-        private async UniTask<ClientTransitionBase> UpdateTransition(CancellationToken cts) {
-            while (!cts.IsCancellationRequested) {
+        private async UniTask<ClientTransitionBase> UpdateTransition(long generation, CancellationToken cts) {
+            while (!cts.IsCancellationRequested && generation == nodeGeneration) {
                 var transition = CheckTransition(TransitionTiming.Update);
-                if (transition != null) {
+                if (transition != null && generation == nodeGeneration) {
+                    _characterBehaviour.OnTransition(this, transition).Forget();
                     return transition;
                 }
 

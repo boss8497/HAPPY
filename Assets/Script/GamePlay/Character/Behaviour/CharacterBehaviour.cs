@@ -77,6 +77,8 @@ namespace Script.GamePlay.Character {
 
         public async UniTask OnTransition(ClientNodeBase node, ClientTransitionBase transition) {
             await Stop();
+            
+            node.Stop();
 
             if (_nodesByGuid.TryGetValue(transition.NextNodeGuid, out var nextNode) == false) {
                 Debug.LogError($"다음 노드를 찾지 못했습니다. 노드 UID: {node.NodeBase.id}");

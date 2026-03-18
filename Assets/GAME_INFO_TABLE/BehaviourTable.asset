@@ -26,6 +26,9 @@ MonoBehaviour:
         nodes:
         - rid: 2451557219312599044
         - rid: 2451557219312599041
+        - rid: 2451557272760352770
+        - rid: 2451557272760352768
+        - rid: 2451557272760352773
     - rid: 2451557219312599041
       type: {class: WaitNode, ns: Script.GameInfo.Info.Character.Node, asm: Script.GameInfo}
       data:
@@ -35,7 +38,8 @@ MonoBehaviour:
           v2: 3263266976
           v3: 3800206938
         id: WAIT
-        transitions: []
+        transitions:
+        - rid: 2451557272760352769
     - rid: 2451557219312599044
       type: {class: StartNode, ns: Script.GameInfo.Info.Character.Node, asm: Script.GameInfo}
       data:
@@ -64,3 +68,122 @@ MonoBehaviour:
           v1: 1245686449
           v2: 3263266976
           v3: 3800206938
+    - rid: 2451557272760352768
+      type: {class: DieNode, ns: Script.GameInfo.Info.Character.Node, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 3619234967
+          v1: 1297461387
+          v2: 94862013
+          v3: 4094551553
+        id: DIE
+        transitions: []
+    - rid: 2451557272760352769
+      type: {class: DieTransition, ns: Script.GameInfo.Info.Character, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 1445238616
+          v1: 1278804426
+          v2: 1132561567
+          v3: 3723136969
+        id: DIE
+        timing: 1
+        value: 1
+        priority: 0
+        nextNodeGuid:
+          v0: 3619234967
+          v1: 1297461387
+          v2: 94862013
+          v3: 4094551553
+    - rid: 2451557272760352770
+      type: {class: SystemControlNode, ns: Script.GameInfo.Info.Character.Node, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 4221805148
+          v1: 1171156409
+          v2: 2581611181
+          v3: 3162336557
+        id: SYSTEM
+        transitions:
+        - rid: 2451557272760352771
+        - rid: 2451557272760352772
+    - rid: 2451557272760352771
+      type: {class: DieTransition, ns: Script.GameInfo.Info.Character, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 1528841251
+          v1: 1252331102
+          v2: 3053154453
+          v3: 976053681
+        id: DieTransition
+        timing: 2
+        value: 1
+        priority: 0
+        nextNodeGuid:
+          v0: 3619234967
+          v1: 1297461387
+          v2: 94862013
+          v3: 4094551553
+    - rid: 2451557272760352772
+      type: {class: EndTransition, ns: Script.GameInfo.Info.Character, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 1837764790
+          v1: 1206338963
+          v2: 2068208543
+          v3: 2300174158
+        id: AutoTransition
+        timing: 2
+        value: 0
+        priority: 0
+        nextNodeGuid:
+          v0: 2871299344
+          v1: 1245686449
+          v2: 3263266976
+          v3: 3800206938
+    - rid: 2451557272760352773
+      type: {class: PlayerControlNode, ns: Script.GameInfo.Info.Character.Node, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 4015812391
+          v1: 1120618350
+          v2: 2273725341
+          v3: 3612096868
+        id: PLAYERCONTROL
+        transitions:
+        - rid: 2451557272760352775
+        - rid: 2451557272760352774
+    - rid: 2451557272760352774
+      type: {class: PlayerControl, ns: Script.GameInfo.Info.Character, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 1766669654
+          v1: 1138740075
+          v2: 3213996221
+          v3: 1221401536
+        id: END
+        timing: 1
+        value: 0
+        priority: 0
+        nextNodeGuid:
+          v0: 2871299344
+          v1: 1245686449
+          v2: 3263266976
+          v3: 3800206938
+    - rid: 2451557272760352775
+      type: {class: SystemControl, ns: Script.GameInfo.Info.Character, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 1633790046
+          v1: 1082460888
+          v2: 2775975328
+          v3: 394074013
+        id: SYSTEM
+        timing: 1
+        value: 1
+        priority: 10
+        nextNodeGuid:
+          v0: 4221805148
+          v1: 1171156409
+          v2: 2581611181
+          v3: 3162336557

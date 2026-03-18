@@ -8,8 +8,8 @@ public static class NavigationMenu
 {
     [MenuItem("Tools/데이터 리로드")]
     public static void ReLoadDatabase() {
-        GameInfoManager.Instance.Dirty();
-        GameInfoManager.Instance.Flush();
+        GameInfoManager.Instance.Release();
+        GameInfoManager.Instance.Load();
     }
     
 }
