@@ -1,8 +1,10 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Info.Character;
 
 namespace Script.GamePlay.Character {
+    [Serializable]
     public class ClientDieNode : ClientNodeBase {
         public ClientDieNode(CharacterBehaviour characterBehaviour, NodeBase nodeBase) : base(characterBehaviour, nodeBase) { }
         public override void Initialize() { }

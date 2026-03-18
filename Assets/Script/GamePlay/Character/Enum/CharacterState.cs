@@ -4,9 +4,12 @@ namespace Script.GamePlay.Character {
     [Flags]
     public enum CharacterState {
         None = 0,
-        Idle = 1 << 0,
-        Move = 1 << 1,
-        Jump = 1 << 2,
-        Die  = 1 << 3,
+
+        //초기화 완료
+        Initialized = 1 << 0,
+        Idling      = 1 << 1,
+        Moving      = 1 << 2,
+        Jumping     = 1 << 3,
+        Die         = 1 << 4,
     }
 }

@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using Script.GameInfo.Info.Character;
 
 namespace Script.GamePlay.Character {
+    [System.Serializable]
     public class ClientSystemControlNode : ClientNodeBase {
         public ClientSystemControlNode(CharacterBehaviour characterBehaviour, NodeBase nodeBase) : base(characterBehaviour, nodeBase) { }
 

@@ -12,7 +12,7 @@ using UnityEngine;
 //Runtime에 생성되는 부분들
 namespace Script.GamePlay.Character {
     public partial class Character {
-        [ShowInInspector, ReadOnly]
+        [SerializeReference, ReadOnly]
         private CharacterBehaviour _characterBehaviour;
         public CharacterBehaviour CharacterBehaviour => _characterBehaviour;
 

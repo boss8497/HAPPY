@@ -20,6 +20,7 @@ namespace Script.GamePlay.Character {
         private Dictionary<Guid, ClientNodeBase> _nodesByGuid;
 
 
+        [SerializeReference]
         private ClientNodeBase          _currentNode;
         private CancellationTokenSource _nodeCts;
 

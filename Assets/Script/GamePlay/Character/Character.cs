@@ -17,13 +17,20 @@ namespace Script.GamePlay.Character {
         #region Interface
         //캐릭터 소환시 꼭 실행
         public void Initialize() {
+            _state =  CharacterState.None;
+            
+            
             InitializeGamePlay();
             
             // Reactive 초기화, Reactive는 제일 마지막에 초기화가 좋음
             InitializeReactiveProperty();
+            
+            
+            AddState(CharacterState.Initialized);
         }
         
         public void Release() {
+            ReleaseAction();
             ReleaseGamePlay();
             ReleaseReactiveProperty();
         }
@@ -34,25 +41,5 @@ namespace Script.GamePlay.Character {
         }
 
         #endregion
-
-        public float SetAnimation(string animationName, bool loop = false, bool hasExit = false) {
-            if (SkeletonAnimation == null) {
-                Debug.LogError($"SkeletonAnimation is null");
-                return 0f;
-            }
-
-            if ((SpineAnimationNames?.Any(a => a == animationName) ?? true) == false) {
-                return 0f;
-            }
-
-            //애니메이션이 같으면
-            var currentAnimation = SkeletonAnimation.AnimationState.GetCurrent(0);
-            if (currentAnimation != null && animationName.Equals(currentAnimation.Animation.Name) && currentAnimation.Loop == loop) {
-                return 0;
-            }
-
-            return SkeletonAnimation.StartAnimation(animationName, loop, hasExit)?.AnimationEnd ?? 0;
-        }
-        
     }
 }

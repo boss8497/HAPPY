@@ -40,6 +40,7 @@ MonoBehaviour:
         id: WAIT
         transitions:
         - rid: 2451557272760352769
+        - rid: 2451557297210785884
     - rid: 2451557219312599044
       type: {class: StartNode, ns: Script.GameInfo.Info.Character.Node, asm: Script.GameInfo}
       data:
@@ -187,3 +188,20 @@ MonoBehaviour:
           v1: 1171156409
           v2: 2581611181
           v3: 3162336557
+    - rid: 2451557297210785884
+      type: {class: PlayerControl, ns: Script.GameInfo.Info.Character, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 502735000
+          v1: 1286641226
+          v2: 2961011589
+          v3: 3446660073
+        id: TO_PLAYERCONTROL
+        timing: 1
+        value: 1
+        priority: 0
+        nextNodeGuid:
+          v0: 4015812391
+          v1: 1120618350
+          v2: 2273725341
+          v3: 3612096868

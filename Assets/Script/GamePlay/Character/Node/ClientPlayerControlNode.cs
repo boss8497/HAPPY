@@ -1,9 +1,11 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Info.Character;
 using Script.GamePlay.Input;
 
 namespace Script.GamePlay.Character {
+    [Serializable]
     public class ClientPlayerControlNode : ClientNodeBase {
         private IPlayerControls  _controls;
 
@@ -21,6 +23,9 @@ namespace Script.GamePlay.Character {
         protected override async UniTask Update(CancellationToken cts) {
             while (!cts.IsCancellationRequested) {
 
+                if (_controls.JumpPressed || _controls.JumpHeld) {
+                    CharacterBehaviour.Character.Jump();
+                }
 
                 
                 //플레이어 조작을 컨트롤하기 때문에 DelayFrame을 사용하지 않고 Yield를 사용
