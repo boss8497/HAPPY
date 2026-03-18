@@ -5,6 +5,7 @@
 
 
         public bool Jumping     => (_state & CharacterState.Jumping) != 0;
+        public bool Running     => (_state & CharacterState.Running) != 0;
         public bool Die         => (_state & CharacterState.Die) != 0;
         public bool Initialized => (_state & CharacterState.Initialized) != 0;
 

@@ -7,9 +7,13 @@ using UnityEngine;
 
 namespace Script.GamePlay.Character {
     public partial class Character {
-        private float _minJumpTime = 0.5f;
-        private float _maxJumpTime = 1.0f;
-        private float _gravity     = 20.0f;
+        //이거 나중에 cts빼고는 다 데이터로 빼야됨
+
+        #region JumpField
+
+        private float _minJumpTime = 0.1f;
+        private float _maxJumpTime = 0.2f;
+        private float _gravity     = 50.0f;
 
         private float _currentJumpTime = 0.0f;
         private float _jumpVelocity    = 0.0f;
@@ -19,6 +23,38 @@ namespace Script.GamePlay.Character {
 
         private CancellationTokenSource _jumpCts;
 
+        #endregion
+
+        private float                   _moveDistance = 0.5f;
+        private CancellationTokenSource _runCts;
+
+        public void Run() {
+            if (Running) {
+                return;
+            }
+
+            ReleaseRunning();
+            AddState(CharacterState.Running);
+            _runCts = new();
+            RunningAsync(_runCts.Token).Forget();
+        }
+
+        private async UniTaskVoid RunningAsync(CancellationToken cts) {
+            var spd = (float)Status.Spd;
+            try {
+                while (cts.IsCancellationRequested == false) {
+                    var position = transform.position;
+                    position.x         += spd * Time.deltaTime;
+                    transform.position =  position;
+
+                    await UniTask.Yield(PlayerLoopTiming.Update, cts);
+                }
+            }
+            catch (OperationCanceledException) { }
+            finally {
+                ReleaseRunning();
+            }
+        }
 
         public void Jump() {
             if (Jumping) {
@@ -33,8 +69,7 @@ namespace Script.GamePlay.Character {
 
         private async UniTaskVoid JumpingAsync(CancellationToken cts) {
             try {
-                _groundY = transform.position.y;
-
+                _groundY         = transform.position.y;
                 _currentJumpTime = _minJumpTime;
                 var timer = 0f;
 
@@ -98,8 +133,18 @@ namespace Script.GamePlay.Character {
             RemoveState(CharacterState.Jumping);
         }
 
+        private void ReleaseRunning() {
+            _runCts?.Cancel();
+            _runCts?.Dispose();
+            _runCts = null;
+            RemoveState(CharacterState.Running);
+        }
 
-        public void ReleaseAction() { }
+
+        public void ReleaseAction() {
+            ReleaseRunning();
+            ReleaseJumping();
+        }
 
         public float SetAnimation(string animationName, bool loop = false, bool hasExit = false) {
             if (SkeletonAnimation == null) {

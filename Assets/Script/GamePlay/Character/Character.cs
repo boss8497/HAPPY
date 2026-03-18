@@ -38,6 +38,7 @@ namespace Script.GamePlay.Character {
         public void Start() {
             //FSM 실행
             _characterBehaviour.Start();
+            Run();
         }
 
         #endregion
