@@ -1,6 +1,4 @@
-using System.Linq;
 using Script.GamePlay.Character.Interface;
-using Script.Utility.Runtime;
 using UnityEngine;
 
 namespace Script.GamePlay.Character {
@@ -39,6 +37,10 @@ namespace Script.GamePlay.Character {
             //FSM 실행
             _characterBehaviour.Start();
             Run();
+        }
+
+        private void OnDestroy() {
+            Release();
         }
 
         #endregion

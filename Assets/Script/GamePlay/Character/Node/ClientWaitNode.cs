@@ -11,7 +11,7 @@ namespace Script.GamePlay.Character {
         }
 
         protected override void Enter() {
-            _characterBehaviour.Character.SetAnimation(nameof(AnimationName.IDLE), true);
+            _characterBehaviour.Character.SetAnimation(nameof(AnimationName.RUN), true);
         }
 
         protected override async UniTask Update(CancellationToken cts) {
