@@ -8,5 +8,6 @@ namespace Script.GamePlay.Character.Interface {
         
         void Initialize();
         void Release();
+        void Start();
     }
 }
