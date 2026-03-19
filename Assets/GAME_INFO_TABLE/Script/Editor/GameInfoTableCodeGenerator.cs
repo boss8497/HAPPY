@@ -13,7 +13,7 @@ namespace Script.GameInfo.Table.Editor {
     public static class GameInfoTableCodeGenerator {
         private const string OutputFolder = "Assets/GAME_INFO_TABLE/Script/Table/Generated";
 
-        [MenuItem("Tools/GameInfo/Generate Missing Tables")]
+        [MenuItem("Generate/GameInfo/테이블 자동 생성")]
         public static void GenerateMissingTables() {
             EnsureFolder(OutputFolder);
 

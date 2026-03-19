@@ -25,7 +25,6 @@ namespace Script.GamePlay.Character {
 
         #endregion
 
-        private float                   _moveDistance = 0.5f;
         private CancellationTokenSource _runCts;
 
         public void Run() {

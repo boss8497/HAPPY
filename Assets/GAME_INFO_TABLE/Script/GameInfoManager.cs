@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Base;
+using Script.GameInfo.Info;
 using Script.GameInfo.Table.Interface;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -26,6 +27,10 @@ namespace Script.GameInfo.Table {
             }
         }
         private bool _dirty;
+        
+        
+        private ConfigurationInfo _config;
+        private ConfigurationInfo Config => _config;
 
         
         
@@ -45,6 +50,16 @@ namespace Script.GameInfo.Table {
                 _handles[key]     = handle;
             }
 
+
+            //GameConfig Load
+            var configHandle = Addressables.LoadAssetAsync<GameConfiguration>(nameof(GameConfiguration));
+            await configHandle.Task;
+            
+            if (configHandle.Status != AsyncOperationStatus.Succeeded)
+                throw new Exception($"Load failed: {nameof(GameConfiguration)}");
+
+            _config = configHandle.Result.config.Clone();
+            Addressables.Release(configHandle);
         }
 
         public void Load() {
@@ -63,6 +78,17 @@ namespace Script.GameInfo.Table {
                 _cacheTablesByType[handle.Result.ElementType] = _cacheTables[key];
                 _handles[key]                                 = handle;
             }
+            
+            
+            //GameConfig Load
+            var configHandle = Addressables.LoadAssetAsync<GameConfiguration>(nameof(GameConfiguration));
+            configHandle.WaitForCompletion();
+            
+            if (configHandle.Status != AsyncOperationStatus.Succeeded)
+                throw new Exception($"Load failed: {nameof(GameConfiguration)}");
+
+            _config = configHandle.Result.config.Clone();
+            Addressables.Release(configHandle);
         }
 
         public T Get<T>(int uid) where T : InfoBase {
