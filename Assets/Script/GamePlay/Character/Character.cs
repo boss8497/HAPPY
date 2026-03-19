@@ -16,8 +16,8 @@ namespace Script.GamePlay.Character {
         //캐릭터 소환시 꼭 실행
         public void Initialize() {
             _state =  CharacterState.None;
-            
-            
+
+            InitializeAction();
             InitializeGamePlay();
             
             // Reactive 초기화, Reactive는 제일 마지막에 초기화가 좋음

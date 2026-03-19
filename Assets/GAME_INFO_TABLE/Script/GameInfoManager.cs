@@ -27,10 +27,10 @@ namespace Script.GameInfo.Table {
             }
         }
         private bool _dirty;
-        
-        
+
+
         private ConfigurationInfo _config;
-        private ConfigurationInfo Config => _config;
+        public  ConfigurationInfo Config => _config;
 
         
         
