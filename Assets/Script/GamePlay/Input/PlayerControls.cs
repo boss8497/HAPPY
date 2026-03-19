@@ -66,19 +66,16 @@ namespace Script.GamePlay.Input {
 
             if (_move.sqrMagnitude > 0.0001f) {
                 _hasAnyInput = true;
-                Debug.Log($"Move: {_move}");
             }
 
             if (player.Jump.WasPressedThisFrame()) {
                 _jumpPressed = true;
                 _hasAnyInput = true;
-                Debug.Log($"Jump!!");
             }
 
             if (player.Jump.WasReleasedThisFrame()) {
                 _jumpReleased = true;
                 _hasAnyInput  = true;
-                Debug.Log($"Release Jump!!");
             }
 
             if (_jumpHeld)

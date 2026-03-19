@@ -944,7 +944,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f3b510fa5314b66a8fc0746c426694f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Script.GamePlay.BackGround::Script.GamePlay.Background.ParallaxLayer
-  _parallaxFactor: 0.2
+  _parallaxFactor: 0.1
   _startXOffset: 0
   _loop: 1
   _autoAlignOnStart: 1
@@ -1540,7 +1540,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f3b510fa5314b66a8fc0746c426694f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Script.GamePlay.BackGround::Script.GamePlay.Background.ParallaxLayer
-  _parallaxFactor: 0.5
+  _parallaxFactor: 0.4
   _startXOffset: 0
   _loop: 1
   _autoAlignOnStart: 1
@@ -1904,7 +1904,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 690941546561559160, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
       propertyPath: maxRange
-      value: 1.45
+      value: 0.8000001
       objectReference: {fileID: 0}
     - target: {fileID: 690941546561559160, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
       propertyPath: loopOption
@@ -1912,7 +1912,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 690941546561559160, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
       propertyPath: animationName
-      value: SKILL
+      value: RUN
       objectReference: {fileID: 0}
     - target: {fileID: 690941546561559160, guid: 01a9eed2b095cdd4b99094ba5363d4da, type: 3}
       propertyPath: currentAnimationTime
@@ -2079,7 +2079,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f3b510fa5314b66a8fc0746c426694f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Script.GamePlay.BackGround::Script.GamePlay.Background.ParallaxLayer
-  _parallaxFactor: 0.4
+  _parallaxFactor: 0.3
   _startXOffset: 0
   _loop: 1
   _autoAlignOnStart: 1
@@ -2139,7 +2139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f3b510fa5314b66a8fc0746c426694f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Script.GamePlay.BackGround::Script.GamePlay.Background.ParallaxLayer
-  _parallaxFactor: 0.3
+  _parallaxFactor: 0.2
   _startXOffset: 0
   _loop: 1
   _autoAlignOnStart: 1
