@@ -10,9 +10,9 @@ namespace Script.GamePlay.Background {
             public Transform      transform;
             public SpriteRenderer spriteRenderer;
 
-            public float Width  => spriteRenderer != null ? spriteRenderer.bounds.size.x : 0f;
-            public float LeftX  => spriteRenderer != null ? spriteRenderer.bounds.min.x : transform.position.x;
-            public float RightX => spriteRenderer != null ? spriteRenderer.bounds.max.x : transform.position.x;
+            public float Width  => spriteRenderer?.bounds.size.x ?? 0f;
+            public float LeftX  => spriteRenderer?.bounds.min.x ?? transform.position.x;
+            public float RightX => spriteRenderer?.bounds.max.x ?? transform.position.x;
 
             public bool IsValid => transform != null && spriteRenderer != null;
         }
@@ -60,7 +60,7 @@ namespace Script.GamePlay.Background {
             startPos.x         = _startRootX;
             transform.position = startPos;
 
-            _queue = new Queue<Tile>(_tiles != null ? _tiles.Length : 0);
+            _queue = new Queue<Tile>(_tiles?.Length ?? 0);
 
             if (_tiles == null || _tiles.Length == 0) {
                 _initialized = true;
@@ -162,23 +162,24 @@ namespace Script.GamePlay.Background {
 
         [ContextMenu("처음 시작 배치")]
         public void AlignTilesLeftToRight() {
-            if (_tiles == null || _tiles.Length == 0)
+            if ((_tiles?.Length ?? 0) <= 0)
                 return;
 
             var currentLeft = 0f;
             var firstPlaced = false;
 
             foreach (var tile in _tiles) {
-                if (tile == null || tile.transform == null)
-                    continue;
+                // 이미 Initialized에서 확인했기 때문에 여기서 에러가 난다면 버그가 있는것이다.
 
-                if (tile.spriteRenderer == null)
-                    tile.spriteRenderer = tile.transform.GetComponent<SpriteRenderer>();
+                // if (tile?.transform == null)
+                //     continue;
+                //
+                // if (tile.spriteRenderer == null)
+                //     tile.spriteRenderer = tile.transform.GetComponent<SpriteRenderer>();
+                // if (tile.IsValid == false)
+                //     continue;
 
-                if (tile.IsValid == false)
-                    continue;
-
-                float width = tile.Width;
+                var width = tile.Width;
                 if (width <= 0f)
                     continue;
 

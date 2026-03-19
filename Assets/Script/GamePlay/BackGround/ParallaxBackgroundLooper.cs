@@ -1,14 +1,13 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using Script.GamePlay.Camera;
+using UnityEngine;
+using VContainer;
 
 namespace Script.GamePlay.Background {
     [DisallowMultipleComponent]
     public class ParallaxBackgroundLooper : MonoBehaviour {
-        [Header("References")]
-        [SerializeField]
-        private Camera _camera;
-
-        [SerializeField]
-        private Transform _target;
+        private UnityEngine.Camera _camera;
+        private Transform          _target;
 
         [Header("Layers")]
         [SerializeField]
@@ -17,15 +16,22 @@ namespace Script.GamePlay.Background {
         private float _startTargetX;
         private bool  _initialized;
 
+        private ICameraControls _cameraControls;
+
+        [Inject]
+        public void Constructor(
+            ICameraControls cameraControls
+        ) {
+            _cameraControls = cameraControls;
+        }
+
+
         private void Awake() {
-            Initialize();
+            Initialize().Forget();
         }
 
         private void LateUpdate() {
             if (_initialized == false)
-                return;
-
-            if (_camera == null || _target == null || _layers == null)
                 return;
 
             var targetDeltaX = _target.position.x - _startTargetX;
@@ -39,18 +45,15 @@ namespace Script.GamePlay.Background {
             }
         }
 
-        [ContextMenu("Initialize")]
-        public void Initialize() {
-            if (_camera == null)
-                _camera = Camera.main;
-
+        private async UniTaskVoid Initialize() {
+            await UniTask.WaitUntil(() => _cameraControls != null);
+            
+            _camera = _cameraControls.MainCamera;
+            _target = _camera.transform;
+            
             if (_camera == null) {
-                Debug.LogError("[ParallaxBackgroundLooper] Camera is null.");
+                Debug.LogError("[ParallaxBackgroundLooper] MainCamera is null.");
                 return;
-            }
-
-            if (_target == null) {
-                _target = _camera.transform;
             }
 
             _startTargetX = _target.position.x;
