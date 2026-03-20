@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bad28298d7a8a5f4d9237f2cd1ad3853, type: 3}
+  m_Name: PhaseTable
+  m_EditorClassIdentifier: Script.Table::Script.GameInfo.Table.PhaseTable
+  PhaseInfos: []
+  references:
+    version: 2
+    RefIds: []

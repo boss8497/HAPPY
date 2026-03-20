@@ -6,6 +6,6 @@ namespace Script.GameInfo.Info.Dungeon {
     [AutoEditorTable(true)]
     [Serializable]
     public class DungeonInfo : InfoBase {
-        public Stage[] stages;
+        public Stage[] stages = Array.Empty<Stage>();
     }
 }
