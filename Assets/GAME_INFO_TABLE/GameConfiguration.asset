@@ -20,3 +20,4 @@ MonoBehaviour:
     fallGravity: 1.5
     minJumpTime: 0.1
     maxJumpTime: 0.2
+    startDungeon: 1

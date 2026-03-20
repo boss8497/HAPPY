@@ -1,0 +1,24 @@
+{
+    "name": "Script.GamePlay.Service",
+    "rootNamespace": "",
+    "references": [
+        "GUID:709f4bab8a7a1004693d348cefe1e497",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:5c01796d064528144a599661eaab93a6",
+        "GUID:854cf9f0c9798824e94ba2e712971f53",
+        "GUID:0eed957a026b42e4c9a6a91bc28d4a41",
+        "GUID:ff4dbbccec811c94e8f774574ed130aa",
+        "GUID:ea1a7eb5e123f4f48b7717f360689be0",
+        "GUID:ed9ac4f9a88b1fe4196a34836bdd0fc9",
+        "GUID:68740c49ada94b64b897f21d3887b217"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

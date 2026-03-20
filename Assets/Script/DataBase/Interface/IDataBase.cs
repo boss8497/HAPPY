@@ -8,11 +8,10 @@ namespace Script.DataBase.Interface {
     /// 테스트 시 json으로 저장하고 나중에는 MessagePack으로 변경할 예정
     /// </summary>
     public interface IDataBase {
-        bool IsInitialized { get; }
-
-        UniTask InitializeAsync();
+        bool Initialized { get; }
 
         UniTask<T> LoadAsync<T>(string path, DataType type                = DataType.Json);
         UniTask    SaveAsync<T>(string path, T        data, DataType type = DataType.Json);
+        bool       Exists(string       path);
     }
 }

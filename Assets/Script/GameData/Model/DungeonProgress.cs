@@ -6,5 +6,6 @@ namespace Script.GameData.Model {
     public class DungeonProgress {
         [Key(0)] public int  dungeonUid;
         [Key(1)] public Guid stageGuid;
+        [Key(3)] public bool cleared;
     }
 }

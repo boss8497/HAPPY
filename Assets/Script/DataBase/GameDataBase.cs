@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Cysharp.Threading.Tasks;
 using MessagePack;
 using Newtonsoft.Json;
@@ -10,29 +11,25 @@ namespace Script.DataBase {
         private static readonly MessagePackSerializerOptions MessagePackOptions =
             MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray);
 
-
         private readonly IFileStorage _fileStorage;
-        private          bool         _isInitialized;
 
-        public bool IsInitialized => _isInitialized;
-
+        public bool Initialized { get; private set; }
 
         public GameDataBase(IFileStorage fileStorage) {
             _fileStorage = fileStorage ?? throw new ArgumentNullException(nameof(fileStorage));
+            Initialize();
         }
 
-        public UniTask InitializeAsync() {
-            _isInitialized = true;
-            return UniTask.CompletedTask;
+        private void Initialize() {
+            Initialized = true;
         }
 
         public async UniTask<T> LoadAsync<T>(string path, DataType type = DataType.Json) {
-            switch (type){
+            switch (type) {
                 case DataType.Json:
                     return await LoadJsonAsync<T>(path);
                 case DataType.MessagePack:
                     return await LoadMessagePackAsync<T>(path);
-                
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
@@ -44,10 +41,13 @@ namespace Script.DataBase {
                     return SaveJsonAsync(path, data);
                 case DataType.MessagePack:
                     return SaveMessagePackAsync(path, data);
-                
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
+        }
+
+        public bool Exists(string path) {
+            return _fileStorage.Exists(path);
         }
 
         private async UniTask<T> LoadJsonAsync<T>(string path) {
@@ -82,7 +82,7 @@ namespace Script.DataBase {
         }
 
         private void EnsureInitialized() {
-            if (!_isInitialized)
+            if (!Initialized)
                 throw new InvalidOperationException("GameDataBase is not initialized.");
         }
     }

@@ -49,6 +49,8 @@ namespace Script.DataBase {
 
             await stream.WriteAsync(bytes, 0, bytes.Length).AsUniTask();
             await stream.FlushAsync().AsUniTask();
+            
+            Debug.Log($"JSON 파일 저장 완료. Path: {fullPath}, Size: {bytes.Length} bytes");
         }
 
         public async UniTask SaveMessagePackAsync<T>(string path, T value, MessagePackSerializerOptions options = null) {
