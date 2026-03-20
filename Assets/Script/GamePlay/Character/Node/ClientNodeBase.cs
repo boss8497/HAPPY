@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Script.GameInfo.Info.Character;
+using Script.GameInfo.Character;
+using Script.GameInfo.Enum;
 
 namespace Script.GamePlay.Character {
     [Serializable]
@@ -14,7 +14,7 @@ namespace Script.GamePlay.Character {
         protected CharacterBehaviour _characterBehaviour;
         protected NodeBase           _nodeBase;
 
-        protected Dictionary<TransitionTiming, ClientTransitionBase[]> _transitionBases;
+        protected Dictionary<EventTiming, ClientTransitionBase[]> _transitionBases;
 
         protected long              nodeGeneration;
         protected CancellationToken playCts;
@@ -55,7 +55,7 @@ namespace Script.GamePlay.Character {
         public async UniTask Start(CancellationToken cts = default) {
             var currentGeneration = ++nodeGeneration;
 
-            var beginTransition = CheckTransition(TransitionTiming.Being);
+            var beginTransition = CheckTransition(EventTiming.Start);
             if (beginTransition != null) {
                 _characterBehaviour.OnTransition(this, beginTransition).Forget();
                 return;
@@ -69,7 +69,7 @@ namespace Script.GamePlay.Character {
 
             await Update(playCts);
             if (!cts.IsCancellationRequested && currentGeneration == nodeGeneration) {
-                var endTransition = CheckTransition(TransitionTiming.End);
+                var endTransition = CheckTransition(EventTiming.End);
                 if (endTransition != null) {
                     _characterBehaviour.OnTransition(this, endTransition).Forget();
                 }
@@ -80,7 +80,7 @@ namespace Script.GamePlay.Character {
 
         private async UniTask<ClientTransitionBase> UpdateTransition(long generation, CancellationToken cts) {
             while (!cts.IsCancellationRequested && generation == nodeGeneration) {
-                var transition = CheckTransition(TransitionTiming.Update);
+                var transition = CheckTransition(EventTiming.Update);
                 if (transition != null && generation == nodeGeneration) {
                     _characterBehaviour.OnTransition(this, transition).Forget();
                     return transition;
@@ -92,7 +92,7 @@ namespace Script.GamePlay.Character {
             return null;
         }
 
-        private ClientTransitionBase CheckTransition(TransitionTiming timing) {
+        private ClientTransitionBase CheckTransition(EventTiming timing) {
             if (_transitionBases.TryGetValue(timing, out var clientTransitions) == false) {
                 return null;
             }

@@ -1,6 +1,6 @@
 ﻿using Script.GameInfo.Attribute;
 using Script.GameInfo.Base;
-using Script.GameInfo.Info.Character;
+using Script.GameInfo.Character;
 using Script.GameInfo.Table;
 
 //GameInfo(기획 데이터)를 가져오는 cs

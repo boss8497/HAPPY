@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Script.GameInfo.Info {
+namespace Script.GameInfo {
     [Serializable]
     public struct SerializeGuid : ISerializationCallbackReceiver, IEquatable<SerializeGuid> {
         [SerializeField] private uint v0;

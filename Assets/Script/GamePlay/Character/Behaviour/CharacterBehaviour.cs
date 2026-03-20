@@ -5,8 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Script.GamePlay.Character.Interface;
-using Script.GameInfo.Info.Character;
-using Script.GameInfo.Info.Character.Node;
+using Script.GameInfo.Character;
 using Script.Utility.Runtime;
 using UnityEngine;
 

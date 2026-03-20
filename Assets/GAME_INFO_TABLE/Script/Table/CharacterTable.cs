@@ -2,7 +2,7 @@
 using System.Linq;
 using Script.GameInfo.Base;
 using UnityEngine;
-using CharacterInfo = Script.GameInfo.Info.Character.CharacterInfo;
+using CharacterInfo = Script.GameInfo.Character.CharacterInfo;
 
 namespace Script.GameInfo.Table {
     

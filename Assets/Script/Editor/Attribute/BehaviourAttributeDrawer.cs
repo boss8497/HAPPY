@@ -2,7 +2,7 @@
 using System.Linq;
 using Script.GameInfo.Attribute;
 using Script.GameInfo.Base;
-using Script.GameInfo.Info.Character;
+using Script.GameInfo.Character;
 using Script.GameInfo.Table;
 using Sirenix.OdinInspector.Editor;
 using UnityEditor;

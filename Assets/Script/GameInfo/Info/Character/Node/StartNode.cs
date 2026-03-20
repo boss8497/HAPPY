@@ -1,4 +1,4 @@
-﻿namespace Script.GameInfo.Info.Character.Node {
+﻿namespace Script.GameInfo.Character {
     [System.Serializable]
     public class StartNode : NodeBase {
         

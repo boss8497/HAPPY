@@ -13,7 +13,7 @@ namespace Script.GameInfo.Base {
         public string ID  { get; set; }
 
         [field: SerializeField]
-        [LocalizePath("@\"Character/Name/\" + UID", false)]
+        [LocalizePath("@\"Info/Name/\" + UID", false)]
         public string Name { get; set; }
 
         [field: SerializeField]

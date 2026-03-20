@@ -1,5 +1,5 @@
-﻿using Script.GameInfo.Info;
-using Script.GameInfo.Info.Character;
+﻿using Script.GameInfo;
+using Script.GameInfo.Character;
 
 namespace Script.GamePlay.Character {
     [System.Serializable]

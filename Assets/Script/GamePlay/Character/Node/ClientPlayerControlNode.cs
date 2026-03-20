@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Script.GameInfo.Info.Character;
+using Script.GameInfo.Character;
 using Script.GamePlay.Input;
 
 namespace Script.GamePlay.Character {

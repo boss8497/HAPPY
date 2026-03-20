@@ -4,6 +4,7 @@ using Expression;
 using Script.GameInfo.Info.Stat;
 using Script.GameInfo.Table;
 using Script.GamePlay.Stat;
+using Script.GameInfo.Character;
 using Script.Utility.Runtime;
 using Sirenix.OdinInspector;
 using Spine.Unity;

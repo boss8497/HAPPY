@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
+using Script.GameInfo;
 using Script.GameInfo.Attribute;
-using Script.GameInfo.Info;
-using Script.GameInfo.Info.Character;
+using Script.GameInfo.Character;
 using Script.Utility.Runtime;
 using Sirenix.OdinInspector.Editor;
 using UnityEditor;

@@ -1,4 +1,4 @@
-﻿using Script.GameInfo.Info.Character;
+﻿using Script.GameInfo.Character;
 
 namespace Script.GamePlay.Character {
     public class ClientDieTransition : ClientTransitionBase {

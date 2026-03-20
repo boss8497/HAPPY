@@ -1,10 +1,9 @@
 using System;
 using Script.GameInfo.Base;
 using Script.GameInfo.Attribute;
-using Script.GameInfo.Info.Stat;
 using UnityEngine;
 
-namespace Script.GameInfo.Info.Character {
+namespace Script.GameInfo.Character {
     [System.Serializable]
     public class CharacterInfo : InfoBase {
         [SerializeReference]

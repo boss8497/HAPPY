@@ -1,8 +1,7 @@
 ﻿using Script.GameInfo.Base;
-using Script.GameInfo.Info.Character.Node;
 using UnityEngine;
 
-namespace Script.GameInfo.Info.Character {
+namespace Script.GameInfo.Character {
     [System.Serializable]
     public class BehaviourInfo : InfoBase {
         [SerializeReference]
