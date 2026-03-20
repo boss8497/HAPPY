@@ -18,7 +18,7 @@ MonoBehaviour:
     version: 2
     RefIds:
     - rid: 2451557219312599040
-      type: {class: BehaviourInfo, ns: Script.GameInfo.Info.Character, asm: Script.GameInfo}
+      type: {class: BehaviourInfo, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
         <UID>k__BackingField: 1
         <ID>k__BackingField: CharacterBase
@@ -30,7 +30,7 @@ MonoBehaviour:
         - rid: 2451557272760352768
         - rid: 2451557272760352773
     - rid: 2451557219312599041
-      type: {class: WaitNode, ns: Script.GameInfo.Info.Character.Node, asm: Script.GameInfo}
+      type: {class: WaitNode, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
         guid:
           v0: 2871299344
@@ -42,7 +42,7 @@ MonoBehaviour:
         - rid: 2451557272760352769
         - rid: 2451557297210785884
     - rid: 2451557219312599044
-      type: {class: StartNode, ns: Script.GameInfo.Info.Character.Node, asm: Script.GameInfo}
+      type: {class: StartNode, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
         guid:
           v0: 2353827298
@@ -53,7 +53,7 @@ MonoBehaviour:
         transitions:
         - rid: 2451557219312599045
     - rid: 2451557219312599045
-      type: {class: EndTransition, ns: Script.GameInfo.Info.Character, asm: Script.GameInfo}
+      type: {class: EndTransition, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
         guid:
           v0: 1489838440
@@ -70,7 +70,7 @@ MonoBehaviour:
           v2: 3263266976
           v3: 3800206938
     - rid: 2451557272760352768
-      type: {class: DieNode, ns: Script.GameInfo.Info.Character.Node, asm: Script.GameInfo}
+      type: {class: DieNode, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
         guid:
           v0: 3619234967
@@ -80,7 +80,7 @@ MonoBehaviour:
         id: DIE
         transitions: []
     - rid: 2451557272760352769
-      type: {class: DieTransition, ns: Script.GameInfo.Info.Character, asm: Script.GameInfo}
+      type: {class: DieTransition, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
         guid:
           v0: 1445238616
@@ -97,7 +97,7 @@ MonoBehaviour:
           v2: 94862013
           v3: 4094551553
     - rid: 2451557272760352770
-      type: {class: SystemControlNode, ns: Script.GameInfo.Info.Character.Node, asm: Script.GameInfo}
+      type: {class: SystemControlNode, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
         guid:
           v0: 4221805148
@@ -109,7 +109,7 @@ MonoBehaviour:
         - rid: 2451557272760352771
         - rid: 2451557272760352772
     - rid: 2451557272760352771
-      type: {class: DieTransition, ns: Script.GameInfo.Info.Character, asm: Script.GameInfo}
+      type: {class: DieTransition, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
         guid:
           v0: 1528841251
@@ -126,7 +126,7 @@ MonoBehaviour:
           v2: 94862013
           v3: 4094551553
     - rid: 2451557272760352772
-      type: {class: EndTransition, ns: Script.GameInfo.Info.Character, asm: Script.GameInfo}
+      type: {class: EndTransition, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
         guid:
           v0: 1837764790
@@ -143,7 +143,7 @@ MonoBehaviour:
           v2: 3263266976
           v3: 3800206938
     - rid: 2451557272760352773
-      type: {class: PlayerControlNode, ns: Script.GameInfo.Info.Character.Node, asm: Script.GameInfo}
+      type: {class: PlayerControlNode, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
         guid:
           v0: 4015812391
@@ -155,7 +155,7 @@ MonoBehaviour:
         - rid: 2451557272760352775
         - rid: 2451557272760352774
     - rid: 2451557272760352774
-      type: {class: PlayerControl, ns: Script.GameInfo.Info.Character, asm: Script.GameInfo}
+      type: {class: PlayerControl, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
         guid:
           v0: 1766669654
@@ -172,7 +172,7 @@ MonoBehaviour:
           v2: 3263266976
           v3: 3800206938
     - rid: 2451557272760352775
-      type: {class: SystemControl, ns: Script.GameInfo.Info.Character, asm: Script.GameInfo}
+      type: {class: SystemControl, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
         guid:
           v0: 1633790046
@@ -189,7 +189,7 @@ MonoBehaviour:
           v2: 2581611181
           v3: 3162336557
     - rid: 2451557297210785884
-      type: {class: PlayerControl, ns: Script.GameInfo.Info.Character, asm: Script.GameInfo}
+      type: {class: PlayerControl, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
         guid:
           v0: 502735000
