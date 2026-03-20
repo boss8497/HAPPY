@@ -1,5 +1,5 @@
 ﻿using Script.GameInfo.Attribute;
-using Script.GameInfo.Info.Dungeon;
+using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
 using Sirenix.OdinInspector.Editor;
 

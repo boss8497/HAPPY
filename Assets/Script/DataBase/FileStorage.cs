@@ -35,7 +35,7 @@ namespace Script.DataBase {
 
             var bytes = Encoding.UTF8.GetBytes(content);
 
-            using var stream = new FileStream(
+            await using var stream = new FileStream(
                 fullPath,
                 FileMode.Create,
                 FileAccess.Write,

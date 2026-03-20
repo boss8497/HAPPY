@@ -1,8 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
 
-/// <summary>
-/// 파일 저장소 인터페이스
-/// </summary>
 namespace Script.DataBase.Interface {
     public interface IFileStorage {
         public bool            Exists(string            path);

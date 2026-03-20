@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Script.GameInfo.Base;
 using UnityEngine;
-using Script.GameInfo.Info.Dungeon;
+using Script.GameInfo.Dungeon;
 
 namespace Script.GameInfo.Table {
     [System.Serializable]

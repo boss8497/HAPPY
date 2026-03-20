@@ -2,7 +2,7 @@
 using Script.GameInfo.Base;
 using System;
 
-namespace Script.GameInfo.Info.Dungeon {
+namespace Script.GameInfo.Dungeon {
     [AutoEditorTable(true)]
     [Serializable]
     public class DungeonInfo : InfoBase {

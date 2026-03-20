@@ -1,6 +1,6 @@
 ﻿namespace Script.GameInfo.Enum {
     public enum EventTiming {
-        Start,
+        Begin,
         Update,
         End,
     }

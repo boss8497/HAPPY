@@ -55,7 +55,7 @@ namespace Script.GamePlay.Character {
         public async UniTask Start(CancellationToken cts = default) {
             var currentGeneration = ++nodeGeneration;
 
-            var beginTransition = CheckTransition(EventTiming.Start);
+            var beginTransition = CheckTransition(EventTiming.Begin);
             if (beginTransition != null) {
                 _characterBehaviour.OnTransition(this, beginTransition).Forget();
                 return;

@@ -1,8 +1,9 @@
 ﻿using Script.GameInfo.Enum;
 
-namespace Script.GameInfo.Info.Dungeon {
+namespace Script.GameInfo.Dungeon {
     [System.Serializable]
     public abstract class ActionBase {
-        public EventTiming timing;
+        public SerializeGuid guid = SerializeGuid.NewGuid();
+        public EventTiming   timing;
     }
 }

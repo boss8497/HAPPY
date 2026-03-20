@@ -12,7 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e3b7c48b633d5844b3b128150dea481, type: 3}
   m_Name: DungeonTable
   m_EditorClassIdentifier: Script.Table::Script.GameInfo.Table.DungeonTable
-  DungeonInfos: []
+  DungeonInfos:
+  - rid: 2451557340872441957
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 2451557340872441957
+      type: {class: DungeonInfo, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
+      data:
+        <UID>k__BackingField: 1
+        <ID>k__BackingField: Moutain
+        <Name>k__BackingField: "\uC0B0"
+        stages:
+        - guid:
+            v0: 1111454987
+            v1: 1207717656
+            v2: 1353146534
+            v3: 1949130723
+          id: Moutain_1
+          name: "\uC0B0_1"
+          description: 
+          phaseInfos: 01000000
+          scenePath: 

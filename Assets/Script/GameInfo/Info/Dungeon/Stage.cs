@@ -2,11 +2,11 @@
 using Script.GameInfo.Attribute;
 using UnityEngine.SceneManagement;
 
-namespace Script.GameInfo.Info.Dungeon {
+namespace Script.GameInfo.Dungeon {
     [AutoEditorTable(true)]
     [Serializable]
     public class Stage {
-        public SerializeGuid guid;
+        public SerializeGuid guid = SerializeGuid.NewGuid();
         public string        GuidString => guid.ToString();
 
         public string id;

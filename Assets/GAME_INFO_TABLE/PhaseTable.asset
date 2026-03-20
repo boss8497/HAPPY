@@ -12,7 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bad28298d7a8a5f4d9237f2cd1ad3853, type: 3}
   m_Name: PhaseTable
   m_EditorClassIdentifier: Script.Table::Script.GameInfo.Table.PhaseTable
-  PhaseInfos: []
+  PhaseInfos:
+  - rid: 2451557340872441959
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 2451557340872441959
+      type: {class: PhaseInfo, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
+      data:
+        <UID>k__BackingField: 1
+        <ID>k__BackingField: Moutain_Phase_1
+        <Name>k__BackingField: 
+        triggers: []
+        actions:
+        - rid: 2451557340872441960
+    - rid: 2451557340872441960
+      type: {class: PlayerSpawnAction, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 3102834426
+          v1: 1209446986
+          v2: 2889210293
+          v3: 2871723398
+        timing: 0
+        position: {x: 0, y: 0, z: 0}
