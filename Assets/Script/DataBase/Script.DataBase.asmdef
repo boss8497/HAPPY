@@ -2,7 +2,8 @@
     "name": "Script.DataBase",
     "rootNamespace": "",
     "references": [
-        "UniTask"
+        "UniTask",
+        "MessagePack.Unity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

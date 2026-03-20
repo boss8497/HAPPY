@@ -1,46 +1,89 @@
 ﻿using System;
-using System.IO;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using MessagePack;
 using Newtonsoft.Json;
+using Script.DataBase.Enum;
 using Script.DataBase.Interface;
-using UnityEngine;
 
 namespace Script.DataBase {
     public class GameDataBase : IDataBase {
+        private static readonly MessagePackSerializerOptions MessagePackOptions =
+            MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray);
+
+
         private readonly IFileStorage _fileStorage;
+        private          bool         _isInitialized;
 
-        private bool _isInitialized = false;
-        public  bool IsInitialized => _isInitialized;
+        public bool IsInitialized => _isInitialized;
 
 
-        public GameDataBase(
-            IFileStorage fileStorage
-        ) {
+        public GameDataBase(IFileStorage fileStorage) {
             _fileStorage = fileStorage ?? throw new ArgumentNullException(nameof(fileStorage));
         }
 
-        public async UniTask InitializeAsync() {
+        public UniTask InitializeAsync() {
             _isInitialized = true;
+            return UniTask.CompletedTask;
         }
-        
-        public async UniTask<T> LoadAsync<T>(string path) {
-            if (!_isInitialized)
-                throw new InvalidOperationException("GameDataBase is not initialized.");
+
+        public async UniTask<T> LoadAsync<T>(string path, DataType type = DataType.Json) {
+            switch (type){
+                case DataType.Json:
+                    return await LoadJsonAsync<T>(path);
+                case DataType.MessagePack:
+                    return await LoadMessagePackAsync<T>(path);
+                
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+        }
+
+        public UniTask SaveAsync<T>(string path, T data, DataType type = DataType.Json) {
+            switch (type) {
+                case DataType.Json:
+                    return SaveJsonAsync(path, data);
+                case DataType.MessagePack:
+                    return SaveMessagePackAsync(path, data);
+                
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+        }
+
+        private async UniTask<T> LoadJsonAsync<T>(string path) {
+            EnsureInitialized();
 
             if (!_fileStorage.Exists(path))
                 return default;
 
-            var json = await _fileStorage.ReadAllTextAsync(path);
+            var json = await _fileStorage.LoadJsonAsync(path);
             return JsonConvert.DeserializeObject<T>(json);
         }
 
-        public async UniTask SaveAsync(string path, string json) {
+        private async UniTask SaveJsonAsync<T>(string path, T data, Formatting formatting = Formatting.None) {
+            EnsureInitialized();
+
+            var json = JsonConvert.SerializeObject(data, formatting);
+            await _fileStorage.SaveJsonAsync(path, json);
+        }
+
+        private async UniTask<T> LoadMessagePackAsync<T>(string path) {
+            EnsureInitialized();
+
+            if (!_fileStorage.Exists(path))
+                return default;
+
+            return await _fileStorage.LoadMessagePackAsync<T>(path, MessagePackOptions);
+        }
+
+        private async UniTask SaveMessagePackAsync<T>(string path, T data) {
+            EnsureInitialized();
+            await _fileStorage.SaveMessagePackAsync(path, data, MessagePackOptions);
+        }
+
+        private void EnsureInitialized() {
             if (!_isInitialized)
                 throw new InvalidOperationException("GameDataBase is not initialized.");
-            await _fileStorage.WriteAllTextAsync(path, json);
         }
     }
 }

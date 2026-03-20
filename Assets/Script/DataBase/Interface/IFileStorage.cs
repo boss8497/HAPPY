@@ -1,12 +1,19 @@
 ﻿using Cysharp.Threading.Tasks;
+using MessagePack;
 
 namespace Script.DataBase.Interface {
     public interface IFileStorage {
-        public bool            Exists(string            path);
-        public UniTask<string> ReadAllTextAsync(string  path);
-        public UniTask         WriteAllTextAsync(string path, string content);
-        public UniTask         DeleteAsync(string       path);
-        public UniTask         CopyAsync(string         sourceRelativePath, string destinationRelativePath);
-        public string          GetFullPath(string       path);
+        bool Exists(string path);
+
+        UniTask<string> LoadJsonAsync(string  path);
+        UniTask         SaveJsonAsync(string path, string content);
+
+        UniTask    SaveMessagePackAsync<T>(string path, T                            value,        MessagePackSerializerOptions options = null);
+        UniTask<T> LoadMessagePackAsync<T>(string path, MessagePackSerializerOptions options = null);
+
+        UniTask DeleteAsync(string path);
+        UniTask CopyAsync(string   sourceRelativePath, string destinationRelativePath);
+
+        string GetFullPath(string path);
     }
 }
