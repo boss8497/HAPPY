@@ -73,7 +73,9 @@ namespace Script.GameInfo {
         public override int GetHashCode() {
             return Value.GetHashCode();
         }
-
+        
+        public static bool operator ==(SerializeGuid left, SerializeGuid right) => left.Equals(right);
+        public static bool operator !=(SerializeGuid left, SerializeGuid right) => !left.Equals(right);
         public static implicit operator Guid(SerializeGuid value) => value.Value;
         public static implicit operator SerializeGuid(Guid value) => new SerializeGuid(value);
 

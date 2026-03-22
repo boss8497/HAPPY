@@ -7,5 +7,6 @@ namespace Script.GameData.Model {
         [Key(0)] public int  dungeonUid;
         [Key(1)] public Guid stageGuid;
         [Key(3)] public bool cleared;
+        [Key(4)] public int  category;
     }
 }

@@ -14,5 +14,9 @@ namespace Script.GameInfo.Character {
 
         [Status]
         public int[] statusUids = Array.Empty<int>();
+
+
+        [AssetPath(typeof(GameObject))]
+        public string prefab;
     }
 }
