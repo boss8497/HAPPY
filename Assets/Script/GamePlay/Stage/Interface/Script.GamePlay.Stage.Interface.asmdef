@@ -1,8 +1,7 @@
 {
-    "name": "Script.GamePlay.Stage",
+    "name": "Script.GamePlay.Stage.Interface",
     "rootNamespace": "",
     "references": [
-        "GUID:02b7b002dbdf04d44b3d44d1a56fd862",
         "GUID:8381d25136c024c47bc141aa127149b3",
         "GUID:854cf9f0c9798824e94ba2e712971f53",
         "GUID:ff4dbbccec811c94e8f774574ed130aa",
@@ -14,10 +13,7 @@
         "GUID:77221876cc6b8244180b96e320b1bcd4",
         "GUID:f51ebe6a0ceec4240a699833d6309b23",
         "GUID:5c01796d064528144a599661eaab93a6",
-        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
-        "GUID:d992b6bf414ef464ab1d52155ae28886",
-        "GUID:9e24947de15b9834991c9d8411ea37cf",
-        "GUID:84651a3751eca9349aac36a66bba901b"
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

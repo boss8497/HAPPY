@@ -3,6 +3,7 @@ using R3;
 using Script.GameData.Model;
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
+using Script.GamePlay.Character;
 
 namespace Script.GamePlay.Stage {
     public partial class StageManager {
@@ -27,7 +28,8 @@ namespace Script.GamePlay.Stage {
                                .ToReadOnlyReactiveProperty()
                                .AddTo(ref _reactiveDisposableBag);
 
-            SystemControl = State.Select(i => (i & StageState.SystemControl) != 0)
+            //Initialized가 true가 아니면 움직이면 안됨 Initialized == false 는 SystemControl과 동일
+            SystemControl = State.CombineLatest(Initialized, (i,init ) => !init || (i & StageState.SystemControl) != 0)
                                  .DistinctUntilChanged()
                                  .ToReadOnlyReactiveProperty()
                                  .AddTo(ref _reactiveDisposableBag);
@@ -49,6 +51,19 @@ namespace Script.GamePlay.Stage {
                                   .DistinctUntilChanged()
                                   .ToReadOnlyReactiveProperty()
                                   .AddTo(ref _reactiveDisposableBag);
+
+            
+            SystemControl.Subscribe((systemControl) => {
+                             foreach (var character in _characters) {
+                                 if (systemControl) {
+                                     character.AddState(CharacterState.SystemControl);
+                                 }
+                                 else {
+                                     character.RemoveState(CharacterState.SystemControl);
+                                 }
+                             }
+                         })
+                         .AddTo(ref _reactiveDisposableBag);
 
 
             DungeonProgress.OnNext(dungeonProgress);

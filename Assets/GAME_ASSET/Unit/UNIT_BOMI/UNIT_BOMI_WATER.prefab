@@ -99,7 +99,7 @@ MonoBehaviour:
   skeletonDataAsset: {fileID: 11400000, guid: d6a649bc1f971dc4da8caa7df6c7806b, type: 2}
   initialSkinName: 
   fixPrefabOverrideViaMeshFilter: 2
-  initialFlipX: 0
+  initialFlipX: 1
   initialFlipY: 0
   updateWhenInvisible: 3
   separatorSlotNames: []
@@ -149,9 +149,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Script.GamePlay::Script.GamePlay.SpineEditor
   skeletonAnimation: {fileID: 2732726741803365579}
   targetPosition: {x: -5, y: 0, z: 0}
-  animationName: 
-  loopOption: 0
-  maxRange: 1.6666667
+  animationName: RUN
+  loopOption: 1
+  maxRange: 0.8000001
   minRange: 0
   currentAnimationTime: 0
 --- !u!1 &7394314509842207229
@@ -200,4 +200,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Script.GamePlay.Character::Script.GamePlay.Character.Character
   characterInfoUid: 1
-  _skeletonAnimation: {fileID: 2732726741803365579}
+  _characterBehaviour:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

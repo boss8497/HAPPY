@@ -3,10 +3,15 @@
 namespace Script.GamePlay.Character {
     [System.Serializable]
     public class ClientSystemControl : ClientTransitionBase {
-        public ClientSystemControl(ClientNodeBase node, TransitionBase transitionBase) : base(node, transitionBase) { }
+        private Character _character;
+
+        public ClientSystemControl(ClientNodeBase node, TransitionBase transitionBase) : base(node, transitionBase) {
+            _character = node.CharacterBehaviour.Character;
+        }
 
         public override bool OnTrigger() {
-            return false;
+            if (_character == null) return false;
+            return _character.SystemControl && Value;
         }
     }
 }

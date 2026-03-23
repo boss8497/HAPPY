@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Script.GamePlay.Camera;
+using Script.GamePlay.Stage;
 using UnityEngine;
 using VContainer;
 
@@ -16,12 +17,15 @@ namespace Script.GamePlay.Background {
         private float _startTargetX;
         private bool  _initialized;
 
+        private IStageManager   _stageManager;
         private ICameraControls _cameraControls;
 
         [Inject]
         public void Constructor(
+            IStageManager   stageManager,
             ICameraControls cameraControls
         ) {
+            _stageManager   = stageManager;
             _cameraControls = cameraControls;
         }
 
@@ -31,7 +35,7 @@ namespace Script.GamePlay.Background {
         }
 
         private void LateUpdate() {
-            if (_initialized == false)
+            if (_initialized == false || (_stageManager?.SystemControl?.CurrentValue ?? true))
                 return;
 
             var targetDeltaX = _target.position.x - _startTargetX;

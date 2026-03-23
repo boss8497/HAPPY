@@ -19,6 +19,7 @@ MonoBehaviour:
     animationEvents: []
     behaviourId: 1
     statusUids: 0100000002000000
+    prefab: 01a9eed2b095cdd4b99094ba5363d4da
   references:
     version: 2
     RefIds: []

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Script.GameData.Model;
 using Script.GameInfo.Enum;
 using UnityEngine;
@@ -7,37 +9,78 @@ using UnityEngine;
 
 namespace Script.GamePlay.Stage {
     public partial class StageManager : IStageManager, IDisposable {
-        private int _systemControlStack = 0;
-        
-        
-        
+        private List<Character.Character> _characters;
+        private List<GameObject>          _characterObjects;
+        private int                       _systemControlStack = 0;
+
+
+        // 테스트 코드
+        // StageLoader 부재
+        // StageLoader에서 순차 적으로 Call이 되어야 하며
+        // DungeonInfo 에는 이미 Scene안에 BackGround 및 StageLifeTimeScope가 있음
+        // 그래서 StageManager 에서는 Trigger 및 Action 실행 해서 
+        public async UniTaskVoid Test() {
+            var dungeon = _group.GroupData.dungeonProgresses.FirstOrDefault();
+            Initialize(dungeon);
+            await Begin();
+            await Start();
+        }
+
         public void Initialize(DungeonProgress dungeonProgress) {
+            InitializePool();
             InitializeReactiveProperty(dungeonProgress, StageState.SystemControl);
-            
-            
-            
+
             AddState(StageState.Initialized);
         }
 
-        public void Begin() {
-            foreach (var beginAction in PhaseInfo.CurrentValue.actions
-                                                 .Where(r => r.timing == EventTiming.Begin)) {
-                
+        public async UniTask Begin() {
+            await ExecuteAction(EventTiming.Begin);
+        }
+
+        public async UniTask Start() {
+            RemoveState(StageState.SystemControl);
+            foreach (var character in _characters) {
+                await character.StartAsync();
             }
         }
 
-        public void Start() {
-            throw new NotImplementedException();
-        }
-
-        public void End() {
-            throw new System.NotImplementedException();
+        public async UniTask End() {
+            await ExecuteAction(EventTiming.End);
         }
 
         public void Release() {
             ReleaseReactiveProperty();
+            ReleasePool();
         }
 
+        public void AddCharacter(GameObject obj) {
+            _characterObjects.Add(obj);
+            var characterScript = obj.GetComponent<Character.Character>();
+            if (characterScript == null) {
+                characterScript = obj.GetComponentInChildren<Character.Character>();
+            }
+
+            _characters.Add(characterScript);
+        }
+
+        public void Dispose() {
+            Release();
+
+            DungeonProgress?.Dispose();
+            State?.Dispose();
+            PhaseIndex?.Dispose();
+        }
+
+
+        private async UniTask ExecuteAction(EventTiming timing) {
+            foreach (var beginAction in PhaseInfo.CurrentValue.actions
+                                                 .Where(r => r.timing == timing)
+                                                 .Select(ActionFactory.Create)
+                    ) {
+                await beginAction.Initialize(this);
+                await beginAction.Execute();
+            }
+        }
 
         public void SetSystemControl(bool isOn) {
             if (isOn) {
@@ -59,15 +102,6 @@ namespace Script.GamePlay.Stage {
             else {
                 AddState(StageState.SystemControl);
             }
-
-            //System Control이 필요한 로직들 설정
-        }
-
-        
-        public void Dispose() {
-            ReleaseReactiveProperty();
-            DungeonProgress?.Dispose();
-            State?.Dispose();
         }
     }
 }

@@ -8,17 +8,22 @@ namespace Script.GamePlay.Character {
     public partial class Character {
         private IPlayerControls _playerControls;
         private IGroupService   _groupService;
+        private IObjectResolver _resolver;
 
         [Inject]
         public void Constructor(
             IPlayerControls playerControls,
-            IGroupService   groupService
+            IGroupService   groupService,
+            IObjectResolver resolver
         ) {
             _playerControls = playerControls;
             _groupService   = groupService;
+            _resolver       = resolver;
         }
 
 
         public IPlayerControls PlayerControls => _playerControls;
+        public IGroupService   GroupService   => _groupService;
+        public IObjectResolver Resolver       => _resolver;
     }
 }
