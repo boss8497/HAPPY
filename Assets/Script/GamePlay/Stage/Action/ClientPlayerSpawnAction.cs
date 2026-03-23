@@ -26,6 +26,7 @@ namespace Script.GamePlay.Stage {
 
         public override UniTask Initialize(IStageManager stageManager) {
             //일단 테스트 용으로 처음 캐릭터
+            _stageManager = stageManager;
             _characterInfo = GameInfoManager.Instance.Get<CharacterInfo>(1);
             return UniTask.CompletedTask;
         }
@@ -40,6 +41,7 @@ namespace Script.GamePlay.Stage {
                 throw new Exception($"Load failed: {nameof(GameConfiguration)}");
 
             var prefab = _stageManager.Resolver.Instantiate(prefabHandle.Result);
+            prefab.transform.position = _playerSpawnAction.position;
             _stageManager.AddCharacter(prefab);
             
             Addressables.Release(prefabHandle);

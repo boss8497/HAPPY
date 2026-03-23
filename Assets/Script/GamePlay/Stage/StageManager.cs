@@ -20,6 +20,7 @@ namespace Script.GamePlay.Stage {
         // DungeonInfo 에는 이미 Scene안에 BackGround 및 StageLifeTimeScope가 있음
         // 그래서 StageManager 에서는 Trigger 및 Action 실행 해서 
         public async UniTaskVoid Test() {
+            await UniTask.WaitUntil(() => _group.Initialized);
             var dungeon = _group.GroupData.dungeonProgresses.FirstOrDefault();
             Initialize(dungeon);
             await Begin();
@@ -59,7 +60,8 @@ namespace Script.GamePlay.Stage {
             if (characterScript == null) {
                 characterScript = obj.GetComponentInChildren<Character.Character>();
             }
-
+            _targetGroup.AddMember(obj.transform, 1, 1);
+            characterScript.Initialize();
             _characters.Add(characterScript);
         }
 
