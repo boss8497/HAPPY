@@ -8,6 +8,7 @@ namespace Script.GamePlay.Stage {
     public partial class StageManager {
         public ReactiveProperty<DungeonProgress> DungeonProgress { get; private set; } = new();
         public ReactiveProperty<StageState>      State           { get; private set; } = new(StageState.None);
+        public ReactiveProperty<int>             PhaseIndex      { get; private set; } = new(0);
 
         public ReadOnlyReactiveProperty<bool> Initialized   { get; private set; }
         public ReadOnlyReactiveProperty<bool> SystemControl { get; private set; }
@@ -15,6 +16,7 @@ namespace Script.GamePlay.Stage {
 
         public ReadOnlyReactiveProperty<DungeonInfo>            DungeonInfo { get; private set; }
         public ReadOnlyReactiveProperty<GameInfo.Dungeon.Stage> Stage       { get; private set; }
+        public ReadOnlyReactiveProperty<PhaseInfo>              PhaseInfo   { get; private set; }
 
 
         private DisposableBag _reactiveDisposableBag;
@@ -43,8 +45,14 @@ namespace Script.GamePlay.Stage {
                                    .ToReadOnlyReactiveProperty()
                                    .AddTo(ref _reactiveDisposableBag);
 
+            PhaseInfo = PhaseIndex.CombineLatest(Stage, (index, stage) => index >= stage.phaseInfos.Length ? null : GameInfoManager.Instance.Get<PhaseInfo>(stage.phaseInfos[index]))
+                                  .DistinctUntilChanged()
+                                  .ToReadOnlyReactiveProperty()
+                                  .AddTo(ref _reactiveDisposableBag);
+
 
             DungeonProgress.OnNext(dungeonProgress);
+            PhaseIndex.OnNext(0);
             State.OnNext(state);
         }
 

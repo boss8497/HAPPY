@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using Script.GameData.Model;
+using Script.GameInfo.Enum;
 using UnityEngine;
 
 
@@ -18,7 +20,10 @@ namespace Script.GamePlay.Stage {
         }
 
         public void Begin() {
-            throw new System.NotImplementedException();
+            foreach (var beginAction in PhaseInfo.CurrentValue.actions
+                                                 .Where(r => r.timing == EventTiming.Begin)) {
+                
+            }
         }
 
         public void Start() {
