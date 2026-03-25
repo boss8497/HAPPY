@@ -1,4 +1,5 @@
-﻿using Script.GUI.Enum;
+﻿using Cysharp.Threading.Tasks;
+using Script.GUI.Enum;
 
 namespace Script.GUI.Interface {
     public interface IScreenManager {
@@ -6,5 +7,7 @@ namespace Script.GUI.Interface {
         bool               Initialized { get; }
 
         void Initialize();
+
+        UniTask OpenScreen(string id);
     }
 }

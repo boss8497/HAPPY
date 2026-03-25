@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Script.GameInfo.Attribute;
 using Script.GUI.Enum;
 using Script.GUI.Interface;
@@ -18,8 +19,10 @@ namespace Script.GUI {
 
         [SerializeField]
         private RectTransform baseRoot;
+
         [SerializeField]
         private RectTransform popupRoot;
+
         [SerializeField]
         private RectTransform overlayRoot;
 
@@ -39,10 +42,13 @@ namespace Script.GUI {
                 throw new Exception($"Load failed: {_screenDataPath}");
 
             _screens = handle.Result.screens.ToDictionary(r => r.id, r => r);
-            
 
 
             Addressables.Release(handle);
+        }
+
+        public async UniTask OpenScreen(string id) {
+            Debug.Log($"Opening screen call : {id}");
         }
     }
 }

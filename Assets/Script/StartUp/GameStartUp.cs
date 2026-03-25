@@ -1,19 +1,20 @@
 using System;
 using Cysharp.Threading.Tasks;
 using Script.GUI.Interface;
+using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
-using VContainer.Unity;
+using VContainer;
 
 
 namespace Script.StartUp {
-    public class GameStartUp : IStartable {
-        private readonly string startUpSceneName = "StartUp";
-        private readonly string titleScenePath   = "Title";
+    public class GameStartUp : MonoBehaviour {
+        private readonly string titleScenePath = "Title";
 
-        private readonly IScreenManager _screenManager;
+        private IScreenManager _screenManager;
 
-        public GameStartUp(
+        [Inject]
+        public void Constructor(
             IScreenManager screenManager
         ) {
             _screenManager = screenManager;
@@ -34,7 +35,6 @@ namespace Script.StartUp {
 
             var handle = Addressables.LoadSceneAsync(titleScenePath, LoadSceneMode.Additive);
             await handle.Task;
-
             var scene = handle.Result;
             SceneManager.SetActiveScene(scene.Scene);
             

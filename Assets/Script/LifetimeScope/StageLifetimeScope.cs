@@ -18,6 +18,8 @@ namespace Script.LifetimeScope {
         private CinemachineTargetGroup  targetGroup;
 
         protected override void Configure(IContainerBuilder builder) {
+            name = nameof(StageLifetimeScope);
+            
             builder.Register<IFileStorage, FileStorage>(Lifetime.Singleton);
             builder.Register<IDataBase, GameDataBase>(Lifetime.Singleton);
             builder.Register<IGroupService, GroupService>(Lifetime.Singleton);
