@@ -1,0 +1,48 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Script.GameInfo.Attribute;
+using Script.GUI.Enum;
+using Script.GUI.Interface;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using VContainer.Unity;
+
+//Lifetime
+//StartUpScene에서 생성되기 때문에 한번만 생성 되고 계속 유지.
+
+namespace Script.GUI {
+    public partial class ScreenManager : MonoBehaviour, IScreenManager {
+        private readonly string _screenDataPath = nameof(ScreenData);
+
+        [SerializeField]
+        private RectTransform baseRoot;
+        [SerializeField]
+        private RectTransform popupRoot;
+        [SerializeField]
+        private RectTransform overlayRoot;
+
+        private Dictionary<string, ScreenAsset> _screens;
+
+        public void Initialize() {
+            DontDestroyOnLoad(this);
+            LoadScreenData();
+            AddState(ScreenManagerState.Initialized);
+        }
+
+        private void LoadScreenData() {
+            var handle = Addressables.LoadAssetAsync<ScreenData>(_screenDataPath);
+            handle.WaitForCompletion();
+
+            if (handle.Status != AsyncOperationStatus.Succeeded)
+                throw new Exception($"Load failed: {_screenDataPath}");
+
+            _screens = handle.Result.screens.ToDictionary(r => r.id, r => r);
+            
+
+
+            Addressables.Release(handle);
+        }
+    }
+}

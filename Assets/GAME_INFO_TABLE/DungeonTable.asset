@@ -23,6 +23,8 @@ MonoBehaviour:
         <UID>k__BackingField: 1
         <ID>k__BackingField: Moutain
         <Name>k__BackingField: "\uC0B0"
+        category: 0
+        nextDungeonUid: 0
         stages:
         - guid:
             v0: 1111454987
