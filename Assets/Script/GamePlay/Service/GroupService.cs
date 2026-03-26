@@ -9,9 +9,10 @@ using Script.GameInfo.Table;
 using Script.GamePlay.Service.Interface;
 using Script.Utility.Runtime;
 using UnityEngine;
+using VContainer.Unity;
 
 namespace Script.GamePlay.Service {
-    public class GroupService : IGroupService {
+    public class GroupService : IGroupService, IInitializable {
         private readonly IDataBase _dataBase;
         private readonly string    _path = $"{nameof(GroupData)}.json";
 
@@ -23,10 +24,13 @@ namespace Script.GamePlay.Service {
 
         public GroupService(IDataBase dataBase) {
             _dataBase = dataBase;
-            Initialize().Forget();
         }
 
-        private async UniTaskVoid Initialize() {
+        public void Initialize() {
+            InitializeAsync().Forget();
+        }
+
+        private async UniTaskVoid InitializeAsync() {
             await UniTask.WaitUntil(() => _dataBase.Initialized);
 
             //첫 접속
@@ -120,7 +124,5 @@ namespace Script.GamePlay.Service {
             await Save();
             
         }
-        
-        
     }
 }

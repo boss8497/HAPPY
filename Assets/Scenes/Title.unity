@@ -230,31 +230,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1026811357}
-  - component: {fileID: 1026811356}
+  - component: {fileID: 1026811358}
   m_Layer: 0
-  m_Name: TitleLifetimeScope
+  m_Name: LifetimeScope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1026811356
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1026811355}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8416c501da541afbb44c5a5b8c48da4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Script.LifetimeScrope::Script.LifetimeScope.TitleLifetimeScope
-  parentReference:
-    TypeName: Script.LifetimeScope.AppLifetimeScope
-  autoRun: 1
-  autoInjectGameObjects:
-  - {fileID: 141202645}
 --- !u!4 &1026811357
 Transform:
   m_ObjectHideFlags: 0
@@ -270,6 +253,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1026811358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1026811355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b2c62ac3bcd44fb9e09835581422057, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: VContainer::VContainer.Unity.LifetimeScope
+  parentReference:
+    TypeName: Script.LifetimeScope.ClientLifetimeScope
+  autoRun: 1
+  autoInjectGameObjects:
+  - {fileID: 141202645}
 --- !u!1001 &2596591526390230673
 PrefabInstance:
   m_ObjectHideFlags: 0

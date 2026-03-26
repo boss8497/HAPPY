@@ -1,6 +1,8 @@
 using System;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Script.GUI.Interface;
+using Script.LifetimeScope.Locator;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.SceneManagement;
@@ -11,12 +13,15 @@ namespace Script.LifetimeScope.Scene {
     public class StartUpScene : MonoBehaviour {
         private readonly string titleScenePath = "Title";
 
+        private IScopeLocator  _scopeLocator;
         private IScreenManager _screenManager;
 
         [Inject]
         public void Constructor(
+            IScopeLocator  scopeLocator,
             IScreenManager screenManager
         ) {
+            _scopeLocator  = scopeLocator;
             _screenManager = screenManager;
         }
 
@@ -27,7 +32,15 @@ namespace Script.LifetimeScope.Scene {
 
         private async UniTaskVoid Initialize() {
             await InitializeScreenManager();
+            await CreateClientScope();
             await TitleSceneLoad();
+        }
+
+        private async UniTask CreateClientScope() {
+            await UniTask.WaitUntil(() => (_scopeLocator?.Initialized ?? false));
+
+            var clientScope = _scopeLocator.GetRootScope().CreateChild<ClientLifetimeScope>();
+            _scopeLocator.SetScope(ScopeType.Client, clientScope);
         }
 
         private async UniTask TitleSceneLoad() {

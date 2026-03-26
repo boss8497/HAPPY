@@ -1,9 +1,5 @@
-using Script.DataBase;
-using Script.DataBase.Interface;
 using Script.GamePlay.Camera;
 using Script.GamePlay.Input;
-using Script.GamePlay.Service;
-using Script.GamePlay.Service.Interface;
 using Script.GamePlay.Stage;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -20,20 +16,13 @@ namespace Script.LifetimeScope {
         protected override void Configure(IContainerBuilder builder) {
             name = nameof(StageLifetimeScope);
             
-            builder.Register<IFileStorage, FileStorage>(Lifetime.Singleton);
-            builder.Register<IDataBase, GameDataBase>(Lifetime.Singleton);
-            builder.Register<IGroupService, GroupService>(Lifetime.Singleton);
             builder.Register<IStageManager, StageManager>(Lifetime.Singleton)
                    .WithParameter(targetGroup);
-
-            
-
             builder.Register<ICameraControls, CameraControls>(Lifetime.Singleton)
                    .WithParameter<Camera>(mainCamera == null ? Camera.main : mainCamera);
 
-            
-            //일단 테스트를 위해 Stage Scope에 등록
-            //상위 Scope가 생기면 옮겨야 됨
+            // 유저 조작 감지 Class이기 때문에 StageScope에 있는게 맞다.
+            // 안의 PlayerControlMap을 Parent Scope를 로드하는게 좋아 보임
             builder.Register<IPlayerControls, PlayerControls>(Lifetime.Singleton);
         }
     }
