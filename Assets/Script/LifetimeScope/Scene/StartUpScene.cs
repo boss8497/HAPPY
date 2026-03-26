@@ -7,8 +7,8 @@ using UnityEngine.SceneManagement;
 using VContainer;
 
 
-namespace Script.StartUp {
-    public class GameStartUp : MonoBehaviour {
+namespace Script.LifetimeScope.Scene {
+    public class StartUpScene : MonoBehaviour {
         private readonly string titleScenePath = "Title";
 
         private IScreenManager _screenManager;
