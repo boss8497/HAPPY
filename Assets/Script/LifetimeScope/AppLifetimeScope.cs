@@ -1,6 +1,7 @@
 ﻿using Script.DataBase;
 using Script.DataBase.Interface;
 using Script.GameInfo.Attribute;
+using Script.GameSetting.Interface;
 using Script.GUI.Screen;
 using Script.GUI.Screen.Interface;
 using Script.LifetimeScope.Interface;
@@ -25,6 +26,10 @@ namespace Script.LifetimeScope {
         public string screenManagerPath;
         
         protected override void Configure(IContainerBuilder builder) {
+            builder.RegisterEntryPoint<GameSetting.GameSetting>(Lifetime.Singleton)
+                   .As<IGameSetting>();
+            
+            
             builder.RegisterEntryPoint<ScopeLocator>(Lifetime.Singleton)
                    .As<IScopeLocator>();
             builder.Register<IScopeFactory, ScopeFactory>(Lifetime.Singleton);

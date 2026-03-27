@@ -1,0 +1,16 @@
+{
+    "name": "Script.GameSetting.Interface",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f9462c0b29b7b674d837d5e39dff7b51"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
