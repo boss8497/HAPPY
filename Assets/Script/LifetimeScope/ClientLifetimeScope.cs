@@ -1,5 +1,4 @@
-﻿using Script.GamePlay.Service;
-using Script.GamePlay.Service.Interface;
+﻿using Script.Client;
 using VContainer;
 using VContainer.Unity;
 
@@ -9,11 +8,10 @@ using VContainer.Unity;
 namespace Script.LifetimeScope {
     public class ClientLifetimeScope : VContainer.Unity.LifetimeScope {
         protected override void Configure(IContainerBuilder builder) {
-            EnqueueParent(VContainerSettings.Instance.RootLifetimeScope);
             name = nameof(ClientLifetimeScope);
 
-            builder.RegisterEntryPoint<GroupService>(Lifetime.Singleton)
-                   .As<IGroupService>();
+            builder.RegisterEntryPoint<GameClient>(Lifetime.Singleton)
+                   .As<IClient>();
         }
     }
 }

@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Attribute;
 using Script.GUI.Interface;
+using Script.LifetimeScope.Interface;
 using Script.LifetimeScope.Locator;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -11,15 +12,15 @@ public class TestAction : MonoBehaviour {
     [AssetPath(typeof(Scene))]
     public string stageScenePath;
     
-    private IScopeLocator  _scopeLocator;
+    private IScopeFactory  _scopeFactory;
     private IScreenManager _screenManager;
 
     [Inject]
     public void Constructor(
-        IScopeLocator  scopeLocator,
+        IScopeFactory  scopeFactory,
         IScreenManager screenManager
     ) {
-        _scopeLocator  = scopeLocator;
+        _scopeFactory  = scopeFactory;
         _screenManager = screenManager;
     }
 
@@ -29,14 +30,14 @@ public class TestAction : MonoBehaviour {
         TitleSceneLoad().Forget();
     }
     
-    // private async UniTask CreateGroupScope() {
-    //     await UniTask.WaitUntil(() => (_scopeLocator?.Initialized ?? false));
-    //
-    //     var clientScope = _scopeLocator.GetRootScope().CreateChild<GroupLifetimeScope>();
-    //     _scopeLocator.SetScope(ScopeType.Client, clientScope);
-    // }
+    private async UniTask CreateGroupScope() {
+        await UniTask.WaitUntil(() => (_scopeFactory != null));
+        _scopeFactory.CreateScope(ScopeType.Group);
+    }
 
     private async UniTask TitleSceneLoad() {
+        await CreateGroupScope();
+        
         var previousScene = SceneManager.GetActiveScene();
 
         var handle = Addressables.LoadSceneAsync(stageScenePath, LoadSceneMode.Additive);

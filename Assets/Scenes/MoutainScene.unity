@@ -371,7 +371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Script.LifetimeScrope::Script.LifetimeScope.StageLifetimeScope
   parentReference:
-    TypeName: Script.LifetimeScope.ClientLifetimeScope
+    TypeName: Script.LifetimeScope.GroupLifetimeScope
   autoRun: 1
   autoInjectGameObjects:
   - {fileID: 909744315}

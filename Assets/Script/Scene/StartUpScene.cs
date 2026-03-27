@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Script.GUI.Interface;
+using Script.LifetimeScope.Interface;
 using Script.LifetimeScope.Locator;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -9,19 +10,19 @@ using UnityEngine.SceneManagement;
 using VContainer;
 
 
-namespace Script.LifetimeScope.Scene {
+namespace Script.Scene {
     public class StartUpScene : MonoBehaviour {
         private readonly string titleScenePath = "Title";
 
-        private IScopeLocator  _scopeLocator;
+        private IScopeFactory  _scopeFactory;
         private IScreenManager _screenManager;
 
         [Inject]
         public void Constructor(
-            IScopeLocator  scopeLocator,
+            IScopeFactory  scopeFactory,
             IScreenManager screenManager
         ) {
-            _scopeLocator  = scopeLocator;
+            _scopeFactory  = scopeFactory;
             _screenManager = screenManager;
         }
 
@@ -37,10 +38,8 @@ namespace Script.LifetimeScope.Scene {
         }
 
         private async UniTask CreateClientScope() {
-            await UniTask.WaitUntil(() => (_scopeLocator?.Initialized ?? false));
-
-            var clientScope = _scopeLocator.GetRootScope().CreateChild<ClientLifetimeScope>();
-            _scopeLocator.SetScope(ScopeType.Client, clientScope);
+            await UniTask.WaitUntil(() => (_scopeFactory != null));
+            _scopeFactory.CreateScope(ScopeType.Client);
         }
 
         private async UniTask TitleSceneLoad() {

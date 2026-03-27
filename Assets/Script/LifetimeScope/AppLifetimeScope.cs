@@ -3,6 +3,7 @@ using Script.DataBase.Interface;
 using Script.GameInfo.Attribute;
 using Script.GUI;
 using Script.GUI.Interface;
+using Script.LifetimeScope.Interface;
 using Script.LifetimeScope.Locator;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -26,6 +27,8 @@ namespace Script.LifetimeScope {
         protected override void Configure(IContainerBuilder builder) {
             builder.RegisterEntryPoint<ScopeLocator>(Lifetime.Singleton)
                    .As<IScopeLocator>();
+            builder.Register<IScopeFactory, ScopeFactory>(Lifetime.Singleton);
+            
             builder.Register<IFileStorage, FileStorage>(Lifetime.Singleton);
             builder.Register<IDataBase, GameDataBase>(Lifetime.Singleton);
             

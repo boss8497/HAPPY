@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using JetBrains.Annotations;
+using VContainer;
 using VContainer.Unity;
 
 namespace Script.LifetimeScope.Locator {
@@ -16,15 +19,20 @@ namespace Script.LifetimeScope.Locator {
         }
 
         public void Initialize() {
+            //미리 생성
+            for (int i = 0; i < (int)ScopeType.Max; ++i) {
+                var scopeType =  (ScopeType)i;
+                _scopes.Add(scopeType, null);
+            }
+            
             SetScope(ScopeType.App, _root);
             Initialized = true;
         }
 
         public void SetScope(ScopeType type, VContainer.Unity.LifetimeScope scope) {
-            if (_scopes.TryGetValue(type, out VContainer.Unity.LifetimeScope existingScope)) {
-                existingScope?.Dispose();
-                _scopes[type] = null;
-            }
+            if (scope == null) return;
+            
+            ReleaseChildScope(type);
             _scopes[type] = scope;
         }
 
@@ -34,6 +42,28 @@ namespace Script.LifetimeScope.Locator {
         
         public VContainer.Unity.LifetimeScope GetRootScope() {
             return _scopes.GetValueOrDefault(ScopeType.App);
+        }
+
+        public VContainer.Unity.LifetimeScope GetParentScope(ScopeType type) {
+            if (type == ScopeType.App || type == ScopeType.Max) {
+                throw new ArgumentException($"Invalid scope type: {type}");
+            }
+            var index = (int)type - 1;
+            return _scopes[(ScopeType)index];
+        }
+
+        // 하위 Scope 자동 Dispose
+        // Parent Scope가 Dispose되면 VContainer에서 자동 Dispose 해주지만 
+        // 명시적으로 표시
+        private void ReleaseChildScope(ScopeType type) {
+            var index = (int)type;
+            for (int i = (int)ScopeType.Max - 1; i >= index; --i) {
+                var scopeType =  (ScopeType)i;
+
+                //이미 생성 되어 있다는 가정
+                _scopes[scopeType]?.Dispose();
+                _scopes[scopeType] = null;
+            }
         }
     }
 }
