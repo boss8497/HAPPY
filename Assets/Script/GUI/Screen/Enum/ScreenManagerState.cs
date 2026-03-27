@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Script.GUI.Enum {
+namespace Script.GUI.Screen.Enum {
     [Flags]
     public enum ScreenManagerState {
         None        = 0,

@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using Script.GUI.Interface;
+using Script.GUI.Screen.Interface;
 using Script.LifetimeScope.Interface;
 using Script.LifetimeScope.Locator;
 using UnityEngine;

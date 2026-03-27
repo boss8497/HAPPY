@@ -1,0 +1,17 @@
+{
+    "name": "Script.GUI.Screen.Interface",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3f17335669a6eaf4cb0570bde9593e7f",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

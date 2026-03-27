@@ -1,6 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Attribute;
-using Script.GUI.Interface;
+using Script.GUI.Screen.Interface;
 using Script.LifetimeScope.Interface;
 using Script.LifetimeScope.Locator;
 using UnityEngine;

@@ -1,6 +1,6 @@
-﻿using Script.GUI.Enum;
+﻿using Script.GUI.Screen.Enum;
 
-namespace Script.GUI {
+namespace Script.GUI.Screen {
     public partial class ScreenManager {
         private ScreenManagerState _state = ScreenManagerState.None;
         public  ScreenManagerState State  => _state;

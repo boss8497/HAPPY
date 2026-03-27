@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Script.GameInfo.Attribute;
-using Script.GUI.Enum;
-using Script.GUI.Interface;
+using Script.GUI.Screen.Enum;
+using Script.GUI.Screen.Interface;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using VContainer.Unity;
 
 //Lifetime
 //StartUpScene에서 생성되기 때문에 한번만 생성 되고 계속 유지.
 
-namespace Script.GUI {
+namespace Script.GUI.Screen {
     public partial class ScreenManager : MonoBehaviour, IScreenManager {
         private readonly string _screenDataPath = nameof(ScreenData);
 

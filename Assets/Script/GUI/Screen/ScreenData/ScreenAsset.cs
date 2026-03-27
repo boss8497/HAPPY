@@ -1,8 +1,8 @@
-﻿using Script.GUI.Enum;
+﻿using Script.GUI.Screen.Enum;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Script.GUI {
+namespace Script.GUI.Screen {
     [System.Serializable]
     public struct ScreenAsset {
         public string                      id;

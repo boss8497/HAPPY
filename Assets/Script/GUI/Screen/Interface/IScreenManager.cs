@@ -1,7 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
-using Script.GUI.Enum;
+using Script.GUI.Screen.Enum;
 
-namespace Script.GUI.Interface {
+namespace Script.GUI.Screen.Interface {
     public interface IScreenManager {
         ScreenManagerState State       { get; }
         bool               Initialized { get; }

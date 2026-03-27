@@ -1,6 +1,6 @@
 ﻿using VContainer;
 
-namespace Script.GUI {
+namespace Script.GUI.Screen {
     public partial class ScreenManager {
         private IObjectResolver _resolver;
 

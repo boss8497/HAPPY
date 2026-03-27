@@ -1,4 +1,4 @@
-﻿namespace Script.GUI.Enum {
+﻿namespace Script.GUI.Screen.Enum {
     public enum ScreenType {
         Base,
         Popup,
