@@ -21,15 +21,15 @@ namespace Script.GamePlay.Stage {
         // 그래서 StageManager 에서는 Trigger 및 Action 실행 해서 
         public async UniTaskVoid Test() {
             await UniTask.WaitUntil(() => _group.Initialized);
-            var dungeon = _group.GroupData.dungeonProgresses.FirstOrDefault();
+            var dungeon = _group.GroupModel.dungeonProgresses.FirstOrDefault();
             Initialize(dungeon);
             await Begin();
             await Start();
         }
 
-        public void Initialize(DungeonProgress dungeonProgress) {
+        public void Initialize(DungeonProgressModel dungeonProgressModel) {
             InitializePool();
-            InitializeReactiveProperty(dungeonProgress, StageState.SystemControl);
+            InitializeReactiveProperty(dungeonProgressModel, StageState.SystemControl);
 
             AddState(StageState.Initialized);
         }

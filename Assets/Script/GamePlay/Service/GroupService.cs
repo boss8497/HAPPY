@@ -14,10 +14,10 @@ using VContainer.Unity;
 namespace Script.GamePlay.Service {
     public class GroupService : IGroupService, IInitializable {
         private readonly IDataBase _dataBase;
-        private readonly string    _path = $"{nameof(GroupData)}.json";
+        private readonly string    _path = $"{nameof(GroupModel)}.json";
 
-        private GroupData _groupData;
-        public  GroupData GroupData => _groupData;
+        private GroupModel _groupModel;
+        public  GroupModel GroupModel => _groupModel;
 
         public bool Initialized { get; private set; }
 
@@ -38,7 +38,7 @@ namespace Script.GamePlay.Service {
                 await Load();
             }
             else {
-                _groupData = CreateGroupData();
+                _groupModel = CreateGroupData();
                 await Save();
             }
             
@@ -46,14 +46,14 @@ namespace Script.GamePlay.Service {
         }
 
         private async UniTask Save() {
-            await _dataBase.SaveAsync(_path, _groupData, DataType.Json);
+            await _dataBase.SaveAsync(_path, _groupModel, DataType.Json);
         }
         private async UniTask Load() {
-            _groupData = await _dataBase.LoadAsync<GroupData>(_path, DataType.Json);    
+            _groupModel = await _dataBase.LoadAsync<GroupModel>(_path, DataType.Json);    
         }
 
-        private GroupData CreateGroupData() {
-            var groupData = new GroupData();
+        private GroupModel CreateGroupData() {
+            var groupData = new GroupModel();
 
             var dungeonInfo = GameInfoManager.Instance.Get<DungeonInfo>(GameInfoManager.Instance.Config.startDungeon);
             if (dungeonInfo == null) {
@@ -61,7 +61,7 @@ namespace Script.GamePlay.Service {
             }
             
             groupData.dungeonProgresses = new []{
-                new DungeonProgress {
+                new DungeonProgressModel {
                     dungeonUid = dungeonInfo.UID,
                     stageGuid = dungeonInfo.stages?.FirstOrDefault()?.guid.Value ?? Guid.Empty,
                     cleared   = false,
@@ -72,9 +72,9 @@ namespace Script.GamePlay.Service {
             return groupData;
         }
 
-        public DungeonProgress GetDungeon(Category dungeonCategory) {
+        public DungeonProgressModel GetDungeon(Category dungeonCategory) {
             var category = (int)dungeonCategory;
-            return _groupData.dungeonProgresses?.FirstOrDefault(r => r.category == category);
+            return _groupModel.dungeonProgresses?.FirstOrDefault(r => r.category == category);
         }
 
         public async UniTask ClearedDungeon(Category dungeonCategory) {
@@ -86,7 +86,7 @@ namespace Script.GamePlay.Service {
             
             var category    = (int)dungeonCategory;
             var dungeonInfo =  GameInfoManager.Instance.Get<DungeonInfo>(dungeonProgress.dungeonUid);
-            var index       = _groupData.dungeonProgresses.FindIndex(r => r.category == category);
+            var index       = _groupModel.dungeonProgresses.FindIndex(r => r.category == category);
             if (index == -1) {
                 Debug.LogError($"Not found Dungeon {dungeonProgress.dungeonUid}");
                 return;
@@ -95,17 +95,17 @@ namespace Script.GamePlay.Service {
             
             if (dungeonInfo.IsLastStage(dungeonProgress.stageGuid)) {
                 if (dungeonInfo.IsLastDungeon()) {
-                    _groupData.dungeonProgresses[index].cleared = true;
+                    _groupModel.dungeonProgresses[index].cleared = true;
                 }
                 else {
                     var nextDungeonInfo = GameInfoManager.Instance.Get<DungeonInfo>(dungeonInfo.nextDungeonUid);
                     if (nextDungeonInfo == null) {
-                        _groupData.dungeonProgresses[index].cleared = true;
+                        _groupModel.dungeonProgresses[index].cleared = true;
                     }
                     else {
-                        _groupData.dungeonProgresses[index].dungeonUid = nextDungeonInfo.UID;
-                        _groupData.dungeonProgresses[index].stageGuid  = nextDungeonInfo.stages?.FirstOrDefault()?.guid.Value ?? Guid.Empty;
-                        _groupData.dungeonProgresses[index].cleared    = false;
+                        _groupModel.dungeonProgresses[index].dungeonUid = nextDungeonInfo.UID;
+                        _groupModel.dungeonProgresses[index].stageGuid  = nextDungeonInfo.stages?.FirstOrDefault()?.guid.Value ?? Guid.Empty;
+                        _groupModel.dungeonProgresses[index].cleared    = false;
                         
                     }
                 }
@@ -117,8 +117,8 @@ namespace Script.GamePlay.Service {
                     return;
                 }
                 
-                _groupData.dungeonProgresses[index].stageGuid = nextDungeon.guid.Value;
-                _groupData.dungeonProgresses[index].cleared   = false;
+                _groupModel.dungeonProgresses[index].stageGuid = nextDungeon.guid.Value;
+                _groupModel.dungeonProgresses[index].cleared   = false;
             }
             
             await Save();

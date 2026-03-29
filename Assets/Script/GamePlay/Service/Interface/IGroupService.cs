@@ -2,6 +2,6 @@
 
 namespace Script.GamePlay.Service.Interface {
     public interface IGroupService : IService{
-        GroupData GroupData { get; }
+        GroupModel GroupModel { get; }
     }
 }

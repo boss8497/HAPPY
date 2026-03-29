@@ -7,9 +7,9 @@ using Script.GamePlay.Character;
 
 namespace Script.GamePlay.Stage {
     public partial class StageManager {
-        public ReactiveProperty<DungeonProgress> DungeonProgress { get; private set; } = new();
-        public ReactiveProperty<StageState>      State           { get; private set; } = new(StageState.None);
-        public ReactiveProperty<int>             PhaseIndex      { get; private set; } = new(0);
+        public ReactiveProperty<DungeonProgressModel> DungeonProgress { get; private set; } = new();
+        public ReactiveProperty<StageState>           State           { get; private set; } = new(StageState.None);
+        public ReactiveProperty<int>                  PhaseIndex      { get; private set; } = new(0);
 
         public ReadOnlyReactiveProperty<bool> Initialized   { get; private set; }
         public ReadOnlyReactiveProperty<bool> SystemControl { get; private set; }
@@ -22,14 +22,14 @@ namespace Script.GamePlay.Stage {
 
         private DisposableBag _reactiveDisposableBag;
 
-        private void InitializeReactiveProperty(DungeonProgress dungeonProgress, StageState state) {
+        private void InitializeReactiveProperty(DungeonProgressModel dungeonProgressModel, StageState state) {
             Initialized = State.Select(i => (i & StageState.Initialized) != 0)
                                .DistinctUntilChanged()
                                .ToReadOnlyReactiveProperty()
                                .AddTo(ref _reactiveDisposableBag);
 
             //Initialized가 true가 아니면 움직이면 안됨 Initialized == false 는 SystemControl과 동일
-            SystemControl = State.CombineLatest(Initialized, (i,init ) => !init || (i & StageState.SystemControl) != 0)
+            SystemControl = State.CombineLatest(Initialized, (i, init) => !init || (i & StageState.SystemControl) != 0)
                                  .DistinctUntilChanged()
                                  .ToReadOnlyReactiveProperty()
                                  .AddTo(ref _reactiveDisposableBag);
@@ -52,7 +52,7 @@ namespace Script.GamePlay.Stage {
                                   .ToReadOnlyReactiveProperty()
                                   .AddTo(ref _reactiveDisposableBag);
 
-            
+
             SystemControl.Subscribe((systemControl) => {
                              foreach (var character in _characters) {
                                  if (systemControl) {
@@ -66,7 +66,7 @@ namespace Script.GamePlay.Stage {
                          .AddTo(ref _reactiveDisposableBag);
 
 
-            DungeonProgress.OnNext(dungeonProgress);
+            DungeonProgress.OnNext(dungeonProgressModel);
             PhaseIndex.OnNext(0);
             State.OnNext(state);
         }
