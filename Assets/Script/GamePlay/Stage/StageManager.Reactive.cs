@@ -7,7 +7,7 @@ using Script.GamePlay.Character;
 
 namespace Script.GamePlay.Stage {
     public partial class StageManager {
-        public ReactiveProperty<DungeonProgressModel> DungeonProgress { get; private set; } = new();
+        public ReactiveProperty<DungeonProgress> DungeonProgress { get; private set; } = new();
         public ReactiveProperty<StageState>           State           { get; private set; } = new(StageState.None);
         public ReactiveProperty<int>                  PhaseIndex      { get; private set; } = new(0);
 
@@ -22,7 +22,7 @@ namespace Script.GamePlay.Stage {
 
         private DisposableBag _reactiveDisposableBag;
 
-        private void InitializeReactiveProperty(DungeonProgressModel dungeonProgressModel, StageState state) {
+        private void InitializeReactiveProperty(DungeonProgress dungeonProgress, StageState state) {
             Initialized = State.Select(i => (i & StageState.Initialized) != 0)
                                .DistinctUntilChanged()
                                .ToReadOnlyReactiveProperty()
@@ -66,7 +66,7 @@ namespace Script.GamePlay.Stage {
                          .AddTo(ref _reactiveDisposableBag);
 
 
-            DungeonProgress.OnNext(dungeonProgressModel);
+            DungeonProgress.OnNext(dungeonProgress);
             PhaseIndex.OnNext(0);
             State.OnNext(state);
         }

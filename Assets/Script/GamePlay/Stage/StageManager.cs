@@ -27,9 +27,9 @@ namespace Script.GamePlay.Stage {
             await Start();
         }
 
-        public void Initialize(DungeonProgressModel dungeonProgressModel) {
+        public void Initialize(DungeonProgress dungeonProgress) {
             InitializePool();
-            InitializeReactiveProperty(dungeonProgressModel, StageState.SystemControl);
+            InitializeReactiveProperty(dungeonProgress, StageState.SystemControl);
 
             AddState(StageState.Initialized);
         }

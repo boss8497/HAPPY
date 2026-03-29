@@ -48,6 +48,7 @@ namespace Script.GamePlay.Service {
         private async UniTask Save() {
             await _dataBase.SaveAsync(_path, _groupModel, DataType.Json);
         }
+        
         private async UniTask Load() {
             _groupModel = await _dataBase.LoadAsync<GroupModel>(_path, DataType.Json);    
         }
@@ -61,7 +62,7 @@ namespace Script.GamePlay.Service {
             }
             
             groupData.dungeonProgresses = new []{
-                new DungeonProgressModel {
+                new DungeonProgress {
                     dungeonUid = dungeonInfo.UID,
                     stageGuid = dungeonInfo.stages?.FirstOrDefault()?.guid.Value ?? Guid.Empty,
                     cleared   = false,
@@ -72,7 +73,7 @@ namespace Script.GamePlay.Service {
             return groupData;
         }
 
-        public DungeonProgressModel GetDungeon(Category dungeonCategory) {
+        public DungeonProgress GetDungeon(Category dungeonCategory) {
             var category = (int)dungeonCategory;
             return _groupModel.dungeonProgresses?.FirstOrDefault(r => r.category == category);
         }

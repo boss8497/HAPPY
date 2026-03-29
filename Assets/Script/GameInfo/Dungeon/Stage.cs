@@ -3,7 +3,6 @@ using Script.GameInfo.Attribute;
 using UnityEngine.SceneManagement;
 
 namespace Script.GameInfo.Dungeon {
-    [AutoEditorTable(true)]
     [Serializable]
     public class Stage : IEquatable<Stage> {
         public SerializeGuid guid = SerializeGuid.NewGuid();

@@ -20,7 +20,7 @@ namespace Script.GamePlay.Stage {
         ReadOnlyReactiveProperty<DungeonInfo>            DungeonInfo   { get; }
         ReadOnlyReactiveProperty<GameInfo.Dungeon.Stage> Stage         { get; }
 
-        void    Initialize(DungeonProgressModel dungeonProgressModel);
+        void    Initialize(DungeonProgress dungeonProgress);
         UniTask Begin();
         UniTask Start();
         UniTask End();

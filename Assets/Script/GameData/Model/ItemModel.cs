@@ -7,7 +7,7 @@ namespace Script.GameData.Model {
         [Key(0)] public long uid;
 
         //아이템 정보의 uid
-        [Key(1)] public long   infoUid;
+        [Key(1)] public int    infoUid;
         [Key(2)] public double count;
 
         [Key(3)] public int level;
