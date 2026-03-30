@@ -1,7 +1,8 @@
-﻿using Script.GameData.Model;
+﻿using Script.GameData.Data.Interface;
+using Script.GameData.Model;
 
 namespace Script.GamePlay.Service.Interface {
     public interface IGroupService : IService{
-        GroupModel GroupModel { get; }
+        IGroupData GroupData { get; }
     }
 }

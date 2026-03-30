@@ -8,16 +8,19 @@ namespace Script.GameData.Data {
         public ReactiveProperty<GroupModel> Model { get; private set; } = new();
 
         private DisposableBag _disposableBag;
+
         public GroupData(GroupModel model) {
             
-            
+            Update(model);
+        }
+
+        public void Update(GroupModel model) {
             Model.OnNext(model);
         }
-        
+
         public void Dispose() {
             _disposableBag.Dispose();
             Model?.Dispose();
         }
-
     }
 }

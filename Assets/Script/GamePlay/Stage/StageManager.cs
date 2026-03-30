@@ -21,7 +21,7 @@ namespace Script.GamePlay.Stage {
         // 그래서 StageManager 에서는 Trigger 및 Action 실행 해서 
         public async UniTaskVoid Test() {
             await UniTask.WaitUntil(() => _group.Initialized);
-            var dungeon = _group.GroupModel.dungeonProgresses.FirstOrDefault();
+            var dungeon = _group.GroupData.Model.CurrentValue.dungeonProgresses.FirstOrDefault();
             Initialize(dungeon);
             await Begin();
             await Start();

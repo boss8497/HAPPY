@@ -51,7 +51,12 @@ namespace Script.GameData.Data {
                               .AddTo(ref _disposableBag);
 
 
-            Model.OnNext(model);
+            Update(model);
+        }
+
+
+        public void Update(ItemModel itemModel) {
+            Model.OnNext(itemModel);
         }
 
         public void Dispose() {

@@ -3,6 +3,8 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Script.DataBase.Enum;
 using Script.DataBase.Interface;
+using Script.GameData.Data;
+using Script.GameData.Data.Interface;
 using Script.GameData.Model;
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
@@ -16,8 +18,8 @@ namespace Script.GamePlay.Service {
         private readonly IDataBase _dataBase;
         private readonly string    _path = $"{nameof(GroupModel)}.json";
 
-        private GroupModel _groupModel;
-        public  GroupModel GroupModel => _groupModel;
+        private GroupData _groupData;
+        public  IGroupData GroupData => _groupData;
 
         public bool Initialized { get; private set; }
 
@@ -35,10 +37,10 @@ namespace Script.GamePlay.Service {
 
             //첫 접속
             if (_dataBase.Exists(_path)) {
-                await Load();
+                _groupData = await Load();
             }
             else {
-                _groupModel = CreateGroupData();
+                _groupData = CreateGroupData();
                 await Save();
             }
             
@@ -46,22 +48,23 @@ namespace Script.GamePlay.Service {
         }
 
         private async UniTask Save() {
-            await _dataBase.SaveAsync(_path, _groupModel, DataType.Json);
+            await _dataBase.SaveAsync(_path, _groupData.Model.CurrentValue, DataType.Json);
         }
         
-        private async UniTask Load() {
-            _groupModel = await _dataBase.LoadAsync<GroupModel>(_path, DataType.Json);    
+        private async UniTask<GroupData> Load() {
+            var model = await _dataBase.LoadAsync<GroupModel>(_path, DataType.Json);
+            return new(model);
         }
 
-        private GroupModel CreateGroupData() {
-            var groupData = new GroupModel();
+        private GroupData CreateGroupData() {
+            var groupModel = new GroupModel();
 
             var dungeonInfo = GameInfoManager.Instance.Get<DungeonInfo>(GameInfoManager.Instance.Config.startDungeon);
             if (dungeonInfo == null) {
                 throw new Exception($"시작 던전 정보가 없습니다. DungeonId: {GameInfoManager.Instance?.Config?.startDungeon}");
             }
             
-            groupData.dungeonProgresses = new []{
+            groupModel.dungeonProgresses = new []{
                 new DungeonProgress {
                     dungeonUid = dungeonInfo.UID,
                     stageGuid = dungeonInfo.stages?.FirstOrDefault()?.guid.Value ?? Guid.Empty,
@@ -70,12 +73,12 @@ namespace Script.GamePlay.Service {
                 }
             };
             
-            return groupData;
+            return new(groupModel);
         }
 
         public DungeonProgress GetDungeon(Category dungeonCategory) {
             var category = (int)dungeonCategory;
-            return _groupModel.dungeonProgresses?.FirstOrDefault(r => r.category == category);
+            return _groupData.Model.CurrentValue.dungeonProgresses?.FirstOrDefault(r => r.category == category);
         }
 
         public async UniTask ClearedDungeon(Category dungeonCategory) {
@@ -87,7 +90,7 @@ namespace Script.GamePlay.Service {
             
             var category    = (int)dungeonCategory;
             var dungeonInfo =  GameInfoManager.Instance.Get<DungeonInfo>(dungeonProgress.dungeonUid);
-            var index       = _groupModel.dungeonProgresses.FindIndex(r => r.category == category);
+            var index       = _groupData.Model.CurrentValue.dungeonProgresses.FindIndex(r => r.category == category);
             if (index == -1) {
                 Debug.LogError($"Not found Dungeon {dungeonProgress.dungeonUid}");
                 return;
@@ -96,17 +99,17 @@ namespace Script.GamePlay.Service {
             
             if (dungeonInfo.IsLastStage(dungeonProgress.stageGuid)) {
                 if (dungeonInfo.IsLastDungeon()) {
-                    _groupModel.dungeonProgresses[index].cleared = true;
+                    _groupData.Model.CurrentValue.dungeonProgresses[index].cleared = true;
                 }
                 else {
                     var nextDungeonInfo = GameInfoManager.Instance.Get<DungeonInfo>(dungeonInfo.nextDungeonUid);
                     if (nextDungeonInfo == null) {
-                        _groupModel.dungeonProgresses[index].cleared = true;
+                        _groupData.Model.CurrentValue.dungeonProgresses[index].cleared = true;
                     }
                     else {
-                        _groupModel.dungeonProgresses[index].dungeonUid = nextDungeonInfo.UID;
-                        _groupModel.dungeonProgresses[index].stageGuid  = nextDungeonInfo.stages?.FirstOrDefault()?.guid.Value ?? Guid.Empty;
-                        _groupModel.dungeonProgresses[index].cleared    = false;
+                        _groupData.Model.CurrentValue.dungeonProgresses[index].dungeonUid = nextDungeonInfo.UID;
+                        _groupData.Model.CurrentValue.dungeonProgresses[index].stageGuid  = nextDungeonInfo.stages?.FirstOrDefault()?.guid.Value ?? Guid.Empty;
+                        _groupData.Model.CurrentValue.dungeonProgresses[index].cleared    = false;
                         
                     }
                 }
@@ -118,8 +121,8 @@ namespace Script.GamePlay.Service {
                     return;
                 }
                 
-                _groupModel.dungeonProgresses[index].stageGuid = nextDungeon.guid.Value;
-                _groupModel.dungeonProgresses[index].cleared   = false;
+                _groupData.Model.CurrentValue.dungeonProgresses[index].stageGuid = nextDungeon.guid.Value;
+                _groupData.Model.CurrentValue.dungeonProgresses[index].cleared   = false;
             }
             
             await Save();
