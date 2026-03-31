@@ -1,4 +1,6 @@
-﻿namespace Script.GamePlay.Character {
+﻿using Script.GameInfo.Character;
+
+namespace Script.GamePlay.Character {
     public partial class Character {
         private CharacterState _state = CharacterState.None;
         public CharacterState State  => _state;

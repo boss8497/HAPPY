@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Script.GameInfo.Character;
 using Script.GamePlay.Character.Interface;
 using UnityEngine;
 

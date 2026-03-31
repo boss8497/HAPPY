@@ -3,6 +3,7 @@ using R3;
 using Script.GameData.Model;
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
+using Script.GameInfo.Character;
 using Script.GamePlay.Character;
 
 namespace Script.GamePlay.Stage {

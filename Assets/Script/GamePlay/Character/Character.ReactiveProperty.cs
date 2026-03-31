@@ -1,4 +1,5 @@
 ﻿using R3;
+using Script.GameInfo.Character;
 
 //Reactive 필드 및 로직
 namespace Script.GamePlay.Character {

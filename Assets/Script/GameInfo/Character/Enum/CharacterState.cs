@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Script.GamePlay.Character {
+namespace Script.GameInfo.Character {
     [Flags]
     public enum CharacterState {
         None = 0,
@@ -12,5 +12,6 @@ namespace Script.GamePlay.Character {
         Jumping       = 1 << 3,
         Die           = 1 << 4,
         SystemControl = 1 << 5,
+        Sliding       = 1 << 6,
     }
 }

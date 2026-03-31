@@ -8,7 +8,7 @@ namespace Script.GameInfo.Character {
     public class CharacterInfo : InfoBase {
         [SerializeReference]
         public AnimationEvent[] animationEvents = Array.Empty<AnimationEvent>();
-        
+
         [Behaviour]
         public int behaviourId;
 
@@ -18,5 +18,9 @@ namespace Script.GameInfo.Character {
 
         [AssetPath(typeof(GameObject))]
         public string prefab;
+
+        [SerializeReference]
+        public Hitbox            hitbox;
+        public CharacterHitbox[] hitboxes = Array.Empty<CharacterHitbox>();
     }
 }

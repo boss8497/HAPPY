@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using Script.GameInfo.Info;
 using Script.GameInfo.Table;
 using Script.Utility.Runtime;
+using Script.GameInfo.Character;
 using UnityEngine;
 
 namespace Script.GamePlay.Character {
