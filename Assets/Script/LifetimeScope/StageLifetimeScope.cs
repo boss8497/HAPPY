@@ -1,6 +1,8 @@
 using Script.GamePlay.Camera;
 using Script.GamePlay.Input;
 using Script.GamePlay.Stage;
+using Script.GamePlay.Unit;
+using Script.GamePlay.Unit.Interface;
 using Unity.Cinemachine;
 using UnityEngine;
 using VContainer;
@@ -24,6 +26,7 @@ namespace Script.LifetimeScope {
             // 유저 조작 감지 Class이기 때문에 StageScope에 있는게 맞다.
             // 안의 PlayerControlMap을 Parent Scope를 로드하는게 좋아 보임
             builder.Register<IPlayerControls, PlayerControls>(Lifetime.Singleton);
+            builder.Register<IUnitManager, UnitManager>(Lifetime.Singleton);
         }
     }
 }

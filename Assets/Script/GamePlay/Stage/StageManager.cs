@@ -54,14 +54,14 @@ namespace Script.GamePlay.Stage {
             ReleasePool();
         }
 
-        public void AddCharacter(GameObject obj) {
+        public void AddCharacter(GameObject obj, bool isPlayer = false) {
             _characterObjects.Add(obj);
             var characterScript = obj.GetComponent<Character.Character>();
             if (characterScript == null) {
                 characterScript = obj.GetComponentInChildren<Character.Character>();
             }
             _targetGroup.AddMember(obj.transform, 1, 1);
-            characterScript.Initialize();
+            characterScript.Initialize(isPlayer ? 0 : 1);
             _characters.Add(characterScript);
         }
 

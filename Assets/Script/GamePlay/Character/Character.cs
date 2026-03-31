@@ -4,11 +4,17 @@ using Script.GamePlay.Character.Interface;
 using UnityEngine;
 
 namespace Script.GamePlay.Character {
-    public partial class Character : MonoBehaviour, ICharacter {
+    [System.Serializable]
+    public partial class Character : Unit.Unit, ICharacter {
         #region Interface
         //캐릭터 소환시 꼭 실행
-        public void Initialize() {
-            _state =  CharacterState.None;
+        public void Initialize(int team) {
+            _state = CharacterState.None;
+            
+            // UnRegister는 진짜로 Destroy가 됐을 때 호출해준다.
+            // 왠만하면 Pooling으로 사용하기 때문에 Release 호출했다가 
+            // 지워지우는 말자.
+            _unitManager.RegisterUnit(this, team);
 
             InitializeAction();
             InitializeGamePlay();
@@ -34,6 +40,7 @@ namespace Script.GamePlay.Character {
         }
 
         private void OnDestroy() {
+            _unitManager.UnRegisterUnit(this);
             Release();
         }
 

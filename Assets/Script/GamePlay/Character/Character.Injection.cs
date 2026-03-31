@@ -1,5 +1,6 @@
 ﻿using Script.GamePlay.Input;
 using Script.GamePlay.Service.Interface;
+using Script.GamePlay.Unit.Interface;
 using VContainer;
 
 
@@ -7,16 +8,19 @@ using VContainer;
 namespace Script.GamePlay.Character {
     public partial class Character {
         private IPlayerControls _playerControls;
+        private IUnitManager    _unitManager;
         private IGroupService   _groupService;
         private IObjectResolver _resolver;
 
         [Inject]
         public void Constructor(
             IPlayerControls playerControls,
+            IUnitManager    unitManager,
             IGroupService   groupService,
             IObjectResolver resolver
         ) {
             _playerControls = playerControls;
+            _unitManager    = unitManager;
             _groupService   = groupService;
             _resolver       = resolver;
         }

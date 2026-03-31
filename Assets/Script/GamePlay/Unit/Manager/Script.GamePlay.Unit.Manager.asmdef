@@ -1,0 +1,19 @@
+{
+    "name": "Script.GamePlay.Unit.Manager",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3f76cc7c4a02e4d408ae274c8ac14ef6",
+        "GUID:7b449134e45a667468977b85127fd8c5",
+        "GUID:8381d25136c024c47bc141aa127149b3",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

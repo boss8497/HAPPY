@@ -4,7 +4,6 @@ using Expression;
 using Script.GameInfo.Info.Stat;
 using Script.GameInfo.Table;
 using Script.GamePlay.Stat;
-using Script.GameInfo.Character;
 using Script.Utility.Runtime;
 using Sirenix.OdinInspector;
 using Spine.Unity;
@@ -13,6 +12,12 @@ using UnityEngine;
 //Runtime에 생성되는 부분들
 namespace Script.GamePlay.Character {
     public partial class Character {
+        public override Vector2   Position  => Transform.position;
+        public override Transform Transform => _transform;
+        private         Transform _transform;
+
+
+        
         [SerializeReference, ReadOnly]
         private CharacterBehaviour _characterBehaviour;
         public CharacterBehaviour CharacterBehaviour => _characterBehaviour;
@@ -41,6 +46,8 @@ namespace Script.GamePlay.Character {
 
 
         private void InitializeGamePlay() {
+            _transform = transform;
+            
             _characterBehaviour ??= ClassPool.Get<CharacterBehaviour>();
             _characterBehaviour.Initialize(BehaviourInfo, this);
 

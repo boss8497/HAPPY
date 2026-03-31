@@ -28,6 +28,6 @@ namespace Script.GamePlay.Stage {
         
         
         //TestCode
-        void AddCharacter(GameObject obj);
+        void AddCharacter(GameObject obj, bool isPlayer = false);
     }
 }

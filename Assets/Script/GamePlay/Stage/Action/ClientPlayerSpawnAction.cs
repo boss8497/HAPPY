@@ -42,7 +42,7 @@ namespace Script.GamePlay.Stage {
 
             var prefab = _stageManager.Resolver.Instantiate(prefabHandle.Result);
             prefab.transform.position = _playerSpawnAction.position;
-            _stageManager.AddCharacter(prefab);
+            _stageManager.AddCharacter(prefab, true);
             
             Addressables.Release(prefabHandle);
         }

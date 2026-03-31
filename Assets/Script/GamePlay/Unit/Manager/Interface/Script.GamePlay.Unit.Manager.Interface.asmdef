@@ -1,0 +1,16 @@
+{
+    "name": "Script.GamePlay.Unit.Manager.Interface",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3f76cc7c4a02e4d408ae274c8ac14ef6"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
