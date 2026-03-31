@@ -15,6 +15,7 @@ namespace Script.GamePlay.Character {
             // 왠만하면 Pooling으로 사용하기 때문에 Release 호출했다가 
             // 지워지우는 말자.
             _unitManager.RegisterUnit(this, team);
+            InitializeCharacterHitboxEntity();
 
             InitializeAction();
             InitializeGamePlay();

@@ -1,4 +1,5 @@
 ﻿using System;
+using Script.GamePlay.ECS.System;
 using Unity.Entities;
 using VContainer.Unity;
 
@@ -26,13 +27,18 @@ namespace Script.GamePlay.ECS.World {
 
             _world = new(nameof(StageEntityWorld), WorldFlags.Game);
 
-            // World에 기본 root group 생성
             _world.GetOrCreateSystemManaged<InitializationSystemGroup>();
             _world.GetOrCreateSystemManaged<SimulationSystemGroup>();
             _world.GetOrCreateSystemManaged<PresentationSystemGroup>();
 
             // 나중에 ECS 판정 시스템을 붙일 거면 player loop에 연결해두는 게 편함.
             // 지금은 시스템이 없어도 붙여놔도 문제는 없음.
+            
+            DefaultWorldInitialization.AddSystemsToRootLevelSystemGroups(
+                _world,
+                typeof(CharacterCollisionSystem)
+            );
+
             ScriptBehaviourUpdateOrder.AppendWorldToCurrentPlayerLoop(_world);
             _appendedToPlayerLoop = true;
         }

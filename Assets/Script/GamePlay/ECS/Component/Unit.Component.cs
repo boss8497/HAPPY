@@ -48,4 +48,10 @@ namespace Script.GamePlay.ECS.Component {
         public float2                   Size;
         public float                    Radius;
     }
+    
+    public struct CharacterCollisionResultData : IBufferElementData {
+        public Entity OtherEntity;
+        public long   OtherUid;
+        public int    OtherTeam;
+    }
 }

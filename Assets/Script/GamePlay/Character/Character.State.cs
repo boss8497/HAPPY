@@ -16,11 +16,13 @@ namespace Script.GamePlay.Character {
         public void AddState(CharacterState state) {
             if (_state.HasFlag(state)) return;
             _state |= state;
+            SyncCharacterHitboxEntity();
         }
 
         public void RemoveState(CharacterState state) {
             if (_state.HasFlag(state) == false) return;
             _state &= ~state;
+            SyncCharacterHitboxEntity();
         }
         
     }

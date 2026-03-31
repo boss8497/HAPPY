@@ -37,6 +37,7 @@ namespace Script.GamePlay.Character {
                     var position = transform.position;
                     position.x         += spd * Time.deltaTime;
                     transform.position =  position;
+                    SyncCharacterTransformEntity();
 
                     await UniTask.Yield(PlayerLoopTiming.Update, cts);
                 }

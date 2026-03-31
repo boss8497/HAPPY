@@ -24,7 +24,6 @@ namespace Script.GamePlay.Unit {
             _stageEntityWorld = stageEntityWorld;
         }
 
-
         public void Initialize() { }
 
         public void RegisterUnit(Unit unit, int team) {
@@ -139,8 +138,10 @@ namespace Script.GamePlay.Unit {
                 return;
 
             if (_entitiesByUid.TryGetValue(unit.UID, out var entity)) {
-                if (_stageEntityWorld.EntityManager.Exists(entity)) {
-                    _stageEntityWorld.EntityManager.DestroyEntity(entity);
+                var entityManager = _stageEntityWorld.EntityManager;
+
+                if (entityManager.Exists(entity)) {
+                    entityManager.DestroyEntity(entity);
                 }
 
                 _entitiesByUid.Remove(unit.UID);

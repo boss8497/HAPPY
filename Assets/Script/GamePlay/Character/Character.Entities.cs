@@ -98,6 +98,10 @@ namespace Script.GamePlay.Character {
             if (entityManager.HasBuffer<CharacterHitboxActiveShapeData>(entity) == false) {
                 entityManager.AddBuffer<CharacterHitboxActiveShapeData>(entity);
             }
+            
+            if (entityManager.HasBuffer<CharacterCollisionResultData>(entity) == false) {
+                entityManager.AddBuffer<CharacterCollisionResultData>(entity);
+            }
         }
 
         private static void RegisterDefaultHitbox(
@@ -258,6 +262,10 @@ namespace Script.GamePlay.Character {
             }
 
             return defaultIndex;
+        }
+        
+        private void SyncCharacterTransformEntity() {
+            _unitManager?.SyncUnitEntity(this);
         }
     }
 }
