@@ -1,4 +1,5 @@
 using Script.GamePlay.Camera;
+using Script.GamePlay.ECS.World;
 using Script.GamePlay.Input;
 using Script.GamePlay.Stage;
 using Script.GamePlay.Unit;
@@ -17,6 +18,10 @@ namespace Script.LifetimeScope {
 
         protected override void Configure(IContainerBuilder builder) {
             name = nameof(StageLifetimeScope);
+            
+            builder.Register<StageEntityWorld>(Lifetime.Singleton)
+                   .As<IStageEntityWorld>()
+                   .AsSelf();
             
             builder.Register<IStageManager, StageManager>(Lifetime.Singleton)
                    .WithParameter(targetGroup);

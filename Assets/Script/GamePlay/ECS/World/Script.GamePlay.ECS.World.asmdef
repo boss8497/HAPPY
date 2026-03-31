@@ -1,16 +1,11 @@
 {
-    "name": "Script.GamePlay.Unit.Manager",
+    "name": "Script.GamePlay.ECS.World",
     "rootNamespace": "",
     "references": [
-        "GUID:3f76cc7c4a02e4d408ae274c8ac14ef6",
-        "GUID:7b449134e45a667468977b85127fd8c5",
-        "GUID:8381d25136c024c47bc141aa127149b3",
-        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
         "GUID:734d92eba21c94caba915361bd5ac177",
-        "GUID:d8b63aba1907145bea998dd612889d6b",
         "GUID:e0cd26848372d4e5c891c569017e11f1",
-        "GUID:28aa271bc4dbcee43bb9368f52ce1bb5",
-        "GUID:97447fc7e59f52d43b9c22504cf8caba"
+        "GUID:97447fc7e59f52d43b9c22504cf8caba",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

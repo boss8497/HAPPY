@@ -12,6 +12,7 @@ namespace Script.GamePlay.Character {
         public bool Initialized   => (_state & CharacterState.Initialized) != 0;
         public bool SystemControl => !Initialized || (_state & CharacterState.SystemControl) != 0;
 
+        
         public void AddState(CharacterState state) {
             if (_state.HasFlag(state)) return;
             _state |= state;
