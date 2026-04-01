@@ -1,6 +1,7 @@
 ﻿using Script.GameInfo.Character;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Transforms;
 
 namespace Script.GamePlay.ECS.Component {
     
@@ -12,11 +13,6 @@ namespace Script.GamePlay.ECS.Component {
         public int  Team;
         public int  InstanceId;
     }
-    
-    public struct UnitTransformData : IComponentData {
-        public float2 Position;
-    }
-    
     
     public enum CharacterHitboxShapeType : byte {
         None   = 0,
@@ -37,15 +33,15 @@ namespace Script.GamePlay.ECS.Component {
 
     public struct CharacterHitboxPresetShapeData : IBufferElementData {
         public CharacterHitboxShapeType ShapeType;
-        public float2                   Offset;
-        public float2                   Size;
+        public float3                   Offset;
+        public float3                   Size;
         public float                    Radius;
     }
 
     public struct CharacterHitboxActiveShapeData : IBufferElementData {
         public CharacterHitboxShapeType ShapeType;
-        public float2                   Offset;
-        public float2                   Size;
+        public float3                   Offset;
+        public float3                   Size;
         public float                    Radius;
     }
     

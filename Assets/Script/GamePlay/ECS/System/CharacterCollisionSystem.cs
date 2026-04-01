@@ -2,6 +2,7 @@
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Transforms;
 
 namespace Script.GamePlay.ECS.System {
     [UpdateInGroup(typeof(SimulationSystemGroup))]
@@ -11,9 +12,9 @@ namespace Script.GamePlay.ECS.System {
         public void OnCreate(ref SystemState state) {
             _query = SystemAPI.QueryBuilder()
                               .WithAll<
+                                  LocalTransform,
                                   UnitEntityTag,
                                   UnitIdentityData,
-                                  UnitTransformData,
                                   CharacterHitboxActiveShapeData,
                                   CharacterCollisionResultData>()
                               .Build();
@@ -28,7 +29,7 @@ namespace Script.GamePlay.ECS.System {
 
             var entities   = _query.ToEntityArray(Allocator.Temp);
             var identities = _query.ToComponentDataArray<UnitIdentityData>(Allocator.Temp);
-            var transforms = _query.ToComponentDataArray<UnitTransformData>(Allocator.Temp);
+            var transforms = _query.ToComponentDataArray<LocalTransform>(Allocator.Temp);
 
             var activeLookup = SystemAPI.GetBufferLookup<CharacterHitboxActiveShapeData>(true);
             var resultLookup = SystemAPI.GetBufferLookup<CharacterCollisionResultData>(false);
@@ -74,9 +75,9 @@ namespace Script.GamePlay.ECS.System {
         }
 
         private static bool IntersectsAny(
-            float2                                        unitPosA,
+            float3                                        unitPosA,
             DynamicBuffer<CharacterHitboxActiveShapeData> shapesA,
-            float2                                        unitPosB,
+            float3                                        unitPosB,
             DynamicBuffer<CharacterHitboxActiveShapeData> shapesB
         ) {
             
@@ -98,13 +99,13 @@ namespace Script.GamePlay.ECS.System {
         }
 
         private static bool Intersects(
-            float2                         unitPosA,
+            float3                         unitPosA,
             CharacterHitboxActiveShapeData a,
-            float2                         unitPosB,
+            float3                         unitPosB,
             CharacterHitboxActiveShapeData b
         ) {
-            float2 centerA = unitPosA + a.Offset;
-            float2 centerB = unitPosB + b.Offset;
+            float3 centerA = unitPosA + a.Offset;
+            float3 centerB = unitPosB + b.Offset;
 
             if (a.ShapeType == CharacterHitboxShapeType.Rect && b.ShapeType == CharacterHitboxShapeType.Rect) {
                 return RectVsRect(centerA, a.Size, centerB, b.Size);
@@ -125,25 +126,25 @@ namespace Script.GamePlay.ECS.System {
             return false;
         }
 
-        private static bool RectVsRect(float2 centerA, float2 sizeA, float2 centerB, float2 sizeB) {
-            float2 halfA = sizeA * 0.5f;
-            float2 halfB = sizeB * 0.5f;
+        private static bool RectVsRect(float3 centerA, float3 sizeA, float3 centerB, float3 sizeB) {
+            float3 halfA = sizeA * 0.5f;
+            float3 halfB = sizeB * 0.5f;
 
             return math.abs(centerA.x - centerB.x) <= (halfA.x + halfB.x) && math.abs(centerA.y - centerB.y) <= (halfA.y + halfB.y);
         }
 
-        private static bool CircleVsCircle(float2 centerA, float radiusA, float2 centerB, float radiusB) {
+        private static bool CircleVsCircle(float3 centerA, float radiusA, float3 centerB, float radiusB) {
             float radius = radiusA + radiusB;
             return math.lengthsq(centerA - centerB) <= radius * radius;
         }
 
-        private static bool RectVsCircle(float2 rectCenter, float2 rectSize, float2 circleCenter, float circleRadius) {
-            float2 half = rectSize * 0.5f;
-            float2 min  = rectCenter - half;
-            float2 max  = rectCenter + half;
+        private static bool RectVsCircle(float3 rectCenter, float3 rectSize, float3 circleCenter, float circleRadius) {
+            float3 half = rectSize * 0.5f;
+            float3 min  = rectCenter - half;
+            float3 max  = rectCenter + half;
 
-            float2 closest = math.clamp(circleCenter, min, max);
-            float2 delta   = circleCenter - closest;
+            float3 closest = math.clamp(circleCenter, min, max);
+            float3 delta   = circleCenter - closest;
 
             return math.lengthsq(delta) <= circleRadius * circleRadius;
         }

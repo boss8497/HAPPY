@@ -4,6 +4,6 @@ using UnityEngine;
 namespace Script.GameInfo.Character {
     [Serializable]
     public abstract class Hitbox {
-        public Vector2 offset;
+        public Vector3 offset;
     }
 }

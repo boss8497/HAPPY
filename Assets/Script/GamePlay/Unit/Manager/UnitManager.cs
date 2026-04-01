@@ -5,6 +5,7 @@ using Script.GamePlay.ECS.World;
 using Script.GamePlay.Unit.Interface;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Transforms;
 using VContainer;
 using VContainer.Unity;
 
@@ -105,18 +106,24 @@ namespace Script.GamePlay.Unit {
 
             EnsureCommonComponents(entityManager, entity);
 
+            entityManager.SetComponentData(entity, new LocalTransform {
+                Position = unit.Transform.position,
+                Rotation = unit.Transform.rotation,
+                Scale = unit.Transform.localScale.x,
+            });
+            
             entityManager.SetComponentData(entity, new UnitIdentityData {
                 Uid        = unit.UID,
                 Team       = unit.Team,
                 InstanceId = unit.GetInstanceID(),
             });
-
-            entityManager.SetComponentData(entity, new UnitTransformData {
-                Position = new float2(unit.Position.x, unit.Position.y),
-            });
         }
 
         private static void EnsureCommonComponents(EntityManager entityManager, Entity entity) {
+            if (entityManager.HasComponent<LocalTransform>(entity) == false) {
+                entityManager.AddComponent<LocalTransform>(entity);
+            }
+
             if (entityManager.HasComponent<UnitEntityTag>(entity) == false) {
                 entityManager.AddComponent<UnitEntityTag>(entity);
             }
@@ -125,9 +132,6 @@ namespace Script.GamePlay.Unit {
                 entityManager.AddComponentData(entity, default(UnitIdentityData));
             }
 
-            if (entityManager.HasComponent<UnitTransformData>(entity) == false) {
-                entityManager.AddComponentData(entity, default(UnitTransformData));
-            }
         }
 
         private void DestroyEntity(Unit unit) {
