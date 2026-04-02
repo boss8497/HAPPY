@@ -1,5 +1,6 @@
 ﻿using System;
 using Script.GamePlay.ECS.System;
+using Unity.Collections;
 using Unity.Entities;
 using VContainer.Unity;
 
@@ -19,32 +20,40 @@ namespace Script.GamePlay.ECS.World {
             }
         }
 
-        public bool IsAlive => _world is { IsCreated: true };
+        public bool IsAlive => _world is { IsCreated: true } && _appendedToPlayerLoop;
 
         public void Initialize() {
             if (IsAlive)
                 return;
 
-            _world = new(nameof(StageEntityWorld), WorldFlags.Game);
+            _world = new Unity.Entities.World(nameof(StageEntityWorld), WorldFlags.Game);
 
+            // 루트 그룹 먼저 생성
             _world.GetOrCreateSystemManaged<InitializationSystemGroup>();
+            _world.GetOrCreateSystemManaged<SimulationSystemGroup>();
             _world.GetOrCreateSystemManaged<PresentationSystemGroup>();
 
-            var simGroup        = _world.GetOrCreateSystemManaged<SimulationSystemGroup>();
-            // 나중에 추가될 SystemGroup이 있다면 여기에 추가
-            // var lateGroup       = _world.GetOrCreateSystemManaged<LateSimulationSystemGroup>();
-            // var fixedStepGroup = _world.GetOrCreateSystemManaged<FixedStepSimulationSystemGroup>();
-            // simGroup.AddSystemToUpdateList(lateGroup);
-            // simGroup.AddSystemToUpdateList(fixedStepGroup);
+            var systems = new NativeList<SystemTypeIndex>(Allocator.Temp);
 
-            DefaultWorldInitialization.AddSystemsToRootLevelSystemGroups(
-                _world,
-                typeof(CharacterCollisionSystem),
-                typeof(RunningSystem),
-                typeof(CharacterSyncSystem)
-            );
+            systems.Add(TypeManager.GetSystemTypeIndex<UpdateWorldTimeSystem>());
+            
+            // Simulation 트리의 built-in sibling들
+            systems.Add(TypeManager.GetSystemTypeIndex<BeginSimulationEntityCommandBufferSystem>());
+            systems.Add(TypeManager.GetSystemTypeIndex<FixedStepSimulationSystemGroup>());
+            systems.Add(TypeManager.GetSystemTypeIndex<LateSimulationSystemGroup>());
+            systems.Add(TypeManager.GetSystemTypeIndex<EndSimulationEntityCommandBufferSystem>());
 
-            simGroup.SortSystems();
+            // FixedStep 안에서 ECB 쓸 수 있게
+            systems.Add(TypeManager.GetSystemTypeIndex<BeginFixedStepSimulationEntityCommandBufferSystem>());
+            systems.Add(TypeManager.GetSystemTypeIndex<EndFixedStepSimulationEntityCommandBufferSystem>());
+
+            // 네 시스템들
+            systems.Add(TypeManager.GetSystemTypeIndex<RunningSystem>());
+            systems.Add(TypeManager.GetSystemTypeIndex<CharacterCollisionSystem>());
+            systems.Add(TypeManager.GetSystemTypeIndex<CharacterSyncSystem>());
+
+            DefaultWorldInitialization.AddSystemsToRootLevelSystemGroups(_world, systems);
+            systems.Dispose();
 
             ScriptBehaviourUpdateOrder.AppendWorldToCurrentPlayerLoop(_world);
             _appendedToPlayerLoop = true;

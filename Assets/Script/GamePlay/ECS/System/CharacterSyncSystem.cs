@@ -4,7 +4,7 @@ using Unity.Transforms;
 
 namespace Script.GamePlay.ECS.System {
     [DisableAutoCreation]
-    [UpdateInGroup(typeof(SimulationSystemGroup))]
+    [UpdateInGroup(typeof(LateSimulationSystemGroup))]
     public partial class CharacterSyncSystem : SystemBase {
         protected override void OnUpdate() {
             foreach (var (transformRef, effectsRef)

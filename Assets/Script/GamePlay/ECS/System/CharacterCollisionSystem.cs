@@ -6,7 +6,8 @@ using Unity.Transforms;
 
 namespace Script.GamePlay.ECS.System {
     [DisableAutoCreation]
-    [UpdateInGroup(typeof(SimulationSystemGroup))]
+    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+    [UpdateAfter(typeof(RunningSystem))]
     public partial struct CharacterCollisionSystem : ISystem {
         private EntityQuery _query;
 
