@@ -115,7 +115,7 @@ namespace Script.GamePlay.Character {
                 var jumpVelocity = Convert.ToSingle(Status.Jump);
 
                 while (cts.IsCancellationRequested == false) {
-                    float dt = Time.deltaTime;
+                    float dt = Time.fixedDeltaTime;
 
                     // 점프 유지 시간 증가
                     if (PlayerControls.JumpHeld && currentJumpTime < maxJumpTime) {
@@ -152,12 +152,15 @@ namespace Script.GamePlay.Character {
                     transform.position = position;
 
                     timer += dt;
-                    await UniTask.Yield(PlayerLoopTiming.Update, cts);
+                    
+                    SyncCharacterTransformEntity();
+                    await UniTask.Yield(PlayerLoopTiming.FixedUpdate, cts);
                 }
             }
             catch (OperationCanceledException) { }
             finally {
                 ReleaseJumping();
+                SyncCharacterTransformEntity();
             }
         }
 

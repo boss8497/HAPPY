@@ -5,7 +5,8 @@ using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Script.GamePlay.ECS.System {
-    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+    [DisableAutoCreation]
+    [UpdateInGroup(typeof(SimulationSystemGroup))]
     public partial struct CharacterCollisionSystem : ISystem {
         private EntityQuery _query;
 

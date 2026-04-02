@@ -5,8 +5,9 @@ using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Script.GamePlay.ECS.System {
+    [DisableAutoCreation]
     [BurstCompile]
-    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+    [UpdateInGroup(typeof(SimulationSystemGroup))]
     public partial struct RunningSystem : ISystem {
         [BurstCompile]
         public void OnCreate(ref SystemState state) {
