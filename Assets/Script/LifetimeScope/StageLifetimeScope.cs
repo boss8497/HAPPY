@@ -7,6 +7,7 @@ using Script.GamePlay.Unit.Interface;
 using Unity.Cinemachine;
 using UnityEngine;
 using VContainer;
+using VContainer.Unity;
 
 namespace Script.LifetimeScope {
     public class StageLifetimeScope : VContainer.Unity.LifetimeScope {
@@ -19,12 +20,14 @@ namespace Script.LifetimeScope {
         protected override void Configure(IContainerBuilder builder) {
             name = nameof(StageLifetimeScope);
             
-            builder.Register<StageEntityWorld>(Lifetime.Singleton)
+            builder.RegisterEntryPoint<StageEntityWorld>(Lifetime.Singleton)
                    .As<IStageEntityWorld>()
                    .AsSelf();
             
-            builder.Register<IStageManager, StageManager>(Lifetime.Singleton)
+            builder.RegisterEntryPoint<StageManager>(Lifetime.Singleton)
+                   .As<IStageManager>()
                    .WithParameter(targetGroup);
+            
             builder.Register<ICameraControls, CameraControls>(Lifetime.Singleton)
                    .WithParameter<Camera>(mainCamera == null ? Camera.main : mainCamera);
 

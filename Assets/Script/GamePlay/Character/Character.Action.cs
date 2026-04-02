@@ -6,6 +6,8 @@ using Script.GameInfo.Info;
 using Script.GameInfo.Table;
 using Script.Utility.Runtime;
 using Script.GameInfo.Character;
+using Script.GamePlay.ECS.Component;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Script.GamePlay.Character {
@@ -26,9 +28,51 @@ namespace Script.GamePlay.Character {
 
             ReleaseRunning();
             AddState(CharacterState.Running);
-            _runCts = new();
-            RunningAsync(_runCts.Token).Forget();
+            
+            EnableRunningEntity();
+            // _runCts = new();
+            // RunningAsync(_runCts.Token).Forget();
         }
+        
+        private void EnableRunningEntity() {
+            if (_unitManager == null)
+                return;
+
+            if (_unitManager.TryGetEntity(this, out var entity) == false)
+                return;
+
+            var entityManager = _stageEntityWorld.EntityManager;
+
+            if (entityManager.HasComponent<RunningData>(entity) == false) {
+                entityManager.AddComponentData(entity, new RunningData {
+                    Direction = new float3(1f, 0f, 0f),
+                    Speed     = 0f,
+                });
+            }
+
+            entityManager.SetComponentData(entity, new RunningData {
+                Direction = new float3(1f, 0f, 0f),
+                Speed     = (float)Status.Spd,
+            });
+
+            entityManager.SetComponentEnabled<RunningData>(entity, true);
+        }
+
+        private void DisableRunningEntity() {
+            if (_unitManager == null)
+                return;
+
+            if (_unitManager.TryGetEntity(this, out var entity) == false)
+                return;
+
+            var entityManager = _stageEntityWorld.EntityManager;
+
+            if (entityManager.HasComponent<RunningData>(entity) == false)
+                return;
+
+            entityManager.SetComponentEnabled<RunningData>(entity, false);
+        }
+
 
         private async UniTaskVoid RunningAsync(CancellationToken cts) {
             var spd = (float)Status.Spd;
@@ -130,9 +174,10 @@ namespace Script.GamePlay.Character {
         }
 
         private void ReleaseRunning() {
-            _runCts?.Cancel();
-            _runCts?.Dispose();
-            _runCts = null;
+            // _runCts?.Cancel();
+            // _runCts?.Dispose();
+            // _runCts = null;
+            DisableRunningEntity();
             RemoveState(CharacterState.Running);
         }
 

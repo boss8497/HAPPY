@@ -109,13 +109,14 @@ namespace Script.GamePlay.Unit {
             entityManager.SetComponentData(entity, new LocalTransform {
                 Position = unit.Transform.position,
                 Rotation = unit.Transform.rotation,
-                Scale = unit.Transform.localScale.x,
+                Scale    = unit.Transform.localScale.x,
             });
-            
-            entityManager.SetComponentData(entity, new UnitIdentityData {
+
+            entityManager.SetComponentData(entity, new UnitData {
                 Uid        = unit.UID,
                 Team       = unit.Team,
                 InstanceId = unit.GetInstanceID(),
+                GameObject = unit.gameObject,
             });
         }
 
@@ -128,10 +129,9 @@ namespace Script.GamePlay.Unit {
                 entityManager.AddComponent<UnitEntityTag>(entity);
             }
 
-            if (entityManager.HasComponent<UnitIdentityData>(entity) == false) {
-                entityManager.AddComponentData(entity, default(UnitIdentityData));
+            if (entityManager.HasComponent<UnitData>(entity) == false) {
+                entityManager.AddComponentData(entity, default(UnitData));
             }
-
         }
 
         private void DestroyEntity(Unit unit) {

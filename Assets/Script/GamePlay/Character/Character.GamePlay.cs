@@ -13,8 +13,7 @@ using UnityEngine;
 namespace Script.GamePlay.Character {
     public partial class Character {
         public override Vector2   Position  => Transform.position;
-        public override Transform Transform => _transform;
-        private         Transform _transform;
+        public override Transform Transform => gameObject.transform;
 
 
         
@@ -46,8 +45,6 @@ namespace Script.GamePlay.Character {
 
 
         private void InitializeGamePlay() {
-            _transform = transform;
-            
             _characterBehaviour ??= ClassPool.Get<CharacterBehaviour>();
             _characterBehaviour.Initialize(BehaviourInfo, this);
 

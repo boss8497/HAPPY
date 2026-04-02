@@ -5,15 +5,20 @@ using Cysharp.Threading.Tasks;
 using Script.GameData.Model;
 using Script.GameInfo.Enum;
 using UnityEngine;
+using VContainer.Unity;
 
 
 namespace Script.GamePlay.Stage {
-    public partial class StageManager : IStageManager, IDisposable {
+    public partial class StageManager : IStageManager, IInitializable, IDisposable {
         private List<Character.Character> _characters;
         private List<GameObject>          _characterObjects;
         private int                       _systemControlStack = 0;
 
 
+
+        public void Initialize() {
+            Test().Forget();
+        }
         // 테스트 코드
         // StageLoader 부재
         // StageLoader에서 순차 적으로 Call이 되어야 하며
@@ -21,6 +26,7 @@ namespace Script.GamePlay.Stage {
         // 그래서 StageManager 에서는 Trigger 및 Action 실행 해서 
         public async UniTaskVoid Test() {
             await UniTask.WaitUntil(() => _group.Initialized);
+            await UniTask.WaitUntil(() => _entityWorld.IsAlive);
             var dungeon = _group.GroupData.Model.CurrentValue.dungeonProgresses.FirstOrDefault();
             Initialize(dungeon);
             await Begin();

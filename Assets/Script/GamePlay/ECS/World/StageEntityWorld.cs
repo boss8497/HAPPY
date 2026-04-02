@@ -30,13 +30,23 @@ namespace Script.GamePlay.ECS.World {
             _world.GetOrCreateSystemManaged<InitializationSystemGroup>();
             _world.GetOrCreateSystemManaged<SimulationSystemGroup>();
             _world.GetOrCreateSystemManaged<PresentationSystemGroup>();
+            _world.GetOrCreateSystemManaged<FixedStepSimulationSystemGroup>();
+            _world.GetOrCreateSystemManaged<LateSimulationSystemGroup>();
 
             // 나중에 ECS 판정 시스템을 붙일 거면 player loop에 연결해두는 게 편함.
             // 지금은 시스템이 없어도 붙여놔도 문제는 없음.
-            
+
+            //FixedUpdate
             DefaultWorldInitialization.AddSystemsToRootLevelSystemGroups(
                 _world,
-                typeof(CharacterCollisionSystem)
+                typeof(CharacterCollisionSystem),
+                typeof(RunningSystem)
+            );
+            
+            //LateUpdate
+            DefaultWorldInitialization.AddSystemsToRootLevelSystemGroups(
+                _world,
+                typeof(CharacterSyncSystem)
             );
 
             ScriptBehaviourUpdateOrder.AppendWorldToCurrentPlayerLoop(_world);

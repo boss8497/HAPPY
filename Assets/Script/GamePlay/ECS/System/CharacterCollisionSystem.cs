@@ -5,7 +5,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Script.GamePlay.ECS.System {
-    [UpdateInGroup(typeof(SimulationSystemGroup))]
+    [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
     public partial struct CharacterCollisionSystem : ISystem {
         private EntityQuery _query;
 
@@ -14,25 +14,25 @@ namespace Script.GamePlay.ECS.System {
                               .WithAll<
                                   LocalTransform,
                                   UnitEntityTag,
-                                  UnitIdentityData,
-                                  CharacterHitboxActiveShapeData,
-                                  CharacterCollisionResultData>()
+                                  UnitData,
+                                  HitboxActiveShape,
+                                  CollisionResultData>()
                               .Build();
 
             state.RequireForUpdate(_query);
         }
 
         public void OnUpdate(ref SystemState state) {
-            foreach (var resultBuffer in SystemAPI.Query<DynamicBuffer<CharacterCollisionResultData>>()) {
+            foreach (var resultBuffer in SystemAPI.Query<DynamicBuffer<CollisionResultData>>()) {
                 resultBuffer.Clear();
             }
 
             var entities   = _query.ToEntityArray(Allocator.Temp);
-            var identities = _query.ToComponentDataArray<UnitIdentityData>(Allocator.Temp);
+            var identities = _query.ToComponentDataArray<UnitData>(Allocator.Temp);
             var transforms = _query.ToComponentDataArray<LocalTransform>(Allocator.Temp);
 
-            var activeLookup = SystemAPI.GetBufferLookup<CharacterHitboxActiveShapeData>(true);
-            var resultLookup = SystemAPI.GetBufferLookup<CharacterCollisionResultData>(false);
+            var activeLookup = SystemAPI.GetBufferLookup<HitboxActiveShape>(true);
+            var resultLookup = SystemAPI.GetBufferLookup<CollisionResultData>(false);
 
             for (int i = 0; i < entities.Length; i++) {
                 var entityA = entities[i];
@@ -54,14 +54,14 @@ namespace Script.GamePlay.ECS.System {
                     }
 
                     resultLookup[entityA]
-                        .Add(new CharacterCollisionResultData {
+                        .Add(new CollisionResultData {
                             OtherEntity = entityB,
                             OtherUid    = identities[j].Uid,
                             OtherTeam   = identities[j].Team,
                         });
 
                     resultLookup[entityB]
-                        .Add(new CharacterCollisionResultData {
+                        .Add(new CollisionResultData {
                             OtherEntity = entityA,
                             OtherUid    = identities[i].Uid,
                             OtherTeam   = identities[i].Team,
@@ -76,17 +76,17 @@ namespace Script.GamePlay.ECS.System {
 
         private static bool IntersectsAny(
             float3                                        unitPosA,
-            DynamicBuffer<CharacterHitboxActiveShapeData> shapesA,
+            DynamicBuffer<HitboxActiveShape> shapesA,
             float3                                        unitPosB,
-            DynamicBuffer<CharacterHitboxActiveShapeData> shapesB
+            DynamicBuffer<HitboxActiveShape> shapesB
         ) {
             
             foreach (var a in shapesA) {
-                if (a.ShapeType == CharacterHitboxShapeType.None)
+                if (a.Type == HitboxType.None)
                     continue;
 
                 foreach (var b in shapesB) {
-                    if (b.ShapeType == CharacterHitboxShapeType.None)
+                    if (b.Type == HitboxType.None)
                         continue;
 
                     if (Intersects(unitPosA, a, unitPosB, b)) {
@@ -100,26 +100,26 @@ namespace Script.GamePlay.ECS.System {
 
         private static bool Intersects(
             float3                         unitPosA,
-            CharacterHitboxActiveShapeData a,
+            HitboxActiveShape a,
             float3                         unitPosB,
-            CharacterHitboxActiveShapeData b
+            HitboxActiveShape b
         ) {
             float3 centerA = unitPosA + a.Offset;
             float3 centerB = unitPosB + b.Offset;
 
-            if (a.ShapeType == CharacterHitboxShapeType.Rect && b.ShapeType == CharacterHitboxShapeType.Rect) {
+            if (a.Type == HitboxType.Rect && b.Type == HitboxType.Rect) {
                 return RectVsRect(centerA, a.Size, centerB, b.Size);
             }
 
-            if (a.ShapeType == CharacterHitboxShapeType.Circle && b.ShapeType == CharacterHitboxShapeType.Circle) {
+            if (a.Type == HitboxType.Circle && b.Type == HitboxType.Circle) {
                 return CircleVsCircle(centerA, a.Radius, centerB, b.Radius);
             }
 
-            if (a.ShapeType == CharacterHitboxShapeType.Rect && b.ShapeType == CharacterHitboxShapeType.Circle) {
+            if (a.Type == HitboxType.Rect && b.Type == HitboxType.Circle) {
                 return RectVsCircle(centerA, a.Size, centerB, b.Radius);
             }
 
-            if (a.ShapeType == CharacterHitboxShapeType.Circle && b.ShapeType == CharacterHitboxShapeType.Rect) {
+            if (a.Type == HitboxType.Circle && b.Type == HitboxType.Rect) {
                 return RectVsCircle(centerB, b.Size, centerA, a.Radius);
             }
 
