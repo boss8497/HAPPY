@@ -11,6 +11,7 @@ namespace Script.GamePlay.Unit {
 
         public abstract Vector2   Position  { get; }
         public abstract Transform Transform { get; }
+        public abstract bool      IsPlayer  { get; }
 
         public void Set(long uid, int team) {
             _uid  = uid;

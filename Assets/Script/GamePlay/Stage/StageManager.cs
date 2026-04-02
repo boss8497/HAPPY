@@ -67,7 +67,7 @@ namespace Script.GamePlay.Stage {
                 characterScript = obj.GetComponentInChildren<Character.Character>();
             }
             _targetGroup.AddMember(obj.transform, 1, 1);
-            characterScript.Initialize(isPlayer ? 0 : 1);
+            characterScript.Initialize(isPlayer ? 0 : 1, isPlayer);
             _characters.Add(characterScript);
         }
 

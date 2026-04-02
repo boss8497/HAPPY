@@ -10,7 +10,7 @@ namespace Script.GamePlay.Character.Interface {
         IObjectResolver Resolver       { get; }
 
 
-        void    Initialize(int team);
+        void    Initialize(int team, bool isPlayer = false);
         void    Release();
         UniTask StartAsync();
     }

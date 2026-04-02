@@ -15,20 +15,25 @@ namespace Script.GamePlay.Character {
         public override Vector2   Position  => Transform.position;
         public override Transform Transform => gameObject.transform;
 
+        private         bool _isPlayer;
+        public override bool IsPlayer => _isPlayer;
 
-        
+
         [SerializeReference, ReadOnly]
         private CharacterBehaviour _characterBehaviour;
+
         public CharacterBehaviour CharacterBehaviour => _characterBehaviour;
 
 
         // 기본적으로 Initialize할 때 찾지만 Prefab에서 등록 가능하도록 설정
         [ShowInInspector]
         private SkeletonAnimation _skeletonAnimation;
+
         public SkeletonAnimation SkeletonAnimation => _skeletonAnimation;
 
 
         private string[] _animationNames;
+
         public string[] SpineAnimationNames {
             get {
                 _animationNames ??= SkeletonAnimation?.Skeleton.Data.Animations.Select(s => s.Name).ToArray() ?? Array.Empty<string>();
@@ -40,8 +45,8 @@ namespace Script.GamePlay.Character {
         // Inspector에서 스텟을 디버깅하기 위해 ShowInInspector 설정
         [ShowInInspector, ReadOnly]
         private Status _status;
-        public Status Status => _status;
 
+        public Status Status => _status;
 
 
         private void InitializeGamePlay() {
@@ -57,9 +62,8 @@ namespace Script.GamePlay.Character {
                     _skeletonAnimation = GetComponentInChildren<SkeletonAnimation>();
                 }
             }
-            
-            
-            
+
+
             using var _ = CreateValueContext();
             foreach (var statusUid in _characterInfo.statusUids) {
                 _status.Add(GameInfoManager.Instance.Get<StatusInfo>(statusUid));
@@ -78,8 +82,8 @@ namespace Script.GamePlay.Character {
                 _status = null;
             }
         }
-        
-        
+
+
         //TODO: Database 관련 로직이 없기 때문에 일단은 여기서 테스트 설정
         private ValueContext CreateValueContext(
             int levelOffset = 0,

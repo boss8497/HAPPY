@@ -8,8 +8,9 @@ namespace Script.GamePlay.Character {
     public partial class Character : Unit.Unit, ICharacter {
         #region Interface
         //캐릭터 소환시 꼭 실행
-        public void Initialize(int team) {
-            _state = CharacterState.None;
+        public void Initialize(int team, bool isPlayer = false) {
+            _state   = CharacterState.None;
+            _isPlayer = isPlayer;
             
             // UnRegister는 진짜로 Destroy가 됐을 때 호출해준다.
             // 왠만하면 Pooling으로 사용하기 때문에 Release 호출했다가 
@@ -36,7 +37,10 @@ namespace Script.GamePlay.Character {
         public UniTask StartAsync() {
             //FSM 실행
             _characterBehaviour.Start();
-            Run();
+
+            if (IsPlayer) {
+                Run();
+            }
             return UniTask.CompletedTask;
         }
 

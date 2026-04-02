@@ -15,7 +15,6 @@ namespace Script.GamePlay.Character {
         private ConfigurationInfo _config;
 
         private CancellationTokenSource _jumpCts;
-        private CancellationTokenSource _runCts;
 
         private void InitializeAction() {
             _config = GameInfoManager.Instance.Config;
@@ -25,16 +24,13 @@ namespace Script.GamePlay.Character {
             if (Running) {
                 return;
             }
-
             ReleaseRunning();
-            AddState(CharacterState.Running);
             
-            EnableRunningEntity();
-            // _runCts = new();
-            // RunningAsync(_runCts.Token).Forget();
+            EnableRunning();
+            AddState(CharacterState.Running);
         }
         
-        private void EnableRunningEntity() {
+        private void EnableRunning() {
             if (_unitManager == null)
                 return;
 
@@ -58,7 +54,7 @@ namespace Script.GamePlay.Character {
             entityManager.SetComponentEnabled<RunningData>(entity, true);
         }
 
-        private void DisableRunningEntity() {
+        private void DisableRunning() {
             if (_unitManager == null)
                 return;
 
@@ -71,25 +67,6 @@ namespace Script.GamePlay.Character {
                 return;
 
             entityManager.SetComponentEnabled<RunningData>(entity, false);
-        }
-
-
-        private async UniTaskVoid RunningAsync(CancellationToken cts) {
-            var spd = (float)Status.Spd;
-            try {
-                while (cts.IsCancellationRequested == false) {
-                    var position = transform.position;
-                    position.x         += spd * Time.deltaTime;
-                    transform.position =  position;
-                    SyncCharacterTransformEntity();
-
-                    await UniTask.Yield(PlayerLoopTiming.Update, cts);
-                }
-            }
-            catch (OperationCanceledException) { }
-            finally {
-                ReleaseRunning();
-            }
         }
 
         public void Jump() {
@@ -177,10 +154,7 @@ namespace Script.GamePlay.Character {
         }
 
         private void ReleaseRunning() {
-            // _runCts?.Cancel();
-            // _runCts?.Dispose();
-            // _runCts = null;
-            DisableRunningEntity();
+            DisableRunning();
             RemoveState(CharacterState.Running);
         }
 
