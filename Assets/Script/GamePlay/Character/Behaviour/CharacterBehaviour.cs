@@ -7,6 +7,7 @@ using Cysharp.Threading.Tasks;
 using Script.GamePlay.Character.Interface;
 using Script.GameInfo.Character;
 using Script.Utility.Runtime;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Script.GamePlay.Character {
@@ -19,7 +20,7 @@ namespace Script.GamePlay.Character {
         private Dictionary<Guid, ClientNodeBase> _nodesByGuid;
 
 
-        [SerializeReference]
+        [SerializeReference, ShowInInspector]
         private ClientNodeBase          _currentNode;
         private CancellationTokenSource _nodeCts;
 

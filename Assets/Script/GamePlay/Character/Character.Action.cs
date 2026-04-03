@@ -15,22 +15,21 @@ namespace Script.GamePlay.Character {
     public partial class Character {
         private ConfigurationInfo _config;
 
-        private CancellationTokenSource _jumpCts;
-
         private void InitializeAction() {
             _config = GameInfoManager.Instance.Config;
         }
 
+        #region Running
+
         public void Run() {
-            if ((Running?.CurrentValue ?? false)) {
+            if (Running?.CurrentValue ?? false) {
                 return;
             }
-            ReleaseRunning();
-            
+
             EnableRunning();
             AddState(CharacterState.Running);
         }
-        
+
         private void EnableRunning() {
             if (_unitManager == null)
                 return;
@@ -65,16 +64,19 @@ namespace Script.GamePlay.Character {
 
             entityManager.SetComponentEnabled<RunningData>(entity, false);
         }
-        
-        private void Update() {
-            SyncJumpInputEntity();
-            SyncJumpResultEntity();
-        }
-        
-        private void SyncJumpInputEntity() {
-            if ((Jumping?.CurrentValue ?? false) == false) return;
-            if (_unitManager == null) return;
-            if (_unitManager.TryGetEntity(this, out var entity) == false) return;
+
+        #endregion
+
+
+        #region Jumping
+
+        //TODO: 지금 상태 보다는 Jump Result 상태를 관리하는 System이 하나 더 필요한듯.
+        //TODO : 현재 로직상 하면 점프 버튼 안누르면 JumpState 안바뀜
+        public void SyncJumpInputEntity() {
+            if (_unitManager == null || 
+                (Jumping?.CurrentValue ?? false) == false || 
+                _unitManager.TryGetEntity(this, out var entity) == false
+            ) return;
 
             var entityManager = _stageEntityWorld.EntityManager;
 
@@ -91,11 +93,11 @@ namespace Script.GamePlay.Character {
 
             entityManager.SetComponentData(entity, input);
         }
-        
-        private void SyncJumpResultEntity() {
-            if ((Jumping?.CurrentValue ?? false) == false) return;
-            if (_unitManager == null) return;
-            if (_unitManager.TryGetEntity(this, out var entity) == false) return;
+
+        public void SyncJumpResultEntity() {
+            if ((Jumping?.CurrentValue ?? false) == false ||
+                _unitManager == null || 
+                _unitManager.TryGetEntity(this, out var entity) == false) return;
 
             var entityManager = _stageEntityWorld.EntityManager;
 
@@ -111,23 +113,22 @@ namespace Script.GamePlay.Character {
         }
 
         public void Jump() {
-            if ((Jumping?.CurrentValue ?? false)) {
+            SyncJumpResultEntity();
+            if (Jumping?.CurrentValue ?? false) {
                 return;
             }
-
-            ReleaseJumping();
+            
             AddState(CharacterState.Jumping);
             EnableJumping();
         }
-        
+
         private void EnableJumping() {
-            if (_unitManager == null) return;
-            if (_unitManager.TryGetEntity(this, out var entity) == false) return;
+            if (_unitManager == null || 
+                _unitManager.TryGetEntity(this, out var entity) == false)
+                return;
 
             var entityManager = _stageEntityWorld.EntityManager;
-
-            EnsureJumpingComponents(entityManager, entity);
-
+            
             entityManager.SetComponentData(entity, new JumpInputData {
                 Held             = (byte)(PlayerControls.JumpHeld ? 1 : 0),
                 ReleaseRequested = 0,
@@ -149,39 +150,10 @@ namespace Script.GamePlay.Character {
 
             entityManager.SetComponentEnabled<JumpingData>(entity, true);
         }
-        
-        private void EnsureJumpingComponents(EntityManager entityManager, Entity entity) {
-            if (entityManager.HasComponent<JumpInputData>(entity) == false) {
-                entityManager.AddComponentData(entity, new JumpInputData {
-                    Held             = 0,
-                    ReleaseRequested = 0,
-                });
-            }
 
-            if (entityManager.HasComponent<JumpResultData>(entity) == false) {
-                entityManager.AddComponentData(entity, new JumpResultData {
-                    Landed = 0,
-                });
-            }
-
-            if (entityManager.HasComponent<JumpingData>(entity) == false) {
-                entityManager.AddComponentData(entity, new JumpingData {
-                    GroundY         = 0f,
-                    CurrentJumpTime = 0f,
-                    MaxJumpTime     = 0f,
-                    Gravity         = 0f,
-                    FallGravity     = 0f,
-                    Timer           = 0f,
-                    JumpVelocity    = 0f,
-                });
-
-                entityManager.SetComponentEnabled<JumpingData>(entity, false);
-            }
-        }
-        
         private void DisableJumping() {
-            if (_unitManager == null) return;
-            if (_unitManager.TryGetEntity(this, out var entity) == false) return;
+            if (_unitManager == null || 
+                _unitManager.TryGetEntity(this, out var entity) == false) return;
 
             var entityManager = _stageEntityWorld.EntityManager;
 
@@ -197,63 +169,7 @@ namespace Script.GamePlay.Character {
             }
         }
 
-        private async UniTaskVoid JumpingAsync(CancellationToken cts) {
-            try {
-                var groundY         = transform.position.y;
-                var currentJumpTime = _config.maxJumpTime;
-                var maxJumpTime     = _config.maxJumpTime;
-                var gravity         = _config.gravity;
-                var timer           = 0f;
-
-                // Status.Jump를 점프 시작 힘으로 사용
-                var jumpVelocity = Convert.ToSingle(Status.Jump);
-
-                while (cts.IsCancellationRequested == false) {
-                    float dt = Time.fixedDeltaTime;
-
-                    // 점프 유지 시간 증가
-                    if (PlayerControls.JumpHeld && currentJumpTime < maxJumpTime) {
-                        currentJumpTime += dt;
-                        if (currentJumpTime > maxJumpTime)
-                            currentJumpTime = maxJumpTime;
-                    }
-
-                    // 버튼을 떼면 최소 시간까지만 상승 허용
-                    if (PlayerControls.JumpReleased) {
-                        currentJumpTime = Mathf.Min(currentJumpTime, timer);
-                    }
-
-                    // 상승 구간
-                    if (timer < currentJumpTime && jumpVelocity > 0f) {
-                        // 유지 중일 때는 천천히 감쇠
-                        jumpVelocity -= gravity * dt * 0.5f;
-                    }
-                    else {
-                        // 하강 구간
-                        jumpVelocity -= gravity * _config.fallGravity * dt;
-                    }
-
-                    var position = transform.position;
-                    position.y += jumpVelocity * dt;
-
-                    // 바닥 도달
-                    if (position.y <= groundY && timer > 0f) {
-                        position.y         = groundY;
-                        transform.position = position;
-                        break;
-                    }
-
-                    transform.position = position;
-
-                    timer += dt;
-                    await UniTask.Yield(PlayerLoopTiming.FixedUpdate, cts);
-                }
-            }
-            catch (OperationCanceledException) { }
-            finally {
-                ReleaseJumping();
-            }
-        }
+        #endregion
 
         private void ReleaseAction() {
             ReleaseRunning();

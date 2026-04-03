@@ -86,7 +86,7 @@ namespace Script.GamePlay.Character {
                     return transition;
                 }
 
-                await UniTask.DelayFrame(DefaultDelayFrame, cancellationToken: cts);
+                await UniTask.Yield();
             }
 
             return null;

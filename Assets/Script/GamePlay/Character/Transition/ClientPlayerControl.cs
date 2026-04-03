@@ -12,7 +12,7 @@ namespace Script.GamePlay.Character {
 
         public override bool OnTrigger() {
             if (_controls == null) return false;
-            return _controls.HasAnyInput && Value;
+            return _controls.HasAnyInput == Value;
         }
     }
 }

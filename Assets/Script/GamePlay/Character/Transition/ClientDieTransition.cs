@@ -5,7 +5,7 @@ namespace Script.GamePlay.Character {
         public ClientDieTransition(ClientNodeBase node, TransitionBase transitionBase) : base(node, transitionBase) { }
         public override bool OnTrigger() {
             if (Character?.Die == null) return false;
-            return Value && Character.Die.CurrentValue;
+            return Value == Character.Die.CurrentValue;
         }
     }
 }

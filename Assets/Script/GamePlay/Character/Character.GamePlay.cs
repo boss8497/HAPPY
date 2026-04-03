@@ -19,7 +19,7 @@ namespace Script.GamePlay.Character {
         public override bool IsPlayer => _isPlayer;
 
 
-        [SerializeReference, ReadOnly]
+        [ShowInInspector, ReadOnly]
         private CharacterBehaviour _characterBehaviour;
 
         public CharacterBehaviour CharacterBehaviour => _characterBehaviour;

@@ -6,19 +6,16 @@ namespace Script.GamePlay.Character {
         public void SetState(CharacterState state) {
             if (State.Value.HasFlag(state)) return;
             State.OnNext(state);
-            SyncCharacterHitboxEntity();
         }
         // State 추가
         public void AddState(CharacterState state) {
             if (State.Value.HasFlag(state)) return;
             State.OnNext(State.Value |= state);
-            SyncCharacterHitboxEntity();
         }
 
         public void RemoveState(CharacterState state) {
             if (State.Value.HasFlag(state) == false) return;
             State.OnNext(State.Value &= ~state);
-            SyncCharacterHitboxEntity();
         }
         
     }

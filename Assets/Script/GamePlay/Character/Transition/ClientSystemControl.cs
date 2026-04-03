@@ -11,7 +11,7 @@ namespace Script.GamePlay.Character {
 
         public override bool OnTrigger() {
             if (_character?.SystemControl == null) return false;
-            return _character.SystemControl.CurrentValue && Value;
+            return _character.SystemControl.CurrentValue == Value;
         }
     }
 }

@@ -5,16 +5,16 @@ using Script.GameInfo.Character;
 namespace Script.GamePlay.Character {
     public partial class Character {
         //Initialize OnNext 순서대로
-        public ReactiveProperty<CharacterState> State       { get; set; } = new();
-        public ReactiveProperty<double>         Health      { get; set; } = new();
-        public ReactiveProperty<double>         MaxHealth   { get; set; } = new();
-        
-        
-        public ReadOnlyReactiveProperty<bool> Initialized   { get; set; }
-        public ReadOnlyReactiveProperty<bool> Jumping       { get; set; }
-        public ReadOnlyReactiveProperty<bool> Running       { get; set; }
-        public ReadOnlyReactiveProperty<bool> Die       { get; set; }
-        public ReadOnlyReactiveProperty<bool> SystemControl { get; set; }
+        public ReactiveProperty<CharacterState> State     { get; private set; } = new();
+        public ReactiveProperty<double>         Health    { get; private set; } = new();
+        public ReactiveProperty<double>         MaxHealth { get; private set; } = new();
+
+
+        public ReadOnlyReactiveProperty<bool> Initialized   { get; private set; }
+        public ReadOnlyReactiveProperty<bool> Jumping       { get; private set; }
+        public ReadOnlyReactiveProperty<bool> Running       { get; private set; }
+        public ReadOnlyReactiveProperty<bool> Die           { get; private set; }
+        public ReadOnlyReactiveProperty<bool> SystemControl { get; private set; }
 
 
         private DisposableBag _reactiveDisposableBag;
@@ -33,33 +33,36 @@ namespace Script.GamePlay.Character {
                       }
                   })
                   .AddTo(ref _reactiveDisposableBag);
-            
-            
+
+
             Initialized = State.Select(i => (i & CharacterState.Initialized) != 0)
                                .DistinctUntilChanged()
                                .ToReadOnlyReactiveProperty()
                                .AddTo(ref _reactiveDisposableBag);
-            
+
             Jumping = State.Select(i => (i & CharacterState.Jumping) != 0)
                            .DistinctUntilChanged()
                            .ToReadOnlyReactiveProperty()
                            .AddTo(ref _reactiveDisposableBag);
-            
+
             Running = State.Select(i => (i & CharacterState.Running) != 0)
                            .DistinctUntilChanged()
                            .ToReadOnlyReactiveProperty()
                            .AddTo(ref _reactiveDisposableBag);
-            
+
             Die = State.Select(i => (i & CharacterState.Die) != 0)
                        .DistinctUntilChanged()
                        .ToReadOnlyReactiveProperty()
                        .AddTo(ref _reactiveDisposableBag);
-            
+
             SystemControl = State.CombineLatest(Initialized, (state, initialized) => !initialized || (state & CharacterState.SystemControl) != 0)
                                  .DistinctUntilChanged()
                                  .ToReadOnlyReactiveProperty()
                                  .AddTo(ref _reactiveDisposableBag);
 
+
+            State.Subscribe((state) => { SyncCharacterHitboxEntity(); })
+                 .AddTo(ref _reactiveDisposableBag);
 
 
             State.OnNext(CharacterState.None);

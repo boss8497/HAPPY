@@ -21,16 +21,20 @@ namespace Script.GamePlay.Character {
         }
 
         protected override async UniTask Update(CancellationToken cts) {
-            while (!cts.IsCancellationRequested) {
-
+            while (!cts.IsCancellationRequested && _controls.HasAnyInput) {
                 if (_controls.JumpPressed || _controls.JumpHeld) {
                     CharacterBehaviour.Character.Jump();
+                    CharacterBehaviour.Character.SyncJumpInputEntity();
                 }
 
                 
                 //플레이어 조작을 컨트롤하기 때문에 DelayFrame을 사용하지 않고 Yield를 사용
                 await UniTask.Yield();
             }
+        }
+
+        protected override void End() {
+            CharacterBehaviour.Character.SyncJumpInputEntity();
         }
     }
 }

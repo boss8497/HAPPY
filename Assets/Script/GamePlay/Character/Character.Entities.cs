@@ -109,6 +109,34 @@ namespace Script.GamePlay.Character {
                         Speed     = 0f,
                     });
                 }   
+                
+                
+                if (entityManager.HasComponent<JumpInputData>(entity) == false) {
+                    entityManager.AddComponentData(entity, new JumpInputData {
+                        Held             = 0,
+                        ReleaseRequested = 0,
+                    });
+                }
+
+                if (entityManager.HasComponent<JumpResultData>(entity) == false) {
+                    entityManager.AddComponentData(entity, new JumpResultData {
+                        Landed = 0,
+                    });
+                }
+
+                if (entityManager.HasComponent<JumpingData>(entity) == false) {
+                    entityManager.AddComponentData(entity, new JumpingData {
+                        GroundY         = 0f,
+                        CurrentJumpTime = 0f,
+                        MaxJumpTime     = 0f,
+                        Gravity         = 0f,
+                        FallGravity     = 0f,
+                        Timer           = 0f,
+                        JumpVelocity    = 0f,
+                    });
+
+                    entityManager.SetComponentEnabled<JumpingData>(entity, false);
+                }
             }
         }
 

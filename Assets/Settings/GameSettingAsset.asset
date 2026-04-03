@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GameSettingAsset
   m_EditorClassIdentifier: Script.GameSetting.Data::Script.GameSetting.Data.GameSettingAsset
   gameSettingData:
-    frameRate: 30
-    vSyncCount: 2
+    frameRate: 60
+    vSyncCount: 0
     startUpScenePath: 3030a0516981d8143b9a4593cef2096d
     titleScenePath: 2c0311a93cfb8e9429e72de71ce756c9
