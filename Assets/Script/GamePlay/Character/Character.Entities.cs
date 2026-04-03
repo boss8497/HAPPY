@@ -16,7 +16,7 @@ namespace Script.GamePlay.Character {
 
             var entityManager = _stageEntityWorld.EntityManager;
 
-            EnsureHitboxComponents(entityManager, entity);
+            EnsureComponents(entityManager, entity);
 
             var presetRanges = entityManager.GetBuffer<HitboxPresetRange>(entity);
             var presetShapes = entityManager.GetBuffer<HitboxPresetShape>(entity);
@@ -29,7 +29,7 @@ namespace Script.GamePlay.Character {
             var characterInfo = CharacterCharacterInfo;
             if (characterInfo == null) {
                 entityManager.SetComponentData(entity, new HitboxState {
-                    Current = State,
+                    Current = State.CurrentValue,
                     Applied = CharacterState.None,
                 });
                 return;
@@ -38,10 +38,10 @@ namespace Script.GamePlay.Character {
             RegisterDefaultHitbox(characterInfo, presetRanges, presetShapes);
             RegisterStateHitboxes(characterInfo, presetRanges, presetShapes);
 
-            var appliedState = ApplyActiveHitboxes(State, presetRanges, presetShapes, activeShapes);
+            var appliedState = ApplyActiveHitboxes(State.CurrentValue, presetRanges, presetShapes, activeShapes);
 
             entityManager.SetComponentData(entity, new HitboxState {
-                Current = State,
+                Current = State.CurrentValue,
                 Applied = appliedState,
             });
         }
@@ -49,8 +49,6 @@ namespace Script.GamePlay.Character {
         private void SyncCharacterHitboxEntity() {
             if (_unitManager == null)
                 return;
-
-            _unitManager.SyncUnitEntity(this);
 
             if (_unitManager.TryGetEntity(this, out var entity) == false)
                 return;
@@ -71,15 +69,15 @@ namespace Script.GamePlay.Character {
                 return;
             }
 
-            var appliedState = ApplyActiveHitboxes(State, presetRanges, presetShapes, activeShapes);
+            var appliedState = ApplyActiveHitboxes(State.CurrentValue, presetRanges, presetShapes, activeShapes);
 
             entityManager.SetComponentData(entity, new HitboxState {
-                Current = State,
+                Current = State.CurrentValue,
                 Applied = appliedState,
             });
         }
 
-        private static void EnsureHitboxComponents(EntityManager entityManager, Entity entity) {
+        private void EnsureComponents(EntityManager entityManager, Entity entity) {
             if (entityManager.HasComponent<HitboxState>(entity) == false) {
                 entityManager.AddComponentData(entity, new HitboxState {
                     Current = CharacterState.None,
@@ -101,6 +99,16 @@ namespace Script.GamePlay.Character {
 
             if (entityManager.HasBuffer<CollisionResultData>(entity) == false) {
                 entityManager.AddBuffer<CollisionResultData>(entity);
+            }
+
+            
+            if (IsPlayer) {
+                if (entityManager.HasComponent<RunningData>(entity) == false) {
+                    entityManager.AddComponentData(entity, new RunningData {
+                        Direction = new float3(1f, 0f, 0f),
+                        Speed     = 0f,
+                    });
+                }   
             }
         }
 
@@ -264,10 +272,6 @@ namespace Script.GamePlay.Character {
             }
 
             return defaultIndex;
-        }
-
-        private void SyncCharacterTransformEntity() {
-            _unitManager?.SyncUnitEntity(this);
         }
     }
 }

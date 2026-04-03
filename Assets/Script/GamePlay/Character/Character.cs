@@ -9,7 +9,7 @@ namespace Script.GamePlay.Character {
         #region Interface
         //캐릭터 소환시 꼭 실행
         public void Initialize(int team, bool isPlayer = false) {
-            _state   = CharacterState.None;
+            SetState(CharacterState.None);
             _isPlayer = isPlayer;
             
             // UnRegister는 진짜로 Destroy가 됐을 때 호출해준다.

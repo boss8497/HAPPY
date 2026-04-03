@@ -60,4 +60,37 @@ namespace Script.GamePlay.ECS.Component {
         public float3 Direction;
         public float  Speed;
     }
+    
+    
+    /// <summary>
+    /// Character -> ECS 입력 전달용
+    /// Held: 지금 누르고 있는지
+    /// ReleaseRequested: 버튼을 뗀 순간 1회 전달용
+    /// </summary>
+    public struct JumpInputData : IComponentData {
+        public byte Held;
+        public byte ReleaseRequested;
+    }
+
+    /// <summary>
+    /// ECS 점프 런타임 데이터
+    /// 기존 JumpingAsync의 지역변수들을 옮긴 것
+    /// </summary>
+    public struct JumpingData : IComponentData, IEnableableComponent {
+        public float GroundY;
+        public float CurrentJumpTime;
+        public float MaxJumpTime;
+        public float Gravity;
+        public float FallGravity;
+        public float Timer;
+        public float JumpVelocity;
+    }
+
+    /// <summary>
+    /// ECS -> Character 결과 전달용
+    /// 착지했는지 알려주는 간단한 브리지
+    /// </summary>
+    public struct JumpResultData : IComponentData {
+        public byte Landed;
+    }
 }

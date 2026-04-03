@@ -1,4 +1,5 @@
 ﻿using Script.GamePlay.ECS.Component;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -11,6 +12,7 @@ namespace Script.GamePlay.ECS.System {
     public partial struct CharacterCollisionSystem : ISystem {
         private EntityQuery _query;
 
+        [BurstCompile]
         public void OnCreate(ref SystemState state) {
             _query = SystemAPI.QueryBuilder()
                               .WithAll<
@@ -24,6 +26,7 @@ namespace Script.GamePlay.ECS.System {
             state.RequireForUpdate(_query);
         }
 
+        [BurstCompile]
         public void OnUpdate(ref SystemState state) {
             foreach (var resultBuffer in SystemAPI.Query<DynamicBuffer<CollisionResultData>>()) {
                 resultBuffer.Clear();

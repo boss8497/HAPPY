@@ -29,9 +29,12 @@ namespace Script.GamePlay.Unit {
 
         public void RegisterUnit(Unit unit, int team) {
             if (unit == null)
-                return;
+                throw new ArgumentNullException($"Unit cannot be null.");
+            
+            if (_stageEntityWorld.IsAlive == false)
+                throw new ArgumentNullException($"월드가 생성되지 않았습니다.");
 
-            long uid = NewUid();
+            var uid = NewUid();
             unit.Set(uid, team);
 
             _units[uid] = unit;
@@ -45,7 +48,7 @@ namespace Script.GamePlay.Unit {
                 units.Add(unit);
             }
 
-            CreateOrUpdateEntity(unit);
+            CreateEntity(unit);
         }
 
         public void UnRegisterUnit(Unit unit) {
@@ -83,20 +86,7 @@ namespace Script.GamePlay.Unit {
             return _stageEntityWorld.EntityManager.Exists(entity);
         }
 
-        public void SyncUnitEntity(Unit unit) {
-            if (unit == null)
-                return;
-
-            CreateOrUpdateEntity(unit);
-        }
-
-        private void CreateOrUpdateEntity(Unit unit) {
-            if (unit == null)
-                return;
-
-            if (_stageEntityWorld.IsAlive == false)
-                return;
-
+        private void CreateEntity(Unit unit) {
             var entityManager = _stageEntityWorld.EntityManager;
 
             if (_entitiesByUid.TryGetValue(unit.UID, out var entity) == false || entityManager.Exists(entity) == false) {

@@ -7,6 +7,7 @@ using Script.GameInfo.Table;
 using Script.Utility.Runtime;
 using Script.GameInfo.Character;
 using Script.GamePlay.ECS.Component;
+using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ namespace Script.GamePlay.Character {
         }
 
         public void Run() {
-            if (Running) {
+            if ((Running?.CurrentValue ?? false)) {
                 return;
             }
             ReleaseRunning();
@@ -38,16 +39,12 @@ namespace Script.GamePlay.Character {
                 return;
 
             var entityManager = _stageEntityWorld.EntityManager;
-
             if (entityManager.HasComponent<RunningData>(entity) == false) {
-                entityManager.AddComponentData(entity, new RunningData {
-                    Direction = new float3(1f, 0f, 0f),
-                    Speed     = 0f,
-                });
+                throw new Exception($"Entity {entity} does not have RunningData component");
             }
 
             entityManager.SetComponentData(entity, new RunningData {
-                Direction = new float3(1f, 0f, 0f),
+                Direction = Vector3.right, // 오른쪽으로 고정
                 Speed     = (float)Status.Spd,
             });
 
@@ -68,16 +65,136 @@ namespace Script.GamePlay.Character {
 
             entityManager.SetComponentEnabled<RunningData>(entity, false);
         }
+        
+        private void Update() {
+            SyncJumpInputEntity();
+            SyncJumpResultEntity();
+        }
+        
+        private void SyncJumpInputEntity() {
+            if ((Jumping?.CurrentValue ?? false) == false) return;
+            if (_unitManager == null) return;
+            if (_unitManager.TryGetEntity(this, out var entity) == false) return;
+
+            var entityManager = _stageEntityWorld.EntityManager;
+
+            if (entityManager.HasComponent<JumpInputData>(entity) == false) return;
+
+            var input = entityManager.GetComponentData<JumpInputData>(entity);
+
+            input.Held = (byte)(PlayerControls.JumpHeld ? 1 : 0);
+
+            // 버튼을 뗀 순간은 놓치기 쉬우니 latch처럼 1회 기록
+            if (PlayerControls.JumpReleased) {
+                input.ReleaseRequested = 1;
+            }
+
+            entityManager.SetComponentData(entity, input);
+        }
+        
+        private void SyncJumpResultEntity() {
+            if ((Jumping?.CurrentValue ?? false) == false) return;
+            if (_unitManager == null) return;
+            if (_unitManager.TryGetEntity(this, out var entity) == false) return;
+
+            var entityManager = _stageEntityWorld.EntityManager;
+
+            if (entityManager.HasComponent<JumpResultData>(entity) == false) return;
+
+            var result = entityManager.GetComponentData<JumpResultData>(entity);
+            if (result.Landed == 0) return;
+
+            result.Landed = 0;
+            entityManager.SetComponentData(entity, result);
+
+            ReleaseJumping();
+        }
 
         public void Jump() {
-            if (Jumping) {
+            if ((Jumping?.CurrentValue ?? false)) {
                 return;
             }
 
             ReleaseJumping();
             AddState(CharacterState.Jumping);
-            _jumpCts = new();
-            JumpingAsync(_jumpCts.Token).Forget();
+            EnableJumping();
+        }
+        
+        private void EnableJumping() {
+            if (_unitManager == null) return;
+            if (_unitManager.TryGetEntity(this, out var entity) == false) return;
+
+            var entityManager = _stageEntityWorld.EntityManager;
+
+            EnsureJumpingComponents(entityManager, entity);
+
+            entityManager.SetComponentData(entity, new JumpInputData {
+                Held             = (byte)(PlayerControls.JumpHeld ? 1 : 0),
+                ReleaseRequested = 0,
+            });
+
+            entityManager.SetComponentData(entity, new JumpResultData {
+                Landed = 0,
+            });
+
+            entityManager.SetComponentData(entity, new JumpingData {
+                GroundY         = transform.position.y,
+                CurrentJumpTime = _config.maxJumpTime,
+                MaxJumpTime     = _config.maxJumpTime,
+                Gravity         = _config.gravity,
+                FallGravity     = _config.fallGravity,
+                Timer           = 0f,
+                JumpVelocity    = Convert.ToSingle(Status.Jump),
+            });
+
+            entityManager.SetComponentEnabled<JumpingData>(entity, true);
+        }
+        
+        private void EnsureJumpingComponents(EntityManager entityManager, Entity entity) {
+            if (entityManager.HasComponent<JumpInputData>(entity) == false) {
+                entityManager.AddComponentData(entity, new JumpInputData {
+                    Held             = 0,
+                    ReleaseRequested = 0,
+                });
+            }
+
+            if (entityManager.HasComponent<JumpResultData>(entity) == false) {
+                entityManager.AddComponentData(entity, new JumpResultData {
+                    Landed = 0,
+                });
+            }
+
+            if (entityManager.HasComponent<JumpingData>(entity) == false) {
+                entityManager.AddComponentData(entity, new JumpingData {
+                    GroundY         = 0f,
+                    CurrentJumpTime = 0f,
+                    MaxJumpTime     = 0f,
+                    Gravity         = 0f,
+                    FallGravity     = 0f,
+                    Timer           = 0f,
+                    JumpVelocity    = 0f,
+                });
+
+                entityManager.SetComponentEnabled<JumpingData>(entity, false);
+            }
+        }
+        
+        private void DisableJumping() {
+            if (_unitManager == null) return;
+            if (_unitManager.TryGetEntity(this, out var entity) == false) return;
+
+            var entityManager = _stageEntityWorld.EntityManager;
+
+            if (entityManager.HasComponent<JumpingData>(entity)) {
+                entityManager.SetComponentEnabled<JumpingData>(entity, false);
+            }
+
+            if (entityManager.HasComponent<JumpInputData>(entity)) {
+                entityManager.SetComponentData(entity, new JumpInputData {
+                    Held             = 0,
+                    ReleaseRequested = 0,
+                });
+            }
         }
 
         private async UniTaskVoid JumpingAsync(CancellationToken cts) {
@@ -129,15 +246,12 @@ namespace Script.GamePlay.Character {
                     transform.position = position;
 
                     timer += dt;
-                    
-                    SyncCharacterTransformEntity();
                     await UniTask.Yield(PlayerLoopTiming.FixedUpdate, cts);
                 }
             }
             catch (OperationCanceledException) { }
             finally {
                 ReleaseJumping();
-                SyncCharacterTransformEntity();
             }
         }
 
@@ -147,9 +261,7 @@ namespace Script.GamePlay.Character {
         }
 
         private void ReleaseJumping() {
-            _jumpCts?.Cancel();
-            _jumpCts?.Dispose();
-            _jumpCts = null;
+            DisableJumping();
             RemoveState(CharacterState.Jumping);
         }
 

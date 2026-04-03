@@ -6,6 +6,5 @@ namespace Script.GamePlay.Unit.Interface {
         void UnRegisterUnit(Unit unit);
         
         bool TryGetEntity(Unit   unit, out Entity entity);
-        void SyncUnitEntity(Unit unit);
     }
 }

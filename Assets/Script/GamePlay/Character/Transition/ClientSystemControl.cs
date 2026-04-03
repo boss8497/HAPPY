@@ -10,8 +10,8 @@ namespace Script.GamePlay.Character {
         }
 
         public override bool OnTrigger() {
-            if (_character == null) return false;
-            return _character.SystemControl && Value;
+            if (_character?.SystemControl == null) return false;
+            return _character.SystemControl.CurrentValue && Value;
         }
     }
 }

@@ -3,8 +3,8 @@ using UnityEngine;
 namespace Script.GamePlay.Unit {
     [System.Serializable]
     public abstract class Unit : MonoBehaviour {
-        private long _uid;
-        private int  _team;
+        protected long _uid;
+        protected int  _team;
 
         public long UID  => _uid;
         public int  Team => _team;

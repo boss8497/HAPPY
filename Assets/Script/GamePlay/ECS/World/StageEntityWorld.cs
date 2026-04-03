@@ -49,6 +49,7 @@ namespace Script.GamePlay.ECS.World {
 
             // 네 시스템들
             systems.Add(TypeManager.GetSystemTypeIndex<RunningSystem>());
+            systems.Add(TypeManager.GetSystemTypeIndex<JumpingSystem>());
             systems.Add(TypeManager.GetSystemTypeIndex<CharacterCollisionSystem>());
             systems.Add(TypeManager.GetSystemTypeIndex<CharacterSyncSystem>());
 
