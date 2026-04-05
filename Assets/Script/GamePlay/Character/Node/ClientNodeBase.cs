@@ -76,7 +76,9 @@ namespace Script.GamePlay.Character {
             }
         }
 
-        public virtual void Stop() { }
+        public virtual void Stop() {
+            End();
+        }
 
         private async UniTask<ClientTransitionBase> UpdateTransition(long generation, CancellationToken cts) {
             while (!cts.IsCancellationRequested && generation == nodeGeneration) {

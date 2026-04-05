@@ -69,9 +69,6 @@ namespace Script.GamePlay.Character {
 
 
         #region Jumping
-
-        //TODO: 지금 상태 보다는 Jump Result 상태를 관리하는 System이 하나 더 필요한듯.
-        //TODO : 현재 로직상 하면 점프 버튼 안누르면 JumpState 안바뀜
         public void SyncJumpInputEntity() {
             if (_unitManager == null || 
                 (Jumping?.CurrentValue ?? false) == false || 
@@ -113,7 +110,6 @@ namespace Script.GamePlay.Character {
         }
 
         public void Jump() {
-            SyncJumpResultEntity();
             if (Jumping?.CurrentValue ?? false) {
                 return;
             }
@@ -140,8 +136,9 @@ namespace Script.GamePlay.Character {
 
             entityManager.SetComponentData(entity, new JumpingData {
                 GroundY         = transform.position.y,
-                CurrentJumpTime = _config.maxJumpTime,
+                CurrentJumpTime = 0f,
                 MaxJumpTime     = _config.maxJumpTime,
+                MinJumpTime     = _config.minJumpTime,
                 Gravity         = _config.gravity,
                 FallGravity     = _config.fallGravity,
                 Timer           = 0f,

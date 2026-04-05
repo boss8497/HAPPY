@@ -18,6 +18,6 @@ MonoBehaviour:
     <Name>k__BackingField: 
     gravity: 50
     fallGravity: 1.5
-    minJumpTime: 0.1
-    maxJumpTime: 0.2
+    minJumpTime: 0.15
+    maxJumpTime: 0.3
     startDungeon: 1

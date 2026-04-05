@@ -13,7 +13,6 @@ namespace Script.GamePlay.ECS.System {
                 
                 var transform          = transformRef.ValueRO;
                 var originalGameObject = effectsRef.ValueRW.GameObject.Value;
-
                 if (originalGameObject) {
                     originalGameObject.transform.position = transform.Position;
                 }

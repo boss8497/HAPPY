@@ -44,6 +44,8 @@ namespace Script.GamePlay.ECS.System {
                 // 버튼을 뗀 순간은 1회성 이벤트처럼 소비
                 if (input.ReleaseRequested != 0) {
                     jumping.CurrentJumpTime = math.min(jumping.CurrentJumpTime, jumping.Timer);
+                    jumping.CurrentJumpTime = math.max(jumping.CurrentJumpTime, jumping.MinJumpTime);
+                    
                     input.ReleaseRequested = 0;
                 }
 

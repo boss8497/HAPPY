@@ -80,6 +80,7 @@ namespace Script.GamePlay.ECS.Component {
         public float GroundY;
         public float CurrentJumpTime;
         public float MaxJumpTime;
+        public float MinJumpTime;
         public float Gravity;
         public float FallGravity;
         public float Timer;
