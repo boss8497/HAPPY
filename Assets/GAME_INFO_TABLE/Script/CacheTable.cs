@@ -13,11 +13,12 @@ namespace Script.GameInfo.Table {
         private List<InfoBase>            _infos;
 
         public TableBase Table => _tableBase;
+        public string    Key   => _key;
 
         public CacheTable(string key, TableBase tableBase) {
             _key       = key;
             _tableBase = tableBase;
-            _infos     = _tableBase.Infos?.ToList() ??  new List<InfoBase>();
+            _infos     = _tableBase.Infos?.ToList() ?? new List<InfoBase>();
             _infoByUid = _tableBase.Infos?.ToDictionary(i => i.UID, i => i) ?? new();
         }
 

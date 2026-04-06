@@ -7,6 +7,9 @@ using Script.GameInfo.Table.Interface;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Script.GameInfo.Table {
     public partial class GameInfoManager : IGameInfoManager {
@@ -114,6 +117,19 @@ namespace Script.GameInfo.Table {
                 _dirty = false;
                 await LoadAsync();
             }
+        }
+        
+        public void Save<T>(T data) where T : InfoBase {
+#if UNITY_EDITOR
+            var type = typeof(T);
+            if (_cacheTablesByType.TryGetValue(type, out var cacheTable)) {
+                var asset = _handles[cacheTable.Key];
+                asset.Result.Upsert(data);
+                EditorUtility.SetDirty(asset.Result);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
+#endif
         }
 
         public void Dirty() {

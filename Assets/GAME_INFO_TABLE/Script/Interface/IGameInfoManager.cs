@@ -11,6 +11,7 @@ namespace Script.GameInfo.Table.Interface {
         T[]               GetCollection<T>() where T : InfoBase;
         UniTask           Flush();
         void              Dirty();
+        void              Save<T>(T data) where T : InfoBase;
         void              Release();
     }
 }

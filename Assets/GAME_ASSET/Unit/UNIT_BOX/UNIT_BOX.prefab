@@ -137,3 +137,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Script.GamePlay.Character::Script.GamePlay.Character.Character
   characterInfoUid: 2
+  hitBox:
+    rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

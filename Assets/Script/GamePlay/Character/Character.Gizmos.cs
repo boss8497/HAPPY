@@ -1,7 +1,9 @@
 ﻿#if UNITY_EDITOR
 using Script.GameInfo.Character;
+using Script.GameInfo.Table;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using CharacterInfo = Script.GameInfo.Character.CharacterInfo;
 
 namespace Script.GamePlay.Character {
     public partial class Character {
@@ -34,6 +36,7 @@ namespace Script.GamePlay.Character {
         [Button(ButtonSizes.Large), GUIColor(0.4f, 0f, 1)]
         private void ApplyHitBox() {
             CharacterInfo.hitbox = hitBox;
+            GameInfoManager.Instance.Save<CharacterInfo>(CharacterInfo);
         }
 
 
