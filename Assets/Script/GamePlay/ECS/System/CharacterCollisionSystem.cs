@@ -45,7 +45,17 @@ namespace Script.GamePlay.ECS.System {
                 if (shapesA.Length <= 0)
                     continue;
 
-                for (int j = i + 1; j < entities.Length; j++) {
+                var unitA = identities[i];
+
+                for (int j = 0; j < entities.Length; j++) {
+                    if (i == j) continue;
+                    
+                    var unitB = identities[j];
+                    // 같은팀 충돌을 피하는건데.. 음
+                    // 이거는 캐릭터 끼리의 충돌을 확인하는거고
+                    // 만약 Damage가 따로 있다면 Damage System에서 같은팀 판정 옵션을 주는게 좋을듯
+                    if(unitA.Team == unitB.Team) continue;
+                    
                     var entityB = entities[j];
                     var shapesB = activeLookup[entityB];
                     if (shapesB.Length <= 0)

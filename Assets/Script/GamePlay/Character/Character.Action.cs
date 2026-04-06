@@ -19,6 +19,11 @@ namespace Script.GamePlay.Character {
             _config = GameInfoManager.Instance.Config;
         }
 
+        public void ApplyDamage() {
+            Debug.LogError($"충돌했다고해!!!");
+        }
+        
+
         #region Running
 
         public void Run() {
