@@ -80,6 +80,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad6d812305dc0ad4a96bba138bde157e
+    m_Address: UNIT_BOX
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cbe02225f74e69548bc159c555a5e95e
     m_Address: StatusTable
     m_ReadOnly: 0

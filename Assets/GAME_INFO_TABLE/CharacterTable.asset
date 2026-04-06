@@ -20,6 +20,29 @@ MonoBehaviour:
     behaviourId: 1
     statusUids: 0100000002000000
     prefab: 01a9eed2b095cdd4b99094ba5363d4da
+    hitbox:
+      rid: 2476689665383727104
+    hitboxes: []
+  - <UID>k__BackingField: 2
+    <ID>k__BackingField: BOX
+    <Name>k__BackingField: "\uBC15\uC2A4"
+    animationEvents: []
+    behaviourId: 2
+    statusUids: 0100000002000000
+    prefab: ad6d812305dc0ad4a96bba138bde157e
+    hitbox:
+      rid: 2476689665383727106
+    hitboxes: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 2476689665383727104
+      type: {class: RectHitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        offset: {x: 0, y: 0.5, z: 0}
+        size: {x: 1, y: 1, z: 1}
+    - rid: 2476689665383727106
+      type: {class: RectHitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        offset: {x: 0, y: 0.5, z: 0}
+        size: {x: 1, y: 1, z: 1}
