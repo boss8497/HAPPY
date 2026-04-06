@@ -11,7 +11,7 @@ namespace Script.GamePlay.Character {
 
 
         private CharacterInfo _characterInfo;
-        public CharacterInfo CharacterCharacterInfo {
+        public CharacterInfo CharacterInfo {
             get {
                 if (InfoBase.ValidUid(characterInfoUid) == false) {
                     return null;
@@ -28,13 +28,13 @@ namespace Script.GamePlay.Character {
         private BehaviourInfo _behaviourInfo;
         public BehaviourInfo BehaviourInfo {
             get {
-                if (CharacterCharacterInfo == null) return null;
-                if (InfoBase.ValidUid(CharacterCharacterInfo.behaviourId) == false) {
+                if (CharacterInfo == null) return null;
+                if (InfoBase.ValidUid(CharacterInfo.behaviourId) == false) {
                     return null;
                 }
 
-                if (_behaviourInfo == null || _behaviourInfo.UID != CharacterCharacterInfo.behaviourId) {
-                    _behaviourInfo = GameInfoManager.Instance.Get<BehaviourInfo>(CharacterCharacterInfo.behaviourId);
+                if (_behaviourInfo == null || _behaviourInfo.UID != CharacterInfo.behaviourId) {
+                    _behaviourInfo = GameInfoManager.Instance.Get<BehaviourInfo>(CharacterInfo.behaviourId);
                 }
 
                 return _behaviourInfo;

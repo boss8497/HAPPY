@@ -26,7 +26,7 @@ namespace Script.GamePlay.Character {
             presetShapes.Clear();
             activeShapes.Clear();
 
-            var characterInfo = CharacterCharacterInfo;
+            var characterInfo = CharacterInfo;
             if (characterInfo == null) {
                 entityManager.SetComponentData(entity, new HitboxState {
                     Current = State.CurrentValue,
