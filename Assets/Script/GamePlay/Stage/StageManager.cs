@@ -12,6 +12,9 @@ namespace Script.GamePlay.Stage {
     public partial class StageManager : IStageManager, IInitializable, IDisposable {
         private List<Character.Character> _characters;
         private List<GameObject>          _characterObjects;
+        
+        private List<Character.Character> _enemies;
+        private List<GameObject>          _enemyObjects;
         private int                       _systemControlStack = 0;
 
 
@@ -60,15 +63,28 @@ namespace Script.GamePlay.Stage {
             ReleasePool();
         }
 
-        public void AddCharacter(GameObject obj, bool isPlayer = false) {
+        public void AddCharacter(GameObject obj) {
             _characterObjects.Add(obj);
             var characterScript = obj.GetComponent<Character.Character>();
             if (characterScript == null) {
                 characterScript = obj.GetComponentInChildren<Character.Character>();
             }
+            //카메라 셋팅
             _targetGroup.AddMember(obj.transform, 1, 1);
-            characterScript.Initialize(isPlayer ? 0 : 1, isPlayer);
+            
+            characterScript.Initialize(0, true);
             _characters.Add(characterScript);
+        }
+        
+        public void AddEnemy(GameObject obj) {
+            _enemyObjects.Add(obj);
+            var characterScript = obj.GetComponent<Character.Character>();
+            if (characterScript == null) {
+                characterScript = obj.GetComponentInChildren<Character.Character>();
+            }
+            
+            characterScript.Initialize(1, false);
+            _enemies.Add(characterScript);
         }
 
         public void Dispose() {

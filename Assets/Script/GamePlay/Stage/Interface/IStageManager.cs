@@ -25,9 +25,10 @@ namespace Script.GamePlay.Stage {
         UniTask Start();
         UniTask End();
         void    Release();
-        
-        
+
+
         //TestCode
-        void AddCharacter(GameObject obj, bool isPlayer = false);
+        void AddCharacter(GameObject obj);
+        void AddEnemy(GameObject     obj);
     }
 }
