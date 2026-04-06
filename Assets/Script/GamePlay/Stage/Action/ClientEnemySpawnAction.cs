@@ -7,45 +7,39 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using VContainer.Unity;
 using CharacterInfo = Script.GameInfo.Character.CharacterInfo;
-using Object = UnityEngine.Object;
 
 namespace Script.GamePlay.Stage {
-    //TODO: 테스트 코드가 있음
     [System.Serializable]
-    public class ClientPlayerSpawnAction : ClientActionBase {
-        private PlayerSpawnAction _playerSpawnAction;
-        private IStageManager     _stageManager;
-        private CharacterInfo     _characterInfo;
+    public class ClientEnemySpawnAction : ClientActionBase {
+        private readonly EnemySpawnAction _enemySpawnAction;
 
-        public ClientPlayerSpawnAction(ActionBase action) : base(action) {
-            if (action is PlayerSpawnAction playerSpawnAction) {
-                _playerSpawnAction = playerSpawnAction;
-            }
-            else {
-                throw new System.NotImplementedException("PlayerSpawnAction is not implemented");
+        private IStageManager _stageManager;
+        private CharacterInfo _characterInfo;
+
+        public ClientEnemySpawnAction(ActionBase action) : base(action) {
+            if (action is EnemySpawnAction enemySpawnAction) {
+                _enemySpawnAction = enemySpawnAction;
             }
         }
 
         public override UniTask Initialize(IStageManager stageManager) {
-            //일단 테스트 용으로 처음 캐릭터
-            _stageManager = stageManager;
-            _characterInfo = GameInfoManager.Instance.Get<CharacterInfo>(1);
+            _stageManager  = stageManager;
+            _characterInfo = GameInfoManager.Instance.Get<CharacterInfo>(_enemySpawnAction.uid);
             return UniTask.CompletedTask;
         }
 
         public override async UniTask Execute() {
-            
             //GameConfig Load
             var prefabHandle = Addressables.LoadAssetAsync<GameObject>(_characterInfo.prefab);
             await prefabHandle.Task;
-            
+
             if (prefabHandle.Status != AsyncOperationStatus.Succeeded)
                 throw new Exception($"Load failed: {nameof(GameConfiguration)}");
 
             var prefab = _stageManager.Resolver.Instantiate(prefabHandle.Result);
-            prefab.transform.position = _playerSpawnAction.position;
+            prefab.transform.position = _enemySpawnAction.position;
             _stageManager.AddCharacter(prefab, true);
-            
+
             Addressables.Release(prefabHandle);
         }
     }

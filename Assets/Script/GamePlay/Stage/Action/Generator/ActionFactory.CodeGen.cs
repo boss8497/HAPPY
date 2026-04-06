@@ -7,6 +7,7 @@ namespace Script.GamePlay.Stage {
     public static partial class ActionFactory {
         private static global::Script.GamePlay.Stage.ClientActionBase CreateInternal(global::Script.GameInfo.Dungeon.ActionBase action) {
             return action switch {
+                global::Script.GameInfo.Dungeon.EnemySpawnAction typed => new global::Script.GamePlay.Stage.ClientEnemySpawnAction(typed),
                 global::Script.GameInfo.Dungeon.PlayerSpawnAction typed => new global::Script.GamePlay.Stage.ClientPlayerSpawnAction(typed),
                 _ => null,
             };
