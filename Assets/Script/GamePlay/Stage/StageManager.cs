@@ -52,6 +52,10 @@ namespace Script.GamePlay.Stage {
             foreach (var character in _characters) {
                 await character.StartAsync();
             }
+            
+            foreach (var enemy in _enemies) {
+                await enemy.StartAsync();
+            }
         }
 
         public async UniTask End() {

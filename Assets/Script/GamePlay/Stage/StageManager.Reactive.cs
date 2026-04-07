@@ -63,6 +63,15 @@ namespace Script.GamePlay.Stage {
                                      character.RemoveState(CharacterState.SystemControl);
                                  }
                              }
+                             
+                             foreach (var enemy in _enemies) {
+                                 if (systemControl) {
+                                     enemy.AddState(CharacterState.SystemControl);
+                                 }
+                                 else {
+                                     enemy.RemoveState(CharacterState.SystemControl);
+                                 }
+                             }
                          })
                          .AddTo(ref _reactiveDisposableBag);
 
