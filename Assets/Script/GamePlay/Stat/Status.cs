@@ -24,12 +24,13 @@ namespace Script.GamePlay.Stat {
 
 
         //Property
-        public double Hp   => _calcValue[(int)StatType.Hp];
-        public double Mp   => _calcValue[(int)StatType.Mp];
-        public double Atk  => _calcValue[(int)StatType.Atk];
-        public double Def  => _calcValue[(int)StatType.Def];
-        public double Spd  => _calcValue[(int)StatType.Spd];
-        public double Jump => _calcValue[(int)StatType.Jump];
+        public double Hp        => _calcValue[(int)StatType.Hp];
+        public double Mp        => _calcValue[(int)StatType.Mp];
+        public double Atk       => _calcValue[(int)StatType.Atk];
+        public double Def       => _calcValue[(int)StatType.Def];
+        public double Spd       => _calcValue[(int)StatType.Spd];
+        public double Jump      => _calcValue[(int)StatType.Jump];
+        public double Collision => _calcValue[(int)StatType.Collision];
 
 
         public void Add(StatusInfo statusInfo) {
@@ -114,6 +115,7 @@ namespace Script.GamePlay.Stat {
         public void OnRent() {
             _originalStatus = ListPool.Get<StatusInfo>();
         }
+        
         public void OnReturn() {
             Release();
         }

@@ -5,6 +5,7 @@ namespace Script.GamePlay.Unit.Interface {
         void RegisterUnit(Unit   unit, int team);
         void UnRegisterUnit(Unit unit);
         
-        bool TryGetEntity(Unit   unit, out Entity entity);
+        bool TryGetEntity(Unit unit, out Entity entity);
+        bool TryGetUnit(long   uid, out Unit unit);
     }
 }

@@ -30,7 +30,7 @@ namespace Script.GamePlay.Unit {
         public void RegisterUnit(Unit unit, int team) {
             if (unit == null)
                 throw new ArgumentNullException($"Unit cannot be null.");
-            
+
             if (_stageEntityWorld.IsAlive == false)
                 throw new ArgumentNullException($"월드가 생성되지 않았습니다.");
 
@@ -140,6 +140,13 @@ namespace Script.GamePlay.Unit {
 
                 _entitiesByUid.Remove(unit.UID);
             }
+        }
+
+        public bool TryGetUnit(long uid, out Unit unit) {
+            if (_units.TryGetValue(uid, out unit) == false)
+                return false;
+
+            return true;
         }
 
         private long NewUid() {

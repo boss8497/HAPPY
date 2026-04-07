@@ -39,8 +39,8 @@ namespace Script.GamePlay.ECS.System {
                 }
 
                 foreach (var result in results) {
-                    // 필요하면 여기서 팀 체크 / UID 체크 / 데미지 분기 가능
-                    characterScript.ApplyDamage();
+                    // Team 체크는 Collision System에서 이미 확인
+                    characterScript.Collision(result.OtherUid);
                 }
 
                 results.Clear();

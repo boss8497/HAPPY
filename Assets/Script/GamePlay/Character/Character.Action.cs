@@ -19,9 +19,47 @@ namespace Script.GamePlay.Character {
             _config = GameInfoManager.Instance.Config;
         }
 
-        public void ApplyDamage() {
-            Debug.LogError($"충돌했다고해!!!");
+        #region Collision
+        public void Collision(long otherUid) {
+            if(_unitManager.TryGetUnit(otherUid, out var otherUnit) == false) {
+                throw new ArgumentException($"충돌한 유닛을 찾을 수 없습니다. UID: {otherUid}");
+            }
+            
+            var otherCharacter = otherUnit as Character;
+            if (otherCharacter == null) {
+                throw new InvalidCastException($"충돌한 유닛이 Character 타입이 아닙니다. UID: {otherUid}");
+            }
+
+            switch (otherCharacter.CharacterInfo.type) {
+                case CharacterType.Buff:
+                    break;
+                
+                case CharacterType.Score:
+                    break;
+                
+                case CharacterType.Character:
+                case CharacterType.Obstacle:
+                    Debug.LogError($"충돌했다고해!!! {otherCharacter.name}");
+                    ApplyCollisionDamage(otherCharacter);
+                    break;
+            }
         }
+
+        private void ApplyBuff() {
+        }
+
+        // Collision은 Def의 영향을 안받기 때문에 일단 따로 계산해 줌
+        private void ApplyCollisionDamage(Character otherCharacter) {
+            var currentHealth = Health.CurrentValue;
+            var newHealth = currentHealth - otherCharacter.Status.Collision;
+            if (newHealth < 0)
+                newHealth = 0;
+            Health.OnNext(newHealth);
+        }
+        
+        public void ApplyDamage() {
+        }
+        #endregion
         
 
         #region Running

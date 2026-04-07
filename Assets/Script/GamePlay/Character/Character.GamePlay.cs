@@ -64,6 +64,7 @@ namespace Script.GamePlay.Character {
             }
 
 
+            //TODO: 아직 레벨업 했을 때 status를 Update해주는 기능이 없는듯
             using var _ = CreateValueContext();
             foreach (var statusUid in _characterInfo.statusUids) {
                 _status.Add(GameInfoManager.Instance.Get<StatusInfo>(statusUid));

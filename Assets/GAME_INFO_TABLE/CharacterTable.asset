@@ -16,6 +16,7 @@ MonoBehaviour:
   - <UID>k__BackingField: 1
     <ID>k__BackingField: BOMI
     <Name>k__BackingField: "\uBCF4\uBBF8"
+    type: 0
     animationEvents: []
     behaviourId: 1
     statusUids: 0100000002000000
@@ -26,9 +27,10 @@ MonoBehaviour:
   - <UID>k__BackingField: 2
     <ID>k__BackingField: BOX
     <Name>k__BackingField: "\uBC15\uC2A4"
+    type: 1
     animationEvents: []
     behaviourId: 2
-    statusUids: 0100000002000000
+    statusUids: 0300000004000000
     prefab: ad6d812305dc0ad4a96bba138bde157e
     hitbox:
       rid: 2476689665383727232

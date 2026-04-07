@@ -1,5 +1,6 @@
 ﻿using System;
 
+// GamePlay Character에서 사용하는 State
 namespace Script.GameInfo.Character {
     [Flags]
     public enum CharacterState {

@@ -6,6 +6,8 @@ using UnityEngine;
 namespace Script.GameInfo.Character {
     [System.Serializable]
     public class CharacterInfo : InfoBase {
+        public CharacterType type;
+        
         [SerializeReference]
         public AnimationEvent[] animationEvents = Array.Empty<AnimationEvent>();
 
