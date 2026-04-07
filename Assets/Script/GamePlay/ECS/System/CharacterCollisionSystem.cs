@@ -1,4 +1,5 @@
-﻿using Script.GamePlay.ECS.Component;
+﻿using System.Linq;
+using Script.GamePlay.ECS.Component;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -21,6 +22,7 @@ namespace Script.GamePlay.ECS.System {
                                   UnitData,
                                   HitboxActiveShape,
                                   CollisionResultData>()
+                              .WithDisabled<UnitDieTag>()
                               .Build();
 
             state.RequireForUpdate(_query);
@@ -73,13 +75,6 @@ namespace Script.GamePlay.ECS.System {
                             OtherEntity = entityB,
                             OtherUid    = identities[j].Uid,
                             OtherTeam   = identities[j].Team,
-                        });
-
-                    resultLookup[entityB]
-                        .Add(new CollisionResultData {
-                            OtherEntity = entityA,
-                            OtherUid    = identities[i].Uid,
-                            OtherTeam   = identities[i].Team,
                         });
                 }
             }

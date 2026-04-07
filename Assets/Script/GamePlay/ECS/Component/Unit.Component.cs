@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Script.GamePlay.ECS.Component {
     public struct UnitEntityTag : IComponentData { }
+    public struct UnitDieTag : IComponentData, IEnableableComponent { }
 
     public struct UnitData : IComponentData {
         public long                       Uid;

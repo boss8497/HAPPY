@@ -39,7 +39,7 @@ namespace Script.GamePlay.Character {
                 
                 case CharacterType.Character:
                 case CharacterType.Obstacle:
-                    //Debug.LogError($"충돌했다고해!!! {otherCharacter.name}");
+                    Debug.LogError($"충돌했다고해!!! {otherCharacter.name}");
                     ApplyCollisionDamage(otherCharacter);
                     break;
             }

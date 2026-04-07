@@ -28,8 +28,10 @@ namespace Script.GamePlay.Character {
             Health.Subscribe(health => {
                       if ((Die?.CurrentValue ?? true) || (Initialized?.CurrentValue ?? false) == false) return;
 
+                      // 죽음
                       if (health <= 0) {
                           AddState(CharacterState.Die);
+                          EnableDieTag();
                       }
                   })
                   .AddTo(ref _reactiveDisposableBag);
