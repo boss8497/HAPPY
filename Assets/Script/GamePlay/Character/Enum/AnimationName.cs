@@ -4,5 +4,6 @@
         RUN,
         ATTACK,
         STAND,
+        DIE,
     }
 }

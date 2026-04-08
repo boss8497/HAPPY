@@ -29,7 +29,11 @@
         "GUID:e0cd26848372d4e5c891c569017e11f1",
         "GUID:d8b63aba1907145bea998dd612889d6b",
         "GUID:28aa271bc4dbcee43bb9368f52ce1bb5",
-        "GUID:97447fc7e59f52d43b9c22504cf8caba"
+        "GUID:97447fc7e59f52d43b9c22504cf8caba",
+        "GUID:029c1c1b674aaae47a6841a0b89ad80e",
+        "GUID:d2d092395dbb7c64cacbc17fee37a824",
+        "GUID:adba2068efaa84945879dfd41a6493f9",
+        "GUID:86bdea825cc79474592b0f378bfe2b20"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -38,7 +42,9 @@
     "precompiledReferences": [
         "R3.dll",
         "Sirenix.OdinInspector.Attributes.dll",
-        "Sirenix.Utilities.dll"
+        "Sirenix.Utilities.dll",
+        "DOTween.dll",
+        "DOTweenPro.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],

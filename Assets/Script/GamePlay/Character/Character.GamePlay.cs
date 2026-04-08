@@ -19,7 +19,7 @@ namespace Script.GamePlay.Character {
         public override bool IsPlayer => _isPlayer;
 
 
-        [ShowInInspector, ReadOnly]
+        [SerializeReference, SerializeField, ReadOnly]
         private CharacterBehaviour _characterBehaviour;
 
         public CharacterBehaviour CharacterBehaviour => _characterBehaviour;
@@ -28,9 +28,12 @@ namespace Script.GamePlay.Character {
         // 기본적으로 Initialize할 때 찾지만 Prefab에서 등록 가능하도록 설정
         [ShowInInspector]
         private SkeletonAnimation _skeletonAnimation;
-
         public SkeletonAnimation SkeletonAnimation => _skeletonAnimation;
 
+
+        [SerializeReference, SerializeField]
+        private DieAnimation _dieAnimation;
+        public DieAnimation DieAnimation => _dieAnimation;
 
         private string[] _animationNames;
 
@@ -50,11 +53,6 @@ namespace Script.GamePlay.Character {
 
 
         private void InitializeGamePlay() {
-            _characterBehaviour ??= ClassPool.Get<CharacterBehaviour>();
-            _characterBehaviour.Initialize(BehaviourInfo, this);
-
-            _status ??= ClassPool.Get<Status>();
-
             //Spine 컴포넌트
             if (_skeletonAnimation == null) {
                 _skeletonAnimation = GetComponent<SkeletonAnimation>();
@@ -62,6 +60,20 @@ namespace Script.GamePlay.Character {
                     _skeletonAnimation = GetComponentInChildren<SkeletonAnimation>();
                 }
             }
+
+            //Die Animation
+            if (_dieAnimation == null) {
+                _dieAnimation = GetComponent<DieAnimation>();
+                if (_dieAnimation == null) {
+                    _dieAnimation = GetComponentInChildren<DieAnimation>();
+                }
+            }
+            
+            
+            _characterBehaviour ??= ClassPool.Get<CharacterBehaviour>();
+            _characterBehaviour.Initialize(BehaviourInfo, this);
+
+            _status ??= ClassPool.Get<Status>();
 
 
             //TODO: 아직 레벨업 했을 때 status를 Update해주는 기능이 없는듯

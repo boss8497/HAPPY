@@ -93,7 +93,7 @@ namespace Script.GamePlay.Character {
             entityManager.SetComponentEnabled<RunningData>(entity, true);
         }
 
-        private void DisableRunning() {
+        public void DisableRunning() {
             if (_unitManager == null)
                 return;
 
@@ -228,7 +228,7 @@ namespace Script.GamePlay.Character {
 
         public float SetAnimation(string animationName, bool loop = false, bool hasExit = false) {
             if (SkeletonAnimation == null) {
-                Debug.LogError($"SkeletonAnimation is null");
+                Debug.LogError($"SkeletonAnimation is null. [{_characterInfo?.Name}]");
                 return 0f;
             }
 

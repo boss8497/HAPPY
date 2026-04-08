@@ -7,14 +7,35 @@ using UnityEngine;
 namespace Script.GamePlay.Character {
     [Serializable]
     public class ClientDieNode : ClientNodeBase {
-        public ClientDieNode(CharacterBehaviour characterBehaviour, NodeBase nodeBase) : base(characterBehaviour, nodeBase) { }
+        private Character    _character;
+        private DieAnimation _dieAnimation;
 
-        public override void Initialize() {
+        public ClientDieNode(CharacterBehaviour characterBehaviour, NodeBase nodeBase) : base(characterBehaviour, nodeBase) {
+            _character    = characterBehaviour.Character;
+            _dieAnimation = _character.DieAnimation;
         }
 
-        protected override UniTask Update(CancellationToken cts) {
+        public override void Initialize() {
+            if (_dieAnimation != null) {
+                _dieAnimation.ResetAnimation().Forget();
+            }
+        }
+
+        protected override void Enter() {
+            if (_character.IsPlayer) {
+                _character.DisableRunning();
+            }
+        }
+
+        protected override async UniTask Update(CancellationToken cts) {
             Debug.LogError($"죽었어!!! {CharacterBehaviour.Character.CharacterInfo.Name}");
-            return UniTask.CompletedTask;
+            
+            var dieAnimationTime = _characterBehaviour.Character.SetAnimation(nameof(AnimationName.DIE), false);
+            await UniTask.WaitForSeconds(dieAnimationTime, cancellationToken: cts);
+            
+            if (_dieAnimation != null) {
+                await _dieAnimation.PlayAnimation();
+            }
         }
     }
 }
