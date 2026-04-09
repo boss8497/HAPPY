@@ -48,5 +48,9 @@ namespace Script.GamePlay.Stage {
             
             Addressables.Release(prefabHandle);
         }
+
+        public override UniTask Release() {
+            return UniTask.CompletedTask;
+        }
     }
 }

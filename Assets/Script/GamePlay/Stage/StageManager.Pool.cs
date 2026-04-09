@@ -4,30 +4,30 @@ using UnityEngine;
 namespace Script.GamePlay.Stage {
     public partial class StageManager {
         private void InitializePool() {
-            _characters       = ListPool.Get<Character.Character>();
-            _characterObjects = ListPool.Get<GameObject>();
+            _players       = ListPool.Get<Character.Character>();
+            _playerObjects = ListPool.Get<GameObject>();
             
             _enemies       = ListPool.Get<Character.Character>();
             _enemyObjects = ListPool.Get<GameObject>();
         }
 
         private void ReleasePool() {
-            if (_characters != null) {
-                foreach (var character in _characters) {
+            if (_players != null) {
+                foreach (var character in _players) {
                     character.Release();
                 }
 
-                _characters.Clear();
-                ListPool.Return(_characters);
+                _players.Clear();
+                ListPool.Return(_players);
             }
 
-            if (_characterObjects != null) {
-                foreach (var characterObject in _characterObjects) {
+            if (_playerObjects != null) {
+                foreach (var characterObject in _playerObjects) {
                     Object.Destroy(characterObject);
                 }
 
-                _characterObjects.Clear();
-                ListPool.Return(_characterObjects);
+                _playerObjects.Clear();
+                ListPool.Return(_playerObjects);
             }
             
             

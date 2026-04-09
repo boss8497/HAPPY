@@ -1,7 +1,7 @@
 ﻿namespace Script.GameInfo.Dungeon {
     public enum TriggerType {
-        StageFail,
-        StageClear,
+        Fail,
+        Clear,
     }
     
     

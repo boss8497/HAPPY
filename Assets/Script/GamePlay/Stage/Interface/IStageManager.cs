@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using R3;
 using Script.GameData.Model;
 using Script.GameInfo.Dungeon;
@@ -19,6 +20,10 @@ namespace Script.GamePlay.Stage {
         ReadOnlyReactiveProperty<bool>                   SystemControl { get; }
         ReadOnlyReactiveProperty<DungeonInfo>            DungeonInfo   { get; }
         ReadOnlyReactiveProperty<GameInfo.Dungeon.Stage> Stage         { get; }
+
+        //GamePlay
+        List<Character.Character> Players { get; }
+        List<Character.Character> Enemies { get; }
 
         void    Initialize(DungeonProgress dungeonProgress);
         UniTask Begin();

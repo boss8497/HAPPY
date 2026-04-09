@@ -5,6 +5,7 @@ using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
 using Script.GameInfo.Character;
 using Script.GamePlay.Character;
+using UnityEngine;
 
 namespace Script.GamePlay.Stage {
     public partial class StageManager {
@@ -23,7 +24,7 @@ namespace Script.GamePlay.Stage {
 
         private DisposableBag _reactiveDisposableBag;
 
-        private void InitializeReactiveProperty(DungeonProgress dungeonProgress, StageState state) {
+        private void InitializeReactiveProperty(DungeonProgress dungeonProgress) {
             Initialized = State.Select(i => (i & StageState.Initialized) != 0)
                                .DistinctUntilChanged()
                                .ToReadOnlyReactiveProperty()
@@ -55,7 +56,7 @@ namespace Script.GamePlay.Stage {
 
 
             SystemControl.Subscribe((systemControl) => {
-                             foreach (var character in _characters) {
+                             foreach (var character in _players) {
                                  if (systemControl) {
                                      character.AddState(CharacterState.SystemControl);
                                  }
@@ -78,19 +79,60 @@ namespace Script.GamePlay.Stage {
 
             DungeonProgress.OnNext(dungeonProgress);
             PhaseIndex.OnNext(0);
-            State.OnNext(state);
         }
 
         private void ReleaseReactiveProperty() {
             _reactiveDisposableBag.Dispose();
         }
+        
+        // 직접 호출 금지 AddState, RemoveState로 호출
+        private void SetSystemControl(bool isOn) {
+            if (isOn) {
+                _systemControlStack += 1;
+                Debug.Log($"사용자 입력 차단 시작. Stack: {_systemControlStack}");
+            }
+            else {
+                _systemControlStack -= 1;
+                Debug.Log($"사용자 입력 차단 해제. Stack: {_systemControlStack}");
+            }
 
+            if (_systemControlStack < 0) {
+                _systemControlStack = 0;
+            }
+
+            if (_systemControlStack <= 0) {
+                if (State.Value.HasFlag(StageState.SystemControl) == false) return;
+                State.OnNext(State.Value &= ~StageState.SystemControl);
+            }
+            else {
+                if (State.Value.HasFlag(StageState.SystemControl)) return;
+                State.OnNext(State.Value |= StageState.SystemControl);
+            }
+        }
+        
+        public void ResetState() {
+            _systemControlStack = 0;
+            State.OnNext(StageState.None);
+        }
+        
         public void AddState(StageState state) {
+            switch (state) {
+                case StageState.SystemControl:
+                    SetSystemControl(true);
+                    return;
+            }
+            
             if (State.Value.HasFlag(state)) return;
             State.OnNext(State.Value |= state);
         }
 
         public void RemoveState(StageState state) {
+            switch (state) {
+                case StageState.SystemControl:
+                    SetSystemControl(false);
+                    return;
+            }
+            
             if (State.Value.HasFlag(state) == false) return;
             State.OnNext(State.Value &= ~state);
         }

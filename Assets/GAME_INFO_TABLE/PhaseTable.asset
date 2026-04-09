@@ -23,7 +23,8 @@ MonoBehaviour:
         <UID>k__BackingField: 1
         <ID>k__BackingField: Moutain_Phase_1
         <Name>k__BackingField: 
-        triggers: []
+        triggers:
+        - rid: 2476689730211151970
         actions:
         - rid: 2451557340872441960
         - rid: 2476689665383727235
@@ -48,3 +49,7 @@ MonoBehaviour:
         timing: 0
         uid: 2
         position: {x: 10, y: 0, z: 0}
+    - rid: 2476689730211151970
+      type: {class: PlayerDieTrigger, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
+      data:
+        type: 0

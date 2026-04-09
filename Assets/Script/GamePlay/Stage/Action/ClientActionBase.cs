@@ -8,5 +8,6 @@ namespace Script.GamePlay.Stage {
         }
         public abstract UniTask Initialize(IStageManager  stageManager);
         public abstract UniTask Execute();
+        public abstract UniTask Release();
     }
 }
