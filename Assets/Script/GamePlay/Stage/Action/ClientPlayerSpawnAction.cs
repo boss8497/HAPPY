@@ -27,26 +27,21 @@ namespace Script.GamePlay.Stage {
         }
 
         public override UniTask Initialize(IStageManager stageManager) {
-            //일단 테스트 용으로 처음 캐릭터
+            // 일단 테스트 용으로 처음 캐릭터
+            // 이 후에는 선택된 캐릭터를 플레이할 수 있도록..
             _stageManager = stageManager;
             _characterInfo = GameInfoManager.Instance.Get<CharacterInfo>(1);
             return UniTask.CompletedTask;
         }
 
-        public override async UniTask Execute() {
-            
-            //GameConfig Load
-            var prefabHandle = Addressables.LoadAssetAsync<GameObject>(_characterInfo.prefab);
-            await prefabHandle.Task;
-            
-            if (prefabHandle.Status != AsyncOperationStatus.Succeeded)
-                throw new Exception($"Load failed: {nameof(GameConfiguration)}");
-
-            var prefab = _stageManager.Resolver.Instantiate(prefabHandle.Result);
+        public override UniTask Execute() {
+            // 여기서 Pop한 Pool을 StageManager에서 Push를 해줌
+            // Pop을 호출 했으면 StageManager에서 Push 로직 필요
+            var prefab = _stageManager.StagePooling.Pop(_characterInfo.prefab);
             prefab.transform.position = _playerSpawnAction.position;
-            _stageManager.AddCharacter(prefab);
             
-            Addressables.Release(prefabHandle);
+            _stageManager.AddCharacter(prefab);
+            return UniTask.CompletedTask;
         }
 
         public override UniTask Release() {

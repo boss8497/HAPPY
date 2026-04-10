@@ -1,43 +1,82 @@
 ﻿using System;
 using System.Collections.Generic;
+using Script.Utility.Runtime;
 using UnityEngine;
-using Object = System.Object;
+using VContainer;
+using VContainer.Unity;
+using Object = UnityEngine.Object;
 
 namespace Script.GamePlay.Pool {
-    public class StagePooling : MonoBehaviour, IPooling {
-        private readonly Dictionary<string, ObjectPoolSystem> _objectPools = new(StringComparer.Ordinal);
+    public class StagePooling : IInitializable, IDisposable, IStagePooling {
+        private readonly Dictionary<string, GameObjectPool> _objectPools = new(StringComparer.Ordinal);
+
+        public Transform       Root     { get; private set; }
+        public IObjectResolver Resolver { get; private set; }
+
+
+        public StagePooling(IObjectResolver resolver) {
+            Resolver = resolver;
+        }
+
+        public void Initialize() {
+            var obj = new GameObject("StagePoolingRoot");
+            Root = obj.transform;
+            Root.position = new Vector3(int.MaxValue, int.MaxValue, int.MaxValue);
+        }
 
         public bool Exists(string key) {
             return _objectPools.ContainsKey(key);
         }
 
-        public GameObject Pop(string key) {
+
+        public GameObject Pop(string key, Transform parent = null, bool active = true) {
             if (_objectPools.TryGetValue(key, out var pool) == false) {
                 pool = CreatePool(key);
             }
-            return pool.Pop();
+
+            var obj = pool.Pop();
+            obj.SetSafeActive(active);
+            obj.transform.SetParent(parent);
+            return obj;
         }
 
-        private ObjectPoolSystem CreatePool(string key) {
-            var pool = new ObjectPoolSystem(this, key);
+        private GameObjectPool CreatePool(string key) {
+            var pool = new GameObjectPool(this, key);
             _objectPools.Add(key, pool);
             return pool;
         }
 
         public bool Push(GameObject obj) {
+            obj.SetSafeActive(false);
+            
             if (obj.TryGetComponent<PoolMember>(out var member) == false) {
-                Destroy(obj);
+                Object.Destroy(obj);
                 return false;
             }
-            
+
             if (_objectPools.TryGetValue(member.Key, out var pool)) {
                 pool.Push(obj);
                 return true;
             }
-            
-            Destroy(obj);
+
+            Object.Destroy(obj);
             return false;
         }
-        
+
+        private void Release() {
+            foreach (var pool in _objectPools) {
+                pool.Value.Dispose();
+            }
+
+            _objectPools.Clear();
+            
+            if (Root) {
+                Object.Destroy(Root);
+            }
+        }
+
+        public void Dispose() {
+            Release();
+        }
     }
 }

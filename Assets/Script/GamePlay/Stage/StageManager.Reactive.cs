@@ -10,11 +10,14 @@ using UnityEngine;
 namespace Script.GamePlay.Stage {
     public partial class StageManager {
         public ReactiveProperty<DungeonProgress> DungeonProgress { get; private set; } = new();
-        public ReactiveProperty<StageState>           State           { get; private set; } = new(StageState.None);
-        public ReactiveProperty<int>                  PhaseIndex      { get; private set; } = new(0);
+        public ReactiveProperty<StageState>      State           { get; private set; } = new(StageState.None);
+        public ReactiveProperty<int>             PhaseIndex      { get; private set; } = new(0);
 
         public ReadOnlyReactiveProperty<bool> Initialized   { get; private set; }
         public ReadOnlyReactiveProperty<bool> SystemControl { get; private set; }
+        public ReadOnlyReactiveProperty<bool> Fail          { get; private set; }
+        public ReadOnlyReactiveProperty<bool> Clear         { get; private set; }
+        public ReadOnlyReactiveProperty<bool> NextPhase     { get; private set; }
 
 
         public ReadOnlyReactiveProperty<DungeonInfo>            DungeonInfo { get; private set; }
@@ -35,6 +38,21 @@ namespace Script.GamePlay.Stage {
                                  .DistinctUntilChanged()
                                  .ToReadOnlyReactiveProperty()
                                  .AddTo(ref _reactiveDisposableBag);
+
+            Fail = State.Select(i => (i & StageState.Fail) != 0)
+                        .DistinctUntilChanged()
+                        .ToReadOnlyReactiveProperty()
+                        .AddTo(ref _reactiveDisposableBag);
+
+            Clear = State.Select(i => (i & StageState.Clear) != 0)
+                         .DistinctUntilChanged()
+                         .ToReadOnlyReactiveProperty()
+                         .AddTo(ref _reactiveDisposableBag);
+
+            NextPhase = State.Select(i => (i & StageState.NextPhase) != 0)
+                             .DistinctUntilChanged()
+                             .ToReadOnlyReactiveProperty()
+                             .AddTo(ref _reactiveDisposableBag);
 
             DungeonInfo = DungeonProgress.Select(i => i == null ? null : GameInfoManager.Instance.Get<DungeonInfo>(i.dungeonUid))
                                          .DistinctUntilChanged()
@@ -64,7 +82,7 @@ namespace Script.GamePlay.Stage {
                                      character.RemoveState(CharacterState.SystemControl);
                                  }
                              }
-                             
+
                              foreach (var enemy in _enemies) {
                                  if (systemControl) {
                                      enemy.AddState(CharacterState.SystemControl);
@@ -76,15 +94,45 @@ namespace Script.GamePlay.Stage {
                          })
                          .AddTo(ref _reactiveDisposableBag);
 
+            Fail.Subscribe( fail => {
+                    if (fail) { }
+                })
+                .AddTo(ref _reactiveDisposableBag);
+
+            Clear.Subscribe(clear => {
+                     if (clear) {
+                         // 다음 Phase가 있는지 확인
+                         if (Stage.CurrentValue.phaseInfos.Length - 1 > PhaseIndex.CurrentValue) {
+                             RemoveState(StageState.Clear);
+                             PhaseIndex.OnNext(PhaseIndex.CurrentValue + 1);
+
+                             AddState(StageState.NextPhase);
+                         }
+                         else { }
+                         
+                     }
+                 })
+                 .AddTo(ref _reactiveDisposableBag);
+
+            NextPhase.Subscribe(nextPhase => {
+                         if (nextPhase) { }
+                     })
+                     .AddTo(ref _reactiveDisposableBag);
+
 
             DungeonProgress.OnNext(dungeonProgress);
             PhaseIndex.OnNext(0);
         }
+        
 
         private void ReleaseReactiveProperty() {
             _reactiveDisposableBag.Dispose();
+            DungeonProgress.Dispose();
+            State.Dispose();
+            PhaseIndex.Dispose();
         }
         
+
         // 직접 호출 금지 AddState, RemoveState로 호출
         private void SetSystemControl(bool isOn) {
             if (isOn) {
@@ -109,30 +157,32 @@ namespace Script.GamePlay.Stage {
                 State.OnNext(State.Value |= StageState.SystemControl);
             }
         }
-        
+
         public void ResetState() {
             _systemControlStack = 0;
             State.OnNext(StageState.None);
         }
-        
+
         public void AddState(StageState state) {
             switch (state) {
+                // SystemControl은 Stack으로 관리해야하므로 별도 처리
                 case StageState.SystemControl:
                     SetSystemControl(true);
                     return;
             }
-            
+
             if (State.Value.HasFlag(state)) return;
             State.OnNext(State.Value |= state);
         }
 
         public void RemoveState(StageState state) {
             switch (state) {
+                // SystemControl은 Stack으로 관리해야하므로 별도 처리
                 case StageState.SystemControl:
                     SetSystemControl(false);
                     return;
             }
-            
+
             if (State.Value.HasFlag(state) == false) return;
             State.OnNext(State.Value &= ~state);
         }

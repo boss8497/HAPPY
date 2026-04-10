@@ -45,8 +45,9 @@ namespace Script.GUI.Screen {
             Addressables.Release(handle);
         }
 
-        public async UniTask OpenScreen(string id) {
+        public UniTask OpenScreen(string id) {
             Debug.Log($"Opening screen call : {id}");
+            return UniTask.CompletedTask;
         }
     }
 }

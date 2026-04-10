@@ -40,11 +40,12 @@ namespace Script.GamePlay.Stage {
             var loopStop = false;
             switch (trigger.Type) {
                 case TriggerType.Clear:
+                    AddState(StageState.Clear);
                     loopStop = true;
                     break;
                 
                 case TriggerType.Fail:
-                    Debug.LogError($"스테이지 끝났어~ 졌어~");
+                    AddState(StageState.Fail);
                     loopStop = true;
                     break;
             }

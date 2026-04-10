@@ -12,11 +12,9 @@ using VContainer.Unity;
 namespace Script.GamePlay.Stage {
     public partial class StageManager : IStageManager, IInitializable, IDisposable {
         private List<Character.Character> _players;
-        private List<GameObject>          _playerObjects;
         public  List<Character.Character> Players => _players;
 
         private List<Character.Character> _enemies;
-        private List<GameObject>          _enemyObjects;
         public  List<Character.Character> Enemies => _enemies;
 
         private int _systemControlStack = 0;
@@ -35,9 +33,9 @@ namespace Script.GamePlay.Stage {
         public async UniTaskVoid Test() {
             ResetState();
             
-            await UniTask.WaitUntil(() => _group.Initialized);
+            await UniTask.WaitUntil(() => Group?.Initialized ?? false);
             await UniTask.WaitUntil(() => _entityWorld.IsAlive);
-            var dungeon = _group.GroupData.Model.CurrentValue.dungeonProgresses.FirstOrDefault();
+            var dungeon = Group.GroupData.Model.CurrentValue.dungeonProgresses.FirstOrDefault();
 
             AddState(StageState.SystemControl);
             Initialize(dungeon);
@@ -101,6 +99,10 @@ namespace Script.GamePlay.Stage {
             }
         }
 
+        public UniTask ReStart() {
+            return UniTask.CompletedTask;
+        }
+
         public void Release() {
             StopLoop();
             ReleaseTrigger();
@@ -109,7 +111,6 @@ namespace Script.GamePlay.Stage {
         }
 
         public void AddCharacter(GameObject obj) {
-            _playerObjects.Add(obj);
             var characterScript = obj.GetComponent<Character.Character>();
             if (characterScript == null) {
                 characterScript = obj.GetComponentInChildren<Character.Character>();
@@ -123,7 +124,6 @@ namespace Script.GamePlay.Stage {
         }
 
         public void AddEnemy(GameObject obj) {
-            _enemyObjects.Add(obj);
             var characterScript = obj.GetComponent<Character.Character>();
             if (characterScript == null) {
                 characterScript = obj.GetComponentInChildren<Character.Character>();

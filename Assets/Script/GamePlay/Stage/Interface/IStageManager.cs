@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using R3;
 using Script.GameData.Model;
 using Script.GameInfo.Dungeon;
+using Script.GamePlay.Pool;
 using Script.GamePlay.Service.Interface;
 using UnityEngine;
 using VContainer;
@@ -10,16 +11,22 @@ using VContainer;
 namespace Script.GamePlay.Stage {
     public interface IStageManager {
         //Injection
-        IGroupService   Group    { get; }
-        IObjectResolver Resolver { get; }
+        IGroupService   Group        { get; }
+        IObjectResolver Resolver     { get; }
+        IStagePooling   StagePooling { get; }
 
 
         //Reactive
-        ReactiveProperty<StageState>                     State         { get; }
-        ReadOnlyReactiveProperty<bool>                   Initialized   { get; }
-        ReadOnlyReactiveProperty<bool>                   SystemControl { get; }
-        ReadOnlyReactiveProperty<DungeonInfo>            DungeonInfo   { get; }
-        ReadOnlyReactiveProperty<GameInfo.Dungeon.Stage> Stage         { get; }
+        ReactiveProperty<StageState>   State         { get; }
+        ReadOnlyReactiveProperty<bool> Initialized   { get; }
+        ReadOnlyReactiveProperty<bool> SystemControl { get; }
+        ReadOnlyReactiveProperty<bool> Fail          { get; }
+        ReadOnlyReactiveProperty<bool> Clear         { get; }
+        ReadOnlyReactiveProperty<bool> NextPhase     { get; }
+
+
+        ReadOnlyReactiveProperty<DungeonInfo>            DungeonInfo { get; }
+        ReadOnlyReactiveProperty<GameInfo.Dungeon.Stage> Stage       { get; }
 
         //GamePlay
         List<Character.Character> Players { get; }
@@ -32,7 +39,6 @@ namespace Script.GamePlay.Stage {
         void    Release();
 
 
-        //TestCode
         void AddCharacter(GameObject obj);
         void AddEnemy(GameObject     obj);
     }

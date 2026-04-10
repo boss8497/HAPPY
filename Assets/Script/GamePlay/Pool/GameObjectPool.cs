@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Script.Utility.Runtime;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
+using VContainer.Unity;
 
 namespace Script.GamePlay.Pool {
     [System.Serializable]
-    public class ObjectPoolSystem : IObjectPoolSystem, IDisposable {
-        private readonly IPooling          _manager;
+    public class GameObjectPool : IGameObjectPool, IDisposable {
+        private readonly IStagePooling     _manager;
         private readonly string            _key;
-        private readonly Stack<GameObject> _stack = new();
+        private readonly Stack<GameObject> _stack;
 
-        private AsyncOperationHandle<GameObject> _handle;
-        private GameObject                       _instance;
-
+        private GameObject _instance;
+        private bool       _isDisposed;
 
         public string Key => _key;
 
 
-        public ObjectPoolSystem(IPooling manager, string key, int count = 5) {
+        public GameObjectPool(IStagePooling manager, string key, int count = 1) {
+            _stack   = ListPool.GetCollection<Stack<GameObject>>();
             _manager = manager;
             _key     = key;
             Initialize();
@@ -27,10 +28,10 @@ namespace Script.GamePlay.Pool {
         }
 
         public void Initialize() {
-            _handle = Addressables.LoadAssetAsync<GameObject>(_key);
-            _handle.WaitForCompletion();
-            
-            _instance = UnityEngine.Object.Instantiate(_handle.Result);
+            var handle = Addressables.LoadAssetAsync<GameObject>(_key);
+            handle.WaitForCompletion();
+
+            _instance = _manager.Resolver.Instantiate(handle.Result, _manager.Root);
             _instance.gameObject.SetActive(false);
 
             if (_instance.TryGetComponent<PoolMember>(out var member) == false) {
@@ -38,13 +39,13 @@ namespace Script.GamePlay.Pool {
             }
 
             member.Set(this);
-
-            Addressables.Release(_handle);
+            Addressables.Release(handle);
         }
 
         private void CreateInstance(int count = 1) {
             for (int i = 0; i < count; i++) {
-                _stack.Push(UnityEngine.Object.Instantiate(_instance));
+                // 생성될 때 이미 Active는 False인 상태
+                _stack.Push(_manager.Resolver.Instantiate(_instance, _manager.Root));
             }
         }
 
@@ -61,7 +62,8 @@ namespace Script.GamePlay.Pool {
         }
 
         public void Dispose() {
-            Addressables.Release(_handle);
+            if (_isDisposed) return;
+
             if (_instance != null) {
                 UnityEngine.Object.Destroy(_instance);
             }
@@ -69,6 +71,11 @@ namespace Script.GamePlay.Pool {
             foreach (var item in _stack) {
                 UnityEngine.Object.Destroy(item);
             }
+            
+            _stack.Clear();
+            ListPool.ReturnCollection(_stack);
+
+            _isDisposed = true;
         }
     }
 }

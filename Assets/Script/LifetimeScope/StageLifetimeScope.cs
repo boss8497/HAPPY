@@ -1,6 +1,7 @@
 using Script.GamePlay.Camera;
 using Script.GamePlay.ECS.World;
 using Script.GamePlay.Input;
+using Script.GamePlay.Pool;
 using Script.GamePlay.Stage;
 using Script.GamePlay.Unit;
 using Script.GamePlay.Unit.Interface;
@@ -27,6 +28,8 @@ namespace Script.LifetimeScope {
             builder.RegisterEntryPoint<StageManager>(Lifetime.Singleton)
                    .As<IStageManager>()
                    .WithParameter(targetGroup);
+            builder.RegisterEntryPoint<StagePooling>(Lifetime.Singleton)
+                   .As<IStagePooling>();
             
             builder.Register<ICameraControls, CameraControls>(Lifetime.Singleton)
                    .WithParameter<Camera>(mainCamera == null ? Camera.main : mainCamera);

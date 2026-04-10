@@ -8,5 +8,6 @@ namespace Script.GamePlay.Stage {
         SystemControl = 1 << 1,
         Clear         = 1 << 2,
         Fail          = 1 << 3,
+        NextPhase     = 1 << 4,
     }
 }

@@ -1,4 +1,10 @@
-﻿namespace Script.Utility.Runtime {
+﻿using UnityEngine;
+
+namespace Script.Utility.Runtime {
     public static class ExtensionUtility {
+        public static void SetSafeActive(this GameObject obj, bool active) {
+            if (obj.activeSelf == active) return;
+            obj.SetActive(active);
+        }
     }
 }
