@@ -49,7 +49,7 @@ namespace Script.GamePlay.Pool {
         public bool Push(GameObject obj) {
             obj.SetSafeActive(false);
             
-            if (obj.TryGetComponent<PoolMember>(out var member) == false) {
+            if (obj.TryGetComponent<IPoolMember>(out var member) == false) {
                 Object.Destroy(obj);
                 return false;
             }

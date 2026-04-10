@@ -41,6 +41,7 @@ MonoBehaviour:
         id: WAIT
         transitions:
         - rid: 2451557272760352769
+        - rid: 2476689752501256356
         - rid: 2451557297210785884
     - rid: 2451557219312599044
       type: {class: StartNode, ns: Script.GameInfo.Character, asm: Script.GameInfo}
@@ -108,7 +109,7 @@ MonoBehaviour:
         id: SYSTEM
         transitions:
         - rid: 2451557272760352771
-        - rid: 2451557272760352772
+        - rid: 2476689752501256358
     - rid: 2451557272760352771
       type: {class: DieTransition, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
@@ -126,23 +127,6 @@ MonoBehaviour:
           v1: 1297461387
           v2: 94862013
           v3: 4094551553
-    - rid: 2451557272760352772
-      type: {class: EndTransition, ns: Script.GameInfo.Character, asm: Script.GameInfo}
-      data:
-        guid:
-          v0: 1837764790
-          v1: 1206338963
-          v2: 2068208543
-          v3: 2300174158
-        id: AutoTransition
-        timing: 2
-        value: 0
-        priority: 0
-        nextNodeGuid:
-          v0: 2871299344
-          v1: 1245686449
-          v2: 3263266976
-          v3: 3800206938
     - rid: 2451557272760352773
       type: {class: PlayerControlNode, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
@@ -347,3 +331,37 @@ MonoBehaviour:
           v1: 1297288475
           v2: 3487951488
           v3: 2981393702
+    - rid: 2476689752501256356
+      type: {class: SystemControl, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 3107025564
+          v1: 1201744720
+          v2: 4103633584
+          v3: 2351257519
+        id: System
+        timing: 1
+        value: 1
+        priority: 0
+        nextNodeGuid:
+          v0: 4221805148
+          v1: 1171156409
+          v2: 2581611181
+          v3: 3162336557
+    - rid: 2476689752501256358
+      type: {class: SystemControl, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 3175191485
+          v1: 1082408305
+          v2: 2426061731
+          v3: 2352185335
+        id: Wait
+        timing: 1
+        value: 0
+        priority: 0
+        nextNodeGuid:
+          v0: 2871299344
+          v1: 1245686449
+          v2: 3263266976
+          v3: 3800206938

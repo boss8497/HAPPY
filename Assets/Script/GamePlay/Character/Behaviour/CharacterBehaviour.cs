@@ -53,10 +53,17 @@ namespace Script.GamePlay.Character {
             _currentNode.Start(_nodeCts.Token).Forget();
         }
 
-        public async UniTask Stop() {
+        public async UniTask StopAsync() {
             if (_nodeCts is { IsCancellationRequested: false }) {
                 _nodeCts.Cancel();
                 await UniTask.WaitWhile(() => _nodes.All(a => !a.IsPlay));
+                _nodeCts.Dispose();
+                _nodeCts = null;
+            }
+        }
+        public void Stop() {
+            if (_nodeCts is { IsCancellationRequested: false }) {
+                _nodeCts.Cancel();
                 _nodeCts.Dispose();
                 _nodeCts = null;
             }
@@ -77,7 +84,7 @@ namespace Script.GamePlay.Character {
         }
 
         public async UniTask OnTransition(ClientNodeBase node, ClientTransitionBase transition) {
-            await Stop();
+            await StopAsync();
             
             node.Stop();
 

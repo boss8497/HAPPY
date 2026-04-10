@@ -30,7 +30,7 @@ namespace Script.GamePlay.Stage {
         // StageLoader에서 순차 적으로 Call이 되어야 하며
         // DungeonInfo 에는 이미 Scene안에 BackGround 및 StageLifeTimeScope가 있음
         // 그래서 StageManager 에서는 Trigger 및 Action 실행 해서 
-        public async UniTaskVoid Test() {
+        public async UniTask Test() {
             ResetState();
             
             await UniTask.WaitUntil(() => Group?.Initialized ?? false);
@@ -99,15 +99,13 @@ namespace Script.GamePlay.Stage {
             }
         }
 
-        public UniTask ReStart() {
+        public async UniTask ReStart() {
             StopLoop();
             ResetTrigger();
             ResetReactive();
             ResetPool();
             
-            Test().Forget();
-
-            return UniTask.CompletedTask;
+            await Test();
         }
 
         public void Release() {

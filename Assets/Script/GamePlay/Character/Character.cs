@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Character;
 using Script.GamePlay.Character.Interface;
@@ -37,6 +38,7 @@ namespace Script.GamePlay.Character {
         }
         
         public void Release() {
+            _characterBehaviour?.Stop();
             ReleaseAction();
             ReleaseGamePlay();
             ReleaseReactiveProperty();

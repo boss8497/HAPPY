@@ -66,6 +66,25 @@ namespace Script.GamePlay.Character {
             State.Subscribe((state) => { SyncCharacterHitboxEntity(); })
                  .AddTo(ref _reactiveDisposableBag);
 
+            switch (CharacterInfo.type) {
+                case CharacterType.Character:
+
+                    SystemControl.CombineLatest(Initialized, (systemControl, initialized) => (systemControl, initialized))
+                                 .Subscribe(data => {
+                                     if (data.initialized == false) return;
+
+                                     if (data.systemControl) {
+                                         DisableRunning();
+                                     }
+                                     else {
+                                         EnableRunning();
+                                     }
+                                 })
+                                 .AddTo(ref _reactiveDisposableBag);
+
+                    break;
+            }
+
 
             State.OnNext(CharacterState.None);
             Health.OnNext(Status.Hp);

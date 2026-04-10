@@ -7,12 +7,14 @@ namespace Script.GamePlay.Character {
     public class ClientSystemControlNode : ClientNodeBase {
         public ClientSystemControlNode(CharacterBehaviour characterBehaviour, NodeBase nodeBase) : base(characterBehaviour, nodeBase) { }
 
-        public override void Initialize() {
-            
+        public override void Initialize() { }
+
+        protected override void Enter() {
+            _characterBehaviour.Character.SetAnimation(nameof(AnimationName.IDLE), true);
         }
 
         protected override UniTask Update(CancellationToken cts) {
-                return UniTask.CompletedTask;
+            return UniTask.CompletedTask;
         }
     }
 }

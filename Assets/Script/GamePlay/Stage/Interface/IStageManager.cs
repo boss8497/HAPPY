@@ -42,5 +42,9 @@ namespace Script.GamePlay.Stage {
 
         void AddCharacter(GameObject obj);
         void AddEnemy(GameObject     obj);
+
+        void ResetState();
+        void AddState(StageState    state);
+        void RemoveState(StageState state);
     }
 }

@@ -50,7 +50,7 @@ namespace Script.GamePlay.Background {
             }
         }
 
-        private async UniTaskVoid Initialize() {
+        private async UniTask Initialize() {
             await UniTask.WaitUntil(() => _cameraControls != null);
             
             _camera = _cameraControls.MainCamera;
@@ -80,9 +80,17 @@ namespace Script.GamePlay.Background {
 
         
         //TODO: Ui 만들어지 전까지 테스트 코드
-        [Button("Restart")]
-        public void TestRestart() {
-            _stageManager.ReStart().Forget();
+        [Button("RestartReady")]
+        public async void TestRestart() {
+            await _stageManager.ReStart();
+            _stageManager.AddState(StageState.SystemControl);
+            // await Initialize();
+            // _stageManager.RemoveState(StageState.SystemControl);
+        }
+        
+        [Button("RestartEnd")]
+        public async void TestRestartEnd() {
+            _stageManager.RemoveState(StageState.SystemControl);
         }
     }
 }

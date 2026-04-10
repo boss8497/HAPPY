@@ -16,20 +16,33 @@ namespace Script.GUI.Screen {
         private readonly string _screenDataPath = nameof(ScreenData);
 
         [SerializeField]
-        private RectTransform baseRoot;
+        private RectTransform layerParent;
 
-        [SerializeField]
-        private RectTransform popupRoot;
-
-        [SerializeField]
-        private RectTransform overlayRoot;
-
+        private RectTransform[]                 _layers = new RectTransform[(int)ScreenLayer.Max];
         private Dictionary<string, ScreenAsset> _screens;
 
         public void Initialize() {
             DontDestroyOnLoad(this);
+            CreateLayer();
             LoadScreenData();
             AddState(ScreenManagerState.Initialized);
+        }
+
+        private void CreateLayer() {
+            for (int i = 0; i < (int)ScreenLayer.Max; ++i) {
+                var layer = (ScreenLayer)i;
+
+                var obj  = new GameObject(layer.ToString(), typeof(RectTransform));
+                var rect = obj.GetComponent<RectTransform>();
+
+                rect.SetParent(layerParent, false);
+
+                rect.anchorMin = Vector2.zero;
+                rect.anchorMax = Vector2.one;
+
+                rect.offsetMin = Vector2.zero;
+                rect.offsetMax = Vector2.zero;
+            }
         }
 
         private void LoadScreenData() {
@@ -40,7 +53,6 @@ namespace Script.GUI.Screen {
                 throw new Exception($"Load failed: {_screenDataPath}");
 
             _screens = handle.Result.screens.ToDictionary(r => r.id, r => r);
-
 
             Addressables.Release(handle);
         }
