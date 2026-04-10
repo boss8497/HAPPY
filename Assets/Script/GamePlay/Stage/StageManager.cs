@@ -100,13 +100,20 @@ namespace Script.GamePlay.Stage {
         }
 
         public UniTask ReStart() {
+            StopLoop();
+            ResetTrigger();
+            ResetReactive();
+            ResetPool();
+            
+            Test().Forget();
+
             return UniTask.CompletedTask;
         }
 
         public void Release() {
             StopLoop();
             ReleaseTrigger();
-            ReleaseReactiveProperty();
+            ReleaseReactive();
             ReleasePool();
         }
 

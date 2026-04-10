@@ -28,19 +28,12 @@ namespace Script.GamePlay.Stage {
             return UniTask.CompletedTask;
         }
 
-        public override async UniTask Execute() {
-            //GameConfig Load
-            var prefabHandle = Addressables.LoadAssetAsync<GameObject>(_characterInfo.prefab);
-            await prefabHandle.Task;
-
-            if (prefabHandle.Status != AsyncOperationStatus.Succeeded)
-                throw new Exception($"Load failed: {nameof(GameConfiguration)}");
-
-            var prefab = _stageManager.Resolver.Instantiate(prefabHandle.Result);
+        public override UniTask Execute() {
+            var prefab = _stageManager.StagePooling.Pop(_characterInfo.prefab);
             prefab.transform.position = _enemySpawnAction.position;
             _stageManager.AddEnemy(prefab);
 
-            Addressables.Release(prefabHandle);
+            return UniTask.CompletedTask;
         }
 
         public override UniTask Release() {

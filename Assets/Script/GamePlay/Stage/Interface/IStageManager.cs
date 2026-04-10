@@ -36,6 +36,7 @@ namespace Script.GamePlay.Stage {
         UniTask Begin();
         UniTask Start();
         UniTask End();
+        UniTask ReStart();
         void    Release();
 
 

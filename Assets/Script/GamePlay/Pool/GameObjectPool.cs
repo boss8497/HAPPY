@@ -33,19 +33,20 @@ namespace Script.GamePlay.Pool {
 
             _instance = _manager.Resolver.Instantiate(handle.Result, _manager.Root);
             _instance.gameObject.SetActive(false);
-
-            if (_instance.TryGetComponent<PoolMember>(out var member) == false) {
-                member = _instance.AddComponent<PoolMember>();
-            }
-
-            member.Set(this);
+            
             Addressables.Release(handle);
         }
 
         private void CreateInstance(int count = 1) {
             for (int i = 0; i < count; i++) {
                 // 생성될 때 이미 Active는 False인 상태
-                _stack.Push(_manager.Resolver.Instantiate(_instance, _manager.Root));
+                var obj = _manager.Resolver.Instantiate(_instance, _manager.Root);
+                if (obj.TryGetComponent<IPoolMember>(out var member) == false) {
+                    member = _instance.AddComponent<PoolMember>();
+                }
+                member.Set(this);
+                
+                _stack.Push(obj);
             }
         }
 

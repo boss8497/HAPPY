@@ -12,7 +12,7 @@ namespace Script.GamePlay.Stage {
         private List<ClientTriggerBase> _clientTriggers;
 
         private void InitializeTrigger() {
-            _clientTriggers = ListPool.Get<ClientTriggerBase>();
+            _clientTriggers ??= ListPool.Get<ClientTriggerBase>();
             CreateClientTrigger();
         }
 
@@ -24,11 +24,15 @@ namespace Script.GamePlay.Stage {
             }));
         }
 
-        private void ReleaseTrigger() {
+        private void ResetTrigger() {
             foreach (var trigger in _clientTriggers) {
                 trigger.Release();
             }
             _clientTriggers.Clear();
+        }
+        
+        private void ReleaseTrigger() {
+            ResetTrigger();
             ListPool.Return(_clientTriggers);
         }
 

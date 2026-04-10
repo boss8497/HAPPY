@@ -4,13 +4,19 @@ using UnityEngine;
 
 namespace Script.GamePlay.Stage {
     public partial class StageManager {
-        
         private void InitializePool() {
-            _players       = ListPool.Get<Character.Character>();
-            _enemies       = ListPool.Get<Character.Character>();
+            _players ??= ListPool.Get<Character.Character>();
+            _enemies ??= ListPool.Get<Character.Character>();
+        }
+        
+        private void ReleasePool() {
+            ResetPool();
+            
+            ListPool.Return(_players);
+            ListPool.Return(_enemies);
         }
 
-        private void ReleasePool() {
+        private void ResetPool() {
             if (_players != null) {
                 foreach (var character in _players) {
                     character.Release();
@@ -24,9 +30,7 @@ namespace Script.GamePlay.Stage {
                 }
 
                 _players.Clear();
-                ListPool.Return(_players);
             }
-            
             
             if (_enemies != null) {
                 foreach (var character in _enemies) {
@@ -36,7 +40,6 @@ namespace Script.GamePlay.Stage {
                     }
                 }
                 _enemies.Clear();
-                ListPool.Return(_enemies);
             }
         }
     }

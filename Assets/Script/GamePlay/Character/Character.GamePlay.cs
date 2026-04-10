@@ -3,6 +3,7 @@ using System.Linq;
 using Expression;
 using Script.GameInfo.Info.Stat;
 using Script.GameInfo.Table;
+using Script.GamePlay.Pool;
 using Script.GamePlay.Stat;
 using Script.Utility.Runtime;
 using Sirenix.OdinInspector;
@@ -50,7 +51,6 @@ namespace Script.GamePlay.Character {
         private Status _status;
 
         public Status Status => _status;
-
 
         private void InitializeGamePlay() {
             //Spine 컴포넌트

@@ -1,12 +1,20 @@
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Character;
 using Script.GamePlay.Character.Interface;
+using Script.GamePlay.Pool;
 using UnityEngine;
 
 namespace Script.GamePlay.Character {
     [System.Serializable]
-    public partial class Character : Unit.Unit, ICharacter {
+    public partial class Character : Unit.Unit, ICharacter, IPoolMember {
         #region Interface
+        private IGameObjectPool _gameObjectPool;
+        public  string Key => _gameObjectPool?.Key ?? CharacterInfo?.prefab;
+        
+        public void   Set(IGameObjectPool gameObjectPool) {
+            _gameObjectPool = gameObjectPool;
+        }
+        
         //캐릭터 소환시 꼭 실행
         public void Initialize(int team, bool isPlayer = false) {
             SetState(CharacterState.None);

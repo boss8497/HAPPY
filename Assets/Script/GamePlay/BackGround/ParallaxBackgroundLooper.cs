@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Script.GamePlay.Camera;
 using Script.GamePlay.Stage;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using VContainer;
 
@@ -75,6 +76,13 @@ namespace Script.GamePlay.Background {
 
         private float GetCameraLeftX() {
             return _camera.transform.position.x - (_camera.orthographicSize * _camera.aspect);
+        }
+
+        
+        //TODO: Ui 만들어지 전까지 테스트 코드
+        [Button("Restart")]
+        public void TestRestart() {
+            _stageManager.ReStart().Forget();
         }
     }
 }

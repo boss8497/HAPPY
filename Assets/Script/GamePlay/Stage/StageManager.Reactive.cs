@@ -28,6 +28,8 @@ namespace Script.GamePlay.Stage {
         private DisposableBag _reactiveDisposableBag;
 
         private void InitializeReactiveProperty(DungeonProgress dungeonProgress) {
+            _reactiveDisposableBag = new();
+            
             Initialized = State.Select(i => (i & StageState.Initialized) != 0)
                                .DistinctUntilChanged()
                                .ToReadOnlyReactiveProperty()
@@ -123,10 +125,13 @@ namespace Script.GamePlay.Stage {
             DungeonProgress.OnNext(dungeonProgress);
             PhaseIndex.OnNext(0);
         }
-        
 
-        private void ReleaseReactiveProperty() {
+        private void ResetReactive() {
             _reactiveDisposableBag.Dispose();
+        }
+
+        private void ReleaseReactive() {
+            ResetReactive();
             DungeonProgress.Dispose();
             State.Dispose();
             PhaseIndex.Dispose();
