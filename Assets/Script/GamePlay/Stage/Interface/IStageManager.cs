@@ -23,6 +23,7 @@ namespace Script.GamePlay.Stage {
         ReadOnlyReactiveProperty<bool> Fail          { get; }
         ReadOnlyReactiveProperty<bool> Clear         { get; }
         ReadOnlyReactiveProperty<bool> NextPhase     { get; }
+        ReadOnlyReactiveProperty<bool> ReStartState  { get; }
 
 
         ReadOnlyReactiveProperty<DungeonInfo>            DungeonInfo { get; }

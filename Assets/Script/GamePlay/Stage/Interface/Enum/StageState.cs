@@ -9,5 +9,6 @@ namespace Script.GamePlay.Stage {
         Clear         = 1 << 2,
         Fail          = 1 << 3,
         NextPhase     = 1 << 4,
+        ReStart       = 1 << 5,
     }
 }

@@ -18,6 +18,7 @@ namespace Script.GamePlay.Stage {
         public ReadOnlyReactiveProperty<bool> Fail          { get; private set; }
         public ReadOnlyReactiveProperty<bool> Clear         { get; private set; }
         public ReadOnlyReactiveProperty<bool> NextPhase     { get; private set; }
+        public ReadOnlyReactiveProperty<bool> ReStartState  { get; private set; }
 
 
         public ReadOnlyReactiveProperty<DungeonInfo>            DungeonInfo { get; private set; }
@@ -55,6 +56,11 @@ namespace Script.GamePlay.Stage {
                              .DistinctUntilChanged()
                              .ToReadOnlyReactiveProperty()
                              .AddTo(ref _reactiveDisposableBag);
+            
+            ReStartState = State.Select(i => (i & StageState.ReStart) != 0)
+                                .DistinctUntilChanged()
+                                .ToReadOnlyReactiveProperty()
+                                .AddTo(ref _reactiveDisposableBag);
 
             DungeonInfo = DungeonProgress.Select(i => i == null ? null : GameInfoManager.Instance.Get<DungeonInfo>(i.dungeonUid))
                                          .DistinctUntilChanged()

@@ -15,8 +15,7 @@ namespace Script.GamePlay.Background {
         [SerializeField]
         private ParallaxLayer[] _layers;
 
-        private float _startTargetX;
-        private bool  _initialized;
+        private bool _initialized;
 
         private IStageManager   _stageManager;
         private ICameraControls _cameraControls;
@@ -30,7 +29,6 @@ namespace Script.GamePlay.Background {
             _cameraControls = cameraControls;
         }
 
-
         private void Awake() {
             Initialize().Forget();
         }
@@ -39,35 +37,42 @@ namespace Script.GamePlay.Background {
             if (_initialized == false || (_stageManager?.SystemControl?.CurrentValue ?? true))
                 return;
 
-            var targetDeltaX = _target.position.x - _startTargetX;
-            var cameraLeftX  = GetCameraLeftX();
+            var targetPos   = _target.position;
+            var cameraLeftX = GetCameraLeftX();
+
+            if (_layers == null)
+                return;
 
             foreach (var layer in _layers) {
                 if (layer == null)
                     continue;
 
-                layer.Tick(targetDeltaX, cameraLeftX);
+                layer.Tick(targetPos, cameraLeftX);
             }
         }
 
         private async UniTask Initialize() {
-            await UniTask.WaitUntil(() => _cameraControls != null);
-            
+            await UniTask.WaitUntil(() =>
+                _cameraControls != null &&
+                _cameraControls.MainCamera != null);
+
             _camera = _cameraControls.MainCamera;
-            _target = _camera.transform;
-            
             if (_camera == null) {
                 Debug.LogError("[ParallaxBackgroundLooper] MainCamera is null.");
                 return;
             }
 
-            _startTargetX = _target.position.x;
+            // 필요 시 플레이어 Transform 으로 교체 가능
+            _target = _camera.transform;
+
+            var targetPos = _target.position;
 
             if (_layers != null) {
                 foreach (var layer in _layers) {
                     if (layer == null)
                         continue;
-                    layer.Initialize();
+
+                    layer.Initialize(targetPos);
                 }
             }
 
@@ -78,18 +83,10 @@ namespace Script.GamePlay.Background {
             return _camera.transform.position.x - (_camera.orthographicSize * _camera.aspect);
         }
 
-        
-        //TODO: Ui 만들어지 전까지 테스트 코드
         [Button("RestartReady")]
         public async void TestRestart() {
             await _stageManager.ReStart();
             _stageManager.AddState(StageState.SystemControl);
-            // await Initialize();
-            // _stageManager.RemoveState(StageState.SystemControl);
-        }
-        
-        [Button("RestartEnd")]
-        public async void TestRestartEnd() {
             _stageManager.RemoveState(StageState.SystemControl);
         }
     }
