@@ -14,16 +14,15 @@ namespace Script.LifetimeScope {
             _locator = locator;
         }
 
-        // ScopeType.App과 ScopeType.Max는 요청할 수 없다
+        // ScopeType.App(Root LifetimeScope)과 ScopeType.Max(Loop를 위한 빈값)는 요청할 수 없다
         public VContainer.Unity.LifetimeScope CreateScope(ScopeType type) {
+            if (type == ScopeType.App || type == ScopeType.Max) {
+                throw new ArgumentException($"Invalid scope type: {type}");
+            }
             return CreateScope(type, null);
         }
 
         public VContainer.Unity.LifetimeScope CreateScope(ScopeType type, Action<IContainerBuilder> installation) {
-            if (type == ScopeType.App || type == ScopeType.Max) {
-                throw new ArgumentException($"Invalid scope type: {type}");
-            }
-
             var parent = _locator.GetParentScope(type);
             if (parent == null) {
                 throw new Exception($"Parent scope type {type} is not supported");

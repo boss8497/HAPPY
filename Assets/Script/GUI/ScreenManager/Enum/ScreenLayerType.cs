@@ -1,5 +1,5 @@
 ﻿namespace Script.GUI.Screen.Enum {
-    public enum ScreenLayer {
+    public enum ScreenLayerType {
         HUD = 0, // HUD
         None,    // ScreenLayer를 셋팅 안하면 기본적으로 쌓이는 Layer
         Popup,

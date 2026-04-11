@@ -1,5 +1,5 @@
 {
-    "name": "Script.GUI.Screen.Interface",
+    "name": "Script.GUI.ScreenManager.Interface",
     "rootNamespace": "",
     "references": [
         "GUID:3f17335669a6eaf4cb0570bde9593e7f",

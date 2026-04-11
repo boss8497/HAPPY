@@ -8,6 +8,5 @@ namespace Script.GUI.Screen {
     public struct ScreenAsset {
         public string                      id;
         public AssetReferenceT<GameObject> screen;
-        public ScreenLayer                 layer;
     }
 }

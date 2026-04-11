@@ -42,7 +42,6 @@ namespace Script.LifetimeScope {
 
         private void RegisterScreenManager(IContainerBuilder builder) {
             //Load ScreenManager
-            var activeScene = SceneManager.GetActiveScene();
             var handle      = Addressables.LoadAssetAsync<GameObject>(screenManagerPath);
             handle.WaitForCompletion();
             var asset = handle.Result;

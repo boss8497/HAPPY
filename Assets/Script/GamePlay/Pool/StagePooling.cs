@@ -35,7 +35,7 @@ namespace Script.GamePlay.Pool {
             }
 
             var obj = pool.Pop();
-            obj.SetSafeActive(active);
+            obj.SetActiveSafe(active);
             obj.transform.SetParent(parent);
             return obj;
         }
@@ -47,7 +47,7 @@ namespace Script.GamePlay.Pool {
         }
 
         public bool Push(GameObject obj) {
-            obj.SetSafeActive(false);
+            obj.SetActiveSafe(false);
             
             if (obj.TryGetComponent<IPoolMember>(out var member) == false) {
                 Object.Destroy(obj);

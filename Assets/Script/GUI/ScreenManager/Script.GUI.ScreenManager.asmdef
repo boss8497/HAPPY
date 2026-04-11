@@ -1,0 +1,26 @@
+{
+    "name": "Script.GUI.ScreenManager",
+    "rootNamespace": "",
+    "references": [
+        "GUID:9e24947de15b9834991c9d8411ea37cf",
+        "GUID:593a5b492d29ac6448b1ebf7f035ef33",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:84651a3751eca9349aac36a66bba901b",
+        "GUID:8381d25136c024c47bc141aa127149b3",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:a377e2677a309924f862c77c2e14f6c1",
+        "GUID:3f17335669a6eaf4cb0570bde9593e7f",
+        "GUID:39d767c3458317c4f819a3dc7f3a09d7",
+        "GUID:ff2a05122bcd2274f8061a391687ffa4",
+        "GUID:054f2b54d1046df4b99b9313646ca016"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
