@@ -13,11 +13,10 @@ MonoBehaviour:
   m_Name: ScreenData
   m_EditorClassIdentifier: Script.GUI::Script.GUI.ScreenData
   screens:
-  - id: Test
+  - id: TitleScreen
     screen:
       m_AssetGUID: 0c85cd2c5213f0149890bfed2ceb57b4
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 1
-    type: 0

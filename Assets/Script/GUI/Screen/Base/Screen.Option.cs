@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Script.GUI.Screen {
     public abstract partial class Screen {
         [SerializeField]
-        private ScreenOption option;
+        private ScreenOption option = ScreenOption.None;
         
         public bool DontClose => option.HasFlag(ScreenOption.DontClose);
     }

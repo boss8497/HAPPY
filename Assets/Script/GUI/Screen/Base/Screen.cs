@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Script.GUI.Screen.Enum;
 using Script.Utility.Runtime;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Script.GUI.Screen {
@@ -9,10 +10,16 @@ namespace Script.GUI.Screen {
     /// </summary>
     [System.Serializable]
     public abstract partial class Screen : MonoBehaviour {
+        [ValidateInput(nameof(KeyEmpty), "Key 값은 비어 있으면 안 됩니다.")]
         [SerializeField]
-        private ScreenLayerType layerType;
+        private string key;
+
+
+        [SerializeField]
+        private ScreenLayerType layerType = ScreenLayerType.None;
 
         public ScreenLayerType LayerType     => layerType;
+        public string          Key           => key;
         public RectTransform   RectTransform => transform as RectTransform;
 
         #region Open
@@ -88,5 +95,14 @@ namespace Script.GUI.Screen {
         public virtual UniTask Release() {
             return UniTask.CompletedTask;
         }
+
+
+        #region Inspector
+
+        private bool KeyEmpty() {
+            return string.IsNullOrEmpty(key) == false;
+        }
+
+        #endregion
     }
 }
