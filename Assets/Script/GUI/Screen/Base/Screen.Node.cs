@@ -1,14 +1,14 @@
 ﻿namespace Script.GUI.Screen {
     public abstract partial class Screen {
-        private Screen _previous;
-        private Screen _next;
+        private IScreen _previous;
+        private IScreen _next;
 
-        public Screen Previous {
+        public IScreen Previous {
             get => _previous;
             set => _previous = value;
         }
 
-        public Screen  Next {
+        public IScreen Next {
             get => _next;
             set => _next = value;
         }

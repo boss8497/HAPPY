@@ -1,10 +1,9 @@
 {
-    "name": "Script.GUI.ScreenManager.Interface",
+    "name": "Script.GUI.Screen.Interface",
     "rootNamespace": "",
     "references": [
-        "GUID:3f17335669a6eaf4cb0570bde9593e7f",
         "GUID:f51ebe6a0ceec4240a699833d6309b23",
-        "GUID:a62fe4d839fe97e4d87ee2490fb36796"
+        "GUID:3f17335669a6eaf4cb0570bde9593e7f"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

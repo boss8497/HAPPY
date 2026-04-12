@@ -32,12 +32,12 @@ namespace Script.GUI.Screen {
         // 이미 로드한 Screen을 가지고 있다가
         // 적절한 타이밍( Scene 이동 )에 Destroy 해주기
         // 모두 다 들고 있으면 메모리 사용량이 컨텐츠를 진행할 때 마다 커짐
-        private Dictionary<string, Screen> _loadedScreens = new();
+        private Dictionary<string, IScreen> _loadedScreens = new();
 
         private Queue<string> _openWaitQueue  = new Queue<string>();
         private Queue<string> _closeWaitQueue = new Queue<string>();
 
-        private Screen _firstScreen;
+        private IScreen _firstScreen;
 
 
         public void Initialize() {
@@ -117,7 +117,7 @@ namespace Script.GUI.Screen {
             // 이미 로드된 Screen인지 확인
             if (_loadedScreens.TryGetValue(screenKey, out var screenScript) == false) {
                 var obj = await LoadScreen(screen.screen);
-                screenScript = obj.GetComponent<Screen>();
+                screenScript = obj.GetComponent<IScreen>();
                 if (screenScript == null) {
                     Destroy(obj);
                     RemoveState(ScreenManagerState.OpeningScreen);
@@ -135,7 +135,7 @@ namespace Script.GUI.Screen {
             RemoveState(ScreenManagerState.OpeningScreen);
         }
 
-        private void InsertScreen(Screen screen) {
+        private void InsertScreen(IScreen screen) {
             if (screen == null) {
                 throw new ArgumentNullException(nameof(screen));
             }
@@ -157,7 +157,7 @@ namespace Script.GUI.Screen {
             InsertNormalScreen(screen);
         }
 
-        private void InsertDontCloseScreen(Screen screen) {
+        private void InsertDontCloseScreen(IScreen screen) {
             // 첫 화면이 일반 Screen이면 맨 앞에 삽입
             if (_firstScreen.DontClose == false) {
                 screen.Next           = _firstScreen;
@@ -181,13 +181,13 @@ namespace Script.GUI.Screen {
             screen.Previous = current;
         }
 
-        private void InsertNormalScreen(Screen screen) {
+        private void InsertNormalScreen(IScreen screen) {
             var last = LastScreen();
             last.Next       = screen;
             screen.Previous = last;
         }
 
-        private void DetachScreen(Screen screen) {
+        private void DetachScreen(IScreen screen) {
             if (screen == null) {
                 return;
             }
@@ -220,7 +220,7 @@ namespace Script.GUI.Screen {
             await CloseAsync(screen);
         }
 
-        public async UniTask CloseAsync(Screen screen) {
+        public async UniTask CloseAsync(IScreen screen) {
             if (screen == null) {
                 throw new ArgumentNullException(nameof(screen));
             }
@@ -248,7 +248,7 @@ namespace Script.GUI.Screen {
                     return;
                 }
 
-                var targets = ListPool.Get<Screen>();
+                var targets = ListPool.Get<IScreen>();
                 CollectCloseTargets(current, targets);
 
                 foreach (var target in targets) {
@@ -274,7 +274,7 @@ namespace Script.GUI.Screen {
             }
         }
 
-        private void CollectCloseTargets(Screen screen, List<Screen> targets) {
+        private void CollectCloseTargets(IScreen screen, List<IScreen> targets) {
             if (screen == null) {
                 return;
             }
@@ -299,7 +299,7 @@ namespace Script.GUI.Screen {
             }
         }
 
-        private Screen LastScreen() {
+        private IScreen LastScreen() {
             var lastScreen = _firstScreen;
             while (lastScreen.Next != null) {
                 lastScreen = lastScreen.Next;
@@ -308,7 +308,7 @@ namespace Script.GUI.Screen {
             return lastScreen;
         }
 
-        private Screen LastScreen(Screen screen) {
+        private IScreen LastScreen(IScreen screen) {
             var lastScreen = screen;
             while (lastScreen.Next != null) {
                 lastScreen = lastScreen.Next;
@@ -318,7 +318,7 @@ namespace Script.GUI.Screen {
         }
 
         [CanBeNull]
-        private Screen FindScreen(ReadOnlySpan<char> key) {
+        private IScreen FindScreen(ReadOnlySpan<char> key) {
             var currentScreen = _firstScreen;
 
             while (currentScreen != null) {
@@ -348,7 +348,7 @@ namespace Script.GUI.Screen {
         public async UniTask LoadedScreenRelease() {
             foreach (var screen in _loadedScreens.Select(i => i.Value).ToArray()) {
                 await screen.Release();
-                Destroy(screen.gameObject);
+                Destroy(screen.GameObject);
             }
 
             _loadedScreens.Clear();
