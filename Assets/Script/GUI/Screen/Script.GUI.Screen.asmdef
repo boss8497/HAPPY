@@ -2,8 +2,12 @@
     "name": "Script.GUI.Screen",
     "rootNamespace": "",
     "references": [
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
         "GUID:054f2b54d1046df4b99b9313646ca016",
-        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+        "GUID:02b7b002dbdf04d44b3d44d1a56fd862",
+        "GUID:854cf9f0c9798824e94ba2e712971f53",
+        "GUID:a377e2677a309924f862c77c2e14f6c1"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

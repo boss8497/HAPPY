@@ -84,7 +84,8 @@ namespace Script.GUI.Screen {
             var obj    = await handle.ToUniTask();
             obj.SetActiveSafe(false);
             // Inject
-            var instanceObj = _resolver.Instantiate(obj);
+            var lastChildScope   = _scopeLocator.GetLastChildScope();
+            var instanceObj = lastChildScope.Container.Instantiate(obj);
 
             Addressables.Release(handle);
             return instanceObj;
@@ -108,7 +109,7 @@ namespace Script.GUI.Screen {
             AddState(ScreenManagerState.OpeningScreen);
             var screenKey = _openWaitQueue.Dequeue();
 
-            if (_screens.TryGetValue(screenKey, out ScreenAsset screen) == false) {
+            if (_screens.TryGetValue(screenKey, out ScreenAsset screenAsset) == false) {
                 RemoveState(ScreenManagerState.OpeningScreen);
                 Debug.LogError($"Screen ID {screenKey} not found");
                 return;
@@ -116,7 +117,7 @@ namespace Script.GUI.Screen {
 
             // 이미 로드된 Screen인지 확인
             if (_loadedScreens.TryGetValue(screenKey, out var screenScript) == false) {
-                var obj = await LoadScreen(screen.screen);
+                var obj = await LoadScreen(screenAsset.screen);
                 screenScript = obj.GetComponent<IScreen>();
                 if (screenScript == null) {
                     Destroy(obj);

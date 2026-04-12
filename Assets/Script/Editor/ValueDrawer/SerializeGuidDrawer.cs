@@ -24,14 +24,14 @@ namespace Script.Editor.ValueDrawer {
                 value                 = SerializeGuid.Empty();
                 ValueEntry.SmartValue = value;
                 ValueEntry.ApplyChanges();
-                GUI.changed = true;
+                UnityEngine.GUI.changed = true;
             }
 
             if (GUILayout.Button("New", GUILayout.Width(60))) {
                 value                 = SerializeGuid.NewGuid();
                 ValueEntry.SmartValue = value;
                 ValueEntry.ApplyChanges();
-                GUI.changed = true;
+                UnityEngine.GUI.changed = true;
             }
 
             EditorGUILayout.EndHorizontal();

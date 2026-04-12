@@ -26,7 +26,6 @@ public class TestAction : MonoBehaviour {
 
 
     public void OpenScreenTest() {
-        _screenManager.OpenAsync("Test");
         TitleSceneLoad().Forget();
     }
     

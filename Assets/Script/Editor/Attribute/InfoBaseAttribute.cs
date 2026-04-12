@@ -47,7 +47,8 @@ namespace Script.Editor.Attribute {
 
             var name = Info == null ? "None" : GetName(Info);
             var rect = EditorGUILayout.GetControlRect();
-            if (GUI.Button(rect, name)) {
+            
+            if (UnityEngine.GUI.Button(rect, name)) {
                 var selector = new TSelector();
                 selector.SelectionConfirmed += selection => {
                     Info = selection.FirstOrDefault();

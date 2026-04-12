@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: ScreenData
   m_EditorClassIdentifier: Script.GUI::Script.GUI.ScreenData
   screens:
-  - id: TitleScreen
+  - id: RunningHUD
     screen:
-      m_AssetGUID: 0c85cd2c5213f0149890bfed2ceb57b4
+      m_AssetGUID: e03e1b2e0f1f51741878ce1410f65fdb
       m_SubObjectName: 
       m_SubObjectType: 
       m_SubObjectGUID: 

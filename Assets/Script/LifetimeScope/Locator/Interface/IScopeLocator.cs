@@ -5,5 +5,6 @@
         VContainer.Unity.LifetimeScope GetScope(ScopeType type);
         VContainer.Unity.LifetimeScope GetRootScope();
         VContainer.Unity.LifetimeScope GetParentScope(ScopeType type);
+        VContainer.Unity.LifetimeScope GetLastChildScope();
     }
 }

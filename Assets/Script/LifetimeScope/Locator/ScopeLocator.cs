@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
-using VContainer;
 using VContainer.Unity;
 
 namespace Script.LifetimeScope.Locator {
     public class ScopeLocator : IScopeLocator, IInitializable {
         private readonly Dictionary<ScopeType, VContainer.Unity.LifetimeScope> _scopes = new();
         private readonly VContainer.Unity.LifetimeScope _root;
-        
         
 
         public bool Initialized { get; private set; }
@@ -42,6 +39,17 @@ namespace Script.LifetimeScope.Locator {
         
         public VContainer.Unity.LifetimeScope GetRootScope() {
             return _scopes.GetValueOrDefault(ScopeType.App);
+        }
+        
+        public VContainer.Unity.LifetimeScope GetLastChildScope() {
+            for (int i = ((int)ScopeType.Max - 1); i >= 0; --i) {
+                
+                var scopeType =  (ScopeType)i;
+                if (_scopes[scopeType] != null) {
+                    return _scopes[scopeType];
+                }
+            }
+            return null;
         }
 
         public VContainer.Unity.LifetimeScope GetParentScope(ScopeType type) {

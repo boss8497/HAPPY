@@ -82,12 +82,5 @@ namespace Script.GamePlay.Background {
         private float GetCameraLeftX() {
             return _camera.transform.position.x - (_camera.orthographicSize * _camera.aspect);
         }
-
-        [Button("RestartReady")]
-        public async void TestRestart() {
-            await _stageManager.ReStart();
-            _stageManager.AddState(StageState.SystemControl);
-            _stageManager.RemoveState(StageState.SystemControl);
-        }
     }
 }

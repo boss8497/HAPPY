@@ -29,7 +29,7 @@ namespace Script.GUI.Screen {
         private IScreenManager _screenManager;
 
         [Inject]
-        public void Constructor(
+        public void InjectBase(
             IScreenManager screenManager
         ) {
             _screenManager = screenManager;

@@ -95,6 +95,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e03e1b2e0f1f51741878ce1410f65fdb
+    m_Address: RunningHUD
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f17a76336006846488c6bd119a59f91c
     m_Address: PhaseTable
     m_ReadOnly: 0

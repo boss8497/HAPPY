@@ -1,14 +1,15 @@
-﻿using VContainer;
+﻿using Script.LifetimeScope.Locator;
+using VContainer;
 
 namespace Script.GUI.Screen {
     public partial class ScreenManager {
-        private IObjectResolver _resolver;
+        private IScopeLocator _scopeLocator;
 
         [Inject]
         public void Constructor(
-            IObjectResolver resolver
+            IScopeLocator scopeLocator
         ) {
-            _resolver       = resolver;
+            _scopeLocator = scopeLocator;
         }
     }
 }

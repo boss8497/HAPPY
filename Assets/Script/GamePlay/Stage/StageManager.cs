@@ -37,6 +37,8 @@ namespace Script.GamePlay.Stage {
             await UniTask.WaitUntil(() => _entityWorld.IsAlive);
             var dungeon = Group.GroupData.Model.CurrentValue.dungeonProgresses.FirstOrDefault();
 
+            await _screenManager.OpenAsync("RunningHUD");
+            
             AddState(StageState.SystemControl);
             Initialize(dungeon);
             AddState(StageState.Initialized);
