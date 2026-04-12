@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Script.GUI.Screen.Interface;
+using Script.Utility.Runtime;
 using UnityEngine;
 
 namespace Script.GUI.Screen {
@@ -19,11 +20,29 @@ namespace Script.GUI.Screen {
             screen.RectTransform.SetParent(_root, false);
             
             _screens.Add(screen);
-            await screen.OpenAsync();
+            
+            screen.gameObject.SetActiveSafe(true);
+            
+            await screen.OpenInternal();
+            await screen.OpenAnimationAsync();
+            
+            await screen.OpenLateInternal();
         }
+        
         public async UniTask CloseScreen(Screen screen, bool force = false) {
             _screens.Remove(screen);
-            await screen.CloseAsync(force);
+            
+            if (force == false && screen.DontClose) {
+                return;
+            }
+
+            await screen.CloseInternal();
+            await screen.CloseAnimationAsync();
+
+            await screen.CloseLateInternal();
+            screen.gameObject.SetActiveSafe(false);
+            // 처음 Insert할 때 null 처리 함
+            // screen._previous = _next = null;
         }
     }
 }

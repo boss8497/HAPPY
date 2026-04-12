@@ -248,7 +248,8 @@ namespace Script.GUI.Screen {
                     return;
                 }
 
-                var targets = CollectCloseTargets(current);
+                var targets = ListPool.Get<Screen>();
+                CollectCloseTargets(current, targets);
 
                 foreach (var target in targets) {
                     // 리스트에서 먼저 제거
@@ -264,23 +265,24 @@ namespace Script.GUI.Screen {
                         await layer.CloseScreen(target, false);
                     }
                 }
+                
+                targets.Clear();
+                ListPool.Return(targets);
             }
             finally {
                 RemoveState(ScreenManagerState.ClosingScreen);
             }
         }
 
-        private List<Screen> CollectCloseTargets(Screen screen) {
-            var targets = new List<Screen>(4);
-
+        private void CollectCloseTargets(Screen screen, List<Screen> targets) {
             if (screen == null) {
-                return targets;
+                return;
             }
 
             // DontClose는 자기 자신만 닫음
             if (screen.DontClose) {
                 targets.Add(screen);
-                return targets;
+                return;
             }
 
             // 일반 Screen은 자신 ~ tail 까지 닫되,
@@ -295,8 +297,6 @@ namespace Script.GUI.Screen {
 
                 current = current.Previous;
             }
-
-            return targets;
         }
 
         private Screen LastScreen() {
