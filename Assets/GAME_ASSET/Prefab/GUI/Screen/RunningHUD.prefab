@@ -258,9 +258,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: TestAction, Script.GUI.ViewModel
-        m_MethodName: OpenScreenTest
+      - m_Target: {fileID: 8857810864751835586}
+        m_TargetAssemblyTypeName: Script.GUI.Screen.RunningHUD, Script.GUI.Screen
+        m_MethodName: Restart
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

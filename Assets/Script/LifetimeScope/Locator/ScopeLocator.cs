@@ -63,7 +63,7 @@ namespace Script.LifetimeScope.Locator {
         // 하위 Scope 자동 Dispose
         // Parent Scope가 Dispose되면 VContainer에서 자동 Dispose 해주지만 
         // 명시적으로 표시
-        private void ReleaseChildScope(ScopeType type) {
+        public void ReleaseChildScope(ScopeType type) {
             var index = (int)type;
             for (int i = (int)ScopeType.Max - 1; i >= index; --i) {
                 var scopeType =  (ScopeType)i;
