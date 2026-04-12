@@ -6,6 +6,8 @@ namespace Script.GUI.Screen {
         public  ScreenManagerState State  => _state;
         
         public bool Initialized   => (_state & ScreenManagerState.Initialized) != 0;
+        public bool OpeningScreen   => (_state & ScreenManagerState.OpeningScreen) != 0;
+        public bool ClosingScreen   => (_state & ScreenManagerState.ClosingScreen) != 0;
         
         
         public void AddState(ScreenManagerState screenManagerState) {

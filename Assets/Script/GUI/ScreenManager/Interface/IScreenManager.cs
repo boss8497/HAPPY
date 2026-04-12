@@ -8,6 +8,6 @@ namespace Script.GUI.Screen.Interface {
 
         void Initialize();
 
-        UniTask OpenScreen(string id);
+        UniTask OpenAsync(string key);
     }
 }

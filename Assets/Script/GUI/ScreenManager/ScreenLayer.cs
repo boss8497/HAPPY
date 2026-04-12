@@ -21,5 +21,9 @@ namespace Script.GUI.Screen {
             _screens.Add(screen);
             await screen.OpenAsync();
         }
+        public async UniTask CloseScreen(Screen screen, bool force = false) {
+            _screens.Remove(screen);
+            await screen.CloseAsync(force);
+        }
     }
 }
