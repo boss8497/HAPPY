@@ -11,6 +11,7 @@ namespace Script.GUI.Screen.Interface {
 
         UniTask OpenAsync(string key);
 
+        UniTask Back();
         UniTask CloseAsync(ReadOnlyMemory<char> key);
         UniTask CloseAsync(IScreen              screen);
     }

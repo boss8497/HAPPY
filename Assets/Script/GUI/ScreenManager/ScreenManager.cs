@@ -211,6 +211,18 @@ namespace Script.GUI.Screen {
             screen.Next     = null;
         }
 
+        /// <summary>
+        /// Screen을 하나씩 Back하는 메서드입니다. CloseAsync 보다는 이거를 적극 사용!
+        /// </summary>
+        public async UniTask Back() {
+            var screen = LastScreen();
+            await CloseAsync(screen);
+        }
+
+        /// <summary>
+        /// Screen을 지정해서 Close하는 메서드입니다.
+        /// </summary>
+        /// <para>Close는 특별하게 사용하고 대부분 Back을 사용하는게 좋습니다.</para>
         public async UniTask CloseAsync(ReadOnlyMemory<char> key) {
             var screen = FindScreen(key.Span);
             if (screen == null) {
@@ -221,6 +233,10 @@ namespace Script.GUI.Screen {
             await CloseAsync(screen);
         }
 
+        /// <summary>
+        /// Screen을 지정해서 Close하는 메서드입니다.
+        /// </summary>
+        /// <para>Close는 특별하게 사용하고 대부분 Back을 사용하는게 좋습니다.</para>
         public async UniTask CloseAsync(IScreen screen) {
             if (screen == null) {
                 throw new ArgumentNullException(nameof(screen));
@@ -235,7 +251,6 @@ namespace Script.GUI.Screen {
             _closeWaitQueue.Enqueue(screen.Key);
 
             await UniTask.WaitUntil(() => ClosingScreen && 
-                                          _closeWaitQueue.Count > 0 && 
                                           _closeWaitQueue.Peek().AsSpan().SequenceEqual(screen.Key.AsSpan()));
 
             AddState(ScreenManagerState.ClosingScreen);
@@ -245,9 +260,11 @@ namespace Script.GUI.Screen {
 
                 // 대기 중 이미 닫혔을 수 있음
                 var current = FindScreen(screen.Key.AsSpan());
-                if (current == null) {
+                if (current == null) 
                     return;
-                }
+
+                var trigger = await current.CloseTrigger();
+                if (trigger == false) return;
 
                 var targets = ListPool.Get<IScreen>();
                 CollectCloseTargets(current, targets);

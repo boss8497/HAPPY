@@ -17,11 +17,13 @@ namespace Script.GUI.Screen {
         UniTask OpenLateInternal();
         UniTask OpenAnimationAsync();
 
-
-        void    Close(bool force = false);
-        UniTask CloseInternal();
-        UniTask CloseLateInternal();
-        UniTask CloseAnimationAsync();
+        void          Back();
+        UniTask       BackAsync();
+        void          Close(bool force = false);
+        UniTask       CloseInternal();
+        UniTask       CloseLateInternal();
+        UniTask       CloseAnimationAsync();
+        UniTask<bool> CloseTrigger();
 
 
         UniTask Release();

@@ -36,6 +36,7 @@ namespace Script.GUI.Screen {
         }
 
         #region Open
+
         /// <summary>
         /// ScreenOpen 시 제일 먼저 호출되는 메서드
         /// </summary>
@@ -56,6 +57,14 @@ namespace Script.GUI.Screen {
 
 
         #region Close
+
+        public void Back() {
+            _screenManager.Back().Forget();
+        }
+
+        public async UniTask BackAsync() {
+            await _screenManager.Back();
+        }
 
         public void Close(bool force = false) {
             if (force == false && DontClose) {
@@ -80,6 +89,10 @@ namespace Script.GUI.Screen {
 
         public virtual UniTask CloseAnimationAsync() {
             return UniTask.CompletedTask;
+        }
+
+        public virtual UniTask<bool> CloseTrigger() {
+            return new UniTask<bool>(true);
         }
 
         #endregion
