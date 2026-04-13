@@ -82,10 +82,11 @@ namespace Script.GUI.Screen {
         private async UniTask<GameObject> LoadScreen(AssetReferenceT<GameObject> assetRef) {
             var handle = Addressables.LoadAssetAsync<GameObject>(assetRef.RuntimeKey);
             var obj    = await handle.ToUniTask();
-            obj.SetActiveSafe(false);
+            
             // Inject
             var lastChildScope   = _scopeLocator.GetLastChildScope();
             var instanceObj = lastChildScope.Container.Instantiate(obj);
+            instanceObj.SetActive(false);
 
             Addressables.Release(handle);
             return instanceObj;

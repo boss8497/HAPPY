@@ -21,7 +21,8 @@ namespace Script.GamePlay.ECS.System {
             var fixedTime = SystemAPI.Time.DeltaTime;
 
             foreach (var (transform, running) in
-                     SystemAPI.Query<RefRW<LocalTransform>, RefRO<RunningData>>()) {
+                     SystemAPI.Query<RefRW<LocalTransform>, RefRO<RunningData>>()
+                              .WithDisabled<UnitDieTag>()) {
                 float3 dir = running.ValueRO.Direction;
 
                 // 혹시 0벡터가 들어오면 이동 안 함
