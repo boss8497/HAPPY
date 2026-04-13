@@ -103,6 +103,11 @@ namespace Script.GUI.Screen {
                 throw new ArgumentException("Screen ID cannot be null or empty");
             }
 
+            if (ExistsScreen(key.AsSpan())) {
+                Debug.LogError($"Screen ID {key} is already opened");
+                return;
+            }
+
             _openWaitQueue.Enqueue(key);
             await UniTask.WaitUntil(() => OpeningScreen == false && _openWaitQueue.Peek() == key);
 
@@ -250,7 +255,7 @@ namespace Script.GUI.Screen {
 
             _closeWaitQueue.Enqueue(screen.Key);
 
-            await UniTask.WaitUntil(() => ClosingScreen && 
+            await UniTask.WaitUntil(() => ClosingScreen == false && 
                                           _closeWaitQueue.Peek().AsSpan().SequenceEqual(screen.Key.AsSpan()));
 
             AddState(ScreenManagerState.ClosingScreen);

@@ -22,6 +22,7 @@ namespace Script.GamePlay.Stage {
         private CancellationTokenSource _updateCts;
 
         public void Initialize() {
+            _screenManager.OpenAsync("RunningHUD").Forget();
             Test().Forget();
         }
 
@@ -36,8 +37,6 @@ namespace Script.GamePlay.Stage {
             await UniTask.WaitUntil(() => Group?.Initialized ?? false);
             await UniTask.WaitUntil(() => _entityWorld.IsAlive);
             var dungeon = Group.GroupData.Model.CurrentValue.dungeonProgresses.FirstOrDefault();
-
-            await _screenManager.OpenAsync("RunningHUD");
             
             AddState(StageState.SystemControl);
             Initialize(dungeon);

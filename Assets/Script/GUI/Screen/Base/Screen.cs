@@ -26,7 +26,8 @@ namespace Script.GUI.Screen {
         public GameObject      GameObject    => gameObject;
 
 
-        private IScreenManager _screenManager;
+        private   IScreenManager _screenManager;
+        protected IScreenManager ScreenManager => _screenManager;
 
         [Inject]
         public void InjectBase(
@@ -66,7 +67,12 @@ namespace Script.GUI.Screen {
             await _screenManager.Back();
         }
 
-        public void Close(bool force = false) {
+        /// <summary>
+        /// Close를 Ui Event 접근을 막기 위해서 사용.
+        /// 정식 적으로는 Back을 사용하고 필요 시 Close 호출
+        /// </summary>
+        /// <param name="force"></param>
+        protected void Close(bool force = false) {
             if (force == false && DontClose) {
                 return;
             }
@@ -91,6 +97,10 @@ namespace Script.GUI.Screen {
             return UniTask.CompletedTask;
         }
 
+        /// <summary>
+        /// Screen 종료 전 확인 후 종료하는 메서드
+        /// </summary>
+        /// <returns></returns>
         public virtual UniTask<bool> CloseTrigger() {
             return new UniTask<bool>(true);
         }

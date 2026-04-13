@@ -1,4 +1,5 @@
 ﻿using System;
+using Script.Utility.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,8 +20,7 @@ namespace Script.GUI.Screen {
 
         private void SetBackButtons() {
             foreach (var backButton in _backButtons) {
-                backButton.onClick.RemoveAllListeners();
-                backButton.onClick.AddListener(Back);
+                backButton.ClickAddListener(Back);
             }
         }
     }
