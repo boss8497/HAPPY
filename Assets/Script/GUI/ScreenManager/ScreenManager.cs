@@ -112,10 +112,19 @@ namespace Script.GUI.Screen {
             }
 
             _openWaitQueue.Enqueue(key);
-            var isCancel = await UniTask.WaitUntil(() => OpeningScreen == false && _openWaitQueue.Peek() == key, cancellationToken: ct)
+            var isCancel = await UniTask.WaitUntil(() => (OpeningScreen == false && _openWaitQueue.Peek() == key) ||
+                                                         // 앞선 객체가 cancel되어 뒤에 자동으로 Cancel 됐을 때 무한 대기 방지
+                                                         _openWaitQueue.Contains(key) == false
+                                                 , cancellationToken: ct)
                                         .SuppressCancellationThrow();
             
             AddState(ScreenManagerState.OpeningScreen);
+
+            // Cancel이 되어버려 열리지 못한 Child들 return해주기
+            if (_openWaitQueue.Contains(key) == false) {
+                RemoveState(ScreenManagerState.OpeningScreen);
+                return;
+            }
             
             // 만약 Cancel로 중지 됐다면 하위에 요청한거 까지 다 지워주자
             if (isCancel) {
@@ -125,12 +134,6 @@ namespace Script.GUI.Screen {
                     }
                     _openWaitQueue.Dequeue();
                 }
-                RemoveState(ScreenManagerState.OpeningScreen);
-                return;
-            }
-
-            // Cancel이 되어버려 열리지 못한 Child들 return해주기
-            if (_openWaitQueue.Contains(key) == false) {
                 RemoveState(ScreenManagerState.OpeningScreen);
                 return;
             }

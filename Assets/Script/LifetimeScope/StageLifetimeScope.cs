@@ -38,8 +38,9 @@ namespace Script.LifetimeScope {
             builder.RegisterEntryPoint<StageManager>(Lifetime.Singleton)
                    .As<IStageManager>()
                    .WithParameter(targetGroup)
-                   .WithParameter(failScreenKey)
-                   .WithParameter(hudScreenKey);
+                   .WithParameter(nameof(failScreenKey), failScreenKey)
+                   .WithParameter(nameof(hudScreenKey), hudScreenKey);
+            
             builder.RegisterEntryPoint<StagePooling>(Lifetime.Singleton)
                    .As<IStagePooling>();
 

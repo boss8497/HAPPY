@@ -377,6 +377,8 @@ MonoBehaviour:
   - {fileID: 909744315}
   mainCamera: {fileID: 961739752}
   targetGroup: {fileID: 365054896}
+  failScreenKey: RunningFail
+  hudScreenKey: RunningHUD
 --- !u!4 &324102910
 Transform:
   m_ObjectHideFlags: 0

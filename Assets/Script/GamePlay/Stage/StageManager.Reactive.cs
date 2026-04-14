@@ -122,6 +122,8 @@ namespace Script.GamePlay.Stage {
                  .AddTo(ref _reactiveDisposableBag);
 
             Fail.SubscribeAwait(async (fail, ct) => {
+                    if ((Initialized?.CurrentValue ?? false) == false) return;
+                    
                     if (fail) {
                         await _screenManager.OpenAsync(_failScreenKey, ct);
                     }
