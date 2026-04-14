@@ -33,18 +33,18 @@ namespace Script.GamePlay.Stage {
         // 그래서 StageManager 에서는 Trigger 및 Action 실행 해서 
         public async UniTask Test() {
             ResetState();
-            
+
             await UniTask.WaitUntil(() => Group?.Initialized ?? false);
             await UniTask.WaitUntil(() => _entityWorld.IsAlive);
             var dungeon = Group.GroupData.Model.CurrentValue.dungeonProgresses.FirstOrDefault();
-            
+
             AddState(StageState.SystemControl);
             Initialize(dungeon);
             AddState(StageState.Initialized);
 
             await Begin();
             await Start();
-            
+
             RemoveState(StageState.SystemControl);
         }
 
@@ -66,7 +66,7 @@ namespace Script.GamePlay.Stage {
             foreach (var enemy in _enemies) {
                 await enemy.StartAsync();
             }
-            
+
             StopLoop();
             _updateCts = new();
             UpdateLoop(_updateCts.Token).Forget();
@@ -74,6 +74,7 @@ namespace Script.GamePlay.Stage {
 
         //Update Loop
         private async UniTask UpdateLoop(CancellationToken ct) {
+            var isCancel = false;
             while (ct.IsCancellationRequested == false) {
                 var trigger = OnTriggerCheck();
                 if (trigger != null) {
@@ -82,10 +83,13 @@ namespace Script.GamePlay.Stage {
                         break;
                 }
 
-                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken:ct);
+                isCancel = await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken: ct)
+                                        .SuppressCancellationThrow();
+                if (isCancel) break;
             }
 
-            StopLoop();
+            if (isCancel == false)
+                StopLoop();
         }
 
         public async UniTask End() {
@@ -105,7 +109,7 @@ namespace Script.GamePlay.Stage {
             ResetTrigger();
             ResetReactive();
             ResetPool();
-            
+
             await Test();
         }
 

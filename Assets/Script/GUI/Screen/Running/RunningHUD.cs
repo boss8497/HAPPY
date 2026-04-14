@@ -82,15 +82,26 @@ namespace Script.GUI.Screen {
                 return;
             }
             
-            await UniTask.WaitUntil(() => _stageManager.Initialized?.CurrentValue ?? false, cancellationToken: ct);
-            await UniTask.WaitUntil(() => (_stageManager.Players?.Count ?? 0) > 0, cancellationToken: ct);
+            var isCancel = await UniTask.WaitUntil(() => _stageManager.Initialized?.CurrentValue ?? false, cancellationToken: ct)
+                                        .SuppressCancellationThrow();
+            if (isCancel) return;
+            
+            isCancel = await UniTask.WaitUntil(() => (_stageManager.Players?.Count ?? 0) > 0, cancellationToken: ct)
+                                    .SuppressCancellationThrow();
+            if (isCancel) return;
 
             // Running에서는 플레이어 캐릭터가 1명
             var player = _stageManager.Players.FirstOrDefault();
+            if (player == null) {
+                Debug.LogError($"플레이어가 존재하지 않습니다. 여기에서 Player가 Null이면 안됨");
+                return;
+            }
+            
             
             // 확실히 기다려 준다.
-            // Null 체크 안한다. 여기서 Player가 Null이면 이미 문제이기 때문.
-            await UniTask.WaitUntil(() => player.Initialized?.CurrentValue ?? false, cancellationToken: ct);
+            isCancel = await UniTask.WaitUntil(() => player.Initialized?.CurrentValue ?? false, cancellationToken: ct)
+                                    .SuppressCancellationThrow();
+            if (isCancel) return;
             
             SetHp((int)player.MaxHealth.CurrentValue, (int)player.Health.CurrentValue);
             

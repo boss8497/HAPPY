@@ -88,7 +88,10 @@ namespace Script.GamePlay.Character {
                     return transition;
                 }
 
-                await UniTask.Yield();
+                var isCancel = await UniTask.Yield(cancellationToken: cts)
+                                            .SuppressCancellationThrow();
+
+                if (isCancel) break;
             }
 
             return null;

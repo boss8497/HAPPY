@@ -41,15 +41,12 @@ namespace Script.GamePlay.Input {
         }
 
         private async UniTaskVoid RunUpdateLoopAsync(CancellationToken token) {
-            try {
-                while (token.IsCancellationRequested == false) {
-                    UpdateInputState();
+            while (token.IsCancellationRequested == false) {
+                UpdateInputState();
 
-                    await UniTask.Yield(PlayerLoopTiming.Update, token);
-                }
-            }
-            catch (OperationCanceledException) {
-                // 정상 종료
+                var isCancel = await UniTask.Yield(PlayerLoopTiming.Update, token)
+                                            .SuppressCancellationThrow();
+                if (isCancel) break;
             }
         }
 
