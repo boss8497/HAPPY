@@ -25,6 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b070a9071c40114c83964d47755c2c0
+    m_Address: icon_heart
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 272e8c9dfdb13844a881847e582aef27
     m_Address: GameConfiguration
     m_ReadOnly: 0
