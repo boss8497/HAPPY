@@ -83,10 +83,10 @@ namespace Script.GUI.Screen {
         private async UniTask<GameObject> LoadScreen(AssetReferenceT<GameObject> assetRef) {
             var handle = Addressables.LoadAssetAsync<GameObject>(assetRef.RuntimeKey);
             var obj    = await handle.ToUniTask();
-            
+
             // Inject
-            var lastChildScope   = _scopeLocator.GetLastChildScope();
-            var instanceObj = lastChildScope.Container.Instantiate(obj);
+            var lastChildScope = _scopeLocator.GetLastChildScope();
+            var instanceObj    = lastChildScope.Container.Instantiate(obj);
             instanceObj.SetActive(false);
 
             Addressables.Release(handle);
@@ -103,7 +103,8 @@ namespace Script.GUI.Screen {
         /// <exception cref="KeyNotFoundException"></exception>
         public async UniTask OpenAsync(string key, CancellationToken ct = default) {
             if (string.IsNullOrEmpty(key)) {
-                throw new ArgumentException("Screen ID cannot be null or empty");
+                Debug.LogError("Screen ID cannot be null or empty");
+                return;
             }
 
             if (ExistsScreen(key.AsSpan())) {
@@ -112,12 +113,13 @@ namespace Script.GUI.Screen {
             }
 
             _openWaitQueue.Enqueue(key);
-            var isCancel = await UniTask.WaitUntil(() => (OpeningScreen == false && _openWaitQueue.Peek() == key) ||
+            var isCancel = await UniTask.WaitUntil(() => (OpeningScreen == false && _openWaitQueue.Peek() == key)
+                                                       ||
                                                          // 앞선 객체가 cancel되어 뒤에 자동으로 Cancel 됐을 때 무한 대기 방지
                                                          _openWaitQueue.Contains(key) == false
                                                  , cancellationToken: ct)
                                         .SuppressCancellationThrow();
-            
+
             AddState(ScreenManagerState.OpeningScreen);
 
             // Cancel이 되어버려 열리지 못한 Child들 return해주기
@@ -125,19 +127,21 @@ namespace Script.GUI.Screen {
                 RemoveState(ScreenManagerState.OpeningScreen);
                 return;
             }
-            
+
             // 만약 Cancel로 중지 됐다면 하위에 요청한거 까지 다 지워주자
             if (isCancel) {
                 if (_openWaitQueue.Contains(key)) {
                     while (_openWaitQueue.Peek() != key) {
                         _openWaitQueue.Dequeue();
                     }
+
                     _openWaitQueue.Dequeue();
                 }
+
                 RemoveState(ScreenManagerState.OpeningScreen);
                 return;
             }
-            
+
             var screenKey = _openWaitQueue.Dequeue();
             if (_screens.TryGetValue(screenKey, out ScreenAsset screenAsset) == false) {
                 RemoveState(ScreenManagerState.OpeningScreen);
@@ -168,7 +172,8 @@ namespace Script.GUI.Screen {
 
         private void InsertScreen(IScreen screen) {
             if (screen == null) {
-                throw new ArgumentNullException(nameof(screen));
+                Debug.LogError($"Screen cannot be null");
+                return;
             }
 
             // 혹시 이전 링크가 남아 있으면 초기화
@@ -241,6 +246,10 @@ namespace Script.GUI.Screen {
             screen.Next     = null;
         }
 
+        public async UniTask CloseAllAsync(bool force = false) {
+            await CloseAsync(_firstScreen, force);
+        }
+
         /// <summary>
         /// Screen을 하나씩 Back하는 메서드입니다. CloseAsync 보다는 이거를 적극 사용!
         /// </summary>
@@ -253,23 +262,24 @@ namespace Script.GUI.Screen {
         /// Screen을 지정해서 Close하는 메서드입니다.
         /// </summary>
         /// <para>Close는 특별하게 사용하고 대부분 Back을 사용하는게 좋습니다.</para>
-        public async UniTask CloseAsync(ReadOnlyMemory<char> key) {
+        public async UniTask CloseAsync(ReadOnlyMemory<char> key, bool force = false) {
             var screen = FindScreen(key.Span);
             if (screen == null) {
                 Debug.LogError($"Screen ID {key.ToString()} not found");
                 return;
             }
 
-            await CloseAsync(screen);
+            await CloseAsync(screen, force);
         }
 
         /// <summary>
         /// Screen을 지정해서 Close하는 메서드입니다.
         /// </summary>
         /// <para>Close는 특별하게 사용하고 대부분 Back을 사용하는게 좋습니다.</para>
-        public async UniTask CloseAsync(IScreen screen) {
+        public async UniTask CloseAsync(IScreen screen, bool force = false) {
             if (screen == null) {
-                throw new ArgumentNullException(nameof(screen));
+                Debug.LogError($"Screen cannot be null");
+                return;
             }
 
             // 이미 닫기 대기열에 있으면 중복 방지
@@ -280,8 +290,7 @@ namespace Script.GUI.Screen {
 
             _closeWaitQueue.Enqueue(screen.Key);
 
-            await UniTask.WaitUntil(() => ClosingScreen == false && 
-                                          _closeWaitQueue.Peek().AsSpan().SequenceEqual(screen.Key.AsSpan()));
+            await UniTask.WaitUntil(() => ClosingScreen == false && _closeWaitQueue.Peek().AsSpan().SequenceEqual(screen.Key.AsSpan()));
 
             AddState(ScreenManagerState.ClosingScreen);
 
@@ -290,7 +299,7 @@ namespace Script.GUI.Screen {
 
                 // 대기 중 이미 닫혔을 수 있음
                 var current = FindScreen(screen.Key.AsSpan());
-                if (current == null) 
+                if (current == null)
                     return;
 
                 var trigger = await current.CloseTrigger();
@@ -307,13 +316,13 @@ namespace Script.GUI.Screen {
 
                     // DontClose는 명시적으로 닫을 때만 force
                     if (target.DontClose) {
-                        await layer.CloseScreen(target, true);
+                        await layer.CloseScreen(target, force);
                     }
                     else {
-                        await layer.CloseScreen(target, false);
+                        await layer.CloseScreen(target, force);
                     }
                 }
-                
+
                 targets.Clear();
                 ListPool.Return(targets);
             }

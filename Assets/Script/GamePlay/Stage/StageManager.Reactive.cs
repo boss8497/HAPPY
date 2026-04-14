@@ -14,6 +14,10 @@ namespace Script.GamePlay.Stage {
         public ReactiveProperty<StageState>      State           { get; private set; } = new(StageState.None);
         public ReactiveProperty<int>             PhaseIndex      { get; private set; } = new(0);
 
+        public ReactiveProperty<float> Score        { get; private set; } = new();
+        public ReactiveProperty<float> RunningScore { get; private set; } = new();
+        public ReactiveProperty<float> ItemScore    { get; private set; } = new();
+
         public ReadOnlyReactiveProperty<bool> Initialized   { get; private set; }
         public ReadOnlyReactiveProperty<bool> SystemControl { get; private set; }
         public ReadOnlyReactiveProperty<bool> Fail          { get; private set; }
@@ -31,7 +35,7 @@ namespace Script.GamePlay.Stage {
 
         private void InitializeReactiveProperty(DungeonProgress dungeonProgress) {
             _reactiveDisposableBag = new();
-            
+
             Initialized = State.Select(i => (i & StageState.Initialized) != 0)
                                .DistinctUntilChanged()
                                .ToReadOnlyReactiveProperty()
@@ -57,7 +61,7 @@ namespace Script.GamePlay.Stage {
                              .DistinctUntilChanged()
                              .ToReadOnlyReactiveProperty()
                              .AddTo(ref _reactiveDisposableBag);
-            
+
             ReStartState = State.Select(i => (i & StageState.ReStart) != 0)
                                 .DistinctUntilChanged()
                                 .ToReadOnlyReactiveProperty()
@@ -103,7 +107,7 @@ namespace Script.GamePlay.Stage {
                          })
                          .AddTo(ref _reactiveDisposableBag);
 
-            Fail.Subscribe( fail => {
+            Fail.Subscribe(fail => {
                     if (fail) { }
                 })
                 .AddTo(ref _reactiveDisposableBag);
@@ -123,7 +127,7 @@ namespace Script.GamePlay.Stage {
 
             Fail.SubscribeAwait(async (fail, ct) => {
                     if ((Initialized?.CurrentValue ?? false) == false) return;
-                    
+
                     if (fail) {
                         await _screenManager.OpenAsync(_failScreenKey, ct);
                     }
@@ -135,7 +139,13 @@ namespace Script.GamePlay.Stage {
                      })
                      .AddTo(ref _reactiveDisposableBag);
 
+            RunningScore.CombineLatest(ItemScore, (runningScore, itemScore) => (runningScore, itemScore))
+                        .Subscribe(score => { Score.OnNext(score.runningScore + score.itemScore); })
+                        .AddTo(ref _reactiveDisposableBag);
 
+
+            RunningScore.OnNext(0);
+            ItemScore.OnNext(0);
             DungeonProgress.OnNext(dungeonProgress);
             PhaseIndex.OnNext(0);
         }
@@ -149,8 +159,11 @@ namespace Script.GamePlay.Stage {
             DungeonProgress.Dispose();
             State.Dispose();
             PhaseIndex.Dispose();
+            Score.Dispose();
+            RunningScore.Dispose();
+            ItemScore.Dispose();
         }
-        
+
 
         // 직접 호출 금지 AddState, RemoveState로 호출
         private void SetSystemControl(bool isOn) {

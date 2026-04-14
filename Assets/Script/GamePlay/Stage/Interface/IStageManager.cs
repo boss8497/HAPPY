@@ -18,6 +18,9 @@ namespace Script.GamePlay.Stage {
 
         //Reactive
         ReactiveProperty<StageState>   State         { get; }
+        ReactiveProperty<float>        Score         { get; }
+        ReactiveProperty<float>        RunningScore  { get; }
+        ReactiveProperty<float>        ItemScore     { get; }
         ReadOnlyReactiveProperty<bool> Initialized   { get; }
         ReadOnlyReactiveProperty<bool> SystemControl { get; }
         ReadOnlyReactiveProperty<bool> Fail          { get; }

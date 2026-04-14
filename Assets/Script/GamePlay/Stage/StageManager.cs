@@ -22,7 +22,6 @@ namespace Script.GamePlay.Stage {
         private CancellationTokenSource _updateCts;
 
         public void Initialize() {
-            _screenManager.OpenAsync(_hudScreenKey).Forget();
             Test().Forget();
         }
 
@@ -33,6 +32,7 @@ namespace Script.GamePlay.Stage {
         // 그래서 StageManager 에서는 Trigger 및 Action 실행 해서 
         public async UniTask Test() {
             ResetState();
+            _screenManager.OpenAsync(_hudScreenKey).Forget();
 
             await UniTask.WaitUntil(() => Group?.Initialized ?? false);
             await UniTask.WaitUntil(() => _entityWorld.IsAlive);
@@ -76,6 +76,7 @@ namespace Script.GamePlay.Stage {
         private async UniTask UpdateLoop(CancellationToken ct) {
             var isCancel = false;
             while (ct.IsCancellationRequested == false) {
+                UpdateRunningScore();
                 var trigger = OnTriggerCheck();
                 if (trigger != null) {
                     var loopStop = OnTrigger(trigger);
@@ -88,8 +89,18 @@ namespace Script.GamePlay.Stage {
                 if (isCancel) break;
             }
 
+            UpdateRunningScore();
             if (isCancel == false)
                 StopLoop();
+        }
+
+        private void UpdateRunningScore() {
+            // 일단은 0이 시작 지점이라 계산하자.
+            var character = _players.FirstOrDefault();
+            if (character == null) {
+                return;
+            }
+            RunningScore.OnNext(character.Transform.position.x);
         }
 
         public async UniTask End() {
@@ -105,6 +116,7 @@ namespace Script.GamePlay.Stage {
         }
 
         public async UniTask ReStart() {
+            await _screenManager.CloseAllAsync(true);
             StopLoop();
             ResetTrigger();
             ResetReactive();

@@ -9,11 +9,12 @@ namespace Script.GUI.Screen.Interface {
         bool               Initialized { get; }
 
         void Initialize();
-
         UniTask OpenAsync(string key, CancellationToken ct = default);
 
+        
+        UniTask CloseAllAsync(bool force = false);
         UniTask Back();
-        UniTask CloseAsync(ReadOnlyMemory<char> key);
-        UniTask CloseAsync(IScreen              screen);
+        UniTask CloseAsync(ReadOnlyMemory<char> key,    bool force = false);
+        UniTask CloseAsync(IScreen              screen, bool force = false);
     }
 }

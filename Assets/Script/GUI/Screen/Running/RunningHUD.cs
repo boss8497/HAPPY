@@ -6,6 +6,7 @@ using R3;
 using Script.GameInfo.Attribute;
 using Script.GamePlay.Stage;
 using Script.Utility.Runtime;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -18,7 +19,6 @@ namespace Script.GUI.Screen {
             public GameObject hp;
         }
 
-
         /// <summary>
         /// Inject
         /// </summary>
@@ -30,9 +30,6 @@ namespace Script.GUI.Screen {
         ) {
             _stageManager = stageManager;
         }
-        
-        
-
 
         /// <summary>
         /// Inspector
@@ -40,17 +37,20 @@ namespace Script.GUI.Screen {
         [ScreenKey]
         public string screenKey;
 
-        public Button optionBtn;
-
+        public Button           optionBtn;
         public PlayerHpObject[] playerHps = Array.Empty<PlayerHpObject>();
+        public TMP_Text         scoreText;
+        public TMP_Text         runningText;
 
 
         /// <summary>
         /// private
         /// </summary>
-        private DisposableBag _disposableBag;
+        private float _lastScore = 0f;
+        private float _lastRunning = 0f;
 
-        private CancellationTokenSource _addPlayerCts;
+        private DisposableBag           _disposableBag;
+        private CancellationTokenSource _subscribeCts;
 
         protected override void AwakeInternal() {
             base.AwakeInternal();
@@ -63,31 +63,23 @@ namespace Script.GUI.Screen {
             _disposableBag = new();
 
             // 플레이어 추가
-            StopAddPlayer();
-            _addPlayerCts = new();
-            AddPlayer(_addPlayerCts.Token).Forget();
+            StopSubscribePlayer();
+            _subscribeCts = new();
+            SubscribePlayer(_subscribeCts.Token).Forget();
+            SubscribeScore(_subscribeCts.Token).Forget();
+            SubscribeRunning(_subscribeCts.Token).Forget();
 
             return UniTask.CompletedTask;
         }
 
         public override UniTask CloseInternal() {
-            StopAddPlayer();
+            StopSubscribePlayer();
             _disposableBag.Dispose();
             return UniTask.CompletedTask;
         }
 
-        private async UniTask AddPlayer(CancellationToken ct) {
-            if (_stageManager == null) {
-                Debug.LogError($"StageManager가 주입되지 않았습니다.");
-                return;
-            }
-            
-            var isCancel = await UniTask.WaitUntil(() => _stageManager.Initialized?.CurrentValue ?? false, cancellationToken: ct)
-                                        .SuppressCancellationThrow();
-            if (isCancel) return;
-            
-            isCancel = await UniTask.WaitUntil(() => (_stageManager.Players?.Count ?? 0) > 0, cancellationToken: ct)
-                                    .SuppressCancellationThrow();
+        private async UniTask SubscribePlayer(CancellationToken ct) {
+            var isCancel = await WaitStage(ct);
             if (isCancel) return;
 
             // Running에서는 플레이어 캐릭터가 1명
@@ -96,28 +88,87 @@ namespace Script.GUI.Screen {
                 Debug.LogError($"플레이어가 존재하지 않습니다. 여기에서 Player가 Null이면 안됨");
                 return;
             }
-            
-            
+
+
             // 확실히 기다려 준다.
             isCancel = await UniTask.WaitUntil(() => player.Initialized?.CurrentValue ?? false, cancellationToken: ct)
                                     .SuppressCancellationThrow();
             if (isCancel) return;
-            
-            SetHp((int)player.MaxHealth.CurrentValue, (int)player.Health.CurrentValue);
-            
-            player.MaxHealth.CombineLatest(player.Health, (maxHp, hp) => (maxHp, hp))
-                        .Subscribe(tuple => {
-                            SetHp((int)tuple.maxHp, (int)tuple.hp);
-                        })
-                        .AddTo(ref _disposableBag);
 
+            // Initialize Hp
+            SetHp((int)player.MaxHealth.CurrentValue, (int)player.Health.CurrentValue);
+            player.MaxHealth.CombineLatest(player.Health, (maxHp, hp) => (maxHp, hp))
+                  .Subscribe(tuple => { SetHp((int)tuple.maxHp, (int)tuple.hp); })
+                  .AddTo(ref _disposableBag);
         }
 
-        private void StopAddPlayer() {
-            if (_addPlayerCts is { IsCancellationRequested: false }) {
-                _addPlayerCts.Cancel();
-                _addPlayerCts.Dispose();
-                _addPlayerCts = null;
+
+        private async UniTask SubscribeScore(CancellationToken ct) {
+            // Text가 지정 안됐으면 그냥 return
+            if (scoreText == null) return;
+
+            var isCancel = await WaitStage(ct);
+            if (isCancel) return;
+
+            _lastScore = 0f;
+            UpdateScore(0f, true);
+
+            _stageManager.Score.Subscribe(score => { UpdateScore(score); })
+                         .AddTo(ref _disposableBag);
+        }
+        private async UniTask SubscribeRunning(CancellationToken ct) {
+            // Text가 지정 안됐으면 그냥 return
+            if (runningText == null) return;
+
+            var isCancel = await WaitStage(ct);
+            if (isCancel) return;
+
+            _lastRunning = 0f;
+            UpdateRunning(0f, true);
+
+            _stageManager.RunningScore.Subscribe(score => { UpdateRunning(score); })
+                         .AddTo(ref _disposableBag);
+        }
+
+        private void UpdateScore(float score, bool force = false) {
+            // scoreText가 Null이면 호출이 안되기 때문에 Null체크는 제외
+            if (force == false && Mathf.Approximately(_lastScore, score))
+                return;
+
+            _lastScore = score;
+            scoreText.SetText("Score : {0:0.0}", score);
+        }
+        
+        private void UpdateRunning(float running, bool force = false) {
+            // scoreText가 Null이면 호출이 안되기 때문에 Null체크는 제외
+            if (force == false && Mathf.Approximately(_lastRunning, running))
+                return;
+
+            _lastRunning = running;
+            runningText.SetText("{0:0.0} m", running);
+        }
+
+        private async UniTask<bool> WaitStage(CancellationToken ct) {
+            if (_stageManager == null) {
+                Debug.LogError($"StageManager가 주입되지 않았습니다.");
+                return false;
+            }
+
+            var isCancel = await UniTask.WaitUntil(() => _stageManager.Initialized?.CurrentValue ?? false, cancellationToken: ct)
+                                        .SuppressCancellationThrow();
+            if (isCancel) return true;
+
+            isCancel = await UniTask.WaitUntil(() => (_stageManager.Players?.Count ?? 0) > 0, cancellationToken: ct)
+                                    .SuppressCancellationThrow();
+
+            return isCancel;
+        }
+
+        private void StopSubscribePlayer() {
+            if (_subscribeCts is { IsCancellationRequested: false }) {
+                _subscribeCts.Cancel();
+                _subscribeCts.Dispose();
+                _subscribeCts = null;
             }
         }
 
