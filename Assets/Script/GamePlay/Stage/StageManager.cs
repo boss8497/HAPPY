@@ -22,7 +22,7 @@ namespace Script.GamePlay.Stage {
         private CancellationTokenSource _updateCts;
 
         public void Initialize() {
-            _screenManager.OpenAsync("RunningHUD").Forget();
+            _screenManager.OpenAsync(_hudScreenKey).Forget();
             Test().Forget();
         }
 

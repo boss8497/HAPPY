@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
 using Script.GUI.Screen.Enum;
@@ -97,9 +98,10 @@ namespace Script.GUI.Screen {
         /// await으로 기다리면 오픈까지 확실히 기다려 줍니다.
         /// </summary>
         /// <param name="key"></param>
+        /// <param name="ct"></param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="KeyNotFoundException"></exception>
-        public async UniTask OpenAsync(string key) {
+        public async UniTask OpenAsync(string key, CancellationToken ct = default) {
             if (string.IsNullOrEmpty(key)) {
                 throw new ArgumentException("Screen ID cannot be null or empty");
             }
@@ -110,11 +112,30 @@ namespace Script.GUI.Screen {
             }
 
             _openWaitQueue.Enqueue(key);
-            await UniTask.WaitUntil(() => OpeningScreen == false && _openWaitQueue.Peek() == key);
-
+            var isCancel = await UniTask.WaitUntil(() => OpeningScreen == false && _openWaitQueue.Peek() == key, cancellationToken: ct)
+                                        .SuppressCancellationThrow();
+            
             AddState(ScreenManagerState.OpeningScreen);
-            var screenKey = _openWaitQueue.Dequeue();
+            
+            // 만약 Cancel로 중지 됐다면 하위에 요청한거 까지 다 지워주자
+            if (isCancel) {
+                if (_openWaitQueue.Contains(key)) {
+                    while (_openWaitQueue.Peek() != key) {
+                        _openWaitQueue.Dequeue();
+                    }
+                    _openWaitQueue.Dequeue();
+                }
+                RemoveState(ScreenManagerState.OpeningScreen);
+                return;
+            }
 
+            // Cancel이 되어버려 열리지 못한 Child들 return해주기
+            if (_openWaitQueue.Contains(key) == false) {
+                RemoveState(ScreenManagerState.OpeningScreen);
+                return;
+            }
+            
+            var screenKey = _openWaitQueue.Dequeue();
             if (_screens.TryGetValue(screenKey, out ScreenAsset screenAsset) == false) {
                 RemoveState(ScreenManagerState.OpeningScreen);
                 Debug.LogError($"Screen ID {screenKey} not found");

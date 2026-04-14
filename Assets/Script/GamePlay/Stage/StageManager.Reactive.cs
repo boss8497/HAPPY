@@ -5,6 +5,7 @@ using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
 using Script.GameInfo.Character;
 using Script.GamePlay.Character;
+using Unity.Plastic.Antlr3.Runtime;
 using UnityEngine;
 
 namespace Script.GamePlay.Stage {
@@ -116,11 +117,16 @@ namespace Script.GamePlay.Stage {
 
                              AddState(StageState.NextPhase);
                          }
-                         else { }
-                         
                      }
                  })
                  .AddTo(ref _reactiveDisposableBag);
+
+            Fail.SubscribeAwait(async (fail, ct) => {
+                    if (fail) {
+                        await _screenManager.OpenAsync(_failScreenKey, ct);
+                    }
+                })
+                .AddTo(ref _reactiveDisposableBag);
 
             NextPhase.Subscribe(nextPhase => {
                          if (nextPhase) { }

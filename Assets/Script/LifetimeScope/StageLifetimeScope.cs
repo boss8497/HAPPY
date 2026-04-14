@@ -1,3 +1,4 @@
+using Script.GameInfo.Attribute;
 using Script.GamePlay.Camera;
 using Script.GamePlay.ECS.World;
 using Script.GamePlay.Input;
@@ -19,6 +20,11 @@ namespace Script.LifetimeScope {
         [SerializeField]
         private CinemachineTargetGroup targetGroup;
 
+        [SerializeField, ScreenKey]
+        private string failScreenKey;
+        [SerializeField, ScreenKey]
+        private string hudScreenKey;
+
         protected override void Configure(IContainerBuilder builder) {
             name = nameof(StageLifetimeScope);
 
@@ -31,7 +37,9 @@ namespace Script.LifetimeScope {
 
             builder.RegisterEntryPoint<StageManager>(Lifetime.Singleton)
                    .As<IStageManager>()
-                   .WithParameter(targetGroup);
+                   .WithParameter(targetGroup)
+                   .WithParameter(failScreenKey)
+                   .WithParameter(hudScreenKey);
             builder.RegisterEntryPoint<StagePooling>(Lifetime.Singleton)
                    .As<IStagePooling>();
 

@@ -27,3 +27,10 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 1
+  - id: RunningFail
+    screen:
+      m_AssetGUID: db2d6ed0af7e289488ab3883322a7967
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1

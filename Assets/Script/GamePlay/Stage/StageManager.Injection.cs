@@ -12,6 +12,9 @@ namespace Script.GamePlay.Stage {
         private readonly IScreenManager         _screenManager;
 
 
+        private readonly string _failScreenKey;
+        private readonly string _hudScreenKey;
+
         public IGroupService   Group        { get; private set; }
         public IObjectResolver Resolver     { get; private set; }
         public IStagePooling   StagePooling { get; private set; }
@@ -20,17 +23,21 @@ namespace Script.GamePlay.Stage {
         public StageManager(
             IGroupService          group,
             IObjectResolver        resolver,
-            CinemachineTargetGroup targetGroup,
             IStageEntityWorld      entityWorld,
             IStagePooling          stagePooling,
-            IScreenManager         screenManager
+            IScreenManager         screenManager,
+            CinemachineTargetGroup targetGroup,
+            string                 failScreenKey,
+            string                 hudScreenKey
         ) {
             Group          = group;
             Resolver       = resolver;
-            _targetGroup   = targetGroup;
             _entityWorld   = entityWorld;
             StagePooling   = stagePooling;
             _screenManager = screenManager;
+            _targetGroup   = targetGroup;
+            _failScreenKey = failScreenKey;
+            _hudScreenKey  = hudScreenKey;
         }
     }
 }
