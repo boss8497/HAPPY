@@ -88,7 +88,10 @@ namespace Script.GUI.Screen {
             // Running에서는 플레이어 캐릭터가 1명
             var player = _stageManager.Players.FirstOrDefault();
             
+            // 확실히 기다려 준다.
             // Null 체크 안한다. 여기서 Player가 Null이면 이미 문제이기 때문.
+            await UniTask.WaitUntil(() => player.Initialized?.CurrentValue ?? false, cancellationToken: ct);
+            
             SetHp((int)player.MaxHealth.CurrentValue, (int)player.Health.CurrentValue);
             
             player.MaxHealth.CombineLatest(player.Health, (maxHp, hp) => (maxHp, hp))
