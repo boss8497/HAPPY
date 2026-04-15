@@ -11,11 +11,11 @@ using VContainer.Unity;
 
 namespace Script.GamePlay.Stage {
     public partial class StageManager : IStageManager, IInitializable, IDisposable {
-        private List<Character.Character> _players;
-        public  List<Character.Character> Players => _players;
+        private List<Character.ICharacter> _players;
+        public  List<Character.ICharacter> Players => _players;
 
-        private List<Character.Character> _enemies;
-        public  List<Character.Character> Enemies => _enemies;
+        private List<Character.ICharacter> _enemies;
+        public  List<Character.ICharacter> Enemies => _enemies;
 
         private int _systemControlStack = 0;
 
@@ -132,10 +132,11 @@ namespace Script.GamePlay.Stage {
             ReleasePool();
         }
 
-        public void AddCharacter(GameObject obj) {
-            var characterScript = obj.GetComponent<Character.Character>();
+        public bool AddCharacter(GameObject obj) {
+            var characterScript = obj.GetComponent<Character.ICharacter>() ?? obj.GetComponentInChildren<Character.ICharacter>();
             if (characterScript == null) {
-                characterScript = obj.GetComponentInChildren<Character.Character>();
+                Debug.LogError($"캐릭터 스크립트를 찾을 수 없습니다. GameObject: {obj.name}");
+                return false;
             }
 
             //카메라 셋팅
@@ -143,16 +144,19 @@ namespace Script.GamePlay.Stage {
 
             characterScript.Initialize(0, true);
             _players.Add(characterScript);
+            return true;
         }
 
-        public void AddEnemy(GameObject obj) {
-            var characterScript = obj.GetComponent<Character.Character>();
+        public bool AddEnemy(GameObject obj) {
+            var characterScript = obj.GetComponent<Character.ICharacter>() ?? obj.GetComponentInChildren<Character.ICharacter>();
             if (characterScript == null) {
-                characterScript = obj.GetComponentInChildren<Character.Character>();
+                Debug.LogError($"캐릭터 스크립트를 찾을 수 없습니다. GameObject: {obj.name}");
+                return false;
             }
 
             characterScript.Initialize(1, false);
             _enemies.Add(characterScript);
+            return true;
         }
 
         public void Dispose() {

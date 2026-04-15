@@ -1,7 +1,5 @@
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Character;
-using Script.GamePlay.Character.Interface;
 using Script.GamePlay.Pool;
 using UnityEngine;
 

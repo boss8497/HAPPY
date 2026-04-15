@@ -3,9 +3,10 @@ using R3;
 using Script.GameInfo.Character;
 using Script.GamePlay.Input;
 using Script.GamePlay.Service.Interface;
+using UnityEngine;
 using VContainer;
 
-namespace Script.GamePlay.Character.Interface {
+namespace Script.GamePlay.Character {
     public interface ICharacter {
         ReactiveProperty<CharacterState> State         { get; }
         ReactiveProperty<double>         Health        { get; }
@@ -21,9 +22,16 @@ namespace Script.GamePlay.Character.Interface {
         IGroupService   GroupService   { get; }
         IObjectResolver Resolver       { get; }
 
+        Transform  Transform  { get; }
+        GameObject GameObject { get; }
+
 
         void    Initialize(int team, bool isPlayer = false);
         void    Release();
         UniTask StartAsync();
+
+        void SetState(CharacterState    state);
+        void AddState(CharacterState    state);
+        void RemoveState(CharacterState state);
     }
 }

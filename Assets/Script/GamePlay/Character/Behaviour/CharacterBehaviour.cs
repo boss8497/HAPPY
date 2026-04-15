@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using Script.GamePlay.Character.Interface;
 using Script.GameInfo.Character;
 using Script.Utility.Runtime;
 using Sirenix.OdinInspector;

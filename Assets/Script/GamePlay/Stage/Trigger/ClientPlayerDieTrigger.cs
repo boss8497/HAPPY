@@ -6,7 +6,7 @@ using Script.Utility.Runtime;
 namespace Script.GamePlay.Stage {
     public class ClientPlayerDieTrigger : ClientTriggerBase {
         private IStageManager             _stageManager;
-        private List<Character.Character> _players;
+        private List<Character.ICharacter> _players;
 
         private bool _isInitializedStageManager = false;
 
@@ -18,7 +18,7 @@ namespace Script.GamePlay.Stage {
             _stageManager              = stageManager;
             _isInitializedStageManager = _stageManager.Initialized?.CurrentValue ?? false;
 
-            _players = ListPool.Get<Character.Character>();
+            _players = ListPool.Get<Character.ICharacter>();
 
             if (_stageManager.Initialized?.CurrentValue ?? false) {
                 _players.AddRange(_stageManager.Players);

@@ -13,8 +13,10 @@ using UnityEngine;
 //Runtime에 생성되는 부분들
 namespace Script.GamePlay.Character {
     public partial class Character {
-        public override Vector2   Position  => Transform.position;
-        public override Transform Transform => gameObject.transform;
+        public override Vector2    Position   => Transform.position;
+        public override Transform  Transform  => gameObject.transform;
+        public          GameObject GameObject => gameObject;
+
 
         private         bool _isPlayer;
         public override bool IsPlayer => _isPlayer;

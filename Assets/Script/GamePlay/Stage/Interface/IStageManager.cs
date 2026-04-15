@@ -33,8 +33,8 @@ namespace Script.GamePlay.Stage {
         ReadOnlyReactiveProperty<GameInfo.Dungeon.Stage> Stage       { get; }
 
         //GamePlay
-        List<Character.Character> Players { get; }
-        List<Character.Character> Enemies { get; }
+        List<Character.ICharacter> Players { get; }
+        List<Character.ICharacter> Enemies { get; }
 
         void    Initialize(DungeonProgress dungeonProgress);
         UniTask Begin();
@@ -44,8 +44,8 @@ namespace Script.GamePlay.Stage {
         void    Release();
 
 
-        void AddCharacter(GameObject obj);
-        void AddEnemy(GameObject     obj);
+        bool AddCharacter(GameObject obj);
+        bool AddEnemy(GameObject     obj);
 
         void ResetState();
         void AddState(StageState    state);

@@ -32,7 +32,11 @@ namespace Script.GamePlay.Stage {
             var prefab = _stageManager.StagePooling.Pop(_characterInfo.prefab);
             prefab.transform.position = _enemySpawnAction.position;
             _stageManager.AddEnemy(prefab);
-
+            
+            var result = _stageManager.AddCharacter(prefab);
+            if (result == false) {
+                _stageManager.StagePooling.Push(prefab);
+            }
             return UniTask.CompletedTask;
         }
 
