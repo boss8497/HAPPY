@@ -10,7 +10,10 @@ namespace Script.GamePlay.ECS.Component {
 
     public struct UnitDieTag : IComponentData, IEnableableComponent { }
 
+    public struct UnitCollisionTag : IComponentData, IEnableableComponent { }
+
     public struct UnitData : IComponentData {
+        public Entity                     Entity;
         public long                       Uid;
         public int                        Team;
         public int                        InstanceId;
@@ -52,6 +55,11 @@ namespace Script.GamePlay.ECS.Component {
         public Entity OtherEntity;
         public long   OtherUid;
         public int    OtherTeam;
+    }
+
+    public struct UnitCollisionDelay : IBufferElementData {
+        public long  OtherUid;
+        public float ExpireTime;
     }
 
 

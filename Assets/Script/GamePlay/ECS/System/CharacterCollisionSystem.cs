@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Script.GamePlay.ECS.Component;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
 
 namespace Script.GamePlay.ECS.System {
     [DisableAutoCreation]
@@ -16,14 +16,18 @@ namespace Script.GamePlay.ECS.System {
 
         [BurstCompile]
         public void OnCreate(ref SystemState state) {
+            state.RequireForUpdate<GameTimer>();
+            
             _query = SystemAPI.QueryBuilder()
                               .WithAll<
                                   LocalTransform,
                                   UnitEntityTag,
                                   UnitData,
                                   HitboxActiveShape,
-                                  UnitCollisionResult>()
+                                  UnitCollisionResult,
+                                  UnitCollisionDelay>()
                               .WithDisabled<UnitDieTag>()
+                              .WithDisabled<UnitCollisionTag>()
                               .Build();
 
             state.RequireForUpdate(_query);
@@ -34,6 +38,8 @@ namespace Script.GamePlay.ECS.System {
             foreach (var resultBuffer in SystemAPI.Query<DynamicBuffer<UnitCollisionResult>>()) {
                 resultBuffer.Clear();
             }
+            
+            var gameTimer = SystemAPI.GetSingleton<GameTimer>();
 
             var entities   = _query.ToEntityArray(Allocator.Temp);
             var identities = _query.ToComponentDataArray<UnitData>(Allocator.Temp);
@@ -41,6 +47,7 @@ namespace Script.GamePlay.ECS.System {
 
             var activeLookup = SystemAPI.GetBufferLookup<HitboxActiveShape>(true);
             var resultLookup = SystemAPI.GetBufferLookup<UnitCollisionResult>(false);
+            var delayLookup  = SystemAPI.GetBufferLookup<UnitCollisionDelay>(false);
 
             for (int i = 0; i < entities.Length; i++) {
                 var entityA = entities[i];
@@ -49,9 +56,16 @@ namespace Script.GamePlay.ECS.System {
                     continue;
 
                 var unitA = identities[i];
+                var delayBuffer = delayLookup[entityA];
+                RemoveExpiredDelay(delayBuffer, gameTimer.Elapsed);
 
                 for (int j = 0; j < entities.Length; j++) {
                     if (i == j) continue;
+
+                    if (ContainsDelay(delayBuffer, identities[j].Uid)) {
+                        Debug.LogError($"Collision between {unitA.Uid} and {identities[j].Uid} is delayed.");
+                        continue;
+                    }
 
                     var unitB   = identities[j];
                     var entityB = entities[j];
@@ -72,19 +86,44 @@ namespace Script.GamePlay.ECS.System {
                         continue;
                     }
 
-                    
+
                     resultLookup[entityA]
                         .Add(new UnitCollisionResult {
                             OtherEntity = entityB,
                             OtherUid    = identities[j].Uid,
-                            OtherTeam   = identities[j].Team
+                            OtherTeam   = identities[j].Team,
                         });
+                    
+                    SystemAPI.SetComponentEnabled<UnitCollisionTag>(entityA, true);
                 }
             }
 
             entities.Dispose();
             identities.Dispose();
             transforms.Dispose();
+        }
+
+        private bool ContainsDelay(
+            DynamicBuffer<UnitCollisionDelay> delays,
+            long                              otherUid
+        ) {
+            for (int i = 0; i < delays.Length; i++) {
+                if (delays[i].OtherUid == otherUid) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        private void RemoveExpiredDelay(
+            DynamicBuffer<UnitCollisionDelay> delays,
+            float                             currentTime
+        ) {
+            for (int i = delays.Length - 1; i >= 0; i--) {
+                if (delays[i].ExpireTime <= currentTime) {
+                    delays.RemoveAtSwapBack(i);
+                }
+            }
         }
 
         private static bool IntersectsAny(

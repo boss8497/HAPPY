@@ -83,6 +83,11 @@ namespace Script.GamePlay.Character {
             }
             SetEnabledTag<UnitDieTag>(false);
             
+            if (entityManager.HasComponent<UnitCollisionTag>(entity) == false) {
+                entityManager.AddComponentData<UnitCollisionTag>(entity, new());
+            }
+            SetEnabledTag<UnitCollisionTag>(false);
+            
             if (entityManager.HasComponent<HitboxState>(entity) == false) {
                 entityManager.AddComponentData(entity, new HitboxState {
                     Current = CharacterState.None,
@@ -104,6 +109,10 @@ namespace Script.GamePlay.Character {
 
             if (entityManager.HasBuffer<UnitCollisionResult>(entity) == false) {
                 entityManager.AddBuffer<UnitCollisionResult>(entity);
+            }
+            
+            if (entityManager.HasBuffer<UnitCollisionDelay>(entity) == false) {
+                entityManager.AddBuffer<UnitCollisionDelay>(entity);
             }
 
             

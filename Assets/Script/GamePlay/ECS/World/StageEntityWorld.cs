@@ -39,7 +39,6 @@ namespace Script.GamePlay.ECS.World {
 
             systems.Add(TypeManager.GetSystemTypeIndex<UpdateWorldTimeSystem>());
             
-            // Simulation 트리의 built-in sibling들
             systems.Add(TypeManager.GetSystemTypeIndex<BeginSimulationEntityCommandBufferSystem>());
             systems.Add(TypeManager.GetSystemTypeIndex<FixedStepSimulationSystemGroup>());
             systems.Add(TypeManager.GetSystemTypeIndex<LateSimulationSystemGroup>());
@@ -49,7 +48,8 @@ namespace Script.GamePlay.ECS.World {
             systems.Add(TypeManager.GetSystemTypeIndex<BeginFixedStepSimulationEntityCommandBufferSystem>());
             systems.Add(TypeManager.GetSystemTypeIndex<EndFixedStepSimulationEntityCommandBufferSystem>());
 
-            // 네 시스템들
+            // 시스템들
+            systems.Add(TypeManager.GetSystemTypeIndex<GameTimerSystem>());
             systems.Add(TypeManager.GetSystemTypeIndex<RunningSystem>());
             systems.Add(TypeManager.GetSystemTypeIndex<JumpingSystem>());
             systems.Add(TypeManager.GetSystemTypeIndex<JumpingResultSystem>());
