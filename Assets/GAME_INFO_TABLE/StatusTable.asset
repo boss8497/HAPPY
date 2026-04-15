@@ -153,3 +153,53 @@ MonoBehaviour:
           Func: 0
           Arity: 0
         _maxStack: 1
+  - <UID>k__BackingField: 5
+    <ID>k__BackingField: Score_Base_Status
+    <Name>k__BackingField: "\uAE30\uBCF8_\uC810\uC218"
+    levelType: 0
+    status:
+    - type: 1
+      isPercent: 0
+      expression:
+        _code:
+        - Op: 0
+          Const: 1
+          Key: 0
+          Func: 0
+          Arity: 0
+        _maxStack: 1
+    - type: 8
+      isPercent: 0
+      expression:
+        _code:
+        - Op: 0
+          Const: 10
+          Key: 0
+          Func: 0
+          Arity: 0
+        _maxStack: 1
+  - <UID>k__BackingField: 6
+    <ID>k__BackingField: Score_Base_PercentStatus
+    <Name>k__BackingField: "\uAE30\uBCF8_\uBE44\uC728_\uC810\uC218"
+    levelType: 0
+    status:
+    - type: 1
+      isPercent: 0
+      expression:
+        _code:
+        - Op: 0
+          Const: 1
+          Key: 0
+          Func: 0
+          Arity: 0
+        _maxStack: 1
+    - type: 8
+      isPercent: 0
+      expression:
+        _code:
+        - Op: 0
+          Const: 1
+          Key: 0
+          Func: 0
+          Arity: 0
+        _maxStack: 1

@@ -31,6 +31,9 @@ namespace Script.GamePlay.Character {
             }
 
             switch (otherCharacter.CharacterInfo.type) {
+                case CharacterType.AddHp:
+                    break;
+                
                 case CharacterType.Buff:
                     break;
                 

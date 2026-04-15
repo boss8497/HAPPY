@@ -120,6 +120,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff5520d113746314f90b6bef03234075
+    m_Address: UNIT_COIN
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1e304275c87eee54c87e0067d1737427, type: 2}
   m_SchemaSet:

@@ -35,6 +35,17 @@ MonoBehaviour:
     hitbox:
       rid: 2476689665383727232
     hitboxes: []
+  - <UID>k__BackingField: 3
+    <ID>k__BackingField: COIN
+    <Name>k__BackingField: "\uCF54\uC778"
+    type: 3
+    animationEvents: []
+    behaviourId: 2
+    statusUids: 0500000006000000
+    prefab: ff5520d113746314f90b6bef03234075
+    hitbox:
+      rid: 2476689862682214508
+    hitboxes: []
   references:
     version: 2
     RefIds:
@@ -48,3 +59,8 @@ MonoBehaviour:
       data:
         offset: {x: 0, y: 0.5, z: 0}
         size: {x: 1, y: 1, z: 1}
+    - rid: 2476689862682214508
+      type: {class: RectHitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        offset: {x: 0, y: 0.5, z: 0}
+        size: {x: 1, y: 1, z: 0}
