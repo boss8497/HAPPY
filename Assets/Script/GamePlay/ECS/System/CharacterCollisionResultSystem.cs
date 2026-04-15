@@ -1,7 +1,5 @@
 ﻿using Script.GamePlay.ECS.Component;
-using Unity.Collections;
 using Unity.Entities;
-using Unity.Transforms;
 
 namespace Script.GamePlay.ECS.System {
     [DisableAutoCreation]
@@ -11,15 +9,16 @@ namespace Script.GamePlay.ECS.System {
         protected override void OnCreate() {
             RequireForUpdate<GameTimer>();
         }
-        
+
         protected override void OnUpdate() {
-            var gameTimer = SystemAPI.GetSingleton<GameTimer>();
-            
+            var gameTimer   = SystemAPI.GetSingleton<GameTimer>();
+            var delayLookup = SystemAPI.GetBufferLookup<UnitCollisionDelay>();
+
             foreach (var (unitRef, results) in
                      SystemAPI.Query<RefRO<UnitData>, DynamicBuffer<UnitCollisionResult>>()
                               .WithAll<UnitEntityTag>()
                               .WithAll<UnitCollisionTag>()
-                              ) {
+                    ) {
                 if (results.Length <= 0)
                     continue;
 
@@ -38,17 +37,40 @@ namespace Script.GamePlay.ECS.System {
                     // Team 체크는 Collision System에서 이미 확인
                     characterScript.Collision(result.OtherUid);
                     var collisionDelay = characterScript.GetCollisionDelayTime();
-                    if (collisionDelay > 0) {
-                        SystemAPI.GetBufferLookup<UnitCollisionDelay>()[unitRef.ValueRO.Entity].Add(new UnitCollisionDelay {
-                            ExpireTime = gameTimer.Elapsed + collisionDelay,
-                            OtherUid   = result.OtherUid
-                        });
+                    var delayBuffer    = delayLookup[unitRef.ValueRO.Entity];
+                    var index          = FindDelayIndex(delayBuffer, result.OtherUid);
+
+                    // CollisionSystem에서 버퍼 등록을 하는데 없으면 문제가 있음..
+                    // 새로 만들어 준다?
+                    if (index <= 0) {
+                        delayBuffer.Add(new UnitCollisionDelay {
+                                            ExpireTime = gameTimer.Elapsed + collisionDelay,
+                                            OtherUid   = result.OtherUid
+                                        });
+                    }
+                    else {
+                        var oldDelayBuffer = delayBuffer[index];
+                        oldDelayBuffer.ExpireTime = gameTimer.Elapsed + collisionDelay;
+                        delayBuffer[index]        = oldDelayBuffer;
                     }
                 }
-                
+
                 results.Clear();
                 SystemAPI.SetComponentEnabled<UnitCollisionTag>(unitRef.ValueRO.Entity, false);
             }
+        }
+
+        private static int FindDelayIndex(
+            DynamicBuffer<UnitCollisionDelay> delays,
+            long                              otherUid
+        ) {
+            for (int i = 0; i < delays.Length; i++) {
+                if (delays[i].OtherUid == otherUid) {
+                    return i;
+                }
+            }
+
+            return -1;
         }
     }
 }

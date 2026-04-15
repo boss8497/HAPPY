@@ -14,8 +14,7 @@ using UnityEngine;
 namespace Script.GamePlay.Character {
     public partial class Character {
         private ConfigurationInfo       _config;
-        private CancellationTokenSource _collisionCts;
-
+        
         private void InitializeAction() {
             _config = GameInfoManager.Instance.Config;
         }
@@ -33,7 +32,7 @@ namespace Script.GamePlay.Character {
 
             
             Debug.LogError($"충돌했다고해!!! {otherCharacter.name}");
-            ApplyCollisionDamage(otherCharacter);
+            ApplyCollision(otherCharacter);
             
             switch (otherCharacter.CharacterInfo.type) {
                 case CharacterType.AddHp:
@@ -49,24 +48,7 @@ namespace Script.GamePlay.Character {
                 
                 case CharacterType.Character:
                 case CharacterType.Obstacle:
-                    StopCollisionRecovery();
-                    _collisionCts = new();
-                    CollisionRecovery(_collisionCts.Token).Forget();
                     break;
-            }
-        }
-
-        private async UniTask CollisionRecovery(CancellationToken ct) {
-            var isCancel = await UniTask.WaitForSeconds(2.0f, cancellationToken:ct).SuppressCancellationThrow();
-            if (isCancel) return;
-            //SetEnabledTag<UnitCollisionDelayTag>(false);
-        }
-
-        private void StopCollisionRecovery() {
-            if(_collisionCts is {IsCancellationRequested: false}) {
-                _collisionCts.Cancel();
-                _collisionCts.Dispose();
-                _collisionCts = null;
             }
         }
 
@@ -74,15 +56,21 @@ namespace Script.GamePlay.Character {
         }
 
         // Collision은 Def의 영향을 안받기 때문에 일단 따로 계산해 줌
-        private void ApplyCollisionDamage(Character otherCharacter) {
-            var currentHealth = Health.CurrentValue;
-            var newHealth = currentHealth - otherCharacter.Status.Collision;
-            if (newHealth < 0)
-                newHealth = 0;
-            Health.OnNext(newHealth);
+        private void ApplyCollision(Character otherCharacter) {
+            var collisionDamage = otherCharacter.Status.Collision;
+            if (collisionDamage <= 0d) return;
+            ApplyHealth(-collisionDamage);
         }
         
         public void ApplyDamage() {
+        }
+
+        private void ApplyHealth(double health) {
+            var currentHealth = Health.CurrentValue;
+            var newHealth     = currentHealth + health;
+            if (newHealth < 0)
+                newHealth = 0;
+            Health.OnNext(newHealth);
         }
         #endregion
         
@@ -237,7 +225,6 @@ namespace Script.GamePlay.Character {
         #endregion
 
         private void ReleaseAction() {
-            StopCollisionRecovery();
             ReleaseRunning();
             ReleaseJumping();
         }
