@@ -13,7 +13,8 @@ using UnityEngine;
 
 namespace Script.GamePlay.Character {
     public partial class Character {
-        private ConfigurationInfo _config;
+        private ConfigurationInfo       _config;
+        private CancellationTokenSource _collisionCts;
 
         private void InitializeAction() {
             _config = GameInfoManager.Instance.Config;
@@ -43,12 +44,29 @@ namespace Script.GamePlay.Character {
                 
                 case CharacterType.Score:
                     _stageManager.AddItemScore((float)otherCharacter.Status.Score);
+                    //SetEnabledTag<UnitCollisionDelayTag>(false);
                     break;
                 
-                // case CharacterType.Character:
-                // case CharacterType.Obstacle:
-                //     ApplyCollisionDamage(otherCharacter);
-                //     break;
+                case CharacterType.Character:
+                case CharacterType.Obstacle:
+                    StopCollisionRecovery();
+                    _collisionCts = new();
+                    CollisionRecovery(_collisionCts.Token).Forget();
+                    break;
+            }
+        }
+
+        private async UniTask CollisionRecovery(CancellationToken ct) {
+            var isCancel = await UniTask.WaitForSeconds(2.0f, cancellationToken:ct).SuppressCancellationThrow();
+            if (isCancel) return;
+            //SetEnabledTag<UnitCollisionDelayTag>(false);
+        }
+
+        private void StopCollisionRecovery() {
+            if(_collisionCts is {IsCancellationRequested: false}) {
+                _collisionCts.Cancel();
+                _collisionCts.Dispose();
+                _collisionCts = null;
             }
         }
 
@@ -219,6 +237,7 @@ namespace Script.GamePlay.Character {
         #endregion
 
         private void ReleaseAction() {
+            StopCollisionRecovery();
             ReleaseRunning();
             ReleaseJumping();
         }

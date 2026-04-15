@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Script.GamePlay.ECS.Component;
 using Unity.Burst;
 using Unity.Collections;
@@ -21,7 +22,7 @@ namespace Script.GamePlay.ECS.System {
                                   UnitEntityTag,
                                   UnitData,
                                   HitboxActiveShape,
-                                  CollisionResultData>()
+                                  UnitCollisionResult>()
                               .WithDisabled<UnitDieTag>()
                               .Build();
 
@@ -30,7 +31,7 @@ namespace Script.GamePlay.ECS.System {
 
         [BurstCompile]
         public void OnUpdate(ref SystemState state) {
-            foreach (var resultBuffer in SystemAPI.Query<DynamicBuffer<CollisionResultData>>()) {
+            foreach (var resultBuffer in SystemAPI.Query<DynamicBuffer<UnitCollisionResult>>()) {
                 resultBuffer.Clear();
             }
 
@@ -39,7 +40,7 @@ namespace Script.GamePlay.ECS.System {
             var transforms = _query.ToComponentDataArray<LocalTransform>(Allocator.Temp);
 
             var activeLookup = SystemAPI.GetBufferLookup<HitboxActiveShape>(true);
-            var resultLookup = SystemAPI.GetBufferLookup<CollisionResultData>(false);
+            var resultLookup = SystemAPI.GetBufferLookup<UnitCollisionResult>(false);
 
             for (int i = 0; i < entities.Length; i++) {
                 var entityA = entities[i];
@@ -51,14 +52,15 @@ namespace Script.GamePlay.ECS.System {
 
                 for (int j = 0; j < entities.Length; j++) {
                     if (i == j) continue;
-                    
-                    var unitB = identities[j];
+
+                    var unitB   = identities[j];
+                    var entityB = entities[j];
+
                     // 같은팀 충돌을 피하는건데.. 음
                     // 이거는 캐릭터 끼리의 충돌을 확인하는거고
                     // 만약 Damage가 따로 있다면 Damage System에서 같은팀 판정 옵션을 주는게 좋을듯
-                    if(unitA.Team == unitB.Team) continue;
-                    
-                    var entityB = entities[j];
+                    if (unitA.Team == unitB.Team) continue;
+
                     var shapesB = activeLookup[entityB];
                     if (shapesB.Length <= 0)
                         continue;
@@ -70,11 +72,12 @@ namespace Script.GamePlay.ECS.System {
                         continue;
                     }
 
+                    
                     resultLookup[entityA]
-                        .Add(new CollisionResultData {
+                        .Add(new UnitCollisionResult {
                             OtherEntity = entityB,
                             OtherUid    = identities[j].Uid,
-                            OtherTeam   = identities[j].Team,
+                            OtherTeam   = identities[j].Team
                         });
                 }
             }
@@ -85,12 +88,11 @@ namespace Script.GamePlay.ECS.System {
         }
 
         private static bool IntersectsAny(
-            float3                                        unitPosA,
+            float3                           unitPosA,
             DynamicBuffer<HitboxActiveShape> shapesA,
-            float3                                        unitPosB,
+            float3                           unitPosB,
             DynamicBuffer<HitboxActiveShape> shapesB
         ) {
-            
             foreach (var a in shapesA) {
                 if (a.Type == HitboxType.None)
                     continue;
@@ -109,9 +111,9 @@ namespace Script.GamePlay.ECS.System {
         }
 
         private static bool Intersects(
-            float3                         unitPosA,
+            float3            unitPosA,
             HitboxActiveShape a,
-            float3                         unitPosB,
+            float3            unitPosB,
             HitboxActiveShape b
         ) {
             float3 centerA = unitPosA + a.Offset;

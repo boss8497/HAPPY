@@ -33,5 +33,7 @@ namespace Script.GamePlay.Character {
         void SetState(CharacterState    state);
         void AddState(CharacterState    state);
         void RemoveState(CharacterState state);
+
+        float GetCollisionDelayTime();
     }
 }

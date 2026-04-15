@@ -81,7 +81,7 @@ namespace Script.GamePlay.Character {
             if (entityManager.HasComponent<UnitDieTag>(entity) == false) {
                 entityManager.AddComponentData<UnitDieTag>(entity, new());
             }
-            entityManager.SetComponentEnabled<UnitDieTag>(entity, false);
+            SetEnabledTag<UnitDieTag>(false);
             
             if (entityManager.HasComponent<HitboxState>(entity) == false) {
                 entityManager.AddComponentData(entity, new HitboxState {
@@ -102,8 +102,8 @@ namespace Script.GamePlay.Character {
                 entityManager.AddBuffer<HitboxActiveShape>(entity);
             }
 
-            if (entityManager.HasBuffer<CollisionResultData>(entity) == false) {
-                entityManager.AddBuffer<CollisionResultData>(entity);
+            if (entityManager.HasBuffer<UnitCollisionResult>(entity) == false) {
+                entityManager.AddBuffer<UnitCollisionResult>(entity);
             }
 
             
@@ -144,13 +144,16 @@ namespace Script.GamePlay.Character {
                 }
             }
         }
-
-        private void EnableDieTag() {
+        
+        private void SetEnabledTag<T>(bool enable) where T : IComponentData, IEnableableComponent {
             if (_unitManager.TryGetEntity(this, out var entity) == false)
                 return;
 
             var entityManager = _stageEntityWorld.EntityManager;
-            entityManager.SetComponentEnabled<UnitDieTag>(entity, true);
+            if (entityManager.HasComponent<T>(entity) == false)
+                return;
+
+            entityManager.SetComponentEnabled<T>(entity, enable);
         }
 
         private static void RegisterDefaultHitbox(

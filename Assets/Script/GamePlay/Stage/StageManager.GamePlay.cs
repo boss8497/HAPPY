@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Script.GamePlay.ECS.Component;
+using UnityEngine;
 
 namespace Script.GamePlay.Stage {
     public partial class StageManager {
@@ -31,6 +32,31 @@ namespace Script.GamePlay.Stage {
 
         public void AddItemScore(float score) {
             ItemScore.OnNext(ItemScore.Value + score);
+        }
+        
+        public void Pause() {
+            SetPause(true);
+        }
+
+        public void Resume() {
+            SetPause(false);
+        }
+        
+        private void SetPause(bool pause) {
+            var entityManager = _entityWorld.EntityManager;
+            var query         = entityManager.CreateEntityQuery(typeof(GameTimer));
+            if (query.IsEmptyIgnoreFilter) {
+                Debug.LogWarning("GameTimeData singleton이 없습니다.");
+                query.Dispose();
+                return;
+            }
+            
+            var entity   = query.GetSingletonEntity();
+            var gameTime = entityManager.GetComponentData<GameTimer>(entity);
+            gameTime.IsPaused = pause;
+            entityManager.SetComponentData(entity, gameTime);
+            
+            query.Dispose();
         }
     }
 }

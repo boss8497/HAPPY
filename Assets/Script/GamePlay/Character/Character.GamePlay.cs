@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Expression;
+using Script.GameInfo.Character;
 using Script.GameInfo.Info.Stat;
 using Script.GameInfo.Table;
 using Script.GamePlay.Pool;
@@ -13,13 +14,14 @@ using UnityEngine;
 //Runtime에 생성되는 부분들
 namespace Script.GamePlay.Character {
     public partial class Character {
-        public override Vector2    Position   => Transform.position;
-        public override Transform  Transform  => gameObject.transform;
-        public          GameObject GameObject => gameObject;
+        public override Vector2       Position                   => Transform.position;
+        public override Transform     Transform                  => gameObject.transform;
+        public override CharacterType CharacterType              => CharacterInfo.type;
+        public          GameObject    GameObject                 => gameObject;
 
 
-        private         bool _isPlayer;
-        public override bool IsPlayer => _isPlayer;
+        private         bool          _isPlayer;
+        public override bool          IsPlayer      => _isPlayer;
 
 
         [SerializeReference, SerializeField, ReadOnly]
@@ -97,6 +99,15 @@ namespace Script.GamePlay.Character {
                 _status = null;
             }
         }
+
+        // 상대방에게 캐릭터를 다시 받는 DelayTime ECS에서 사용하고 이 시간이 지나야
+        // 상대방과 충돌 시 데미지를 받음
+        public float GetCollisionDelayTime()
+            => CharacterInfo.type switch {
+                CharacterType.Obstacle  => 1f,
+                CharacterType.Character => 1f,
+                _                       => 0f
+            };
 
 
         //TODO: Database 관련 로직이 없기 때문에 일단은 여기서 테스트 설정

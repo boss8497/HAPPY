@@ -1,4 +1,5 @@
-﻿using Script.GameInfo.Character;
+﻿using System;
+using Script.GameInfo.Character;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -6,6 +7,7 @@ using UnityEngine;
 
 namespace Script.GamePlay.ECS.Component {
     public struct UnitEntityTag : IComponentData { }
+
     public struct UnitDieTag : IComponentData, IEnableableComponent { }
 
     public struct UnitData : IComponentData {
@@ -46,7 +48,7 @@ namespace Script.GamePlay.ECS.Component {
         public float      Radius;
     }
 
-    public struct CollisionResultData : IBufferElementData {
+    public struct UnitCollisionResult : IBufferElementData {
         public Entity OtherEntity;
         public long   OtherUid;
         public int    OtherTeam;
@@ -61,8 +63,8 @@ namespace Script.GamePlay.ECS.Component {
         public float3 Direction;
         public float  Speed;
     }
-    
-    
+
+
     /// <summary>
     /// Character -> ECS 입력 전달용
     /// Held: 지금 누르고 있는지

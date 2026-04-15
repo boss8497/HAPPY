@@ -1,5 +1,6 @@
 ﻿using R3;
 using Script.GameInfo.Character;
+using Script.GamePlay.ECS.Component;
 
 //Reactive 필드 및 로직
 namespace Script.GamePlay.Character {
@@ -31,7 +32,7 @@ namespace Script.GamePlay.Character {
                       // 죽음
                       if (health <= 0) {
                           AddState(CharacterState.Die);
-                          EnableDieTag();
+                          SetEnabledTag<UnitDieTag>(true);
                       }
                   })
                   .AddTo(ref _reactiveDisposableBag);

@@ -1,3 +1,4 @@
+using Script.GameInfo.Character;
 using UnityEngine;
 
 namespace Script.GamePlay.Unit {
@@ -9,9 +10,10 @@ namespace Script.GamePlay.Unit {
         public long UID  => _uid;
         public int  Team => _team;
 
-        public abstract Vector2   Position  { get; }
-        public abstract Transform Transform { get; }
-        public abstract bool      IsPlayer  { get; }
+        public abstract Vector2       Position      { get; }
+        public abstract Transform     Transform     { get; }
+        public abstract bool          IsPlayer      { get; }
+        public abstract CharacterType CharacterType { get; }
 
         public void Set(long uid, int team) {
             _uid  = uid;

@@ -51,5 +51,7 @@ namespace Script.GamePlay.Stage {
         void ResetState();
         void AddState(StageState    state);
         void RemoveState(StageState state);
+        void Pause();
+        void Resume();
     }
 }

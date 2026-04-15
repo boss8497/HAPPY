@@ -8,22 +8,11 @@ namespace Script.GamePlay.ECS.System {
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
     [UpdateAfter(typeof(CharacterCollisionSystem))]
     public partial class CharacterCollisionResultSystem : SystemBase {
-        private EntityQuery _query;
-
-        protected override void OnCreate() {
-            _query = SystemAPI.QueryBuilder()
-                              .WithAll<
-                                  LocalTransform,
-                                  UnitData,
-                                  CollisionResultData>()
-                              .Build();
-            RequireForUpdate(_query);
-        }
-
         protected override void OnUpdate() {
             foreach (var (unitRef, results) in
-                     SystemAPI.Query<RefRO<UnitData>, DynamicBuffer<CollisionResultData>>()
-                              .WithAll<UnitEntityTag>()) {
+                     SystemAPI.Query<RefRO<UnitData>, DynamicBuffer<UnitCollisionResult>>()
+                              .WithAll<UnitEntityTag>()
+                              ) {
                 if (results.Length <= 0)
                     continue;
 

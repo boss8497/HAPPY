@@ -103,10 +103,10 @@ namespace Script.GamePlay.Unit {
             });
 
             entityManager.SetComponentData(entity, new UnitData {
-                Uid        = unit.UID,
-                Team       = unit.Team,
-                InstanceId = unit.GetInstanceID(),
-                GameObject = unit.gameObject,
+                Uid           = unit.UID,
+                Team          = unit.Team,
+                InstanceId    = unit.GetInstanceID(),
+                GameObject    = unit.gameObject,
             });
         }
 

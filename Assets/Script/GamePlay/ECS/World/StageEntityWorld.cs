@@ -1,7 +1,9 @@
 ﻿using System;
+using Script.GamePlay.ECS.Component;
 using Script.GamePlay.ECS.System;
 using Unity.Collections;
 using Unity.Entities;
+using UnityEngine;
 using VContainer.Unity;
 
 namespace Script.GamePlay.ECS.World {
@@ -61,7 +63,6 @@ namespace Script.GamePlay.ECS.World {
             ScriptBehaviourUpdateOrder.AppendWorldToCurrentPlayerLoop(_world);
             _appendedToPlayerLoop = true;
         }
-
         public void Dispose() {
             if (_world == null)
                 return;
