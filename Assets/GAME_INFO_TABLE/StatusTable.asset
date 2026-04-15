@@ -23,7 +23,7 @@ MonoBehaviour:
       expression:
         _code:
         - Op: 0
-          Const: 1
+          Const: 3
           Key: 0
           Func: 0
           Arity: 0
@@ -184,7 +184,7 @@ MonoBehaviour:
     levelType: 0
     status:
     - type: 1
-      isPercent: 0
+      isPercent: 1
       expression:
         _code:
         - Op: 0
@@ -194,7 +194,7 @@ MonoBehaviour:
           Arity: 0
         _maxStack: 1
     - type: 8
-      isPercent: 0
+      isPercent: 1
       expression:
         _code:
         - Op: 0

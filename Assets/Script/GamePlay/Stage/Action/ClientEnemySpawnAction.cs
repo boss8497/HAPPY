@@ -31,9 +31,8 @@ namespace Script.GamePlay.Stage {
         public override UniTask Execute() {
             var prefab = _stageManager.StagePooling.Pop(_characterInfo.prefab);
             prefab.transform.position = _enemySpawnAction.position;
-            _stageManager.AddEnemy(prefab);
             
-            var result = _stageManager.AddCharacter(prefab);
+            var result = _stageManager.AddEnemy(prefab);
             if (result == false) {
                 _stageManager.StagePooling.Push(prefab);
             }

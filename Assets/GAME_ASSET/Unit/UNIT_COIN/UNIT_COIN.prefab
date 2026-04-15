@@ -166,3 +166,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Script.GamePlay.Character.Animation::Script.GamePlay.Character.BoxDieAnimation
   spriteRenderer: {fileID: 7759802540843688672}
+  duration: 0.1

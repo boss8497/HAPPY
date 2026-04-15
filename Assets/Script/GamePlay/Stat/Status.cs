@@ -31,6 +31,7 @@ namespace Script.GamePlay.Stat {
         public double Spd       => _calcValue[(int)StatType.Spd];
         public double Jump      => _calcValue[(int)StatType.Jump];
         public double Collision => _calcValue[(int)StatType.Collision];
+        public double Score     => _calcValue[(int)StatType.Score];
 
 
         public void Add(StatusInfo statusInfo) {
@@ -39,7 +40,7 @@ namespace Script.GamePlay.Stat {
             var typeListPool = ListPool.Get<StatType>();
             foreach (var stat in statusInfo.status) {
                 if (stat.type == StatType.Max) continue;
-                
+
                 var index = (int)stat.type;
                 if (stat.isPercent) {
                     _cachePercentValue[index] += stat.Calc();
@@ -70,7 +71,7 @@ namespace Script.GamePlay.Stat {
                 var typeListPool = ListPool.Get<StatType>();
                 foreach (var stat in removeStatusInfo.status) {
                     if (stat.type == StatType.Max) continue;
-                
+
                     var statIndex = (int)stat.type;
                     if (stat.isPercent) {
                         _cachePercentValue[statIndex] -= stat.Calc();
@@ -78,24 +79,24 @@ namespace Script.GamePlay.Stat {
                     else {
                         _cacheValue[statIndex] -= stat.Calc();
                     }
-                    
+
                     if (typeListPool.Exists(a => a == stat.type) == false) {
                         typeListPool.Add(stat.type);
                     }
                 }
-                
+
                 UpdateAt(typeListPool);
                 ListPool.Return(typeListPool);
             }
         }
 
-        public void UpdateAt(List<StatType>  typeList) {
+        public void UpdateAt(List<StatType> typeList) {
             foreach (var stat in typeList) {
-                var index =  (int)stat;
+                var index = (int)stat;
                 _calcValue[index] = _cacheValue[index] * _cachePercentValue[index];
             }
         }
-        
+
         public void Update() {
             for (int i = 0; i < (int)StatType.Max; i++) {
                 _calcValue[i] = _cacheValue[i] * _cachePercentValue[i];
@@ -115,7 +116,7 @@ namespace Script.GamePlay.Stat {
         public void OnRent() {
             _originalStatus = ListPool.Get<StatusInfo>();
         }
-        
+
         public void OnReturn() {
             Release();
         }

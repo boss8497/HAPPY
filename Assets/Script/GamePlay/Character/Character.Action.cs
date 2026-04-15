@@ -30,6 +30,10 @@ namespace Script.GamePlay.Character {
                 throw new InvalidCastException($"충돌한 유닛이 Character 타입이 아닙니다. UID: {otherUid}");
             }
 
+            
+            Debug.LogError($"충돌했다고해!!! {otherCharacter.name}");
+            ApplyCollisionDamage(otherCharacter);
+            
             switch (otherCharacter.CharacterInfo.type) {
                 case CharacterType.AddHp:
                     break;
@@ -38,13 +42,13 @@ namespace Script.GamePlay.Character {
                     break;
                 
                 case CharacterType.Score:
+                    _stageManager.AddItemScore((float)otherCharacter.Status.Score);
                     break;
                 
-                case CharacterType.Character:
-                case CharacterType.Obstacle:
-                    Debug.LogError($"충돌했다고해!!! {otherCharacter.name}");
-                    ApplyCollisionDamage(otherCharacter);
-                    break;
+                // case CharacterType.Character:
+                // case CharacterType.Obstacle:
+                //     ApplyCollisionDamage(otherCharacter);
+                //     break;
             }
         }
 

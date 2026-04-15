@@ -4,12 +4,15 @@ using UnityEngine;
 
 namespace Script.GamePlay.Character {
     
-    public class BoxDieAnimation : DieAnimation {
+    public class ObstacleDieAnimation : DieAnimation {
         [SerializeField]
         private SpriteRenderer spriteRenderer;
+    
+        [SerializeField]
+        private float duration = 1.0f;
         
         public override async UniTask PlayAnimation() {
-            var tween = spriteRenderer.DOFade(0, 1f).SetEase(Ease.InOutSine);
+            var tween = spriteRenderer.DOFade(0, duration).SetEase(Ease.InOutSine);
             await tween.AsyncWaitForCompletion();
         }
 

@@ -46,6 +46,7 @@ namespace Script.GamePlay.Stage {
 
         bool AddCharacter(GameObject obj);
         bool AddEnemy(GameObject     obj);
+        void AddItemScore(float      score);
 
         void ResetState();
         void AddState(StageState    state);

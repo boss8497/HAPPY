@@ -138,6 +138,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Script.GamePlay.Character::Script.GamePlay.Character.Character
   characterInfoUid: 2
+  _characterBehaviour:
+    rid: -2
   _dieAnimation: {fileID: 3156079116447162431}
   hitBox:
     rid: -2
@@ -159,3 +161,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Script.GamePlay.Character.Animation::Script.GamePlay.Character.BoxDieAnimation
   spriteRenderer: {fileID: 7759802540843688672}
+  duration: 0.5
