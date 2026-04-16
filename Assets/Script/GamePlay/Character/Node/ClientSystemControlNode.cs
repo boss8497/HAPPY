@@ -13,8 +13,8 @@ namespace Script.GamePlay.Character {
             _characterBehaviour.Character.SetAnimation(nameof(AnimationName.IDLE), true);
         }
 
-        protected override UniTask Update(CancellationToken cts) {
-            return UniTask.CompletedTask;
+        protected override async UniTask Update(CancellationToken cts) {
+            await UniTask.WaitUntil(() => (_characterBehaviour.Character.SystemControl?.CurrentValue ?? true) == false, cancellationToken: cts);
         }
     }
 }
