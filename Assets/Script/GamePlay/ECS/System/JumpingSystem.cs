@@ -17,50 +17,53 @@ namespace Script.GamePlay.ECS.System {
 
         [BurstCompile]
         public void OnUpdate(ref SystemState state) {
-            float dt = SystemAPI.Time.DeltaTime;
+            var dt = SystemAPI.Time.DeltaTime;
 
-            foreach (var (transformRef, jumpingRef, inputRef, resultRef, entity) in
-                     SystemAPI.Query<
-                             RefRW<LocalTransform>,
-                             RefRW<JumpingData>,
-                             RefRW<JumpInputData>,
-                             RefRW<JumpResultData>>()
-                         .WithEntityAccess()) {
-                ref var transform = ref transformRef.ValueRW;
-                ref var jumping   = ref jumpingRef.ValueRW;
-                ref var input     = ref inputRef.ValueRW;
-                ref var result    = ref resultRef.ValueRW;
+            var updateHandle = new JumpingUpdateJob {
+                Dt = dt,
+            }.ScheduleParallel(state.Dependency);
 
+            var disableHandle = new JumpingDisableJob().ScheduleParallel(updateHandle);
+
+            state.Dependency = disableHandle;
+        }
+
+        [BurstCompile]
+        public partial struct JumpingUpdateJob : IJobEntity {
+            public float Dt;
+
+            private void Execute(
+                ref LocalTransform transform,
+                ref JumpingData jumping,
+                ref JumpInputData input,
+                ref JumpResultData result
+            ) {
                 result.Landed = 0;
 
-                // 점프 버튼을 계속 누르고 있으면 상승 유지 시간 증가
                 if (input.Held != 0 && jumping.CurrentJumpTime < jumping.MaxJumpTime) {
-                    jumping.CurrentJumpTime += dt;
+                    jumping.CurrentJumpTime += Dt;
+
                     if (jumping.CurrentJumpTime > jumping.MaxJumpTime) {
                         jumping.CurrentJumpTime = jumping.MaxJumpTime;
                     }
                 }
 
-                // 버튼을 뗀 순간은 1회성 이벤트처럼 소비
                 if (input.ReleaseRequested != 0) {
                     jumping.CurrentJumpTime = math.min(jumping.CurrentJumpTime, jumping.Timer);
                     jumping.CurrentJumpTime = math.max(jumping.CurrentJumpTime, jumping.MinJumpTime);
-                    
                     input.ReleaseRequested = 0;
                 }
 
-                // 상승 / 하강 구간 중력 적용
                 if (jumping.Timer < jumping.CurrentJumpTime && jumping.JumpVelocity > 0f) {
-                    jumping.JumpVelocity -= jumping.Gravity * dt * 0.5f;
+                    jumping.JumpVelocity -= jumping.Gravity * Dt * 0.5f;
                 }
                 else {
-                    jumping.JumpVelocity -= jumping.Gravity * jumping.FallGravity * dt;
+                    jumping.JumpVelocity -= jumping.Gravity * jumping.FallGravity * Dt;
                 }
 
                 var position = transform.Position;
-                position.y += jumping.JumpVelocity * dt;
+                position.y += jumping.JumpVelocity * Dt;
 
-                // 바닥 도달
                 if (position.y <= jumping.GroundY && jumping.Timer > 0f) {
                     position.y = jumping.GroundY;
                     transform.Position = position;
@@ -68,13 +71,24 @@ namespace Script.GamePlay.ECS.System {
                     result.Landed = 1;
                     input.Held = 0;
                     input.ReleaseRequested = 0;
-
-                    state.EntityManager.SetComponentEnabled<JumpingData>(entity, false);
-                    continue;
+                    return;
                 }
 
                 transform.Position = position;
-                jumping.Timer += dt;
+                jumping.Timer += Dt;
+            }
+        }
+
+        [BurstCompile]
+        public partial struct JumpingDisableJob : IJobEntity {
+            private void Execute(
+                in JumpResultData result,
+                EnabledRefRW<JumpingData> jumpingEnabled
+            ) {
+                if (result.Landed == 0)
+                    return;
+
+                jumpingEnabled.ValueRW = false;
             }
         }
     }
