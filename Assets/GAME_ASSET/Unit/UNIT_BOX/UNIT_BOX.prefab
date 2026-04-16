@@ -26,8 +26,8 @@ Transform:
   m_GameObject: {fileID: 2325141007836225578}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8661233990398657061}
@@ -82,7 +82,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.9936203, b: 0.21568626, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -142,12 +142,17 @@ MonoBehaviour:
     rid: -2
   _dieAnimation: {fileID: 3156079116447162431}
   hitBox:
-    rid: -2
+    rid: 2476689885064593524
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
+    - rid: 2476689885064593524
+      type: {class: RectHitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        offset: {x: 0, y: 1, z: 0}
+        size: {x: 1, y: 2, z: 1}
 --- !u!114 &3156079116447162431
 MonoBehaviour:
   m_ObjectHideFlags: 0

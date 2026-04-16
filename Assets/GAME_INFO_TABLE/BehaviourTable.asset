@@ -109,7 +109,7 @@ MonoBehaviour:
         id: SYSTEM
         transitions:
         - rid: 2451557272760352771
-        - rid: 2476689752501256358
+        - rid: 2476689885064593527
     - rid: 2451557272760352771
       type: {class: DieTransition, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
@@ -138,24 +138,8 @@ MonoBehaviour:
         id: PLAYERCONTROL
         transitions:
         - rid: 2451557272760352775
-        - rid: 2451557272760352774
-    - rid: 2451557272760352774
-      type: {class: PlayerControl, ns: Script.GameInfo.Character, asm: Script.GameInfo}
-      data:
-        guid:
-          v0: 1766669654
-          v1: 1138740075
-          v2: 3213996221
-          v3: 1221401536
-        id: END
-        timing: 1
-        value: 0
-        priority: 0
-        nextNodeGuid:
-          v0: 2871299344
-          v1: 1245686449
-          v2: 3263266976
-          v3: 3800206938
+        - rid: 2476689885064593528
+        - rid: 2476689885064593537
     - rid: 2451557272760352775
       type: {class: SystemControl, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
@@ -348,16 +332,50 @@ MonoBehaviour:
           v1: 1171156409
           v2: 2581611181
           v3: 3162336557
-    - rid: 2476689752501256358
-      type: {class: SystemControl, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+    - rid: 2476689885064593527
+      type: {class: EndTransition, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
         guid:
-          v0: 3175191485
-          v1: 1082408305
-          v2: 2426061731
-          v3: 2352185335
-        id: Wait
+          v0: 2132926552
+          v1: 1198809032
+          v2: 1219401881
+          v3: 2065906266
+        id: WAIT
+        timing: 2
+        value: 0
+        priority: 0
+        nextNodeGuid:
+          v0: 2871299344
+          v1: 1245686449
+          v2: 3263266976
+          v3: 3800206938
+    - rid: 2476689885064593528
+      type: {class: DieTransition, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 66120503
+          v1: 1125175605
+          v2: 576823695
+          v3: 3882394413
+        id: DIE
         timing: 1
+        value: 1
+        priority: 0
+        nextNodeGuid:
+          v0: 3619234967
+          v1: 1297461387
+          v2: 94862013
+          v3: 4094551553
+    - rid: 2476689885064593537
+      type: {class: EndTransition, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 437878768
+          v1: 1250292437
+          v2: 1359377850
+          v3: 100901831
+        id: WAIT
+        timing: 2
         value: 0
         priority: 0
         nextNodeGuid:
