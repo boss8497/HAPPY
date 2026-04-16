@@ -38,8 +38,6 @@ namespace Script.GamePlay.ECS.System {
                 ref JumpInputData input,
                 ref JumpResultData result
             ) {
-                result.Landed = 0;
-
                 if (input.Held != 0 && jumping.CurrentJumpTime < jumping.MaxJumpTime) {
                     jumping.CurrentJumpTime += Dt;
 
