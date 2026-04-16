@@ -203,3 +203,53 @@ MonoBehaviour:
           Func: 0
           Arity: 0
         _maxStack: 1
+  - <UID>k__BackingField: 7
+    <ID>k__BackingField: Heart_Base_Status
+    <Name>k__BackingField: "\uAE30\uBCF8_\uD558\uD2B8"
+    levelType: 0
+    status:
+    - type: 1
+      isPercent: 0
+      expression:
+        _code:
+        - Op: 0
+          Const: 1
+          Key: 0
+          Func: 0
+          Arity: 0
+        _maxStack: 1
+    - type: 9
+      isPercent: 0
+      expression:
+        _code:
+        - Op: 0
+          Const: 1
+          Key: 0
+          Func: 0
+          Arity: 0
+        _maxStack: 1
+  - <UID>k__BackingField: 8
+    <ID>k__BackingField: Heart_Base_PercentStatus
+    <Name>k__BackingField: "\uAE30\uBCF8_\uBE44\uC728_\uD558\uD2B8"
+    levelType: 0
+    status:
+    - type: 1
+      isPercent: 1
+      expression:
+        _code:
+        - Op: 0
+          Const: 1
+          Key: 0
+          Func: 0
+          Arity: 0
+        _maxStack: 1
+    - type: 9
+      isPercent: 1
+      expression:
+        _code:
+        - Op: 0
+          Const: 1
+          Key: 0
+          Func: 0
+          Arity: 0
+        _maxStack: 1

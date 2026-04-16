@@ -32,6 +32,7 @@ namespace Script.GamePlay.Stat {
         public double Jump      => _calcValue[(int)StatType.Jump];
         public double Collision => _calcValue[(int)StatType.Collision];
         public double Score     => _calcValue[(int)StatType.Score];
+        public double Heart     => _calcValue[(int)StatType.Heart];
 
 
         public void Add(StatusInfo statusInfo) {

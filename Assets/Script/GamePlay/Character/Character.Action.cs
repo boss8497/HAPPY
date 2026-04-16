@@ -35,7 +35,8 @@ namespace Script.GamePlay.Character {
             ApplyCollision(otherCharacter);
             
             switch (otherCharacter.CharacterInfo.type) {
-                case CharacterType.AddHp:
+                case CharacterType.Heart:
+                    ApplyHeart(otherCharacter);
                     break;
                 
                 case CharacterType.Buff:
@@ -53,6 +54,12 @@ namespace Script.GamePlay.Character {
         }
 
         private void ApplyBuff() {
+        }
+
+        private void ApplyHeart(Character otherCharacter){
+             var heartValue = otherCharacter.Status.Heart;
+             if (heartValue <= 0d) return;
+             ApplyHealth((int)heartValue);
         }
 
         // Collision은 Def의 영향을 안받기 때문에 일단 따로 계산해 줌

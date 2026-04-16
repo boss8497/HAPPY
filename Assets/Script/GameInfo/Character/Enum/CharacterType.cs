@@ -4,6 +4,6 @@
         Obstacle,
         Buff,
         Score,
-        AddHp,
+        Heart,
     }
 }

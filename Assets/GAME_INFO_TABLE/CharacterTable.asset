@@ -46,6 +46,17 @@ MonoBehaviour:
     hitbox:
       rid: 2476689862682214508
     hitboxes: []
+  - <UID>k__BackingField: 4
+    <ID>k__BackingField: HEART
+    <Name>k__BackingField: "\uD558\uD2B8"
+    type: 4
+    animationEvents: []
+    behaviourId: 2
+    statusUids: 0700000008000000
+    prefab: 1ce6eef5a601cd240aaa91aff9b7807a
+    hitbox:
+      rid: 2476689885064593515
+    hitboxes: []
   references:
     version: 2
     RefIds:
@@ -63,4 +74,9 @@ MonoBehaviour:
       type: {class: RectHitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
         offset: {x: 0, y: 0.5, z: 0}
-        size: {x: 1, y: 1, z: 0}
+        size: {x: 1, y: 1, z: 1}
+    - rid: 2476689885064593515
+      type: {class: RectHitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        offset: {x: 0, y: 0.5, z: 0}
+        size: {x: 1, y: 1, z: 1}
