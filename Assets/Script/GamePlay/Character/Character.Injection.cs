@@ -3,6 +3,7 @@ using Script.GamePlay.Input;
 using Script.GamePlay.Service.Interface;
 using Script.GamePlay.Stage;
 using Script.GamePlay.Unit.Interface;
+using Script.GameTimer;
 using VContainer;
 
 
@@ -23,7 +24,8 @@ namespace Script.GamePlay.Character {
             IUnitManager      unitManager,
             IGroupService     groupService,
             IObjectResolver   resolver,
-            IStageEntityWorld stageEntityWorld
+            IStageEntityWorld stageEntityWorld,
+            IGameTimer        gameTimer
         ) {
             _stageManager     = stageManager;
             _playerControls   = playerControls;
@@ -31,9 +33,10 @@ namespace Script.GamePlay.Character {
             _groupService     = groupService;
             _resolver         = resolver;
             _stageEntityWorld = stageEntityWorld;
+            GameTimer         = gameTimer;
         }
 
-
+        public IGameTimer      GameTimer      { get; private set; }
         public IPlayerControls PlayerControls => _playerControls;
         public IGroupService   GroupService   => _groupService;
         public IObjectResolver Resolver       => _resolver;

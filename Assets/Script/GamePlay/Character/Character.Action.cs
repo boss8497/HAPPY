@@ -45,6 +45,7 @@ namespace Script.GamePlay.Character {
                     break;
                 
                 case CharacterType.Buff:
+                    ApplyBuff(otherCharacter.CharacterInfo.buffUids);
                     break;
                 
                 case CharacterType.Score:
@@ -57,9 +58,6 @@ namespace Script.GamePlay.Character {
                     AddState(CharacterState.Collision);
                     break;
             }
-        }
-
-        private void ApplyBuff() {
         }
 
         private void ApplyHeart(Character otherCharacter){
@@ -87,6 +85,11 @@ namespace Script.GamePlay.Character {
                 newHealth = 0;
             Health.OnNext(newHealth);
         }
+
+        private void UpdateStatus() {
+            EnableRunning();
+        }
+        
         #endregion
         
 

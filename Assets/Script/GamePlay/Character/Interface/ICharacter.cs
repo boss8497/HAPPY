@@ -1,13 +1,18 @@
 ﻿using Cysharp.Threading.Tasks;
 using R3;
 using Script.GameInfo.Character;
+using Script.GamePlay.Buff;
 using Script.GamePlay.Input;
 using Script.GamePlay.Service.Interface;
+using Script.GameTimer;
 using UnityEngine;
 using VContainer;
 
 namespace Script.GamePlay.Character {
     public interface ICharacter {
+        IGameTimer GameTimer { get; }
+        
+        
         ReactiveProperty<CharacterState> State          { get; }
         ReactiveProperty<double>         Health         { get; }
         ReactiveProperty<double>         MaxHealth      { get; }
@@ -36,5 +41,6 @@ namespace Script.GamePlay.Character {
         void RemoveState(CharacterState state, bool notify = true);
 
         float GetCollisionDelayTime();
+        void  RemoveBuff(IBuff iBuff);
     }
 }

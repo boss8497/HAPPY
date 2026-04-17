@@ -1,16 +1,16 @@
 {
-    "name": "Script.GamePlay.Character.Interface",
+    "name": "Script.GamePlay.Buff",
     "rootNamespace": "",
     "references": [
+        "GUID:edd7a9f6e838b3a48898e6ad1d6b2c85",
         "GUID:f51ebe6a0ceec4240a699833d6309b23",
-        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
-        "GUID:ed9ac4f9a88b1fe4196a34836bdd0fc9",
-        "GUID:feb015e1570a6d347af3c443f536a123",
-        "GUID:77221876cc6b8244180b96e320b1bcd4",
+        "GUID:68740c49ada94b64b897f21d3887b217",
+        "GUID:be356eb8d2e545045be53bd81b83a721",
         "GUID:854cf9f0c9798824e94ba2e712971f53",
-        "GUID:86bdea825cc79474592b0f378bfe2b20",
+        "GUID:0eed957a026b42e4c9a6a91bc28d4a41",
+        "GUID:dc4b9345f3e9bae4983ae058178c8686",
         "GUID:d2940a7c95e35a0499f3132e2a704430",
-        "GUID:edd7a9f6e838b3a48898e6ad1d6b2c85"
+        "GUID:8381d25136c024c47bc141aa127149b3"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

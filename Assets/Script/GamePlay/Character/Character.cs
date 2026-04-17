@@ -27,6 +27,7 @@ namespace Script.GamePlay.Character {
 
             InitializeAction();
             InitializeGamePlay();
+            InitializeBuff();
             
             // Reactive 초기화, Reactive는 제일 마지막에 초기화가 좋음
             InitializeReactiveProperty();
@@ -39,6 +40,7 @@ namespace Script.GamePlay.Character {
             _characterBehaviour?.Stop();
             ReleaseAction();
             ReleaseGamePlay();
+            ReleaseBuff();
             ReleaseReactiveProperty();
             _unitManager.UnRegisterUnit(this);
         }

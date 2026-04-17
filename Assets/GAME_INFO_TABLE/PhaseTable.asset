@@ -30,6 +30,7 @@ MonoBehaviour:
         - rid: 2476689665383727235
         - rid: 2476689862682214510
         - rid: 2476689885064593518
+        - rid: 2476689915845017739
     - rid: 2451557340872441960
       type: {class: PlayerSpawnAction, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
       data:
@@ -77,3 +78,14 @@ MonoBehaviour:
         timing: 0
         uid: 4
         position: {x: 20, y: 0, z: 0}
+    - rid: 2476689915845017739
+      type: {class: EnemySpawnAction, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 314248603
+          v1: 1241483912
+          v2: 850336656
+          v3: 2438310968
+        timing: 0
+        uid: 5
+        position: {x: 25, y: 0, z: 0}
