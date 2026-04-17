@@ -23,7 +23,7 @@ namespace Script.GamePlay.Character {
 
         protected override void Enter() {
             if (_character.IsPlayer) {
-                _character.DisableRunning();
+                _character.RemoveState(CharacterState.Running);
             }
         }
 

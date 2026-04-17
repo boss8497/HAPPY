@@ -5,5 +5,6 @@
         ATTACK,
         STAND,
         DIE,
+        DAMAGE,
     }
 }

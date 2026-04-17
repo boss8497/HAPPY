@@ -1,4 +1,5 @@
-﻿using Script.GamePlay.ECS.Component;
+﻿using Script.GameInfo.Character;
+using Script.GamePlay.ECS.Component;
 using Unity.Entities;
 using Unity.Transforms;
 
@@ -11,14 +12,14 @@ namespace Script.GamePlay.ECS.System {
             foreach (var (unitData, jumpResult)
                      in SystemAPI.Query<
                                      RefRO<UnitData>,
-                                     RefRO<JumpResultData>
-                                 >()
+                                     RefRW<JumpResultData>>()
                                  .WithAll<UnitEntityTag>()) {
                 var landed = jumpResult.ValueRO.Landed;
                 if (landed <= 0) continue;
                 
                 var character = unitData.ValueRO.GameObject.Value.GetComponent<Character.Character>();
-                character.SyncJumpResultEntity();
+                character.RemoveState(CharacterState.Jumping);
+                jumpResult.ValueRW.Landed = 0;
             }
         }
     }

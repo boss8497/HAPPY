@@ -11,11 +11,12 @@ namespace Script.GamePlay.Character {
         public ReactiveProperty<double>         MaxHealth { get; private set; } = new();
 
 
-        public ReadOnlyReactiveProperty<bool> Initialized   { get; private set; }
-        public ReadOnlyReactiveProperty<bool> Jumping       { get; private set; }
-        public ReadOnlyReactiveProperty<bool> Running       { get; private set; }
-        public ReadOnlyReactiveProperty<bool> Die           { get; private set; }
-        public ReadOnlyReactiveProperty<bool> SystemControl { get; private set; }
+        public ReadOnlyReactiveProperty<bool> Initialized    { get; private set; }
+        public ReadOnlyReactiveProperty<bool> Jumping        { get; private set; }
+        public ReadOnlyReactiveProperty<bool> Running        { get; private set; }
+        public ReadOnlyReactiveProperty<bool> Die            { get; private set; }
+        public ReadOnlyReactiveProperty<bool> SystemControl  { get; private set; }
+        public ReadOnlyReactiveProperty<bool> CollisionState { get; private set; }
 
 
         private DisposableBag _reactiveDisposableBag;
@@ -63,6 +64,11 @@ namespace Script.GamePlay.Character {
                                  .ToReadOnlyReactiveProperty()
                                  .AddTo(ref _reactiveDisposableBag);
 
+            CollisionState = State.Select(i => (i & CharacterState.Collision) != 0)
+                                  .DistinctUntilChanged()
+                                  .ToReadOnlyReactiveProperty()
+                                  .AddTo(ref _reactiveDisposableBag);
+
 
             State.Subscribe((state) => { SyncCharacterHitboxEntity(); })
                  .AddTo(ref _reactiveDisposableBag);
@@ -71,17 +77,43 @@ namespace Script.GamePlay.Character {
                 case CharacterType.Character:
 
                     SystemControl.CombineLatest(Initialized, (systemControl, initialized) => (systemControl, initialized))
-                                 .Subscribe(data => {
-                                     if (data.initialized == false) return;
+                                 .Subscribe(state => {
+                                     if (state.initialized == false) return;
 
-                                     if (data.systemControl) {
-                                         DisableRunning();
+                                     if (state.systemControl) {
+                                         RemoveState(CharacterState.Running);
                                      }
                                      else {
-                                         EnableRunning();
+                                         AddState(CharacterState.Running);
                                      }
                                  })
                                  .AddTo(ref _reactiveDisposableBag);
+                    
+                    Running.CombineLatest(Initialized, (running, initialized) => (running, initialized))
+                           .Subscribe(state => {
+                               if (state.initialized == false) return;
+
+                               if (state.running) {
+                                   EnableRunning();
+                               }
+                               else {
+                                   DisableRunning();
+                               }
+                           })
+                           .AddTo(ref _reactiveDisposableBag);
+                    
+                    Jumping.CombineLatest(Initialized, (jumping, initialized) => (jumping, initialized))
+                           .Subscribe(state => {
+                               if (state.initialized == false) return;
+
+                               if (state.jumping) {
+                                   StartJumping();
+                               }
+                               else {
+                                   StopJumping();
+                               }
+                           })
+                           .AddTo(ref _reactiveDisposableBag);
 
                     break;
             }

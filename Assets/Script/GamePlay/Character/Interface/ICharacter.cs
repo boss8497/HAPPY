@@ -8,14 +8,15 @@ using VContainer;
 
 namespace Script.GamePlay.Character {
     public interface ICharacter {
-        ReactiveProperty<CharacterState> State         { get; }
-        ReactiveProperty<double>         Health        { get; }
-        ReactiveProperty<double>         MaxHealth     { get; }
-        ReadOnlyReactiveProperty<bool>   Initialized   { get; }
-        ReadOnlyReactiveProperty<bool>   Jumping       { get; }
-        ReadOnlyReactiveProperty<bool>   Running       { get; }
-        ReadOnlyReactiveProperty<bool>   Die           { get; }
-        ReadOnlyReactiveProperty<bool>   SystemControl { get; }
+        ReactiveProperty<CharacterState> State          { get; }
+        ReactiveProperty<double>         Health         { get; }
+        ReactiveProperty<double>         MaxHealth      { get; }
+        ReadOnlyReactiveProperty<bool>   Initialized    { get; }
+        ReadOnlyReactiveProperty<bool>   Jumping        { get; }
+        ReadOnlyReactiveProperty<bool>   Running        { get; }
+        ReadOnlyReactiveProperty<bool>   Die            { get; }
+        ReadOnlyReactiveProperty<bool>   SystemControl  { get; }
+        ReadOnlyReactiveProperty<bool>   CollisionState { get; }
 
 
         IPlayerControls PlayerControls { get; }
@@ -31,8 +32,8 @@ namespace Script.GamePlay.Character {
         UniTask StartAsync();
 
         void SetState(CharacterState    state);
-        void AddState(CharacterState    state);
-        void RemoveState(CharacterState state);
+        void AddState(CharacterState    state, bool notify = true);
+        void RemoveState(CharacterState state, bool notify = true);
 
         float GetCollisionDelayTime();
     }

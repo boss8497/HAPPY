@@ -5,13 +5,18 @@ using Script.GameInfo.Character;
 namespace Script.GamePlay.Character {
     [System.Serializable]
     public class ClientWaitNode : ClientNodeBase {
+        private Character _character;
         public ClientWaitNode(CharacterBehaviour characterBehaviour, NodeBase nodeBase) : base(characterBehaviour, nodeBase) { }
 
         public override void Initialize() {
+            _character = _characterBehaviour.Character;
         }
 
         protected override void Enter() {
-            _characterBehaviour.Character.SetAnimation(nameof(AnimationName.RUN), true);
+            if (_character.IsPlayer) {
+                _character.AddState(CharacterState.Running);
+            }
+            _character.SetAnimation(nameof(AnimationName.RUN), true);
         }
 
         protected override async UniTask Update(CancellationToken cts) {

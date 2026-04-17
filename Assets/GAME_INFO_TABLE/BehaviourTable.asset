@@ -30,6 +30,7 @@ MonoBehaviour:
         - rid: 2451557272760352770
         - rid: 2451557272760352768
         - rid: 2451557272760352773
+        - rid: 2476689885064593544
     - rid: 2451557219312599041
       type: {class: WaitNode, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
@@ -43,6 +44,7 @@ MonoBehaviour:
         - rid: 2451557272760352769
         - rid: 2476689752501256356
         - rid: 2451557297210785884
+        - rid: 2476689885064593549
     - rid: 2451557219312599044
       type: {class: StartNode, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
@@ -140,6 +142,7 @@ MonoBehaviour:
         - rid: 2451557272760352775
         - rid: 2476689885064593528
         - rid: 2476689885064593537
+        - rid: 2476689885064593550
     - rid: 2451557272760352775
       type: {class: SystemControl, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
@@ -383,3 +386,101 @@ MonoBehaviour:
           v1: 1245686449
           v2: 3263266976
           v3: 3800206938
+    - rid: 2476689885064593544
+      type: {class: CollisionNode, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 3434963422
+          v1: 1148316962
+          v2: 1875830961
+          v3: 2918275422
+        id: COLLISION
+        transitions:
+        - rid: 2476689885064593547
+        - rid: 2476689885064593548
+        - rid: 2476689885064593546
+    - rid: 2476689885064593546
+      type: {class: EndTransition, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 3568210213
+          v1: 1287395320
+          v2: 4001935514
+          v3: 3895250505
+        id: WAIT
+        timing: 2
+        value: 0
+        priority: 0
+        nextNodeGuid:
+          v0: 2871299344
+          v1: 1245686449
+          v2: 3263266976
+          v3: 3800206938
+    - rid: 2476689885064593547
+      type: {class: SystemControl, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 1637836756
+          v1: 1087929945
+          v2: 666517152
+          v3: 4287937199
+        id: SYSTEM
+        timing: 2
+        value: 1
+        priority: 0
+        nextNodeGuid:
+          v0: 4221805148
+          v1: 1171156409
+          v2: 2581611181
+          v3: 3162336557
+    - rid: 2476689885064593548
+      type: {class: DieTransition, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 1733827571
+          v1: 1137313512
+          v2: 2270392506
+          v3: 1693725279
+        id: DIE
+        timing: 2
+        value: 1
+        priority: 0
+        nextNodeGuid:
+          v0: 3619234967
+          v1: 1297461387
+          v2: 94862013
+          v3: 4094551553
+    - rid: 2476689885064593549
+      type: {class: CollisionTransition, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 3523132642
+          v1: 1172701901
+          v2: 287580064
+          v3: 3062732285
+        id: COLLISION
+        timing: 1
+        value: 1
+        priority: 0
+        nextNodeGuid:
+          v0: 3434963422
+          v1: 1148316962
+          v2: 1875830961
+          v3: 2918275422
+    - rid: 2476689885064593550
+      type: {class: CollisionTransition, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 1226118294
+          v1: 1274575886
+          v2: 126246281
+          v3: 1916223166
+        id: COLLISION
+        timing: 1
+        value: 1
+        priority: 0
+        nextNodeGuid:
+          v0: 3434963422
+          v1: 1148316962
+          v2: 1875830961
+          v3: 2918275422

@@ -11,10 +11,17 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
+
 namespace Script.GamePlay.Character {
     public partial class Character {
         private ConfigurationInfo       _config;
         
+        /// <summary>
+        /// 캐릭터 행동을 정의 하는 cs 파일
+        /// 코딩 규칙
+        /// - 행동과 관련된 메서드 작성
+        /// - 행동을 변경을 감지하고 시작 및 중지 하는 부분은 Reactive로 구현!!
+        /// </summary>
         private void InitializeAction() {
             _config = GameInfoManager.Instance.Config;
         }
@@ -47,8 +54,9 @@ namespace Script.GamePlay.Character {
                     //SetEnabledTag<UnitCollisionDelayTag>(false);
                     break;
                 
-                case CharacterType.Character:
                 case CharacterType.Obstacle:
+                    // 캐릭터가 장애물에 Collision 됐을 때만 일단 설정
+                    AddState(CharacterState.Collision);
                     break;
             }
         }
@@ -84,16 +92,7 @@ namespace Script.GamePlay.Character {
 
         #region Running
 
-        public void Run() {
-            if (Running?.CurrentValue ?? false) {
-                return;
-            }
-
-            EnableRunning();
-            AddState(CharacterState.Running);
-        }
-
-        private void EnableRunning() {
+        public void EnableRunning() {
             if (_unitManager == null)
                 return;
 
@@ -132,7 +131,7 @@ namespace Script.GamePlay.Character {
 
 
         #region Jumping
-        public void SyncJumpInputEntity() {
+        public void SyncJumpEntity() {
             if (_unitManager == null || 
                 (Jumping?.CurrentValue ?? false) == false || 
                 _unitManager.TryGetEntity(this, out var entity) == false
@@ -154,34 +153,7 @@ namespace Script.GamePlay.Character {
             entityManager.SetComponentData(entity, input);
         }
 
-        public void SyncJumpResultEntity() {
-            if ((Jumping?.CurrentValue ?? false) == false ||
-                _unitManager == null || 
-                _unitManager.TryGetEntity(this, out var entity) == false) return;
-
-            var entityManager = _stageEntityWorld.EntityManager;
-
-            if (entityManager.HasComponent<JumpResultData>(entity) == false) return;
-
-            var result = entityManager.GetComponentData<JumpResultData>(entity);
-            if (result.Landed == 0) return;
-
-            result.Landed = 0;
-            entityManager.SetComponentData(entity, result);
-
-            ReleaseJumping();
-        }
-
-        public void Jump() {
-            if (Jumping?.CurrentValue ?? false) {
-                return;
-            }
-            
-            AddState(CharacterState.Jumping);
-            EnableJumping();
-        }
-
-        private void EnableJumping() {
+        private void StartJumping() {
             if (_unitManager == null || 
                 _unitManager.TryGetEntity(this, out var entity) == false)
                 return;
@@ -211,15 +183,11 @@ namespace Script.GamePlay.Character {
             entityManager.SetComponentEnabled<JumpingData>(entity, true);
         }
 
-        private void DisableJumping() {
+        private void StopJumping() {
             if (_unitManager == null || 
                 _unitManager.TryGetEntity(this, out var entity) == false) return;
 
             var entityManager = _stageEntityWorld.EntityManager;
-
-            if (entityManager.HasComponent<JumpingData>(entity)) {
-                entityManager.SetComponentEnabled<JumpingData>(entity, false);
-            }
 
             if (entityManager.HasComponent<JumpInputData>(entity)) {
                 entityManager.SetComponentData(entity, new JumpInputData {
@@ -232,18 +200,8 @@ namespace Script.GamePlay.Character {
         #endregion
 
         private void ReleaseAction() {
-            ReleaseRunning();
-            ReleaseJumping();
-        }
-
-        private void ReleaseJumping() {
-            DisableJumping();
-            RemoveState(CharacterState.Jumping);
-        }
-
-        private void ReleaseRunning() {
-            DisableRunning();
             RemoveState(CharacterState.Running);
+            RemoveState(CharacterState.Jumping);
         }
 
         public float SetAnimation(string animationName, bool loop = false, bool hasExit = false) {

@@ -33,7 +33,7 @@ namespace Script.GamePlay.Background {
             Initialize().Forget();
         }
 
-        private void LateUpdate() {
+        private void Update() {
             if (_initialized == false || (_stageManager?.SystemControl?.CurrentValue ?? true))
                 return;
 

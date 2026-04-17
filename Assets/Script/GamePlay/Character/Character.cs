@@ -45,11 +45,6 @@ namespace Script.GamePlay.Character {
         public UniTask StartAsync() {
             //FSM 실행
             _characterBehaviour.Start();
-
-            //이거 나중에 Behaviour로 빼자
-            if (IsPlayer) {
-                Run();
-            }
             
             return UniTask.CompletedTask;
         }

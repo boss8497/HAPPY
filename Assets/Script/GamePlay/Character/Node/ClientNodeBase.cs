@@ -38,11 +38,12 @@ namespace Script.GamePlay.Character {
             var type = transitionBase.GetType();
 
             return type switch {
-                var t when t == typeof(PlayerControl) => new ClientPlayerControl(nodeBase, transitionBase),
-                var t when t == typeof(SystemControl) => new ClientSystemControl(nodeBase, transitionBase),
-                var t when t == typeof(EndTransition) => new ClientEndTransition(nodeBase, transitionBase),
-                var t when t == typeof(DieTransition) => new ClientDieTransition(nodeBase, transitionBase),
-                _                                     => null
+                var t when t == typeof(PlayerControl)       => new ClientPlayerControl(nodeBase, transitionBase),
+                var t when t == typeof(SystemControl)       => new ClientSystemControl(nodeBase, transitionBase),
+                var t when t == typeof(EndTransition)       => new ClientEndTransition(nodeBase, transitionBase),
+                var t when t == typeof(DieTransition)       => new ClientDieTransition(nodeBase, transitionBase),
+                var t when t == typeof(CollisionTransition) => new ClientCollisionTransition(nodeBase, transitionBase),
+                _                                           => null
             };
         }
 

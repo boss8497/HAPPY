@@ -14,5 +14,6 @@ namespace Script.GameInfo.Character {
         Die           = 1 << 4,
         SystemControl = 1 << 5,
         Sliding       = 1 << 6,
+        Collision     = 1 << 7,
     }
 }

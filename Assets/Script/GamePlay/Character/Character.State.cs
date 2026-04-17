@@ -7,16 +7,24 @@ namespace Script.GamePlay.Character {
             if (State.Value.HasFlag(state)) return;
             State.OnNext(state);
         }
+
         // State 추가
-        public void AddState(CharacterState state) {
+        public void AddState(CharacterState state, bool notify = true) {
             if (State.Value.HasFlag(state)) return;
-            State.OnNext(State.Value |= state);
+            if (notify)
+                State.OnNext(State.Value |= state);
+            else {
+                State.Value |= state;
+            }
         }
 
-        public void RemoveState(CharacterState state) {
+        public void RemoveState(CharacterState state, bool notify = true) {
             if (State.Value.HasFlag(state) == false) return;
-            State.OnNext(State.Value &= ~state);
+            if (notify)
+                State.OnNext(State.Value &= ~state);
+            else {
+                State.Value |= state;
+            }
         }
-        
     }
 }

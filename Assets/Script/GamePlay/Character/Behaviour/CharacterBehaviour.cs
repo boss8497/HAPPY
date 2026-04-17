@@ -19,7 +19,8 @@ namespace Script.GamePlay.Character {
 
 
         [SerializeReference, ShowInInspector]
-        private ClientNodeBase          _currentNode;
+        private ClientNodeBase _currentNode;
+
         private CancellationTokenSource _nodeCts;
 
 
@@ -59,6 +60,7 @@ namespace Script.GamePlay.Character {
                 _nodeCts = null;
             }
         }
+
         public void Stop() {
             if (_nodeCts is { IsCancellationRequested: false }) {
                 _nodeCts.Cancel();
@@ -77,13 +79,14 @@ namespace Script.GamePlay.Character {
                 var t when t == typeof(DieNode)           => new ClientDieNode(characterBehaviour, nodeBase),
                 var t when t == typeof(PlayerControlNode) => new ClientPlayerControlNode(characterBehaviour, nodeBase),
                 var t when t == typeof(SystemControlNode) => new ClientSystemControlNode(characterBehaviour, nodeBase),
+                var t when t == typeof(CollisionNode)     => new ClientCollisionNode(characterBehaviour, nodeBase),
                 _                                         => null
             };
         }
 
         public async UniTask OnTransition(ClientNodeBase node, ClientTransitionBase transition) {
             await StopAsync();
-            
+
             node.Stop();
 
             if (_nodesByGuid.TryGetValue(transition.NextNodeGuid, out var nextNode) == false) {
