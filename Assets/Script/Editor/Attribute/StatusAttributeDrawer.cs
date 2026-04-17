@@ -13,7 +13,7 @@ namespace Script.Editor.Attribute {
             tree.Selection.SupportsMultiSelect        = false;
 
             foreach (var statusInfo in GameInfoManager.Instance.GetCollection<StatusInfo>()) {
-                tree.MenuItems.Add(new OdinMenuItem(tree, $"{statusInfo.ID}", statusInfo));
+                tree.MenuItems.Add(new OdinMenuItem(tree, $"{statusInfo.ID}({statusInfo.Name})", statusInfo));
             }
         }
     }

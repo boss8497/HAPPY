@@ -4,6 +4,7 @@ namespace Script.GameInfo.Table {
     public partial class GameInfoManager {
         public static readonly string[] AddressableKeys = new string[] {
             "BehaviourTable",
+            "BuffTable",
             "CharacterTable",
             "DungeonTable",
             "ItemTable",

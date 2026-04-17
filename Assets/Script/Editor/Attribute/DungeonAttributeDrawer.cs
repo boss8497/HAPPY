@@ -12,7 +12,7 @@ namespace Script.Editor.Attribute {
             tree.Selection.SupportsMultiSelect        = false;
 
             foreach (var dungeonInfo in GameInfoManager.Instance.GetCollection<DungeonInfo>()) {
-                tree.MenuItems.Add(new OdinMenuItem(tree, $"{dungeonInfo.ID}", dungeonInfo));
+                tree.MenuItems.Add(new OdinMenuItem(tree, $"{dungeonInfo.ID}({dungeonInfo.Name})", dungeonInfo));
             }
         }
     }

@@ -1,28 +1,30 @@
 ﻿using Script.GameInfo.Attribute;
-using Script.GameInfo.Dungeon;
+using Script.GameInfo.Info;
 using Script.GameInfo.Table;
 using Sirenix.OdinInspector.Editor;
 
 namespace Script.Editor.Attribute {
-    public class PhaseSelector : OdinSelector<PhaseInfo> {
+    
+    public class BuffSelector : OdinSelector<BuffInfo> {
         protected override void BuildSelectionTree(OdinMenuTree tree) {
             tree.Config.DrawSearchToolbar             = true;
             tree.Config.ConfirmSelectionOnDoubleClick = true;
             tree.Config.SelectMenuItemsOnMouseDown    = true;
             tree.Selection.SupportsMultiSelect        = false;
 
-            foreach (var info in GameInfoManager.Instance.GetCollection<PhaseInfo>()) {
-                tree.MenuItems.Add(new OdinMenuItem(tree, $"{info.ID}({info.Name})", info));
+            foreach (var buff in GameInfoManager.Instance.GetCollection<BuffInfo>()) {
+                tree.MenuItems.Add(new OdinMenuItem(tree, $"{buff.ID}({buff.Name})", buff));
             }
         }
     }
 
-    public class PhaseAttributeDrawer : InfoBaseAttribute<PhaseAttribute, PhaseInfo, PhaseSelector> {
-        protected override string GetName(PhaseInfo value) {
+    
+    public class BuffAttributeDrawer  : InfoBaseAttribute<BuffAttribute, BuffInfo,BuffSelector> {
+        protected override string GetName(BuffInfo value) {
             return value.ID;
         }
 
-        protected override int GetUid(PhaseInfo value) {
+        protected override int GetUid(BuffInfo value) {
             return value?.UID ?? 0;
         }
     }

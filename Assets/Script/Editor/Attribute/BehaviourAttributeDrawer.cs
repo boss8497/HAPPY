@@ -1,12 +1,7 @@
-﻿using System;
-using System.Linq;
-using Script.GameInfo.Attribute;
-using Script.GameInfo.Base;
+﻿using Script.GameInfo.Attribute;
 using Script.GameInfo.Character;
 using Script.GameInfo.Table;
 using Sirenix.OdinInspector.Editor;
-using UnityEditor;
-using UnityEngine;
 
 namespace Script.Editor.Attribute {
     public class BehaviourSelector : OdinSelector<BehaviourInfo> {
@@ -17,7 +12,7 @@ namespace Script.Editor.Attribute {
             tree.Selection.SupportsMultiSelect        = false;
 
             foreach (var behaviour in GameInfoManager.Instance.GetCollection<BehaviourInfo>()) {
-                tree.MenuItems.Add(new OdinMenuItem(tree, $"{behaviour.ID}", behaviour));
+                tree.MenuItems.Add(new OdinMenuItem(tree, $"{behaviour.ID}({behaviour.Name})", behaviour));
             }
         }
     }
