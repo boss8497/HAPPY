@@ -16,7 +16,7 @@ namespace Script.GamePlay.ECS.System {
 
         [BurstCompile]
         public void OnCreate(ref SystemState state) {
-            state.RequireForUpdate<GameTimer>();
+            state.RequireForUpdate<EGameTimer>();
 
             _collisionQuery = SystemAPI.QueryBuilder()
                                        .WithAll<
@@ -35,7 +35,7 @@ namespace Script.GamePlay.ECS.System {
 
         [BurstCompile]
         public void OnUpdate(ref SystemState state) {
-            var gameTimer = SystemAPI.GetSingleton<GameTimer>();
+            var gameTimer = SystemAPI.GetSingleton<EGameTimer>();
 
             var entities   = _collisionQuery.ToEntityArray(Allocator.TempJob);
             var units      = _collisionQuery.ToComponentDataArray<UnitData>(Allocator.TempJob);

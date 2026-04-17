@@ -1,6 +1,7 @@
 ﻿using Script.GamePlay.ECS.World;
 using Script.GamePlay.Pool;
 using Script.GamePlay.Service.Interface;
+using Script.GameTimer;
 using Script.GUI.Screen.Interface;
 using Unity.Cinemachine;
 using VContainer;
@@ -10,6 +11,7 @@ namespace Script.GamePlay.Stage {
         private readonly CinemachineTargetGroup _targetGroup;
         private readonly IStageEntityWorld      _entityWorld;
         private readonly IScreenManager         _screenManager;
+        private readonly IGameTimer             _gameTimer;
 
 
         private readonly string _failScreenKey;
@@ -27,6 +29,7 @@ namespace Script.GamePlay.Stage {
             IStagePooling          stagePooling,
             IScreenManager         screenManager,
             CinemachineTargetGroup targetGroup,
+            IGameTimer             gameTimer,
             string                 failScreenKey,
             string                 hudScreenKey
         ) {
@@ -38,6 +41,7 @@ namespace Script.GamePlay.Stage {
             _targetGroup   = targetGroup;
             _failScreenKey = failScreenKey;
             _hudScreenKey  = hudScreenKey;
+            _gameTimer     = gameTimer;
         }
     }
 }

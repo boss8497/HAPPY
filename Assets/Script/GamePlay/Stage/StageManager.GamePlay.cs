@@ -35,16 +35,18 @@ namespace Script.GamePlay.Stage {
         }
         
         public void Pause() {
+            _gameTimer.Pause();
             SetPause(true);
         }
 
         public void Resume() {
+            _gameTimer.Resume();
             SetPause(false);
         }
         
         private void SetPause(bool pause) {
             var entityManager = _entityWorld.EntityManager;
-            var query         = entityManager.CreateEntityQuery(typeof(GameTimer));
+            var query         = entityManager.CreateEntityQuery(typeof(EGameTimer));
             if (query.IsEmptyIgnoreFilter) {
                 Debug.LogWarning("GameTimeData singleton이 없습니다.");
                 query.Dispose();
@@ -52,7 +54,7 @@ namespace Script.GamePlay.Stage {
             }
             
             var entity   = query.GetSingletonEntity();
-            var gameTime = entityManager.GetComponentData<GameTimer>(entity);
+            var gameTime = entityManager.GetComponentData<EGameTimer>(entity);
             gameTime.IsPaused = pause;
             entityManager.SetComponentData(entity, gameTime);
             

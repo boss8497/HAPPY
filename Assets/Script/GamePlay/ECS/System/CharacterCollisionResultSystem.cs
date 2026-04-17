@@ -7,11 +7,11 @@ namespace Script.GamePlay.ECS.System {
     [UpdateAfter(typeof(CharacterCollisionSystem))]
     public partial class CharacterCollisionResultSystem : SystemBase {
         protected override void OnCreate() {
-            RequireForUpdate<GameTimer>();
+            RequireForUpdate<EGameTimer>();
         }
 
         protected override void OnUpdate() {
-            var gameTimer   = SystemAPI.GetSingleton<GameTimer>();
+            var gameTimer   = SystemAPI.GetSingleton<EGameTimer>();
             var delayLookup = SystemAPI.GetBufferLookup<UnitCollisionDelay>();
 
             foreach (var (unitRef, results) in
