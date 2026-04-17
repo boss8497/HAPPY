@@ -20,6 +20,7 @@ MonoBehaviour:
     animationEvents: []
     behaviourId: 1
     statusUids: 0100000002000000
+    buffUids: 00000000
     prefab: 01a9eed2b095cdd4b99094ba5363d4da
     hitbox:
       rid: 2476689665383727104
@@ -31,6 +32,7 @@ MonoBehaviour:
     animationEvents: []
     behaviourId: 2
     statusUids: 0300000004000000
+    buffUids: 00000000
     prefab: ad6d812305dc0ad4a96bba138bde157e
     hitbox:
       rid: 2476689665383727232
@@ -42,6 +44,7 @@ MonoBehaviour:
     animationEvents: []
     behaviourId: 2
     statusUids: 0500000006000000
+    buffUids: 00000000
     prefab: ff5520d113746314f90b6bef03234075
     hitbox:
       rid: 2476689862682214508
@@ -53,6 +56,7 @@ MonoBehaviour:
     animationEvents: []
     behaviourId: 2
     statusUids: 0700000008000000
+    buffUids: 00000000
     prefab: 1ce6eef5a601cd240aaa91aff9b7807a
     hitbox:
       rid: 2476689885064593515
@@ -64,6 +68,7 @@ MonoBehaviour:
     animationEvents: []
     behaviourId: 2
     statusUids: 0b0000000c000000
+    buffUids: 01000000
     prefab: 9d14e8ced218598418800f4df083d6c3
     hitbox:
       rid: 2476689915845017714
