@@ -253,3 +253,63 @@ MonoBehaviour:
           Func: 0
           Arity: 0
         _maxStack: 1
+  - <UID>k__BackingField: 9
+    <ID>k__BackingField: BoosterBuff_Base
+    <Name>k__BackingField: "\uAE30\uBCF8_\uBD80\uC2A4\uD130\uBC84\uD504"
+    levelType: 0
+    status:
+    - type: 5
+      isPercent: 0
+      expression:
+        _code:
+        - Op: 0
+          Const: 5
+          Key: 0
+          Func: 0
+          Arity: 0
+        _maxStack: 1
+  - <UID>k__BackingField: 10
+    <ID>k__BackingField: BoosterBuff_Base_Percent
+    <Name>k__BackingField: "\uAE30\uBCF8_\uBE44\uC728_\uBD80\uC2A4\uD130\uBC84\uD504"
+    levelType: 0
+    status:
+    - type: 5
+      isPercent: 1
+      expression:
+        _code:
+        - Op: 0
+          Const: 1
+          Key: 0
+          Func: 0
+          Arity: 0
+        _maxStack: 1
+  - <UID>k__BackingField: 11
+    <ID>k__BackingField: Booster_Base
+    <Name>k__BackingField: "\uAE30\uBCF8_\uBD80\uC2A4\uD130"
+    levelType: 0
+    status:
+    - type: 1
+      isPercent: 0
+      expression:
+        _code:
+        - Op: 0
+          Const: 1
+          Key: 0
+          Func: 0
+          Arity: 0
+        _maxStack: 1
+  - <UID>k__BackingField: 12
+    <ID>k__BackingField: Booster_Base_Percent
+    <Name>k__BackingField: "\uAE30\uBCF8_\uBE44\uC728_\uBD80\uC2A4\uD130"
+    levelType: 0
+    status:
+    - type: 1
+      isPercent: 1
+      expression:
+        _code:
+        - Op: 0
+          Const: 1
+          Key: 0
+          Func: 0
+          Arity: 0
+        _maxStack: 1

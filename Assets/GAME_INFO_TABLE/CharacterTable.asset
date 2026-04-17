@@ -57,6 +57,17 @@ MonoBehaviour:
     hitbox:
       rid: 2476689885064593515
     hitboxes: []
+  - <UID>k__BackingField: 5
+    <ID>k__BackingField: BOOSTER
+    <Name>k__BackingField: "\uBD80\uC2A4\uD130"
+    type: 2
+    animationEvents: []
+    behaviourId: 2
+    statusUids: 0b0000000c000000
+    prefab: 9d14e8ced218598418800f4df083d6c3
+    hitbox:
+      rid: 2476689915845017714
+    hitboxes: []
   references:
     version: 2
     RefIds:
@@ -80,3 +91,8 @@ MonoBehaviour:
       data:
         offset: {x: 0, y: 0.5, z: 0}
         size: {x: 1, y: 1, z: 1}
+    - rid: 2476689915845017714
+      type: {class: RectHitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        offset: {x: 0, y: 0.5, z: 0}
+        size: {x: 1, y: 1, z: 0}
