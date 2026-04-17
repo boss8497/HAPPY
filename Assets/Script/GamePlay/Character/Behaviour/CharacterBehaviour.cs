@@ -100,7 +100,18 @@ namespace Script.GamePlay.Character {
         }
 
         //<summary> Called when the character is rented from the pool. </summary>
-        public void OnRent()   { }
-        public void OnReturn() { }
+        public void OnRent() { }
+
+        public void OnReturn() {
+            Stop();
+            _info        = null;
+            _character   = null;
+            _nodes       = null;
+            foreach (var nodeBaseValue in _nodesByGuid) {
+                nodeBaseValue.Value.Release();
+            }
+            _nodesByGuid = null;
+            _currentNode = null;
+        }
     }
 }

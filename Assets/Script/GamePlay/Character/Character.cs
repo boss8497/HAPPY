@@ -40,6 +40,7 @@ namespace Script.GamePlay.Character {
             ReleaseAction();
             ReleaseGamePlay();
             ReleaseReactiveProperty();
+            _unitManager.UnRegisterUnit(this);
         }
 
         public UniTask StartAsync() {
@@ -50,7 +51,6 @@ namespace Script.GamePlay.Character {
         }
 
         private void OnDestroy() {
-            _unitManager.UnRegisterUnit(this);
             Release();
         }
 

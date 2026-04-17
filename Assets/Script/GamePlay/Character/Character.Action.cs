@@ -36,9 +36,7 @@ namespace Script.GamePlay.Character {
             if (otherCharacter == null) {
                 throw new InvalidCastException($"충돌한 유닛이 Character 타입이 아닙니다. UID: {otherUid}");
             }
-
             
-            Debug.LogError($"충돌했다고해!!! {otherCharacter.name}");
             ApplyCollision(otherCharacter);
             
             switch (otherCharacter.CharacterInfo.type) {
@@ -67,13 +65,15 @@ namespace Script.GamePlay.Character {
         private void ApplyHeart(Character otherCharacter){
              var heartValue = otherCharacter.Status.Heart;
              if (heartValue <= 0d) return;
-             ApplyHealth((int)heartValue);
+             ApplyHealth(heartValue);
         }
 
         // Collision은 Def의 영향을 안받기 때문에 일단 따로 계산해 줌
         private void ApplyCollision(Character otherCharacter) {
             var collisionDamage = otherCharacter.Status.Collision;
             if (collisionDamage <= 0d) return;
+            
+            Debug.LogError($"충돌했다고해!!! me: {CharacterInfo.Name} other: {otherCharacter.CharacterInfo.Name} damage: {collisionDamage}");
             ApplyHealth(-collisionDamage);
         }
         
@@ -206,7 +206,7 @@ namespace Script.GamePlay.Character {
 
         public float SetAnimation(string animationName, bool loop = false, bool hasExit = false) {
             if (SkeletonAnimation == null) {
-                Debug.LogError($"SkeletonAnimation is null. [{_characterInfo?.Name}]");
+                //Debug.LogError($"SkeletonAnimation is null. [{_characterInfo?.Name}]");
                 return 0f;
             }
 

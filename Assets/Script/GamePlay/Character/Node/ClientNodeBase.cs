@@ -109,5 +109,20 @@ namespace Script.GamePlay.Character {
         protected abstract UniTask Update(CancellationToken cts);
 
         protected virtual void End() { }
+
+
+        public void Release() {
+            _characterBehaviour = null;
+            _nodeBase           = null;
+
+            foreach (var transitionBase in _transitionBases) {
+                foreach (var transition in transitionBase.Value) {
+                    transition.Release();
+                }
+            }
+
+            _transitionBases = null;
+            nodeGeneration   = 0;
+        }
     }
 }
