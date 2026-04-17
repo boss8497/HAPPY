@@ -12,7 +12,7 @@ namespace Script.GamePlay.Background {
 
             public float Width
                 => spriteRenderer != null
-                       ? spriteRenderer.bounds.size.x
+                       ? spriteRenderer.bounds.size.x * transform.lossyScale.x
                        : 0f;
 
             public bool IsValid => transform != null && spriteRenderer != null;
@@ -28,9 +28,6 @@ namespace Script.GamePlay.Background {
         [Header("Loop")]
         [SerializeField]
         private bool _loop = true;
-
-        [SerializeField]
-        private bool _autoAlignOnStart = true;
 
         [SerializeField]
         private float _recycleOffset = 0f;
@@ -55,20 +52,10 @@ namespace Script.GamePlay.Background {
 
         private bool _initialized;
 
-        public float ParallaxFactor => _parallaxFactor;
-        public bool  LoopEnabled    => _loop;
-        public bool  Initialized    => _initialized;
-
         public void Initialize(Vector3 targetPos) {
             InitializeTiles();
             SetOffset();
-
-            if (_autoAlignOnStart) {
-                AlignTiles();
-            }
-            else {
-                NormalizeLayout();
-            }
+            AlignTiles();
 
             CacheLayout();
             CaptureRelativeOffset(targetPos);
@@ -212,7 +199,7 @@ namespace Script.GamePlay.Background {
 
             var validCount = 0;
             foreach (var tile in _tiles) {
-                if (tile != null && tile.IsValid) {
+                if (tile is { IsValid: true }) {
                     validCount++;
                 }
             }
@@ -243,8 +230,7 @@ namespace Script.GamePlay.Background {
             if (_tiles == null || _tiles.Length == 0)
                 return;
 
-            var currentLeft = 0f;
-
+            Tile previousTile = null;
             foreach (var tile in _tiles) {
                 if (tile == null || tile.IsValid == false)
                     continue;
@@ -253,43 +239,10 @@ namespace Script.GamePlay.Background {
                 if (width <= 0f)
                     continue;
 
-                var centerX = currentLeft + (width * 0.5f);
+                var centerX = previousTile == null ? 0 : previousTile.transform.localPosition.x + width;
                 tile.transform.SetLocalPositionX(centerX);
 
-                currentLeft += width;
-            }
-        }
-
-        private void NormalizeLayout() {
-            if (_tiles == null || _tiles.Length == 0)
-                return;
-
-            var hasValid = false;
-            var minLeft  = float.MaxValue;
-
-            foreach (var tile in _tiles) {
-                if (tile == null || tile.IsValid == false)
-                    continue;
-
-                var width = tile.Width;
-                var left  = tile.transform.localPosition.x - (width * 0.5f);
-
-                if (left < minLeft)
-                    minLeft = left;
-
-                hasValid = true;
-            }
-
-            if (hasValid == false)
-                return;
-
-            foreach (var tile in _tiles) {
-                if (tile == null || tile.IsValid == false)
-                    continue;
-
-                var localPos = tile.transform.localPosition;
-                localPos.x                   -= minLeft;
-                tile.transform.localPosition =  localPos;
+                previousTile =  tile;
             }
         }
 

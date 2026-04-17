@@ -7,7 +7,7 @@ using VContainer;
 
 namespace Script.GamePlay.Background {
     [DisallowMultipleComponent]
-    public class ParallaxBackgroundLooper : MonoBehaviour {
+    public class ParallaxLooper : MonoBehaviour {
         private UnityEngine.Camera _camera;
         private Transform          _target;
 
