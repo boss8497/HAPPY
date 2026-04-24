@@ -1,7 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using R3;
 using Script.GameInfo.Character;
-using Script.GamePlay.Buff;
+using Script.Buff;
 using Script.GamePlay.Input;
 using Script.GamePlay.Service.Interface;
 using Script.GameTimer;
@@ -41,6 +41,5 @@ namespace Script.GamePlay.Character {
         void RemoveState(CharacterState state, bool notify = true);
 
         float GetCollisionDelayTime();
-        void  RemoveBuff(IBuff iBuff);
     }
 }

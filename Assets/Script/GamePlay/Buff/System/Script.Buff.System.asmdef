@@ -1,0 +1,29 @@
+{
+    "name": "Script.Buff.System",
+    "rootNamespace": "",
+    "references": [
+        "GUID:734d92eba21c94caba915361bd5ac177",
+        "GUID:2665a8d13d1b3f18800f46e256720795",
+        "GUID:e0cd26848372d4e5c891c569017e11f1",
+        "GUID:d8b63aba1907145bea998dd612889d6b",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:edd7a9f6e838b3a48898e6ad1d6b2c85",
+        "GUID:8ded44369782e734680da8d5879c345a",
+        "GUID:29d5cab7e2a88e84ea84306f6f09ec7a",
+        "GUID:8381d25136c024c47bc141aa127149b3",
+        "GUID:854cf9f0c9798824e94ba2e712971f53",
+        "GUID:0eed957a026b42e4c9a6a91bc28d4a41",
+        "GUID:68740c49ada94b64b897f21d3887b217",
+        "GUID:be356eb8d2e545045be53bd81b83a721",
+        "GUID:d2940a7c95e35a0499f3132e2a704430"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

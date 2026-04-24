@@ -1,5 +1,5 @@
 {
-    "name": "Script.GamePlay.Buff",
+    "name": "Script.Buff",
     "rootNamespace": "",
     "references": [
         "GUID:edd7a9f6e838b3a48898e6ad1d6b2c85",

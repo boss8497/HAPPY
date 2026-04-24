@@ -1,7 +1,8 @@
 ﻿using Script.GameInfo.Info.Stat;
 
-namespace Script.GamePlay.Buff {
+namespace Script.Buff {
     public interface IBuff {
+        public long  Uid         { get; set; }
         StatusInfo[] StatusInfos { get; }
     }
 }

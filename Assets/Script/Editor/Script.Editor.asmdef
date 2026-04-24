@@ -6,6 +6,7 @@
         "GUID:0eed957a026b42e4c9a6a91bc28d4a41",
         "GUID:8381d25136c024c47bc141aa127149b3",
         "GUID:7c8d54a027a68a34098c3eac1a9a67db",
+        "GUID:d82625ecdf1eb2040a9da55eb945bb9c",
         "GUID:a377e2677a309924f862c77c2e14f6c1",
         "GUID:0cff6ea84d521f543921648fbfe3f677",
         "GUID:68740c49ada94b64b897f21d3887b217",
@@ -16,7 +17,8 @@
         "GUID:69448af7b92c7f342b298e06a37122aa",
         "GUID:709f4bab8a7a1004693d348cefe1e497",
         "GUID:84651a3751eca9349aac36a66bba901b",
-        "GUID:ff2a05122bcd2274f8061a391687ffa4"
+        "GUID:ff2a05122bcd2274f8061a391687ffa4",
+        "GUID:e0cd26848372d4e5c891c569017e11f1"
     ],
     "includePlatforms": [
         "Editor"
