@@ -9,7 +9,6 @@ using Script.GameInfo.Table;
 using Script.GameTimer;
 using Script.Utility.Runtime;
 using Unity.Collections;
-using UnityEngine.Pool;
 
 namespace Script.Buff {
     /// <summary>
@@ -33,19 +32,31 @@ namespace Script.Buff {
 
         public void Initialize(IBuffOwner owner, IGameTimer gameTimer) {
             // 글쌔 16개 이상 버프를 가지고 있을까..? 디버프도 생각해야되긴 한데 일단은 16
+            // 너무 적은 숫자라서 Burst로 이득을볼 수 있을까? 흐음
             //_umBuffs     = new (16, Allocator.Persistent);
-            _umBuffs     = new (16);
+            _umBuffs   = ListPool.Get<UmBuff>();
             _owner     = owner;
             _gameTimer = gameTimer;
-            _buffs      = ListPool.Get<Buff>();
+            _buffs     = ListPool.Get<Buff>();
         }
 
         private async UniTask Update(CancellationToken ct) {
             while (!ct.IsCancellationRequested) {
-                var overTimeBuffs = _umBuffs.Where(r => r.endTime <= _gameTimer.Elapsed).ToArray();
-                foreach (var buff in overTimeBuffs) {
-                    RemoveBuff(buff.buffUid);
+                var removeBuffs = ListPool.Get<long>();
+                var elapsed     = _gameTimer.Elapsed;
+
+                for (int i = _umBuffs.Count - 1; i >= 0; i--) {
+                    if (_umBuffs[i].endTime <= elapsed)
+                        removeBuffs.Add(_umBuffs[i].buffUid);
                 }
+
+                if (removeBuffs.Count > 0) {
+                    foreach (var buff in removeBuffs) {
+                        RemoveBuff(buff);
+                    }
+                    removeBuffs.Clear();
+                }
+                ListPool.Return(removeBuffs);
                 
                 var isCancel = await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken: ct).SuppressCancellationThrow();
                 if (isCancel) {
@@ -100,6 +111,7 @@ namespace Script.Buff {
 
             if (_umBuffs.Count <= 0) {
                 _cts.Cancel();
+                _cts.Dispose();
                 _cts = null;
             }
         }
@@ -113,10 +125,16 @@ namespace Script.Buff {
 
         public void OnReturn() {
             ListPool.Return(_buffs);
+            ListPool.Return(_umBuffs);
         }
 
         public void Dispose() {
-            // TODO release managed resources here
+            if (_cts is { IsCancellationRequested: false }) {
+                _cts.Cancel();
+                _cts.Dispose();
+                _cts = null;
+            }
+            OnReturn();
         }
     }
 }
