@@ -78,15 +78,20 @@ namespace Script.GamePlay.Character {
         }
 
         private void EnsureComponents(EntityManager entityManager, Entity entity) {
-            if (entityManager.HasComponent<UnitDieTag>(entity) == false) {
-                entityManager.AddComponentData<UnitDieTag>(entity, new());
+            if (entityManager.HasComponent<UnitDieEnable>(entity) == false) {
+                entityManager.AddComponentData<UnitDieEnable>(entity, new());
             }
-            SetEnabledTag<UnitDieTag>(false);
+            SetEnabledTag<UnitDieEnable>(false);
             
-            if (entityManager.HasComponent<UnitCollisionTag>(entity) == false) {
-                entityManager.AddComponentData<UnitCollisionTag>(entity, new());
+            if (entityManager.HasComponent<UnitCollisionEnable>(entity) == false) {
+                entityManager.AddComponentData<UnitCollisionEnable>(entity, new());
             }
-            SetEnabledTag<UnitCollisionTag>(false);
+            SetEnabledTag<UnitCollisionEnable>(false);
+            
+            if (entityManager.HasComponent<UnitSystemControlEnable>(entity) == false) {
+                entityManager.AddComponentData<UnitSystemControlEnable>(entity, new());
+            }
+            SetEnabledTag<UnitSystemControlEnable>(SystemControl?.CurrentValue ?? false);
             
             if (entityManager.HasComponent<HitboxState>(entity) == false) {
                 entityManager.AddComponentData(entity, new HitboxState {

@@ -8,9 +8,9 @@ using UnityEngine;
 namespace Script.GamePlay.ECS.Component {
     public struct UnitEntityTag : IComponentData { }
 
-    public struct UnitDieTag : IComponentData, IEnableableComponent { }
-
-    public struct UnitCollisionTag : IComponentData, IEnableableComponent { }
+    public struct UnitDieEnable : IComponentData, IEnableableComponent { }
+    public struct UnitCollisionEnable : IComponentData, IEnableableComponent { }
+    public struct UnitSystemControlEnable : IComponentData, IEnableableComponent { }
 
     public struct UnitData : IComponentData {
         public Entity                     Entity;

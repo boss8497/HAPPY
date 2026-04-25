@@ -16,7 +16,8 @@ namespace Script.GamePlay.ECS.System {
             _query = SystemAPI.QueryBuilder()
                               .WithAllRW<LocalTransform>()
                               .WithAll<RunningData>()
-                              .WithDisabled<UnitDieTag>()
+                              .WithDisabled<UnitDieEnable>()
+                              .WithDisabled<UnitSystemControlEnable>()
                               .Build();
 
             state.RequireForUpdate(_query);

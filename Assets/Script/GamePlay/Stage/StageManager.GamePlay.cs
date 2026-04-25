@@ -35,11 +35,13 @@ namespace Script.GamePlay.Stage {
         }
         
         public void Pause() {
+            AddState(StageState.SystemControl);
             _gameTimer.Pause();
             SetPause(true);
         }
 
         public void Resume() {
+            RemoveState(StageState.SystemControl);
             _gameTimer.Resume();
             SetPause(false);
         }

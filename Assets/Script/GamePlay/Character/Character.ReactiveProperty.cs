@@ -33,7 +33,7 @@ namespace Script.GamePlay.Character {
                       // 죽음
                       if (health <= 0) {
                           AddState(CharacterState.Die);
-                          SetEnabledTag<UnitDieTag>(true);
+                          SetEnabledTag<UnitDieEnable>(true);
                       }
                   })
                   .AddTo(ref _reactiveDisposableBag);
@@ -79,13 +79,7 @@ namespace Script.GamePlay.Character {
                     SystemControl.CombineLatest(Initialized, (systemControl, initialized) => (systemControl, initialized))
                                  .Subscribe(state => {
                                      if (state.initialized == false) return;
-
-                                     if (state.systemControl) {
-                                         RemoveState(CharacterState.Running);
-                                     }
-                                     else {
-                                         AddState(CharacterState.Running);
-                                     }
+                                     SetEnabledTag<UnitSystemControlEnable>(state.systemControl);
                                  })
                                  .AddTo(ref _reactiveDisposableBag);
                     
