@@ -9,6 +9,7 @@ namespace Script.GamePlay.ECS.Component {
     public struct UnitEntityTag : IComponentData { }
 
     public struct UnitDieEnable : IComponentData, IEnableableComponent { }
+    public struct UnitRunningEnable : IComponentData, IEnableableComponent { }
     public struct UnitCollisionEnable : IComponentData, IEnableableComponent { }
     public struct UnitSystemControlEnable : IComponentData, IEnableableComponent { }
 
@@ -67,7 +68,7 @@ namespace Script.GamePlay.ECS.Component {
     /// Running 전용 이동 데이터
     /// Enabled == true 일 때만 시스템이 이동 처리
     /// </summary>
-    public struct RunningData : IComponentData, IEnableableComponent {
+    public struct RunningData : IComponentData {
         public float3 Direction;
         public float  Speed;
     }

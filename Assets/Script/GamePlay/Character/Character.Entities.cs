@@ -83,6 +83,11 @@ namespace Script.GamePlay.Character {
             }
             SetEnabledTag<UnitDieEnable>(false);
             
+            if (entityManager.HasComponent<UnitRunningEnable>(entity) == false) {
+                entityManager.AddComponentData<UnitRunningEnable>(entity, new());
+            }
+            SetEnabledTag<UnitRunningEnable>(false);
+            
             if (entityManager.HasComponent<UnitCollisionEnable>(entity) == false) {
                 entityManager.AddComponentData<UnitCollisionEnable>(entity, new());
             }

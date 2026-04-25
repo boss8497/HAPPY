@@ -15,9 +15,8 @@ namespace Script.GamePlay.ECS.System {
         public void OnCreate(ref SystemState state) {
             _query = SystemAPI.QueryBuilder()
                               .WithAllRW<LocalTransform>()
-                              .WithAll<RunningData>()
-                              .WithDisabled<UnitDieEnable>()
-                              .WithDisabled<UnitSystemControlEnable>()
+                              .WithAll<RunningData, UnitRunningEnable>()
+                              .WithDisabled<UnitDieEnable, UnitSystemControlEnable>()
                               .Build();
 
             state.RequireForUpdate(_query);

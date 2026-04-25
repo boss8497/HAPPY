@@ -29,11 +29,13 @@ namespace Script.GUI.Screen {
 
 
         public override UniTask OpenInternal() {
+            _stageManager.Pause();
             _stageManager.AddState(StageState.SystemControl);
             return UniTask.CompletedTask;
         }
         
         public override UniTask CloseInternal() {
+            _stageManager.Resume();
             _stageManager.RemoveState(StageState.SystemControl);
             return UniTask.CompletedTask;
         }

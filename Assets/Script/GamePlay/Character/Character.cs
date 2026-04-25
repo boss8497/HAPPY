@@ -25,8 +25,8 @@ namespace Script.GamePlay.Character {
             _unitManager.RegisterUnit(this, team);
             InitializeEntity();
 
-            InitializeAction();
             InitializeGamePlay();
+            InitializeAction();
             InitializeBuff();
             
             // Reactive 초기화, Reactive는 제일 마지막에 초기화가 좋음

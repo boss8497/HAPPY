@@ -86,13 +86,7 @@ namespace Script.GamePlay.Character {
                     Running.CombineLatest(Initialized, (running, initialized) => (running, initialized))
                            .Subscribe(state => {
                                if (state.initialized == false) return;
-
-                               if (state.running) {
-                                   EnableRunning();
-                               }
-                               else {
-                                   DisableRunning();
-                               }
+                               SetEnabledTag<UnitRunningEnable>(state.running);
                            })
                            .AddTo(ref _reactiveDisposableBag);
                     

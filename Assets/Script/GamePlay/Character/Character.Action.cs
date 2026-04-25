@@ -24,6 +24,7 @@ namespace Script.GamePlay.Character {
         /// </summary>
         private void InitializeAction() {
             _config = GameInfoManager.Instance.Config;
+            UpdateStatus();
         }
 
         #region Collision
@@ -87,15 +88,12 @@ namespace Script.GamePlay.Character {
         }
 
         private void UpdateStatus() {
-            EnableRunning();
+            // 이 턴은 별로인듯 IsPlayer
+            if (IsPlayer)
+                UpdateRunningStatus();
         }
-        
-        #endregion
-        
 
-        #region Running
-
-        public void EnableRunning() {
+        private void UpdateRunningStatus() {
             if (_unitManager == null)
                 return;
 
@@ -111,25 +109,8 @@ namespace Script.GamePlay.Character {
                 Direction = Vector3.right, // 오른쪽으로 고정
                 Speed     = (float)Status.Spd,
             });
-
-            entityManager.SetComponentEnabled<RunningData>(entity, true);
         }
-
-        public void DisableRunning() {
-            if (_unitManager == null)
-                return;
-
-            if (_unitManager.TryGetEntity(this, out var entity) == false)
-                return;
-
-            var entityManager = _stageEntityWorld.EntityManager;
-
-            if (entityManager.HasComponent<RunningData>(entity) == false)
-                return;
-
-            entityManager.SetComponentEnabled<RunningData>(entity, false);
-        }
-
+        
         #endregion
 
 
