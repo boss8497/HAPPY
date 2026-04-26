@@ -1,4 +1,5 @@
-﻿using Script.GamePlay.ECS.Component;
+﻿using Script.GameInfo.Character;
+using Script.GamePlay.ECS.Component;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
@@ -169,18 +170,11 @@ namespace Script.GamePlay.ECS.System {
                 DynamicBuffer<HitboxActiveShape> shapesB
             ) {
                 foreach (var a in shapesA) {
-                    if (a.Type == HitboxType.None)
-                        continue;
-
                     foreach (var b in shapesB) {
-                        if (b.Type == HitboxType.None)
-                            continue;
-
                         if (Intersects(unitPosA, a, unitPosB, b))
                             return true;
                     }
                 }
-
                 return false;
             }
 
@@ -193,19 +187,19 @@ namespace Script.GamePlay.ECS.System {
                 var centerA = unitPosA + a.Offset;
                 var centerB = unitPosB + b.Offset;
 
-                if (a.Type == HitboxType.Rect && b.Type == HitboxType.Rect) {
+                if (a.Type == HitBoxType.Rect && b.Type == HitBoxType.Rect) {
                     return RectVsRect(centerA, a.Size, centerB, b.Size);
                 }
 
-                if (a.Type == HitboxType.Circle && b.Type == HitboxType.Circle) {
+                if (a.Type == HitBoxType.Circle && b.Type == HitBoxType.Circle) {
                     return CircleVsCircle(centerA, a.Radius, centerB, b.Radius);
                 }
 
-                if (a.Type == HitboxType.Rect && b.Type == HitboxType.Circle) {
+                if (a.Type == HitBoxType.Rect && b.Type == HitBoxType.Circle) {
                     return RectVsCircle(centerA, a.Size, centerB, b.Radius);
                 }
 
-                if (a.Type == HitboxType.Circle && b.Type == HitboxType.Rect) {
+                if (a.Type == HitBoxType.Circle && b.Type == HitBoxType.Rect) {
                     return RectVsCircle(centerB, b.Size, centerA, a.Radius);
                 }
 

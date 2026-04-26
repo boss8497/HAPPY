@@ -1,8 +1,7 @@
 ﻿using System;
-using Script.GameInfo.Character;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Transforms;
+using Script.GameInfo.Character;
 using UnityEngine;
 
 namespace Script.GamePlay.ECS.Component {
@@ -22,12 +21,6 @@ namespace Script.GamePlay.ECS.Component {
         public UnityObjectRef<GameObject> GameObject;
     }
 
-    public enum HitboxType : byte {
-        None   = 0,
-        Rect   = 1,
-        Circle = 2,
-    }
-
     public struct HitboxState : IComponentData {
         public CharacterState Current;
         public CharacterState Applied;
@@ -40,14 +33,14 @@ namespace Script.GamePlay.ECS.Component {
     }
 
     public struct HitboxPresetShape : IBufferElementData {
-        public HitboxType Type;
+        public HitBoxType Type;
         public float3     Offset;
         public float3     Size;
         public float      Radius;
     }
 
     public struct HitboxActiveShape : IBufferElementData {
-        public HitboxType Type;
+        public HitBoxType Type;
         public float3     Offset;
         public float3     Size;
         public float      Radius;

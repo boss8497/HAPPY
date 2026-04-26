@@ -51,13 +51,13 @@ namespace Script.GamePlay.Character {
             if (hitBox == null)
                 return;
 
-            switch (hitBox) {
-                case RectHitbox rect:
-                    DrawRectHitbox(rect);
+            switch (hitBox.type) {
+                case HitBoxType.Rect:
+                    DrawRectHitbox(hitBox);
                     break;
 
-                case CircleHitbox circle:
-                    DrawCircleHitbox(circle);
+                case HitBoxType.Circle:
+                    DrawCircleHitbox(hitBox);
                     break;
             }
 
@@ -65,17 +65,17 @@ namespace Script.GamePlay.Character {
             Gizmos.matrix = Matrix4x4.identity;
         }
 
-        private void DrawRectHitbox(RectHitbox rect) {
+        private void DrawRectHitbox(Hitbox hitbox) {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(rect.offset, rect.size);
+            Gizmos.DrawWireCube(hitbox.offset, hitbox.size);
         }
 
-        private void DrawCircleHitbox(CircleHitbox circle) {
+        private void DrawCircleHitbox(Hitbox hitbox) {
             Gizmos.color = Color.red;
 
             // Gizmos는 "원"이 아니라 sphere만 기본 제공
             // XY 2D 원처럼 보이게 하려면 아래 커스텀 함수 사용
-            DrawWireCircleXY(circle.offset, circle.radius, 32);
+            DrawWireCircleXY(hitbox.offset, hitbox.radius, 32);
         }
 
         private void DrawWireCircleXY(Vector3 center, float radius, int segments) {

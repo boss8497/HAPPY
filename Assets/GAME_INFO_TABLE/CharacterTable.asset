@@ -23,7 +23,7 @@ MonoBehaviour:
     buffUids: 00000000
     prefab: 01a9eed2b095cdd4b99094ba5363d4da
     hitbox:
-      rid: 2476689665383727104
+      rid: 2476690126442070119
     hitboxes: []
   - <UID>k__BackingField: 2
     <ID>k__BackingField: BOX
@@ -35,7 +35,7 @@ MonoBehaviour:
     buffUids: 00000000
     prefab: ad6d812305dc0ad4a96bba138bde157e
     hitbox:
-      rid: 2476689665383727232
+      rid: 2476690126442070113
     hitboxes: []
   - <UID>k__BackingField: 3
     <ID>k__BackingField: COIN
@@ -47,7 +47,7 @@ MonoBehaviour:
     buffUids: 00000000
     prefab: ff5520d113746314f90b6bef03234075
     hitbox:
-      rid: 2476689862682214508
+      rid: 2476690126442070121
     hitboxes: []
   - <UID>k__BackingField: 4
     <ID>k__BackingField: HEART
@@ -59,7 +59,7 @@ MonoBehaviour:
     buffUids: 00000000
     prefab: 1ce6eef5a601cd240aaa91aff9b7807a
     hitbox:
-      rid: 2476689885064593515
+      rid: 2476690126442070123
     hitboxes: []
   - <UID>k__BackingField: 5
     <ID>k__BackingField: BOOSTER
@@ -71,33 +71,43 @@ MonoBehaviour:
     buffUids: 01000000
     prefab: 9d14e8ced218598418800f4df083d6c3
     hitbox:
-      rid: 2476689915845017714
+      rid: 2476690126442070117
     hitboxes: []
   references:
     version: 2
     RefIds:
-    - rid: 2476689665383727104
-      type: {class: RectHitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+    - rid: 2476690126442070113
+      type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
-        offset: {x: 0, y: 0.5, z: 0}
-        size: {x: 1, y: 1, z: 1}
-    - rid: 2476689665383727232
-      type: {class: RectHitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
-      data:
+        type: 1
         offset: {x: 0, y: 1, z: 0}
         size: {x: 1, y: 2, z: 1}
-    - rid: 2476689862682214508
-      type: {class: RectHitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+        radius: 0
+    - rid: 2476690126442070117
+      type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
+        type: 1
         offset: {x: 0, y: 0.5, z: 0}
         size: {x: 1, y: 1, z: 1}
-    - rid: 2476689885064593515
-      type: {class: RectHitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+        radius: 0
+    - rid: 2476690126442070119
+      type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
+        type: 1
+        offset: {x: 0, y: 1.25, z: 0}
+        size: {x: 1, y: 2.5, z: 0}
+        radius: 0
+    - rid: 2476690126442070121
+      type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        type: 1
         offset: {x: 0, y: 0.5, z: 0}
         size: {x: 1, y: 1, z: 1}
-    - rid: 2476689915845017714
-      type: {class: RectHitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+        radius: 0
+    - rid: 2476690126442070123
+      type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
+        type: 1
         offset: {x: 0, y: 0.5, z: 0}
-        size: {x: 1, y: 1, z: 0}
+        size: {x: 1, y: 1, z: 1}
+        radius: 0

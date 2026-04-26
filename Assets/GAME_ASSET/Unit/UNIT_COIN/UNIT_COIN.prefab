@@ -142,17 +142,19 @@ MonoBehaviour:
     rid: -2
   _dieAnimation: {fileID: 3156079116447162431}
   hitBox:
-    rid: 2476689862682214509
+    rid: 2476690126442070120
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2476689862682214509
-      type: {class: RectHitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+    - rid: 2476690126442070120
+      type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
+        type: 1
         offset: {x: 0, y: 0.5, z: 0}
-        size: {x: 1, y: 1, z: 0}
+        size: {x: 1, y: 1, z: 1}
+        radius: 0
 --- !u!114 &3156079116447162431
 MonoBehaviour:
   m_ObjectHideFlags: 0

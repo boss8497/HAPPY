@@ -82,29 +82,34 @@ namespace Script.GamePlay.Character {
             if (entityManager.HasComponent<UnitDieEnable>(entity) == false) {
                 entityManager.AddComponentData<UnitDieEnable>(entity, new());
             }
+
             SetEnabledTag<UnitDieEnable>(false);
-            
+
             if (entityManager.HasComponent<UnitRunningEnable>(entity) == false) {
                 entityManager.AddComponentData<UnitRunningEnable>(entity, new());
             }
+
             SetEnabledTag<UnitRunningEnable>(false);
-            
+
             if (entityManager.HasComponent<UnitJumpingEnable>(entity) == false) {
                 entityManager.AddComponentData<UnitJumpingEnable>(entity, new());
             }
+
             SetEnabledTag<UnitJumpingEnable>(false);
-            
+
             if (entityManager.HasComponent<UnitCollisionEnable>(entity) == false) {
                 entityManager.AddComponentData<UnitCollisionEnable>(entity, new());
             }
+
             SetEnabledTag<UnitCollisionEnable>(false);
-            
+
             if (entityManager.HasComponent<UnitSystemControlEnable>(entity) == false) {
                 entityManager.AddComponentData<UnitSystemControlEnable>(entity, new());
             }
+
             SetEnabledTag<UnitSystemControlEnable>(SystemControl?.CurrentValue ?? false);
-            
-            
+
+
             //HitBox
             if (entityManager.HasComponent<HitboxState>(entity) == false) {
                 entityManager.AddComponentData(entity, new HitboxState {
@@ -128,7 +133,7 @@ namespace Script.GamePlay.Character {
             if (entityManager.HasBuffer<UnitCollisionResult>(entity) == false) {
                 entityManager.AddBuffer<UnitCollisionResult>(entity);
             }
-            
+
             if (entityManager.HasBuffer<UnitCollisionDelay>(entity) == false) {
                 entityManager.AddBuffer<UnitCollisionDelay>(entity);
             }
@@ -136,8 +141,8 @@ namespace Script.GamePlay.Character {
             // Data 셋팅
             if (entityManager.HasComponent<RunningData>(entity) == false) {
                 entityManager.AddComponentData(entity, new RunningData());
-            }   
-            
+            }
+
             if (entityManager.HasComponent<JumpInputData>(entity) == false) {
                 entityManager.AddComponentData(entity, new JumpInputData());
             }
@@ -146,7 +151,7 @@ namespace Script.GamePlay.Character {
                 entityManager.AddComponentData(entity, new JumpingData());
             }
         }
-        
+
         private void SetEnabledTag<T>(bool enable) where T : IComponentData, IEnableableComponent {
             if (_unitManager.TryGetEntity(this, out var entity) == false)
                 return;
@@ -159,7 +164,7 @@ namespace Script.GamePlay.Character {
         }
 
         private static void RegisterDefaultHitbox(
-            CharacterInfo                                 characterInfo,
+            CharacterInfo                    characterInfo,
             DynamicBuffer<HitboxPresetRange> presetRanges,
             DynamicBuffer<HitboxPresetShape> presetShapes
         ) {
@@ -170,7 +175,7 @@ namespace Script.GamePlay.Character {
         }
 
         private static void RegisterStateHitboxes(
-            CharacterInfo                                 characterInfo,
+            CharacterInfo                    characterInfo,
             DynamicBuffer<HitboxPresetRange> presetRanges,
             DynamicBuffer<HitboxPresetShape> presetShapes
         ) {
@@ -186,8 +191,8 @@ namespace Script.GamePlay.Character {
         }
 
         private static void AddPresetRange(
-            CharacterState                                stateMask,
-            Hitbox                                        source,
+            CharacterState                   stateMask,
+            Hitbox                           source,
             DynamicBuffer<HitboxPresetRange> presetRanges,
             DynamicBuffer<HitboxPresetShape> presetShapes
         ) {
@@ -208,8 +213,8 @@ namespace Script.GamePlay.Character {
         }
 
         private static void AddPresetRange(
-            CharacterState                                stateMask,
-            Hitbox[]                                      sources,
+            CharacterState                   stateMask,
+            Hitbox[]                         sources,
             DynamicBuffer<HitboxPresetRange> presetRanges,
             DynamicBuffer<HitboxPresetShape> presetShapes
         ) {
@@ -238,22 +243,22 @@ namespace Script.GamePlay.Character {
         }
 
         private static bool TryConvertHitbox(Hitbox source, out HitboxPresetShape shape) {
-            switch (source) {
-                case RectHitbox rect:
+            switch (source.type) {
+                case HitBoxType.Rect:
                     shape = new HitboxPresetShape {
-                        Type = HitboxType.Rect,
-                        Offset    = rect.offset,
-                        Size      = rect.size,
-                        Radius    = 0f,
+                        Type   = HitBoxType.Rect,
+                        Offset = source.offset,
+                        Size   = source.size,
+                        Radius = 0f,
                     };
                     return true;
 
-                case CircleHitbox circle:
+                case HitBoxType.Circle:
                     shape = new HitboxPresetShape {
-                        Type = HitboxType.Circle,
-                        Offset    = circle.offset,
-                        Size      = float3.zero,
-                        Radius    = circle.radius,
+                        Type   = HitBoxType.Circle,
+                        Offset = source.offset,
+                        Size   = float3.zero,
+                        Radius = source.radius,
                     };
                     return true;
 
@@ -264,7 +269,7 @@ namespace Script.GamePlay.Character {
         }
 
         private static CharacterState ApplyActiveHitboxes(
-            CharacterState                                currentState,
+            CharacterState                   currentState,
             DynamicBuffer<HitboxPresetRange> presetRanges,
             DynamicBuffer<HitboxPresetShape> presetShapes,
             DynamicBuffer<HitboxActiveShape> activeShapes
@@ -281,10 +286,10 @@ namespace Script.GamePlay.Character {
                 var src = presetShapes[range.StartIndex + i];
 
                 activeShapes.Add(new HitboxActiveShape {
-                    Type = src.Type,
-                    Offset    = src.Offset,
-                    Size      = src.Size,
-                    Radius    = src.Radius,
+                    Type   = src.Type,
+                    Offset = src.Offset,
+                    Size   = src.Size,
+                    Radius = src.Radius,
                 });
             }
 
@@ -296,7 +301,7 @@ namespace Script.GamePlay.Character {
         /// 없으면 CharacterInfo.hitbox (StateMask == None) 를 기본값으로 사용
         /// </summary>
         private static int FindBestRangeIndex(
-            CharacterState                                currentState,
+            CharacterState                   currentState,
             DynamicBuffer<HitboxPresetRange> presetRanges
         ) {
             int defaultIndex = -1;
