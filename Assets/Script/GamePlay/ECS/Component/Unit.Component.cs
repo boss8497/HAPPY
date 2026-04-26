@@ -89,7 +89,7 @@ namespace Script.GamePlay.ECS.Component {
     /// ECS 점프 런타임 데이터
     /// 기존 JumpingAsync의 지역변수들을 옮긴 것
     /// </summary>
-    public struct JumpingData : IComponentData, IEnableableComponent {
+    public struct JumpingData : IComponentData {
         public float GroundY;
         public float CurrentJumpTime;
         public float MaxJumpTime;
@@ -98,13 +98,5 @@ namespace Script.GamePlay.ECS.Component {
         public float FallGravity;
         public float Timer;
         public float JumpVelocity;
-    }
-
-    /// <summary>
-    /// ECS -> Character 결과 전달용
-    /// 착지했는지 알려주는 간단한 브리지
-    /// </summary>
-    public struct JumpResultData : IComponentData {
-        public byte Landed;
     }
 }

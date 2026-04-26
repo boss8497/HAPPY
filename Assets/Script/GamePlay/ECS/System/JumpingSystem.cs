@@ -18,14 +18,9 @@ namespace Script.GamePlay.ECS.System {
         [BurstCompile]
         public void OnUpdate(ref SystemState state) {
             var dt = SystemAPI.Time.DeltaTime;
-
-            var updateHandle = new JumpingUpdateJob {
+            state.Dependency = new JumpingUpdateJob {
                 Dt = dt,
             }.ScheduleParallel(state.Dependency);
-
-            var disableHandle = new JumpingDisableJob().ScheduleParallel(updateHandle);
-
-            state.Dependency = disableHandle;
         }
 
         [BurstCompile]
@@ -33,10 +28,10 @@ namespace Script.GamePlay.ECS.System {
             public float Dt;
 
             private void Execute(
-                ref LocalTransform transform,
-                ref JumpingData jumping,
-                ref JumpInputData input,
-                ref JumpResultData result
+                ref LocalTransform              transform,
+                ref JumpingData                 jumping,
+                ref JumpInputData               input,
+                EnabledRefRW<UnitJumpingEnable> jumpingEnable
             ) {
                 if (input.Held != 0 && jumping.CurrentJumpTime < jumping.MaxJumpTime) {
                     jumping.CurrentJumpTime += Dt;
@@ -65,28 +60,16 @@ namespace Script.GamePlay.ECS.System {
                 if (position.y <= jumping.GroundY && jumping.Timer > 0f) {
                     position.y = jumping.GroundY;
                     transform.Position = position;
-
-                    result.Landed = 1;
-                    input.Held = 0;
+                    
+                    
+                    input.Held             = 0;
                     input.ReleaseRequested = 0;
+                    jumpingEnable.ValueRW  = false;
                     return;
                 }
 
                 transform.Position = position;
                 jumping.Timer += Dt;
-            }
-        }
-
-        [BurstCompile]
-        public partial struct JumpingDisableJob : IJobEntity {
-            private void Execute(
-                in JumpResultData result,
-                EnabledRefRW<JumpingData> jumpingEnabled
-            ) {
-                if (result.Landed == 0)
-                    return;
-
-                jumpingEnabled.ValueRW = false;
             }
         }
     }

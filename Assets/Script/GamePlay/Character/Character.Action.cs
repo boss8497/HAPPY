@@ -139,8 +139,14 @@ namespace Script.GamePlay.Character {
 
             entityManager.SetComponentData(entity, input);
         }
+        
 
-        private void StartJumping() {
+        private void ResetJumpingStatus() {
+            // 점프가 0이면 데이터 셋팅 안함
+            if (Status.Jump <= 0) {
+                return;
+            }
+            
             if (_unitManager == null || 
                 _unitManager.TryGetEntity(this, out var entity) == false)
                 return;
@@ -151,11 +157,7 @@ namespace Script.GamePlay.Character {
                 Held             = (byte)(PlayerControls.JumpHeld ? 1 : 0),
                 ReleaseRequested = 0,
             });
-
-            entityManager.SetComponentData(entity, new JumpResultData {
-                Landed = 0,
-            });
-
+            
             entityManager.SetComponentData(entity, new JumpingData {
                 GroundY         = transform.position.y,
                 CurrentJumpTime = 0f,
@@ -166,24 +168,7 @@ namespace Script.GamePlay.Character {
                 Timer           = 0f,
                 JumpVelocity    = Convert.ToSingle(Status.Jump),
             });
-
-            entityManager.SetComponentEnabled<JumpingData>(entity, true);
         }
-
-        private void StopJumping() {
-            if (_unitManager == null || 
-                _unitManager.TryGetEntity(this, out var entity) == false) return;
-
-            var entityManager = _stageEntityWorld.EntityManager;
-
-            if (entityManager.HasComponent<JumpInputData>(entity)) {
-                entityManager.SetComponentData(entity, new JumpInputData {
-                    Held             = 0,
-                    ReleaseRequested = 0,
-                });
-            }
-        }
-
         #endregion
 
         private void ReleaseAction() {

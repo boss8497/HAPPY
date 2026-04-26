@@ -23,9 +23,5 @@ namespace Script.GamePlay.Character {
                 await UniTask.DelayFrame(DefaultDelayFrame, cancellationToken: cts);
             }
         }
-
-        protected override void End() {
-            _character.RemoveState(CharacterState.Running);
-        }
     }
 }

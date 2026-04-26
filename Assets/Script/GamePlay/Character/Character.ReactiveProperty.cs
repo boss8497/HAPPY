@@ -93,13 +93,10 @@ namespace Script.GamePlay.Character {
                     Jumping.CombineLatest(Initialized, (jumping, initialized) => (jumping, initialized))
                            .Subscribe(state => {
                                if (state.initialized == false) return;
-
                                if (state.jumping) {
-                                   StartJumping();
+                                   ResetJumpingStatus();
                                }
-                               else {
-                                   StopJumping();
-                               }
+                               SetEnabledTag<UnitJumpingEnable>(state.jumping);
                            })
                            .AddTo(ref _reactiveDisposableBag);
 

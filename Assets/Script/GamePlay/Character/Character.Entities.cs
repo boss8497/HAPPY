@@ -89,6 +89,11 @@ namespace Script.GamePlay.Character {
             }
             SetEnabledTag<UnitRunningEnable>(false);
             
+            if (entityManager.HasComponent<UnitJumpingEnable>(entity) == false) {
+                entityManager.AddComponentData<UnitJumpingEnable>(entity, new());
+            }
+            SetEnabledTag<UnitJumpingEnable>(false);
+            
             if (entityManager.HasComponent<UnitCollisionEnable>(entity) == false) {
                 entityManager.AddComponentData<UnitCollisionEnable>(entity, new());
             }
@@ -132,20 +137,13 @@ namespace Script.GamePlay.Character {
             if (entityManager.HasComponent<RunningData>(entity) == false) {
                 entityManager.AddComponentData(entity, new RunningData());
             }   
+            
+            if (entityManager.HasComponent<JumpInputData>(entity) == false) {
+                entityManager.AddComponentData(entity, new JumpInputData());
+            }
 
-            if (IsPlayer) {
-                if (entityManager.HasComponent<JumpInputData>(entity) == false) {
-                    entityManager.AddComponentData(entity, new JumpInputData());
-                }
-
-                if (entityManager.HasComponent<JumpResultData>(entity) == false) {
-                    entityManager.AddComponentData(entity, new JumpResultData());
-                }
-
-                if (entityManager.HasComponent<JumpingData>(entity) == false) {
-                    entityManager.AddComponentData(entity, new JumpingData());
-                    entityManager.SetComponentEnabled<JumpingData>(entity, false);
-                }
+            if (entityManager.HasComponent<JumpingData>(entity) == false) {
+                entityManager.AddComponentData(entity, new JumpingData());
             }
         }
         

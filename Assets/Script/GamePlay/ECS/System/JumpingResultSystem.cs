@@ -9,17 +9,13 @@ namespace Script.GamePlay.ECS.System {
     [UpdateAfter(typeof(JumpingSystem))]
     public partial class JumpingResultSystem : SystemBase {
         protected override void OnUpdate() {
-            foreach (var (unitData, jumpResult)
-                     in SystemAPI.Query<
-                                     RefRO<UnitData>,
-                                     RefRW<JumpResultData>>()
+            foreach (var unitData
+                     in SystemAPI.Query<RefRO<UnitData>>()
+                                 .WithDisabled<UnitJumpingEnable>()
                                  .WithAll<UnitEntityTag>()) {
-                var landed = jumpResult.ValueRO.Landed;
-                if (landed <= 0) continue;
-                
                 var character = unitData.ValueRO.GameObject.Value.GetComponent<Character.Character>();
+                if ((character.Jumping?.CurrentValue ?? false) == false) continue;
                 character.RemoveState(CharacterState.Jumping);
-                jumpResult.ValueRW.Landed = 0;
             }
         }
     }
