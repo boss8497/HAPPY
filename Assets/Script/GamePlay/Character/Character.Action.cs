@@ -88,12 +88,15 @@ namespace Script.GamePlay.Character {
         }
 
         private void UpdateStatus() {
-            // 이 턴은 별로인듯 IsPlayer
-            if (IsPlayer)
-                UpdateRunningStatus();
+            UpdateRunningStatus();
         }
 
         private void UpdateRunningStatus() {
+            // 달리기 속도가 0이면 데이터 셋팅 안함
+            if (Status.Spd <= 0) {
+                return;
+            }
+            
             if (_unitManager == null)
                 return;
 
@@ -106,7 +109,7 @@ namespace Script.GamePlay.Character {
             }
 
             entityManager.SetComponentData(entity, new RunningData {
-                Direction = Vector3.right, // 오른쪽으로 고정
+                Direction = Vector3.right, // 오른쪽으로 고정 나중에 왼쪽으로 달려오는 캐릭터를 만들기 위해 CharacterInfo에 데이터 셋팅하면 좋을듯!
                 Speed     = (float)Status.Spd,
             });
         }

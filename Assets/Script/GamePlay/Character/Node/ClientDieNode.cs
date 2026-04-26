@@ -22,9 +22,7 @@ namespace Script.GamePlay.Character {
         }
 
         protected override void Enter() {
-            if (_character.IsPlayer) {
-                _character.RemoveState(CharacterState.Running);
-            }
+            _character.RemoveState(CharacterState.Running);
         }
 
         protected override async UniTask Update(CancellationToken cts) {

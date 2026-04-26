@@ -78,6 +78,7 @@ namespace Script.GamePlay.Character {
         }
 
         private void EnsureComponents(EntityManager entityManager, Entity entity) {
+            // Enable 셋팅
             if (entityManager.HasComponent<UnitDieEnable>(entity) == false) {
                 entityManager.AddComponentData<UnitDieEnable>(entity, new());
             }
@@ -98,6 +99,8 @@ namespace Script.GamePlay.Character {
             }
             SetEnabledTag<UnitSystemControlEnable>(SystemControl?.CurrentValue ?? false);
             
+            
+            //HitBox
             if (entityManager.HasComponent<HitboxState>(entity) == false) {
                 entityManager.AddComponentData(entity, new HitboxState {
                     Current = CharacterState.None,
@@ -125,40 +128,22 @@ namespace Script.GamePlay.Character {
                 entityManager.AddBuffer<UnitCollisionDelay>(entity);
             }
 
-            
+            // Data 셋팅
+            if (entityManager.HasComponent<RunningData>(entity) == false) {
+                entityManager.AddComponentData(entity, new RunningData());
+            }   
+
             if (IsPlayer) {
-                if (entityManager.HasComponent<RunningData>(entity) == false) {
-                    entityManager.AddComponentData(entity, new RunningData {
-                        Direction = new float3(1f, 0f, 0f),
-                        Speed     = 0f,
-                    });
-                }   
-                
-                
                 if (entityManager.HasComponent<JumpInputData>(entity) == false) {
-                    entityManager.AddComponentData(entity, new JumpInputData {
-                        Held             = 0,
-                        ReleaseRequested = 0,
-                    });
+                    entityManager.AddComponentData(entity, new JumpInputData());
                 }
 
                 if (entityManager.HasComponent<JumpResultData>(entity) == false) {
-                    entityManager.AddComponentData(entity, new JumpResultData {
-                        Landed = 0,
-                    });
+                    entityManager.AddComponentData(entity, new JumpResultData());
                 }
 
                 if (entityManager.HasComponent<JumpingData>(entity) == false) {
-                    entityManager.AddComponentData(entity, new JumpingData {
-                        GroundY         = 0f,
-                        CurrentJumpTime = 0f,
-                        MaxJumpTime     = 0f,
-                        Gravity         = 0f,
-                        FallGravity     = 0f,
-                        Timer           = 0f,
-                        JumpVelocity    = 0f,
-                    });
-
+                    entityManager.AddComponentData(entity, new JumpingData());
                     entityManager.SetComponentEnabled<JumpingData>(entity, false);
                 }
             }

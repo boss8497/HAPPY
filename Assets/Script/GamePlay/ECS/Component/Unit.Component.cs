@@ -10,6 +10,7 @@ namespace Script.GamePlay.ECS.Component {
 
     public struct UnitDieEnable : IComponentData, IEnableableComponent { }
     public struct UnitRunningEnable : IComponentData, IEnableableComponent { }
+    public struct UnitJumpingEnable : IComponentData, IEnableableComponent { }
     public struct UnitCollisionEnable : IComponentData, IEnableableComponent { }
     public struct UnitSystemControlEnable : IComponentData, IEnableableComponent { }
 

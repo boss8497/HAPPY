@@ -13,9 +13,7 @@ namespace Script.GamePlay.Character {
         }
 
         protected override void Enter() {
-            if (_character.IsPlayer) {
-                _character.AddState(CharacterState.Running);
-            }
+            _character.AddState(CharacterState.Running);
             _character.SetAnimation(nameof(AnimationName.RUN), true);
         }
 
@@ -24,6 +22,10 @@ namespace Script.GamePlay.Character {
                 
                 await UniTask.DelayFrame(DefaultDelayFrame, cancellationToken: cts);
             }
+        }
+
+        protected override void End() {
+            _character.RemoveState(CharacterState.Running);
         }
     }
 }

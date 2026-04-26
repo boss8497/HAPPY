@@ -10,6 +10,14 @@ namespace Script.GamePlay.Character {
 
         // State 추가
         public void AddState(CharacterState state, bool notify = true) {
+            switch (state) {
+                case CharacterState.Running:
+                    if (Status.Spd <= 0) {
+                        RemoveState(state, notify);
+                        return;
+                    }
+                    break;
+            }
             if (State.Value.HasFlag(state)) return;
             if (notify)
                 State.OnNext(State.Value |= state);
