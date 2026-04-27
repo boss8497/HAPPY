@@ -4,8 +4,8 @@ using Unity.Entities;
 namespace Script.GamePlay.ECS.System {
     [DisableAutoCreation]
     [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
-    [UpdateAfter(typeof(CharacterCollisionSystem))]
-    public partial class CharacterCollisionResultSystem : SystemBase {
+    [UpdateAfter(typeof(CollisionSystem))]
+    public partial class CollisionResultSystem : SystemBase {
         protected override void OnCreate() {
             RequireForUpdate<EGameTimer>();
         }

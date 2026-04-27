@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Script.GameInfo.Character {
     [Serializable]
     public class Hitbox {
-        public HitBoxType type;
+        public HitBoxType type = HitBoxType.Invisible;
         public Vector3    offset;
 
         [ShowIf("@type == HitBoxType.Rect")]

@@ -114,6 +114,20 @@ namespace Script.GamePlay.Character {
             });
         }
         
+        // HitBox Sync
+        private void SyncHitbox(CharacterState sate) {
+            if (_unitManager == null)
+                return;
+
+            if (_unitManager.TryGetEntity(this, out var entity) == false)
+                return;
+
+            var entityManager = _stageEntityWorld.EntityManager;
+
+            var stateHitbox = CharacterInfo.hitboxes.FirstOrDefault(r => r.state == sate);
+            entityManager.SetComponentData(entity, new HitBoxData(stateHitbox == null ? CharacterInfo.hitbox : stateHitbox.hitbox));
+        }
+        
         #endregion
 
 

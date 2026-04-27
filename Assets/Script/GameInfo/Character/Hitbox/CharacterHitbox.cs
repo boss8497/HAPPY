@@ -5,8 +5,6 @@ namespace Script.GameInfo.Character {
     [System.Serializable]
     public class CharacterHitbox {
         public CharacterState state;
-
-        [SerializeReference]
-        public Hitbox[] hitboxes = Array.Empty<Hitbox>();
+        public Hitbox         hitbox = new();
     }
 }

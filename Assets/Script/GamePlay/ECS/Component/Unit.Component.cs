@@ -8,9 +8,13 @@ namespace Script.GamePlay.ECS.Component {
     public struct UnitEntityTag : IComponentData { }
 
     public struct UnitDieEnable : IComponentData, IEnableableComponent { }
+
     public struct UnitRunningEnable : IComponentData, IEnableableComponent { }
+
     public struct UnitJumpingEnable : IComponentData, IEnableableComponent { }
+
     public struct UnitCollisionEnable : IComponentData, IEnableableComponent { }
+
     public struct UnitSystemControlEnable : IComponentData, IEnableableComponent { }
 
     public struct UnitData : IComponentData {
@@ -21,29 +25,28 @@ namespace Script.GamePlay.ECS.Component {
         public UnityObjectRef<GameObject> GameObject;
     }
 
-    public struct HitboxState : IComponentData {
-        public CharacterState Current;
-        public CharacterState Applied;
-    }
-
-    public struct HitboxPresetRange : IBufferElementData {
-        public CharacterState StateMask;
-        public int            StartIndex;
-        public int            Length;
-    }
-
-    public struct HitboxPresetShape : IBufferElementData {
+    public struct HitBoxData : IComponentData {
         public HitBoxType Type;
-        public float3     Offset;
-        public float3     Size;
-        public float      Radius;
-    }
+        public float3 Offset;
+        // Rect
+        public float3 Size;
+        // Radius
+        public float Radius;
 
-    public struct HitboxActiveShape : IBufferElementData {
-        public HitBoxType Type;
-        public float3     Offset;
-        public float3     Size;
-        public float      Radius;
+        public HitBoxData(Hitbox info) {
+            if (info == null) {
+                Type   = HitBoxType.Invisible;
+                Offset = float3.zero;
+                Size   = float3.zero;
+                Radius = 0f;
+            }
+            else {
+                Type   = info.type;
+                Offset = info.offset;
+                Size   = info.size;
+                Radius = info.radius;
+            }
+        }
     }
 
     public struct UnitCollisionResult : IBufferElementData {

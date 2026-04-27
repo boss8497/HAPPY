@@ -8,7 +8,7 @@ namespace Script.GameInfo.Character {
     [System.Serializable]
     public class CharacterInfo : InfoBase {
         public CharacterType type;
-        
+
         [SerializeReference]
         public AnimationEvent[] animationEvents = Array.Empty<AnimationEvent>();
 
@@ -24,8 +24,12 @@ namespace Script.GameInfo.Character {
         [AssetPath(typeof(GameObject))]
         public string prefab;
 
+        // 기본 Invisible로 생성 해준다
+        // Invisible이면 쿼리에 등록은 되지만 Continue
         [SerializeReference]
-        public Hitbox            hitbox;
+        public Hitbox hitbox = new();
+        
+        // 상태 변화에 따라 Hitbox를 다르게 해줄 의도
         public CharacterHitbox[] hitboxes = Array.Empty<CharacterHitbox>();
     }
 }

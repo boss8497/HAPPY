@@ -53,8 +53,8 @@ namespace Script.GamePlay.ECS.World {
             systems.Add(TypeManager.GetSystemTypeIndex<RunningSystem>());
             systems.Add(TypeManager.GetSystemTypeIndex<JumpingSystem>());
             systems.Add(TypeManager.GetSystemTypeIndex<JumpingResultSystem>());
-            systems.Add(TypeManager.GetSystemTypeIndex<CharacterCollisionSystem>());
-            systems.Add(TypeManager.GetSystemTypeIndex<CharacterCollisionResultSystem>());
+            systems.Add(TypeManager.GetSystemTypeIndex<CollisionSystem>());
+            systems.Add(TypeManager.GetSystemTypeIndex<CollisionResultSystem>());
             systems.Add(TypeManager.GetSystemTypeIndex<CharacterSyncSystem>());
 
             DefaultWorldInitialization.AddSystemsToRootLevelSystemGroups(_world, systems);

@@ -70,7 +70,7 @@ namespace Script.GamePlay.Character {
                                   .AddTo(ref _reactiveDisposableBag);
 
 
-            State.Subscribe((state) => { SyncCharacterHitboxEntity(); })
+            State.Subscribe(SyncHitbox)
                  .AddTo(ref _reactiveDisposableBag);
 
             switch (CharacterInfo.type) {
