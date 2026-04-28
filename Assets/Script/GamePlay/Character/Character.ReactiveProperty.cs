@@ -69,7 +69,7 @@ namespace Script.GamePlay.Character {
                                   .ToReadOnlyReactiveProperty()
                                   .AddTo(ref _reactiveDisposableBag);
 
-
+            // 여기서는 상태가 겹쳐 있을 거임
             State.Subscribe(SyncHitbox)
                  .AddTo(ref _reactiveDisposableBag);
 

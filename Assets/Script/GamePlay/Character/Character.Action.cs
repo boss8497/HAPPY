@@ -115,6 +115,7 @@ namespace Script.GamePlay.Character {
         }
         
         // HitBox Sync
+        // 상태가 겹쳐 있기 때문에 우선순위로 HitBox를 설정해 준다.
         private void SyncHitbox(CharacterState sate) {
             if (_unitManager == null)
                 return;
@@ -124,7 +125,11 @@ namespace Script.GamePlay.Character {
 
             var entityManager = _stageEntityWorld.EntityManager;
 
-            var stateHitbox = CharacterInfo.hitboxes.FirstOrDefault(r => r.state == sate);
+            // 이미 정렬이 되어 있기 때문에 처음거 걸로 주면 된다.
+            // var stateHitbox = CharacterInfo.OrderedHitboxes.Where(r => sate.HasFlag(r.state))
+            //                                .OrderByDescending(o => o.priority)
+            //                                .FirstOrDefault(r => r.state == sate);
+            var stateHitbox = CharacterInfo.OrderedHitboxes.FirstOrDefault(r => sate.HasFlag(r.state));
             entityManager.SetComponentData(entity, new HitBoxData(stateHitbox == null ? CharacterInfo.hitbox : stateHitbox.hitbox));
         }
         

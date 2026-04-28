@@ -19,8 +19,9 @@ namespace Script.GamePlay.Character {
                     break;
             }
             if (State.Value.HasFlag(state)) return;
-            if (notify)
+            if (notify) {
                 State.OnNext(State.Value |= state);
+            }
             else {
                 State.Value |= state;
             }

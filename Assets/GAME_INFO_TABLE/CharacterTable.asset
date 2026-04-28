@@ -79,35 +79,35 @@ MonoBehaviour:
     - rid: 2476690126442070113
       type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
-        type: 1
+        type: 2
         offset: {x: 0, y: 1, z: 0}
         size: {x: 1, y: 2, z: 1}
         radius: 0
     - rid: 2476690126442070117
       type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
-        type: 1
+        type: 2
         offset: {x: 0, y: 0.5, z: 0}
         size: {x: 1, y: 1, z: 1}
         radius: 0
     - rid: 2476690126442070119
       type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
-        type: 1
+        type: 2
         offset: {x: 0, y: 1.25, z: 0}
         size: {x: 1, y: 2.5, z: 0}
         radius: 0
     - rid: 2476690126442070121
       type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
-        type: 1
+        type: 2
         offset: {x: 0, y: 0.5, z: 0}
         size: {x: 1, y: 1, z: 1}
         radius: 0
     - rid: 2476690126442070123
       type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
-        type: 1
+        type: 2
         offset: {x: 0, y: 0.5, z: 0}
         size: {x: 1, y: 1, z: 1}
         radius: 0

@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using Newtonsoft.Json;
 using Script.GameInfo.Base;
 using Script.GameInfo.Attribute;
 using Sirenix.OdinInspector;
@@ -31,5 +33,17 @@ namespace Script.GameInfo.Character {
         
         // 상태 변화에 따라 Hitbox를 다르게 해줄 의도
         public CharacterHitbox[] hitboxes = Array.Empty<CharacterHitbox>();
+        
+        // Runtime에서 OrderBy를 막기 위한 캐시 및 프로퍼티
+        [JsonIgnore, NonSerialized]
+        private CharacterHitbox[] _orderedHitboxes;
+        [JsonIgnore]
+        public CharacterHitbox[] OrderedHitboxes {
+            get {
+                if (hitboxes.Length <= 0) return hitboxes;
+                _orderedHitboxes ??= hitboxes.OrderByDescending(o => o.priority).ToArray();
+                return _orderedHitboxes;
+            }
+        }
     }
 }
