@@ -7,6 +7,7 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
 
 namespace Script.GamePlay.ECS.System {
     [DisableAutoCreation]
@@ -76,7 +77,7 @@ namespace Script.GamePlay.ECS.System {
 
         [NativeDisableParallelForRestriction]
         public ComponentLookup<UnitCollisionEnable> CollisionTagLookup;
-        
+
         public void Execute(int index) {
             var entityA = Entities[index];
             var unitA   = Units[index];
@@ -110,8 +111,8 @@ namespace Script.GamePlay.ECS.System {
                 var entityB = Entities[j];
 
                 if (!CollisionCheck(
-                        Transforms[index].Position, hitBox,
-                        Transforms[j].Position, otherHitBox)) {
+                        Transforms[index], hitBox,
+                        Transforms[j], otherHitBox)) {
                     continue;
                 }
 
@@ -160,54 +161,139 @@ namespace Script.GamePlay.ECS.System {
 
         // Hit
         private static bool CollisionCheck(
-            float3     unitPosA,
-            HitBoxData a,
-            float3     unitPosB,
-            HitBoxData b
+            LocalTransform my,
+            HitBoxData     myData,
+            LocalTransform target,
+            HitBoxData     targetData
         ) {
-            var centerA = unitPosA + a.Offset;
-            var centerB = unitPosB + b.Offset;
-
-            if (a.Type == HitBoxType.Rect && b.Type == HitBoxType.Rect) {
-                return RectVsRect(centerA, a.Size, centerB, b.Size);
+            if (myData.Type == HitBoxType.Rect && targetData.Type == HitBoxType.Rect) {
+                return RectVsRect(my, myData, target, targetData);
             }
 
-            if (a.Type == HitBoxType.Circle && b.Type == HitBoxType.Circle) {
-                return CircleVsCircle(centerA, a.Radius, centerB, b.Radius);
+            if (myData.Type == HitBoxType.Circle && targetData.Type == HitBoxType.Circle) {
+                return CircleVsCircle(my, myData, target, targetData);
             }
 
-            if (a.Type == HitBoxType.Rect && b.Type == HitBoxType.Circle) {
-                return RectVsCircle(centerA, a.Size, centerB, b.Radius);
+            if (myData.Type == HitBoxType.Rect && targetData.Type == HitBoxType.Circle) {
+                return RectVsCircle(my, myData, target, targetData);
             }
 
-            if (a.Type == HitBoxType.Circle && b.Type == HitBoxType.Rect) {
-                return RectVsCircle(centerB, b.Size, centerA, a.Radius);
+            if (myData.Type == HitBoxType.Circle && targetData.Type == HitBoxType.Rect) {
+                return RectVsCircle(my, myData, target, targetData);
             }
 
             return false;
         }
 
-        private static bool RectVsRect(float3 centerA, float3 sizeA, float3 centerB, float3 sizeB) {
-            var halfA = sizeA * 0.5f;
-            var halfB = sizeB * 0.5f;
+        // 3D 계산이 아니라 2D(XY) 계산
+        private static bool RectVsRect(
+            LocalTransform my,
+            HitBoxData     myData,
+            LocalTransform target,
+            HitBoxData     targetData
+        ) {
+            var myCenter     = my.Position + math.rotate(my.Rotation, myData.Offset);
+            var targetCenter = target.Position + math.rotate(target.Rotation, targetData.Offset);
 
-            return math.abs(centerA.x - centerB.x) <= (halfA.x + halfB.x) && math.abs(centerA.y - centerB.y) <= (halfA.y + halfB.y);
+            var halfA = myData.Size * 0.5f;
+            var halfB = targetData.Size * 0.5f;
+
+            // my Rect의 로컬 축을 월드 방향으로 변환
+            var aRight = math.rotate(my.Rotation, new float3(1f, 0f, 0f));
+            var aUp    = math.rotate(my.Rotation, new float3(0f, 1f, 0f));
+
+            // target Rect의 로컬 축을 월드 방향으로 변환
+            var bRight = math.rotate(target.Rotation, new float3(1f, 0f, 0f));
+            var bUp    = math.rotate(target.Rotation, new float3(0f, 1f, 0f));
+
+            var centerDelta = targetCenter - myCenter;
+
+            // SAT 검사 축:
+            // A의 Right, A의 Up, B의 Right, B의 Up
+            if (!OverlapOnAxis(centerDelta, aRight, aRight, aUp, halfA, bRight, bUp, halfB))
+                return false;
+
+            if (!OverlapOnAxis(centerDelta, aUp, aRight, aUp, halfA, bRight, bUp, halfB))
+                return false;
+
+            if (!OverlapOnAxis(centerDelta, bRight, aRight, aUp, halfA, bRight, bUp, halfB))
+                return false;
+
+            if (!OverlapOnAxis(centerDelta, bUp, aRight, aUp, halfA, bRight, bUp, halfB))
+                return false;
+
+            return true;
         }
 
-        private static bool CircleVsCircle(float3 centerA, float radiusA, float3 centerB, float radiusB) {
-            var radius = radiusA + radiusB;
-            return math.lengthsq(centerA - centerB) <= radius * radius;
+        private static bool OverlapOnAxis(
+            float3 centerDelta,
+            float3 axis,
+            float3 aRight,
+            float3 aUp,
+            float3 halfA,
+            float3 bRight,
+            float3 bUp,
+            float3 halfB
+        ) {
+            var axisLengthSq = math.lengthsq(axis);
+
+            if (axisLengthSq < float.Epsilon)
+                return true;
+
+            axis *= math.rsqrt(axisLengthSq);
+
+            // 두 중심 사이 거리를 검사 축에 투영
+            var distance = math.abs(math.dot(centerDelta, axis));
+
+            // A Rect가 해당 축 위에서 차지하는 반지름
+            var radiusA =
+                halfA.x * math.abs(math.dot(aRight, axis)) + halfA.y * math.abs(math.dot(aUp, axis));
+
+            // B Rect가 해당 축 위에서 차지하는 반지름
+            var radiusB =
+                halfB.x * math.abs(math.dot(bRight, axis)) + halfB.y * math.abs(math.dot(bUp, axis));
+
+            return distance <= radiusA + radiusB;
         }
 
-        private static bool RectVsCircle(float3 rectCenter, float3 rectSize, float3 circleCenter, float circleRadius) {
-            var half = rectSize * 0.5f;
-            var min  = rectCenter - half;
-            var max  = rectCenter + half;
+        private static bool CircleVsCircle(LocalTransform my, HitBoxData myData, LocalTransform target, HitBoxData targetData) {
+            var myCenter     = my.Position + myData.Offset;
+            var targetCenter = target.Position + targetData.Offset;
 
-            var closest = math.clamp(circleCenter, min, max);
-            var delta   = circleCenter - closest;
+            var radius = myData.Radius + targetData.Radius;
+            return math.lengthsq(myCenter - targetCenter) <= radius * radius;
+        }
 
-            return math.lengthsq(delta) <= circleRadius * circleRadius;
+        private static bool RectVsCircle(LocalTransform my, HitBoxData myData, LocalTransform target, HitBoxData targetData) {
+            // 1. HitBox Offset이 로컬 좌표 기준이라면,
+            //    회전값을 적용해서 월드 좌표의 중심을 구해야 함.
+            var myCenter = my.Position + math.rotate(my.Rotation, myData.Offset);
+
+            var targetCenter = target.Position + math.rotate(target.Rotation, targetData.Offset);
+
+            // 2. 내 사각형/박스의 절반 크기
+            var half = myData.Size * 0.5f;
+
+            // 3. targetCenter를 my 사각형 기준의 로컬 좌표로 변환
+            //    즉, myCenter를 원점으로 보고,
+            //    my.Rotation의 반대 회전을 적용한다.
+            var localTargetCenter = math.rotate(
+                math.inverse(my.Rotation),
+                targetCenter - myCenter
+            );
+
+            // 4. 로컬 공간에서는 회전이 풀린 AABB처럼 볼 수 있음
+            //    범위는 -half ~ +half
+            var closest = math.clamp(
+                localTargetCenter,
+                -half,
+                half
+            );
+
+            // 5. 로컬 공간에서 원/구 중심과 박스의 최근접 점 거리 비교
+            var delta = localTargetCenter - closest;
+
+            return math.lengthsq(delta) <= targetData.Radius * targetData.Radius;
         }
     }
 }

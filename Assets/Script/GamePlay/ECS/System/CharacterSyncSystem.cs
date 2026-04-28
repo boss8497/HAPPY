@@ -15,6 +15,7 @@ namespace Script.GamePlay.ECS.System {
                 var originalGameObject = effectsRef.ValueRW.GameObject.Value;
                 if (originalGameObject) {
                     originalGameObject.transform.position = transform.Position;
+                    originalGameObject.transform.rotation = transform.Rotation;
                 }
             }
         }
