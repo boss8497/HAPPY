@@ -5,8 +5,9 @@ namespace Script.GamePlay.Character {
     public class ClientSystemControl : ClientTransitionBase {
         private Character _character;
 
-        public ClientSystemControl(ClientNodeBase node, TransitionBase transitionBase) : base(node, transitionBase) {
+        public override ClientTransitionBase Initialize(ClientNodeBase node, TransitionBase transitionBase) {
             _character = node.CharacterBehaviour.Character;
+            return base.Initialize(node, transitionBase);
         }
 
         public override bool OnTrigger() {

@@ -12,9 +12,10 @@ namespace Script.GamePlay.Character {
         public int           Priority     => _transitionBase?.priority ?? 0;
         public Character     Character    => _node?.CharacterBehaviour?.Character;
 
-        public ClientTransitionBase(ClientNodeBase node, TransitionBase transitionBase) {
+        public virtual ClientTransitionBase Initialize(ClientNodeBase node, TransitionBase transitionBase) {
             _node           = node;
             _transitionBase = transitionBase;
+            return this;
         }
 
         public virtual void Release() { }

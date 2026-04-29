@@ -5,6 +5,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Character;
 using Script.GameInfo.Enum;
+using Script.Utility.Runtime;
 
 namespace Script.GamePlay.Character {
     [Serializable]
@@ -26,13 +27,13 @@ namespace Script.GamePlay.Character {
 
         private static ClientTransitionBase Create(ClientNodeBase nodeBase, TransitionBase transitionBase) {
             var type = transitionBase.GetType();
-
+            
             return type switch {
-                var t when t == typeof(PlayerControl)       => new ClientPlayerControl(nodeBase, transitionBase),
-                var t when t == typeof(SystemControl)       => new ClientSystemControl(nodeBase, transitionBase),
-                var t when t == typeof(EndTransition)       => new ClientEndTransition(nodeBase, transitionBase),
-                var t when t == typeof(DieTransition)       => new ClientDieTransition(nodeBase, transitionBase),
-                var t when t == typeof(CollisionTransition) => new ClientCollisionTransition(nodeBase, transitionBase),
+                var t when t == typeof(PlayerControl)       => ClassPool.Get<ClientPlayerControl>().Initialize(nodeBase, transitionBase),
+                var t when t == typeof(SystemControl)       => ClassPool.Get<ClientSystemControl>().Initialize(nodeBase, transitionBase),
+                var t when t == typeof(EndTransition)       => ClassPool.Get<ClientEndTransition>().Initialize(nodeBase, transitionBase),
+                var t when t == typeof(DieTransition)       => ClassPool.Get<ClientDieTransition>().Initialize(nodeBase, transitionBase),
+                var t when t == typeof(CollisionTransition) => ClassPool.Get<ClientCollisionTransition>().Initialize(nodeBase, transitionBase),
                 _                                           => null
             };
         }
@@ -116,9 +117,10 @@ namespace Script.GamePlay.Character {
             foreach (var transitionBase in _transitionBases) {
                 foreach (var transition in transitionBase.Value) {
                     transition.Release();
+                    ClassPool.Release(transition);
                 }
             }
-
+            
             _transitionBases = null;
             nodeGeneration   = 0;
         }
