@@ -2,23 +2,23 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Character;
+using Script.Utility.Runtime;
 using UnityEngine;
 
 namespace Script.GamePlay.Character {
     [Serializable]
-    public class ClientDieNode : ClientNodeBase {
+    public class ClientDieNode : ClientNodeBase, IClassPool {
         private Character    _character;
         private DieAnimation _dieAnimation;
 
-        public ClientDieNode(CharacterBehaviour characterBehaviour, NodeBase nodeBase) : base(characterBehaviour, nodeBase) {
+        public override ClientNodeBase Initialize(CharacterBehaviour characterBehaviour, NodeBase nodeBase) {
+            base.Initialize(characterBehaviour, nodeBase);
             _character    = characterBehaviour.Character;
             _dieAnimation = _character.DieAnimation;
-        }
-
-        public override void Initialize() {
             if (_dieAnimation != null) {
                 _dieAnimation.ResetAnimation().Forget();
             }
+            return this;
         }
 
         protected override void Enter() {
@@ -34,6 +34,11 @@ namespace Script.GamePlay.Character {
             if (_dieAnimation != null) {
                 await _dieAnimation.PlayAnimation();
             }
+        }
+
+        public void OnRent() {
+        }
+        public void OnReturn() {
         }
     }
 }

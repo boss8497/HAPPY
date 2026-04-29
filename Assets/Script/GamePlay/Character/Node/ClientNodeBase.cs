@@ -24,16 +24,6 @@ namespace Script.GamePlay.Character {
         public NodeBase           NodeBase           => _nodeBase;
         public bool               IsPlay             => playCts.IsCancellationRequested == false;
 
-        protected ClientNodeBase(CharacterBehaviour characterBehaviour, NodeBase nodeBase) {
-            _characterBehaviour = characterBehaviour;
-            _nodeBase           = nodeBase;
-
-            _transitionBases = _nodeBase.transitions.GroupBy(t => t.timing)
-                                        .ToDictionary(g => g.Key, g => g.Select(s => Create(this, s))
-                                                                        .OrderByDescending(o => o.Priority)
-                                                                        .ToArray());
-        }
-
         private static ClientTransitionBase Create(ClientNodeBase nodeBase, TransitionBase transitionBase) {
             var type = transitionBase.GetType();
 
@@ -46,10 +36,18 @@ namespace Script.GamePlay.Character {
                 _                                           => null
             };
         }
-
-
+        
         //실행 순서 Initialize -> Enter -> Start -> End
-        public abstract void Initialize();
+        public virtual ClientNodeBase Initialize(CharacterBehaviour characterBehaviour, NodeBase nodeBase) {
+            _characterBehaviour = characterBehaviour;
+            _nodeBase           = nodeBase;
+
+            _transitionBases = _nodeBase.transitions.GroupBy(t => t.timing)
+                                        .ToDictionary(g => g.Key, g => g.Select(s => Create(this, s))
+                                                                        .OrderByDescending(o => o.Priority)
+                                                                        .ToArray());
+            return this;
+        }
 
         protected virtual void Enter() { }
 

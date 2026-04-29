@@ -1,27 +1,31 @@
 ﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Character;
+using Script.Utility.Runtime;
 
 namespace Script.GamePlay.Character {
     [System.Serializable]
-    public class ClientWaitNode : ClientNodeBase {
+    public class ClientWaitNode : ClientNodeBase, IClassPool {
         private Character _character;
-        public ClientWaitNode(CharacterBehaviour characterBehaviour, NodeBase nodeBase) : base(characterBehaviour, nodeBase) { }
-
-        public override void Initialize() {
+        public override ClientNodeBase Initialize(CharacterBehaviour characterBehaviour, NodeBase nodeBase) {
+            base.Initialize(characterBehaviour, nodeBase);
             _character = _characterBehaviour.Character;
+            return this;
         }
 
         protected override void Enter() {
-            _character.AddState(CharacterState.Running);
-            _character.SetAnimation(nameof(AnimationName.RUN), true);
+            _character.AddState(CharacterState.Idling);
+            _character.SetAnimation(nameof(AnimationName.IDLE), true);
         }
 
-        protected override async UniTask Update(CancellationToken cts) {
-            while (!cts.IsCancellationRequested) {
-                
-                await UniTask.DelayFrame(DefaultDelayFrame, cancellationToken: cts);
-            }
+        protected override UniTask Update(CancellationToken cts) {
+            return UniTask.CompletedTask;
+        }
+
+        public void OnRent() {
+        }
+        public void OnReturn() {
+            _character = null;
         }
     }
 }

@@ -34,7 +34,6 @@ namespace Script.GamePlay.Character {
 
             _nodes = info.nodes.Select(n => {
                              var node = Create(this, n);
-                             node.Initialize();
                              return node;
                          })
                          .ToArray();
@@ -74,12 +73,13 @@ namespace Script.GamePlay.Character {
             var type = nodeBase.GetType();
 
             return type switch {
-                var t when t == typeof(StartNode)         => new ClientStartNode(characterBehaviour, nodeBase),
-                var t when t == typeof(WaitNode)          => new ClientWaitNode(characterBehaviour, nodeBase),
-                var t when t == typeof(DieNode)           => new ClientDieNode(characterBehaviour, nodeBase),
-                var t when t == typeof(PlayerControlNode) => new ClientPlayerControlNode(characterBehaviour, nodeBase),
-                var t when t == typeof(SystemControlNode) => new ClientSystemControlNode(characterBehaviour, nodeBase),
-                var t when t == typeof(CollisionNode)     => new ClientCollisionNode(characterBehaviour, nodeBase),
+                var t when t == typeof(StartNode)         => ClassPool.Get<ClientStartNode>().Initialize(characterBehaviour, nodeBase),
+                var t when t == typeof(WaitNode)          => ClassPool.Get<ClientWaitNode>().Initialize(characterBehaviour, nodeBase),
+                var t when t == typeof(RunNode)           => ClassPool.Get<ClientRunNode>().Initialize(characterBehaviour, nodeBase),
+                var t when t == typeof(DieNode)           => ClassPool.Get<ClientDieNode>().Initialize(characterBehaviour, nodeBase),
+                var t when t == typeof(PlayerControlNode) => ClassPool.Get<ClientPlayerControlNode>().Initialize(characterBehaviour, nodeBase),
+                var t when t == typeof(SystemControlNode) => ClassPool.Get<ClientSystemControlNode>().Initialize(characterBehaviour, nodeBase),
+                var t when t == typeof(CollisionNode)     => ClassPool.Get<ClientCollisionNode>().Initialize(characterBehaviour, nodeBase),
                 _                                         => null
             };
         }
@@ -104,12 +104,17 @@ namespace Script.GamePlay.Character {
 
         public void OnReturn() {
             Stop();
-            _info        = null;
-            _character   = null;
-            _nodes       = null;
-            foreach (var nodeBaseValue in _nodesByGuid) {
-                nodeBaseValue.Value.Release();
+            _info      = null;
+            _character = null;
+
+            foreach (var node in _nodes) {
+                node.Release();
+                ClassPool.Release(node);
             }
+
+            _nodesByGuid.Clear();
+
+            _nodes       = null;
             _nodesByGuid = null;
             _currentNode = null;
         }

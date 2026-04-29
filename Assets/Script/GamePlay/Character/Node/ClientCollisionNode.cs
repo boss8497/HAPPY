@@ -1,16 +1,16 @@
 ﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Character;
+using Script.Utility.Runtime;
 
 namespace Script.GamePlay.Character {
-    public class ClientCollisionNode : ClientNodeBase {
-        private readonly Character _character;
+    public class ClientCollisionNode : ClientNodeBase, IClassPool {
+        private Character _character;
 
-        public ClientCollisionNode(CharacterBehaviour characterBehaviour, NodeBase nodeBase) : base(characterBehaviour, nodeBase) {
+        public override ClientNodeBase Initialize(CharacterBehaviour characterBehaviour, NodeBase nodeBase) {
+            base.Initialize(characterBehaviour, nodeBase);
             _character = characterBehaviour.Character;
-        }
-
-        public override void Initialize() {
+            return this;
         }
 
         protected override void Enter() {
@@ -21,6 +21,11 @@ namespace Script.GamePlay.Character {
             var time = _character.SetAnimation(nameof(AnimationName.DAMAGE));
             await UniTask.WaitForSeconds(time, cancellationToken: cts);
             _character.RemoveState(CharacterState.Collision);
+        }
+
+        public void OnRent() {
+        }
+        public void OnReturn() {
         }
     }
 }

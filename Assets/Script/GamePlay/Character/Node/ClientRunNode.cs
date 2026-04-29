@@ -4,9 +4,9 @@ using Script.GameInfo.Character;
 using Script.Utility.Runtime;
 
 namespace Script.GamePlay.Character {
-    [System.Serializable]
-    public class ClientSystemControlNode : ClientNodeBase, IClassPool {
+    public class ClientRunNode : ClientNodeBase, IClassPool {
         private Character _character;
+        
         public override ClientNodeBase Initialize(CharacterBehaviour characterBehaviour, NodeBase nodeBase) {
             base.Initialize(characterBehaviour, nodeBase);
             _character = _characterBehaviour.Character;
@@ -14,12 +14,12 @@ namespace Script.GamePlay.Character {
         }
 
         protected override void Enter() {
-            _character.RemoveState(CharacterState.Running);
-            _character.SetAnimation(nameof(AnimationName.IDLE), true);
+            _character.AddState(CharacterState.Running);
+            _character.SetAnimation(nameof(AnimationName.RUN), true);
         }
 
-        protected override async UniTask Update(CancellationToken cts) {
-            await UniTask.WaitUntil(() => (_characterBehaviour.Character.SystemControl?.CurrentValue ?? true) == false, cancellationToken: cts);
+        protected override UniTask Update(CancellationToken cts) {
+            return UniTask.CompletedTask;
         }
 
         public void OnRent() {

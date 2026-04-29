@@ -3,19 +3,19 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Character;
 using Script.GamePlay.Input;
+using Script.Utility.Runtime;
 
 namespace Script.GamePlay.Character {
     [Serializable]
-    public class ClientPlayerControlNode : ClientNodeBase {
+    public class ClientPlayerControlNode : ClientNodeBase, IClassPool {
         private IPlayerControls _controls;
         private Character       _character;
 
-
-        public ClientPlayerControlNode(CharacterBehaviour characterBehaviour, NodeBase nodeBase) : base(characterBehaviour, nodeBase) { }
-
-        public override void Initialize() {
+        public override ClientNodeBase Initialize(CharacterBehaviour characterBehaviour, NodeBase nodeBase) {
+            base.Initialize(characterBehaviour, nodeBase);
             _controls  = _characterBehaviour.Character.PlayerControls;
             _character = _characterBehaviour.Character;
+            return this;
         }
 
         protected override void Enter() {
@@ -37,6 +37,11 @@ namespace Script.GamePlay.Character {
 
         protected override void End() {
             CharacterBehaviour.Character.SyncJumpEntity();
+        }
+
+        public void OnRent() {
+        }
+        public void OnReturn() {
         }
     }
 }
