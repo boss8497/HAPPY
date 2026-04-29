@@ -1,3 +1,16 @@
 {
-	"name": "Script.GamePlay.Camera"
+    "name": "Script.GamePlay.Camera",
+    "rootNamespace": "",
+    "references": [
+        "GUID:e37851f48d4ab4a4a925399178360850"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

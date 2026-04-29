@@ -5,6 +5,9 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameData.Model;
 using Script.GameInfo.Enum;
+using Script.GamePlay.ECS.Component;
+using Unity.Entities;
+using Unity.Transforms;
 using UnityEngine;
 using VContainer.Unity;
 
@@ -16,6 +19,8 @@ namespace Script.GamePlay.Stage {
 
         private List<Character.ICharacter> _enemies;
         public  List<Character.ICharacter> Enemies => _enemies;
+
+        private Entity _cameraEntity;
 
         private int _systemControlStack = 0;
 
@@ -49,9 +54,22 @@ namespace Script.GamePlay.Stage {
         }
 
         public void Initialize(DungeonProgress dungeonProgress) {
+            InitializeCamera();
             InitializePool();
             InitializeReactiveProperty(dungeonProgress);
             InitializeTrigger();
+        }
+
+        private void InitializeCamera() {
+            var entityManager = _entityWorld.EntityManager;
+            if (_cameraEntity == Entity.Null) {
+                _cameraEntity = entityManager.CreateSingleton<CameraData>();
+            }
+
+            entityManager.SetComponentData(_cameraEntity, new CameraData {
+                Entity = _cameraEntity,
+                Camera = _cameraControls.MainCamera
+            });
         }
 
         public async UniTask Begin() {
@@ -77,6 +95,7 @@ namespace Script.GamePlay.Stage {
             var isCancel = false;
             while (ct.IsCancellationRequested == false) {
                 UpdateRunningScore();
+
                 var trigger = OnTriggerCheck();
                 if (trigger != null) {
                     var loopStop = OnTrigger(trigger);
@@ -100,7 +119,24 @@ namespace Script.GamePlay.Stage {
             if (character == null) {
                 return;
             }
+
             RunningScore.OnNext(character.Transform.position.x);
+        }
+
+        private void UpdateCamera() {
+            var entityManager   = _entityWorld.EntityManager;
+            var cameraTransform = _cameraControls.MainCamera.transform;
+
+            entityManager.SetComponentData(_cameraEntity, new LocalTransform {
+                Position = cameraTransform.position,
+                Rotation = cameraTransform.rotation,
+                Scale    = cameraTransform.localScale.x,
+            });
+
+            entityManager.SetComponentData(_cameraEntity, new CameraData {
+                Entity = _cameraEntity,
+                Camera = _cameraControls.MainCamera,
+            });
         }
 
         public async UniTask End() {
