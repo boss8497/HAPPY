@@ -15,7 +15,6 @@ namespace Script.GamePlay.Character {
 
         protected override void Enter() {
             _character.RemoveState(CharacterState.Running);
-            _character.SetAnimation(nameof(AnimationName.IDLE), true);
         }
 
         protected override async UniTask Update(CancellationToken cts) {

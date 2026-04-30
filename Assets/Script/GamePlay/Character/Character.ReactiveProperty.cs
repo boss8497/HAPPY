@@ -104,7 +104,7 @@ namespace Script.GamePlay.Character {
             }
 
 
-            State.OnNext(CharacterState.None);
+            State.OnNext((_stageManager?.SystemControl?.CurrentValue ?? false) ? CharacterState.SystemControl : CharacterState.None);
             Health.OnNext(Status.Hp);
             MaxHealth.OnNext(Status.Hp);
         }

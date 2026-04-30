@@ -4,7 +4,6 @@ namespace Script.GamePlay.Character {
     public partial class Character {
         // State 변환
         public void SetState(CharacterState state) {
-            if (State.Value.HasFlag(state)) return;
             State.OnNext(state);
         }
 

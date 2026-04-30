@@ -40,8 +40,7 @@ namespace Script.GamePlay.Stage {
             var prefab = _stageManager.StagePooling.Pop(_characterInfo.prefab);
             prefab.transform.position = _playerSpawnAction.position;
             
-            var result = _stageManager.AddCharacter(prefab);
-            if (result == false) {
+            if (_stageManager.AddCharacter(prefab) == false) {
                 _stageManager.StagePooling.Push(prefab);
             }
             return UniTask.CompletedTask;

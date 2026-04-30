@@ -16,8 +16,8 @@ namespace Script.GamePlay.ECS.System {
 
             foreach (var (unitRef, results) in
                      SystemAPI.Query<RefRO<UnitData>, DynamicBuffer<UnitCollisionResult>>()
-                              .WithAll<UnitEntityTag>()
-                              .WithAll<UnitCollisionEnable>()
+                              .WithAll<UnitEntityTag, UnitCollisionEnable>()
+                              .WithDisabled<UnitSystemControlEnable>()
                     ) {
                 if (results.Length <= 0)
                     continue;

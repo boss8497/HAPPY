@@ -19,6 +19,9 @@ namespace Script.LifetimeScope {
 
         [SerializeField]
         private CinemachineTargetGroup targetGroup;
+        
+        [SerializeField]
+        private CinemachineCamera vCamera;
 
         [SerializeField, ScreenKey]
         private string failScreenKey;
@@ -38,6 +41,7 @@ namespace Script.LifetimeScope {
             builder.RegisterEntryPoint<StageManager>(Lifetime.Singleton)
                    .As<IStageManager>()
                    .WithParameter(targetGroup)
+                   .WithParameter(nameof(vCamera), vCamera)
                    .WithParameter(nameof(failScreenKey), failScreenKey)
                    .WithParameter(nameof(hudScreenKey), hudScreenKey);
             

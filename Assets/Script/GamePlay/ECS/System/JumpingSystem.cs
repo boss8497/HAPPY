@@ -23,6 +23,7 @@ namespace Script.GamePlay.ECS.System {
             }.ScheduleParallel(state.Dependency);
         }
 
+        [WithDisabled(typeof(UnitSystemControlEnable))]
         [BurstCompile]
         public partial struct JumpingUpdateJob : IJobEntity {
             public float Dt;

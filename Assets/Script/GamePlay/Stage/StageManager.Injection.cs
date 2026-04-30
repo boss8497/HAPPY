@@ -10,6 +10,7 @@ using VContainer;
 namespace Script.GamePlay.Stage {
     public partial class StageManager {
         private readonly CinemachineTargetGroup _targetGroup;
+        private readonly CinemachineCamera      _vCamera;
         private readonly IStageEntityWorld      _entityWorld;
         private readonly IScreenManager         _screenManager;
         private readonly IGameTimer             _gameTimer;
@@ -33,6 +34,7 @@ namespace Script.GamePlay.Stage {
             CinemachineTargetGroup targetGroup,
             IGameTimer             gameTimer,
             ICameraControls        cameraControls,
+            CinemachineCamera      vCamera,
             string                 failScreenKey,
             string                 hudScreenKey
         ) {
@@ -46,6 +48,7 @@ namespace Script.GamePlay.Stage {
             _hudScreenKey   = hudScreenKey;
             _gameTimer      = gameTimer;
             _cameraControls = cameraControls;
+            _vCamera        = vCamera;
         }
     }
 }

@@ -49,7 +49,7 @@ namespace Script.GamePlay.Stage {
 
             await Begin();
             await Start();
-
+            
             RemoveState(StageState.SystemControl);
         }
 
@@ -67,9 +67,9 @@ namespace Script.GamePlay.Stage {
             }
 
             entityManager.SetComponentData(_cameraEntity, new CameraData {
-                Entity = _cameraEntity,
-                Camera = _cameraControls.MainCamera
-            });
+                                               Entity = _cameraEntity,
+                                               Camera = _cameraControls.MainCamera
+                                           });
         }
 
         public async UniTask Begin() {
@@ -154,15 +154,26 @@ namespace Script.GamePlay.Stage {
         public async UniTask ReStart() {
             await _screenManager.CloseAllAsync(true);
             StopLoop();
+
+            ReleaseCharacter();
             ResetTrigger();
             ResetReactive();
-            ResetPool();
+            ResetCamera();
 
             await Test();
         }
 
+        private void ResetCamera() {
+            _vCamera.LookAt                               = null;
+            _vCamera.Follow                               = null;
+            _vCamera.transform.position                   = Vector3.zero;
+            _targetGroup.Transform.position               = Vector3.zero;
+            _cameraControls.MainCamera.transform.position = Vector3.zero;
+        }
+
         public void Release() {
             StopLoop();
+            ReleaseCharacter();
             ReleaseTrigger();
             ReleaseReactive();
             ReleasePool();

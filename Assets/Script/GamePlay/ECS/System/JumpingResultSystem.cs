@@ -11,7 +11,7 @@ namespace Script.GamePlay.ECS.System {
         protected override void OnUpdate() {
             foreach (var unitData
                      in SystemAPI.Query<RefRO<UnitData>>()
-                                 .WithDisabled<UnitJumpingEnable>()
+                                 .WithDisabled<UnitJumpingEnable, UnitSystemControlEnable>()
                                  .WithAll<UnitEntityTag>()) {
                 var character = unitData.ValueRO.GameObject.Value.GetComponent<Character.Character>();
                 if ((character.Jumping?.CurrentValue ?? false) == false) continue;

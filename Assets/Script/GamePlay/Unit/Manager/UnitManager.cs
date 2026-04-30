@@ -94,7 +94,7 @@ namespace Script.GamePlay.Unit {
                 _entitiesByUid[unit.UID] = entity;
             }
 
-            EnsureCommonComponents(entityManager, entity);
+            AddComponents(entityManager, entity);
 
             entityManager.SetComponentData(entity, new LocalTransform {
                 Position = unit.Transform.position,
@@ -111,7 +111,7 @@ namespace Script.GamePlay.Unit {
             });
         }
 
-        private static void EnsureCommonComponents(EntityManager entityManager, Entity entity) {
+        private static void AddComponents(EntityManager entityManager, Entity entity) {
             if (entityManager.HasComponent<LocalTransform>(entity) == false) {
                 entityManager.AddComponent<LocalTransform>(entity);
             }

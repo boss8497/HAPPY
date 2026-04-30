@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using R3;
 using Script.GameData.Model;
 using Script.GameInfo.Dungeon;
+using Script.GamePlay.Character;
 using Script.GamePlay.Pool;
 using Script.GamePlay.Service.Interface;
 using UnityEngine;
@@ -44,9 +45,15 @@ namespace Script.GamePlay.Stage {
         void    Release();
 
 
-        bool AddCharacter(GameObject obj);
-        bool AddEnemy(GameObject     obj);
-        void AddItemScore(float      score);
+        bool AddCharacter(GameObject    obj);
+        bool AddCharacter(ICharacter    character);
+        bool RemoveCharacter(GameObject obj);
+        bool RemoveCharacter(ICharacter character);
+        bool AddEnemy(GameObject        obj);
+        bool AddEnemy(ICharacter        character);
+        bool RemoveEnemy(GameObject     obj);
+        bool RemoveEnemy(ICharacter     character);
+        void AddItemScore(float         score);
 
         void ResetState();
         void AddState(StageState    state);
