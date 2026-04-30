@@ -158,6 +158,23 @@ namespace Script.GamePlay.Character {
 
             entityManager.SetComponentData(entity, input);
         }
+
+        public void StopJumEntity() {
+            if (_unitManager == null ||
+                _unitManager.TryGetEntity(this, out var entity) == false
+               ) return;
+
+            var entityManager = _stageEntityWorld.EntityManager;
+
+            if (entityManager.HasComponent<JumpInputData>(entity) == false) return;
+
+            var input = entityManager.GetComponentData<JumpInputData>(entity);
+
+            input.Held             = 0;
+            input.ReleaseRequested = 1;
+            
+            entityManager.SetComponentData(entity, input);
+        }
         
 
         private void ResetJumpingStatus() {

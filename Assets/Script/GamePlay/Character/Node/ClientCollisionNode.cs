@@ -15,6 +15,7 @@ namespace Script.GamePlay.Character {
 
         protected override void Enter() {
             _character.RemoveState(CharacterState.Running);
+            _character.StopJumEntity();
         }
 
         protected override async UniTask Update(CancellationToken cts) {
