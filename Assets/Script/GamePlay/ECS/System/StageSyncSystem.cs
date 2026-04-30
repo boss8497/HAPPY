@@ -30,8 +30,10 @@ namespace Script.GamePlay.ECS.System {
                 if (transform.Position.x <= outSidePosX + offset) {
                     if (unitData.ValueRO.GameObject.Value.TryGetComponent<Character.Character>(out var characterScript) && 
                         characterScript.SystemControl.CurrentValue == false &&
-                        characterScript.Initialized.CurrentValue) {
-                        characterScript.AddState(CharacterState.Die);
+                        characterScript.OutSideMap.CurrentValue == false &&
+                        characterScript.Initialized.CurrentValue
+                        ) {
+                        characterScript.AddState(CharacterState.OutSideMap);
                     }
                 }
             }

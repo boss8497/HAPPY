@@ -20,8 +20,8 @@ namespace Script.GamePlay.ECS.System {
         public void OnCreate(ref SystemState state) {
             state.RequireForUpdate<EGameTimer>();
             _query = SystemAPI.QueryBuilder()
-                              .WithAll<UnitData, HitBoxData, LocalTransform, UnitEntityTag>()
-                              .WithDisabled<UnitCollisionEnable, UnitDieEnable, UnitSystemControlEnable>()
+                              .WithAll<UnitData, HitBoxData, LocalTransform, UnitEntityTag, UnitCollisionEnable>()
+                              .WithDisabled<UnitCollisionResultEnable, UnitDieEnable, UnitSystemControlEnable>()
                               .Build();
 
             state.RequireForUpdate(_query);
@@ -45,7 +45,7 @@ namespace Script.GamePlay.ECS.System {
                 Transforms         = transforms,
                 ResultLookup       = SystemAPI.GetBufferLookup<UnitCollisionResult>(false),
                 DelayLookup        = SystemAPI.GetBufferLookup<UnitCollisionDelay>(false),
-                CollisionTagLookup = SystemAPI.GetComponentLookup<UnitCollisionEnable>(false),
+                CollisionTagLookup = SystemAPI.GetComponentLookup<UnitCollisionResultEnable>(false),
             };
 
             var handle = collisionJob.ScheduleParallelByRef(entities.Length, 32, state.Dependency);
@@ -76,7 +76,7 @@ namespace Script.GamePlay.ECS.System {
         public BufferLookup<UnitCollisionDelay> DelayLookup;
 
         [NativeDisableParallelForRestriction]
-        public ComponentLookup<UnitCollisionEnable> CollisionTagLookup;
+        public ComponentLookup<UnitCollisionResultEnable> CollisionTagLookup;
 
         public void Execute(int index) {
             var entityA = Entities[index];

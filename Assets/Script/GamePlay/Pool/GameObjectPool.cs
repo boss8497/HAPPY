@@ -59,6 +59,7 @@ namespace Script.GamePlay.Pool {
         }
 
         public void Push(GameObject obj) {
+            obj.transform.SetParent(_manager.Root);
             _stack.Push(obj);
         }
 

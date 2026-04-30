@@ -17,6 +17,7 @@ namespace Script.GamePlay.Character {
         public ReadOnlyReactiveProperty<bool> Die            { get; private set; }
         public ReadOnlyReactiveProperty<bool> SystemControl  { get; private set; }
         public ReadOnlyReactiveProperty<bool> CollisionState { get; private set; }
+        public ReadOnlyReactiveProperty<bool> OutSideMap     { get; private set; }
 
 
         private DisposableBag _reactiveDisposableBag;
@@ -69,33 +70,59 @@ namespace Script.GamePlay.Character {
                                   .ToReadOnlyReactiveProperty()
                                   .AddTo(ref _reactiveDisposableBag);
 
+            OutSideMap = State.Select(i => (i & CharacterState.OutSideMap) != 0)
+                              .DistinctUntilChanged()
+                              .ToReadOnlyReactiveProperty()
+                              .AddTo(ref _reactiveDisposableBag);
+
             // 여기서는 상태가 겹쳐 있을 거임
             State.Subscribe(SyncHitbox)
                  .AddTo(ref _reactiveDisposableBag);
+            
+
+            SystemControl.CombineLatest(Initialized, (systemControl, initialized) => (systemControl, initialized))
+                         .Subscribe(state => {
+                             if (state.initialized == false) return;
+                             SetEnabledTag<UnitSystemControlEnable>(state.systemControl);
+                         })
+                         .AddTo(ref _reactiveDisposableBag);
+            
+            OutSideMap.CombineLatest(Initialized, (outSideMap, initialized) => (outSideMap, initialized))
+                      .Subscribe(state => {
+                          if (state.initialized == false) return;
+                          if (state.outSideMap) {
+                              _stageManager.AddRemoveEnemy(this);
+                              SetEnabledTag<UnitCollisionEnable>(false);
+                          }
+                      })
+                      .AddTo(ref _reactiveDisposableBag);
+            
+            Die.CombineLatest(Initialized, (die, initialized) => (die, initialized))
+                      .Subscribe(state => {
+                          if (state.initialized == false) return;
+                          if (state.die) {
+                              SetEnabledTag<UnitCollisionEnable>(false);
+                          }
+                      })
+                      .AddTo(ref _reactiveDisposableBag);
+            
 
             switch (CharacterInfo.type) {
                 case CharacterType.Character:
-
-                    SystemControl.CombineLatest(Initialized, (systemControl, initialized) => (systemControl, initialized))
-                                 .Subscribe(state => {
-                                     if (state.initialized == false) return;
-                                     SetEnabledTag<UnitSystemControlEnable>(state.systemControl);
-                                 })
-                                 .AddTo(ref _reactiveDisposableBag);
-                    
                     Running.CombineLatest(Initialized, (running, initialized) => (running, initialized))
                            .Subscribe(state => {
                                if (state.initialized == false) return;
                                SetEnabledTag<UnitRunningEnable>(state.running);
                            })
                            .AddTo(ref _reactiveDisposableBag);
-                    
+
                     Jumping.CombineLatest(Initialized, (jumping, initialized) => (jumping, initialized))
                            .Subscribe(state => {
                                if (state.initialized == false) return;
                                if (state.jumping) {
                                    ResetJumpingStatus();
                                }
+
                                SetEnabledTag<UnitJumpingEnable>(state.jumping);
                            })
                            .AddTo(ref _reactiveDisposableBag);

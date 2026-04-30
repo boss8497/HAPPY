@@ -39,11 +39,15 @@ namespace Script.GamePlay.Character {
 
             SetEnabledTag<UnitJumpingEnable>(false);
 
+            if (entityManager.HasComponent<UnitCollisionResultEnable>(entity) == false) {
+                entityManager.AddComponentData<UnitCollisionResultEnable>(entity, new());
+            }
+            SetEnabledTag<UnitCollisionResultEnable>(false);
+            
             if (entityManager.HasComponent<UnitCollisionEnable>(entity) == false) {
                 entityManager.AddComponentData<UnitCollisionEnable>(entity, new());
             }
-
-            SetEnabledTag<UnitCollisionEnable>(false);
+            SetEnabledTag<UnitCollisionEnable>(true);
 
             if (entityManager.HasComponent<UnitSystemControlEnable>(entity) == false) {
                 entityManager.AddComponentData<UnitSystemControlEnable>(entity, new());

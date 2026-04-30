@@ -43,16 +43,14 @@ namespace Script.GamePlay.Stage {
         UniTask End();
         UniTask ReStart();
         void    Release();
-
-
+        
         bool AddCharacter(GameObject    obj);
         bool AddCharacter(ICharacter    character);
-        bool RemoveCharacter(GameObject obj);
-        bool RemoveCharacter(ICharacter character);
         bool AddEnemy(GameObject        obj);
         bool AddEnemy(ICharacter        character);
-        bool RemoveEnemy(GameObject     obj);
-        bool RemoveEnemy(ICharacter     character);
+
+
+        void AddRemoveEnemy(ICharacter enemy);
         void AddItemScore(float         score);
 
         void ResetState();

@@ -5,6 +5,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameData.Model;
 using Script.GameInfo.Enum;
+using Script.GamePlay.Character;
 using Script.GamePlay.ECS.Component;
 using Unity.Entities;
 using Unity.Transforms;
@@ -19,6 +20,8 @@ namespace Script.GamePlay.Stage {
 
         private List<Character.ICharacter> _enemies;
         public  List<Character.ICharacter> Enemies => _enemies;
+
+        private List<Character.ICharacter> _RemoveEnemies;
 
         private Entity _cameraEntity;
 
@@ -49,7 +52,7 @@ namespace Script.GamePlay.Stage {
 
             await Begin();
             await Start();
-            
+
             RemoveState(StageState.SystemControl);
         }
 
@@ -94,6 +97,7 @@ namespace Script.GamePlay.Stage {
         private async UniTask UpdateLoop(CancellationToken ct) {
             var isCancel = false;
             while (ct.IsCancellationRequested == false) {
+                UpdateRemoveEnemy();
                 UpdateRunningScore();
 
                 var trigger = OnTriggerCheck();
@@ -137,6 +141,19 @@ namespace Script.GamePlay.Stage {
                 Entity = _cameraEntity,
                 Camera = _cameraControls.MainCamera,
             });
+        }
+
+        private void UpdateRemoveEnemy() {
+            if (_RemoveEnemies.Count <= 0) return;
+            foreach (var outSideEnemy in _RemoveEnemies) {
+                RemoveEnemy(outSideEnemy);
+            }
+            _RemoveEnemies.Clear();
+        }
+
+        public void AddRemoveEnemy(ICharacter enemy) {
+            if (_RemoveEnemies.Any(a => ReferenceEquals(a, enemy))) return;
+            _RemoveEnemies.Add(enemy);
         }
 
         public async UniTask End() {

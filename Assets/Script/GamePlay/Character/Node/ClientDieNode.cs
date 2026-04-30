@@ -34,6 +34,10 @@ namespace Script.GamePlay.Character {
             if (_dieAnimation != null) {
                 await _dieAnimation.PlayAnimation();
             }
+            
+            if(_character.IsPlayer == false) {
+                _character.StageManager.AddRemoveEnemy(_character);
+            }
         }
 
         public void OnRent() {

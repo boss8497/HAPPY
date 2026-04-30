@@ -40,5 +40,6 @@ namespace Script.GamePlay.Character {
         public IPlayerControls PlayerControls => _playerControls;
         public IGroupService   GroupService   => _groupService;
         public IObjectResolver Resolver       => _resolver;
+        public IStageManager   StageManager   => _stageManager;
     }
 }

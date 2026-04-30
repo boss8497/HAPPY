@@ -56,12 +56,12 @@ namespace Script.GamePlay.Stage {
             return true;
         }
 
-        public bool RemoveCharacter(GameObject obj) {
+        private bool RemoveCharacter(GameObject obj) {
             var characterScript = obj.GetComponent<ICharacter>();
             return RemoveCharacter(characterScript);
         }
 
-        public bool RemoveCharacter(ICharacter characterScript) {
+        private bool RemoveCharacter(ICharacter characterScript) {
             if (characterScript == null) {
                 Debug.LogError($"캐릭터 스크립트를 찾을 수 없습니다.");
                 return false;
@@ -91,12 +91,12 @@ namespace Script.GamePlay.Stage {
             return true;
         }
         
-        public bool RemoveEnemy(GameObject obj) {
+        private bool RemoveEnemy(GameObject obj) {
             var characterScript = obj.GetComponent<ICharacter>();
             return RemoveEnemy(characterScript);
         }
         
-        public bool RemoveEnemy(ICharacter characterScript) {
+        private bool RemoveEnemy(ICharacter characterScript) {
             if (characterScript == null) {
                 Debug.LogError($"캐릭터 스크립트를 찾을 수 없습니다.");
                 return false;
