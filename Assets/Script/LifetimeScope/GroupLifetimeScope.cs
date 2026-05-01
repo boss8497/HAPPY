@@ -1,5 +1,6 @@
 ﻿using Script.GamePlay.Service;
 using Script.GamePlay.Service.Interface;
+using Script.GamePlay.Stage;
 using VContainer;
 using VContainer.Unity;
 
@@ -10,6 +11,9 @@ namespace Script.LifetimeScope {
 
             builder.RegisterEntryPoint<GroupService>(Lifetime.Singleton)
                    .As<IGroupService>();
+            
+            builder.RegisterEntryPoint<StageLoader>(Lifetime.Singleton)
+                   .As<IStageLoader>();
         }
     }
 }
