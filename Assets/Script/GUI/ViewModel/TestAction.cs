@@ -36,7 +36,7 @@ public class TestAction : MonoBehaviour {
 
     private async UniTask TitleSceneLoad() {
         await CreateGroupScope();
-        
+        await _screenManager.CloseAllAsync(true);
         var previousScene = SceneManager.GetActiveScene();
 
         var handle = Addressables.LoadSceneAsync(stageScenePath, LoadSceneMode.Additive);

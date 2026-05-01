@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2908430877947960736}
   - component: {fileID: 4446656987234611174}
   - component: {fileID: 4368901488037650024}
+  - component: {fileID: 3603932711018483216}
   - component: {fileID: 6356130956332223608}
   m_Layer: 5
   m_Name: TitleScreen
@@ -77,6 +78,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3603932711018483216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1778382845217701992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 389f45549bb74dc787b1439edfd81542, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Script.GUI.Screen::Script.GUI.Screen.TitleHUD
+  key: TitleHUD
+  layerType: 0
+  option: 1
+  _backButtons: []
 --- !u!114 &6356130956332223608
 MonoBehaviour:
   m_ObjectHideFlags: 0
