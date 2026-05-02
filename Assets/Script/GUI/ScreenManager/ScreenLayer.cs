@@ -21,9 +21,9 @@ namespace Script.GUI.Screen {
             
             _screens.Add(screen);
             
-            screen.GameObject.SetActiveSafe(true);
-            
             await screen.OpenInternal();
+            
+            screen.GameObject.SetActiveSafe(true);
             await screen.OpenAnimationAsync();
             
             await screen.OpenLateInternal();

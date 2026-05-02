@@ -93,7 +93,7 @@ MonoBehaviour:
   layerType: 0
   option: 1
   _backButtons: []
-  runningStageScreen: 
+  runningStageScreen: RunningStageScreen
   runningStageScreenBtn: {fileID: 394649621739783277}
   logLikeScreen: 
 --- !u!1 &2351804165526796273

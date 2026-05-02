@@ -41,3 +41,10 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 1
+  - id: RunningStageScreen
+    screen:
+      m_AssetGUID: eb199e72c8a05c746a895994483a7a1b
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1

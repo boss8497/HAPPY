@@ -39,7 +39,7 @@ namespace Script.GUI.Screen {
         #region Open
 
         /// <summary>
-        /// ScreenOpen 시 제일 먼저 호출되는 메서드
+        /// ScreenOpen 시 제일 먼저 호출되는 메서드, 호출 후 Active가 켜진다!!
         /// </summary>
         public abstract UniTask OpenInternal();
 
