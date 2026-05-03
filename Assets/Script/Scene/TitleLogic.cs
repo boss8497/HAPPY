@@ -25,7 +25,7 @@ namespace Script.Scene {
         }
 
         private async UniTask Initialize() {
-            await UniTask.WaitUntil(() => _screenManager.Initialized);
+            await UniTask.WaitUntil(() => _screenManager?.Initialized ?? false);
             await _screenManager.OpenAsync(hudKey);
         }
     }

@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d90467b8db775284cbed0f3899564154, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Script.Scene::LobbyLogic
+  hudKey: LobbyHUD
 --- !u!1 &1382837271
 GameObject:
   m_ObjectHideFlags: 0

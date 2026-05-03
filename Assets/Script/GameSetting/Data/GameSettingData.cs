@@ -12,5 +12,8 @@ namespace Script.GameSetting.Data {
 
         [AssetPath(typeof(Scene))]
         public string titleScenePath;
+
+        [AssetPath(typeof(Scene))]
+        public string lobbyScenePath;
     }
 }

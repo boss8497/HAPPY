@@ -247,7 +247,11 @@ namespace Script.GUI.Screen {
         }
 
         public async UniTask CloseAllAsync(bool force = false) {
-            await CloseAsync(_firstScreen, force);
+            var lastScreen = LastScreen();
+            while (lastScreen != null) {
+                await CloseAsync(_firstScreen, force);   
+                lastScreen = LastScreen();
+            }
         }
 
         /// <summary>
@@ -278,7 +282,6 @@ namespace Script.GUI.Screen {
         /// <para>Close는 특별하게 사용하고 대부분 Back을 사용하는게 좋습니다.</para>
         public async UniTask CloseAsync(IScreen screen, bool force = false) {
             if (screen == null) {
-                Debug.LogError($"Screen cannot be null");
                 return;
             }
 
@@ -358,8 +361,8 @@ namespace Script.GUI.Screen {
 
         private IScreen LastScreen() {
             var lastScreen = _firstScreen;
-            while (lastScreen.Next != null) {
-                lastScreen = lastScreen.Next;
+            while (lastScreen?.Next != null) {
+                lastScreen = lastScreen?.Next;
             }
 
             return lastScreen;
@@ -407,7 +410,6 @@ namespace Script.GUI.Screen {
                 await screen.Release();
                 Destroy(screen.GameObject);
             }
-
             _loadedScreens.Clear();
         }
     }

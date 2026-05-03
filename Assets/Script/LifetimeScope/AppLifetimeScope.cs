@@ -1,6 +1,7 @@
 ﻿using Script.DataBase;
 using Script.DataBase.Interface;
 using Script.GameInfo.Attribute;
+using Script.GamePlay.Scene;
 using Script.GameSetting.Interface;
 using Script.GUI.Screen;
 using Script.GUI.Screen.Interface;
@@ -8,7 +9,6 @@ using Script.LifetimeScope.Interface;
 using Script.LifetimeScope.Locator;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.SceneManagement;
 using VContainer;
 using VContainer.Unity;
 
@@ -40,6 +40,10 @@ namespace Script.LifetimeScope {
 
             builder.Register<IFileStorage, FileStorage>(Lifetime.Singleton);
             builder.Register<IDataBase, GameDataBase>(Lifetime.Singleton);
+            
+            
+            builder.RegisterEntryPoint<SceneLoader>(Lifetime.Singleton)
+                   .As<ISceneLoader>();
 
             RegisterScreenManager(builder);
         }

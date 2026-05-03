@@ -16,6 +16,7 @@ namespace Script.GameSetting {
 
         public string TitleScenePath   => GameSettingData.titleScenePath;
         public string StartUpScenePath => GameSettingData.startUpScenePath;
+        public string LobbyScenePath   => GameSettingData.lobbyScenePath;
 
         public void Initialize() {
             LoadGameSettingData();

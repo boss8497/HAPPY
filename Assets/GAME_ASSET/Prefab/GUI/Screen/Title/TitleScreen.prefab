@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 4446656987234611174}
   - component: {fileID: 4368901488037650024}
   - component: {fileID: 3603932711018483216}
-  - component: {fileID: 6356130956332223608}
   m_Layer: 5
   m_Name: TitleScreen
   m_TagString: Untagged
@@ -94,19 +93,7 @@ MonoBehaviour:
   layerType: 0
   option: 1
   _backButtons: []
---- !u!114 &6356130956332223608
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1778382845217701992}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0920871aab960d9448c6db782a97251a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Script.GUI.ViewModel::TestAction
-  stageScenePath: df3b36a662d48904294f72eb79029e88
+  startBtn: {fileID: 394649621739783277}
 --- !u!1 &6500499568062530898
 GameObject:
   m_ObjectHideFlags: 0
@@ -365,7 +352,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6356130956332223608}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: TestAction, Script.GUI.ViewModel
         m_MethodName: OpenScreenTest
         m_Mode: 1

@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using Script.GamePlay.Scene;
 using Script.GameSetting.Interface;
 using Script.GUI.Screen.Interface;
 using Script.LifetimeScope.Interface;
@@ -16,16 +17,19 @@ namespace Script.Scene {
         private IScopeFactory  _scopeFactory;
         private IGameSetting   _gameSetting;
         private IScreenManager _screenManager;
+        private ISceneLoader   _sceneLoader;
 
         [Inject]
         public void Constructor(
             IScopeFactory  scopeFactory,
             IGameSetting   gameSetting,
-            IScreenManager screenManager
+            IScreenManager screenManager,
+            ISceneLoader   sceneLoader
         ) {
             _scopeFactory  = scopeFactory;
             _gameSetting   = gameSetting;
             _screenManager = screenManager;
+            _sceneLoader   = sceneLoader;
         }
 
         public void Start() {
@@ -37,27 +41,12 @@ namespace Script.Scene {
             await InitializeGameSetting();
             await InitializeScreenManager();
             await CreateClientScope();
-            await TitleSceneLoad();
+            await _sceneLoader.LoadScene(_gameSetting.TitleScenePath);
         }
 
         private async UniTask CreateClientScope() {
             await UniTask.WaitUntil(() => (_scopeFactory != null));
             _scopeFactory.CreateScope(ScopeType.Client);
-        }
-
-        private async UniTask TitleSceneLoad() {
-            var previousScene = SceneManager.GetActiveScene();
-
-            var handle = Addressables.LoadSceneAsync(_gameSetting.TitleScenePath, LoadSceneMode.Additive);
-            await handle.Task;
-            var scene = handle.Result;
-            SceneManager.SetActiveScene(scene.Scene);
-
-            if (previousScene.IsValid() && previousScene.isLoaded) {
-                var unloadOp = SceneManager.UnloadSceneAsync(previousScene);
-                if (unloadOp != null)
-                    await unloadOp.ToUniTask();
-            }
         }
         
         private async UniTask InitializeGameSetting() {

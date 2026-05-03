@@ -1,11 +1,30 @@
+using Cysharp.Threading.Tasks;
+using Script.GameInfo.Attribute;
+using Script.GUI.Screen.Interface;
 using UnityEngine;
+using VContainer;
 
 namespace Script.Scene {
     public class LobbyLogic : MonoBehaviour {
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start() { }
+        private IScreenManager _screenManager;
 
-        // Update is called once per frame
-        void Update() { }
+        [Inject]
+        public void Constructor(
+            IScreenManager screenManager
+        ) {
+            _screenManager = screenManager;
+        }
+
+        [ScreenKey]
+        public string hudKey;
+
+        private void Start() {
+            Initialize().Forget();
+        }
+
+        private async UniTask Initialize() {
+            await UniTask.WaitUntil(() => _screenManager?.Initialized ?? false);
+            await _screenManager.OpenAsync(hudKey);
+        }
     }
 }

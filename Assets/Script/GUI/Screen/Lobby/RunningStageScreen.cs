@@ -4,7 +4,7 @@ using Script.GameData.Model;
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
 using Script.GamePlay.Service.Interface;
-using Script.GamePlay.Stage;
+using Script.GamePlay.Scene;
 using Script.Utility.Runtime;
 using UnityEngine.UI;
 using VContainer;
@@ -14,17 +14,17 @@ namespace Script.GUI.Screen {
         // Reactive
         private IGroupService   _groupService;
         private IObjectResolver _objectResolver;
-        private IStageLoader    _stageLoader;
+        private ISceneLoader    _sceneLoader;
 
         [Inject]
         public void InjectSelf(
             IGroupService   groupService,
             IObjectResolver objectResolver,
-            IStageLoader    stageLoader
+            ISceneLoader    sceneLoader
         ) {
             _groupService   = groupService;
             _objectResolver = objectResolver;
-            _stageLoader    = stageLoader;
+            _sceneLoader    = sceneLoader;
         }
 
 
@@ -41,7 +41,7 @@ namespace Script.GUI.Screen {
 
             if (testStartBtn != null) {
                 testStartBtn.ClickAddListener(() => {
-                    _stageLoader.LoadStage(_stage).Forget();
+                    _sceneLoader.LoadScene(_stage.scenePath).Forget();
                 });
             }
         }

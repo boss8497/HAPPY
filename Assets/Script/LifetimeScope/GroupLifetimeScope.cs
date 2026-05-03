@@ -11,9 +11,6 @@ namespace Script.LifetimeScope {
 
             builder.RegisterEntryPoint<GroupService>(Lifetime.Singleton)
                    .As<IGroupService>();
-            
-            builder.RegisterEntryPoint<StageLoader>(Lifetime.Singleton)
-                   .As<IStageLoader>();
         }
     }
 }
