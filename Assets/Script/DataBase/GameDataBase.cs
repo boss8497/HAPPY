@@ -5,9 +5,10 @@ using MessagePack;
 using Newtonsoft.Json;
 using Script.DataBase.Enum;
 using Script.DataBase.Interface;
+using VContainer.Unity;
 
 namespace Script.DataBase {
-    public class GameDataBase : IDataBase {
+    public partial class GameDataBase : IDataBase, IInitializable, IDisposable {
         private static readonly MessagePackSerializerOptions MessagePackOptions =
             MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray);
 
@@ -17,13 +18,17 @@ namespace Script.DataBase {
 
         public GameDataBase(IFileStorage fileStorage) {
             _fileStorage = fileStorage ?? throw new ArgumentNullException(nameof(fileStorage));
-            Initialize();
         }
 
-        private void Initialize() {
+        public void Initialize() {
+            InitializeAsync().Forget();
+        }
+
+        private async UniTask InitializeAsync() {
+            await InitializeItemTable();
             Initialized = true;
         }
-
+        
         public async UniTask<T> LoadAsync<T>(string path, DataType type = DataType.Json) {
             switch (type) {
                 case DataType.Json:
@@ -84,6 +89,10 @@ namespace Script.DataBase {
         private void EnsureInitialized() {
             if (!Initialized)
                 throw new InvalidOperationException("GameDataBase is not initialized.");
+        }
+
+        public void Dispose() {
+            // TODO release managed resources here
         }
     }
 }

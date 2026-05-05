@@ -16,6 +16,8 @@ namespace Script.Client {
         public async UniTask<GroupModel> Req_Group() {
             GroupModel CreateGroupModel() {
                 var groupModel = new GroupModel();
+                // 일단 uid는 1로 설정
+                groupModel.uid = 1;
 
                 var dungeonInfo = GameInfoManager.Instance.Get<DungeonInfo>(GameInfoManager.Instance.Config.startDungeon);
                 if (dungeonInfo == null) {

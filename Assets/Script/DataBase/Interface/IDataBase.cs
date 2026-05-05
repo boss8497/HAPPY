@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Script.DataBase.Enum;
+using Script.GameData.Model;
 
 namespace Script.DataBase.Interface {
     /// <summary>
@@ -13,5 +14,15 @@ namespace Script.DataBase.Interface {
         UniTask<T> LoadAsync<T>(string path, DataType type                = DataType.Json);
         UniTask    SaveAsync<T>(string path, T        data, DataType type = DataType.Json);
         bool       Exists(string       path);
+
+
+        ItemModel AddItem(
+            long   groupUid,
+            int    itemUid,
+            double count = 1d,
+            int    level = 1,
+            int    grade = 0,
+            int    tier  = 0
+        );
     }
 }

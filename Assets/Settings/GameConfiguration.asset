@@ -21,3 +21,4 @@ MonoBehaviour:
     minJumpTime: 0.15
     maxJumpTime: 0.3
     startDungeon: 1
+    startItems: 

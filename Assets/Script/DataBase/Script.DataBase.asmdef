@@ -3,7 +3,13 @@
     "rootNamespace": "",
     "references": [
         "UniTask",
-        "MessagePack.Unity"
+        "MessagePack.Unity",
+        "VContainer",
+        "Script.GameData.Model",
+        "Script.Table",
+        "Script.Table.Interface",
+        "Script.GameInfo",
+        "Script.GameInfo.Interface"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
