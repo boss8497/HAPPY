@@ -2,7 +2,8 @@
     "name": "Script.Client.Interface",
     "rootNamespace": "",
     "references": [
-        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:ff4dbbccec811c94e8f774574ed130aa"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -2,9 +2,11 @@
     "name": "Script.GamePlay.Service",
     "rootNamespace": "",
     "references": [
-        "GUID:709f4bab8a7a1004693d348cefe1e497",
         "GUID:f51ebe6a0ceec4240a699833d6309b23",
         "GUID:5c01796d064528144a599661eaab93a6",
+        "GUID:e0cd26848372d4e5c891c569017e11f1",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:709f4bab8a7a1004693d348cefe1e497",
         "GUID:854cf9f0c9798824e94ba2e712971f53",
         "GUID:0eed957a026b42e4c9a6a91bc28d4a41",
         "GUID:ff4dbbccec811c94e8f774574ed130aa",
@@ -13,13 +15,12 @@
         "GUID:68740c49ada94b64b897f21d3887b217",
         "GUID:8381d25136c024c47bc141aa127149b3",
         "GUID:be356eb8d2e545045be53bd81b83a721",
-        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
         "GUID:74cda4dcb324ab541918c48ccba53c5d",
         "GUID:d007e3bee7bc45443a333cf701ddb0c1",
         "GUID:3f76cc7c4a02e4d408ae274c8ac14ef6",
         "GUID:28aa271bc4dbcee43bb9368f52ce1bb5",
         "GUID:d82625ecdf1eb2040a9da55eb945bb9c",
-        "GUID:e0cd26848372d4e5c891c569017e11f1"
+        "GUID:789c26b52fa765c43a0408f64bb1b683"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

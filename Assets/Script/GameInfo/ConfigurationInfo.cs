@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Script.GameInfo.Attribute;
 using Script.GameInfo.Base;
@@ -15,6 +16,9 @@ namespace Script.GameInfo.Info {
         [Dungeon]
         public int startDungeon;
 
+        [Item]
+        public int[] startItems = Array.Empty<int>();
+
         public ConfigurationInfo Clone() {
             return new() {
                 gravity      = gravity,
@@ -26,6 +30,7 @@ namespace Script.GameInfo.Info {
                 ID           = ID,
                 Name         = Name,
                 startDungeon = startDungeon,
+                startItems   = startItems?.ToArray() ?? Array.Empty<int>(),
             };
         }
     }
