@@ -1,4 +1,5 @@
 ﻿using Script.DataBase.Interface;
+using Script.GameSetting.Interface;
 using Script.LifetimeScope.Locator;
 using VContainer.Unity;
 
@@ -11,14 +12,17 @@ namespace Script.Client {
     public partial class GameClient : IInitializable {
         private readonly IScopeLocator _scopeLocator;
         private readonly IDataBase     _dataBase;
+        private readonly IGameSetting  _gameSetting;
 
 
         public GameClient(
             IScopeLocator scopeLocator,
-            IDataBase     dataBase
+            IDataBase     dataBase,
+            IGameSetting  gameSetting
         ) {
             _scopeLocator = scopeLocator;
             _dataBase     = dataBase;
+            _gameSetting  = gameSetting;
         }
 
 

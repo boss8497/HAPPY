@@ -12,7 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14dfdc606b925944ebd134fbfba8b28d, type: 3}
   m_Name: ItemTable
   m_EditorClassIdentifier: Script.Table::Script.GameInfo.Table.ItemTable
-  ItemInfos: []
+  ItemInfos:
+  - rid: 4223259494780502112
+  - rid: 4223259494780502115
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 4223259494780502112
+      type: {class: ItemInfo, ns: Script.GameInfo.Item, asm: Script.GameInfo}
+      data:
+        <UID>k__BackingField: 1
+        <ID>k__BackingField: Group
+        <Name>k__BackingField: "\uACC4\uC815"
+        type: 1
+        flag: 0
+        statusUids: 
+    - rid: 4223259494780502115
+      type: {class: ItemInfo, ns: Script.GameInfo.Item, asm: Script.GameInfo}
+      data:
+        <UID>k__BackingField: 2
+        <ID>k__BackingField: Bomi
+        <Name>k__BackingField: "\uBCF4\uBBF8"
+        type: 2
+        flag: 0
+        statusUids: 

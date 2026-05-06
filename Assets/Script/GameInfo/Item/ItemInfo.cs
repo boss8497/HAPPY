@@ -2,6 +2,7 @@
 using Script.GameInfo.Attribute;
 using Script.GameInfo.Base;
 using Script.GameInfo.Enum;
+using Sirenix.OdinInspector;
 
 namespace Script.GameInfo.Item {
     [AutoEditorTable(true)]
@@ -9,9 +10,8 @@ namespace Script.GameInfo.Item {
     public class ItemInfo : InfoBase {
         public ItemType type = ItemType.None;
         public ItemFlag flag = ItemFlag.None;
-        
-        [Status]
+
+        [ShowIf("@type != Script.GameInfo.Enum.ItemType.Character"), Status]
         public int[] statusUids = Array.Empty<int>();
-        
     }
 }

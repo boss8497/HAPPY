@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Script.DataBase.Enum;
 using Script.GameData.Model;
+using Script.GameInfo.Item;
 
 namespace Script.DataBase.Interface {
     /// <summary>
@@ -24,5 +25,12 @@ namespace Script.DataBase.Interface {
             int    grade = 0,
             int    tier  = 0
         );
+
+        ItemModel AddItem(
+            long       groupUid,
+            ItemReward reward
+        );
+
+        UniTask<ItemModel[]> GetInventory(long groupUid);
     }
 }

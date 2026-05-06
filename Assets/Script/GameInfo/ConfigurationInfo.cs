@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Script.GameInfo.Attribute;
 using Script.GameInfo.Base;
+using Script.GameInfo.Item;
 using UnityEngine;
 
 namespace Script.GameInfo.Info {
@@ -16,8 +17,7 @@ namespace Script.GameInfo.Info {
         [Dungeon]
         public int startDungeon;
 
-        [Item]
-        public int[] startItems = Array.Empty<int>();
+        public ItemReward[] startItems = Array.Empty<ItemReward>();
 
         public ConfigurationInfo Clone() {
             return new() {
@@ -30,7 +30,7 @@ namespace Script.GameInfo.Info {
                 ID           = ID,
                 Name         = Name,
                 startDungeon = startDungeon,
-                startItems   = startItems?.ToArray() ?? Array.Empty<int>(),
+                startItems   = startItems?.ToArray() ?? Array.Empty<ItemReward>(),
             };
         }
     }

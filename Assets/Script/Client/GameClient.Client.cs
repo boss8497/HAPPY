@@ -24,6 +24,7 @@ namespace Script.Client {
                     throw new Exception($"시작 던전 정보가 없습니다. DungeonId: {GameInfoManager.Instance?.Config?.startDungeon}");
                 }
             
+                // 던전 정보 생성
                 groupModel.dungeonProgresses = new []{
                     new DungeonProgress {
                         dungeonUid = dungeonInfo.UID,
@@ -32,6 +33,12 @@ namespace Script.Client {
                         category   = (int)dungeonInfo.category,
                     }
                 };
+
+                var gameConfiguration = GameInfoManager.Instance.Config;
+                foreach (var startItem in gameConfiguration.startItems) {
+                    _dataBase.AddItem(groupModel.uid, startItem);
+                }
+                
                 return groupModel;
             }
             
@@ -54,6 +61,9 @@ namespace Script.Client {
         public async UniTask Req_SaveGroup(GroupModel model) {
             await _dataBase.SaveAsync(_groupPath, model, DataType.Json);
         }
-        
+
+        public async UniTask<ItemModel[]> Req_Inventory(long groupUid) {
+            return await _dataBase.GetInventory(groupUid);
+        }
     }
 }

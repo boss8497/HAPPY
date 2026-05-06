@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Script.DataBase.Enum;
@@ -91,6 +92,18 @@ namespace Script.DataBase {
             return CreateItemModel(groupUid, itemUid, count, level, grade, tier);
         }
 
+        public ItemModel AddItem(
+            long       groupUid,
+            ItemReward reward
+        ) {
+            var itemInfo = GameInfoManager.Instance.Get<ItemInfo>(reward.itemUid);
+            if (itemInfo.flag.HasFlag(ItemFlag.Stack)) {
+                AddItemTableCount(groupUid, reward.itemUid, reward.count, reward.level, reward.grade, reward.tier);
+            }
+
+            return CreateItemModel(groupUid, reward.itemUid, reward.count, reward.level, reward.grade, reward.tier);
+        }
+
         public bool HasItem(long groupUid, int itemUid) {
             if (_itemModelByGroupUid.TryGetValue(groupUid, out var itemModels)) {
                 return itemModels.ContainsKey(itemUid);
@@ -101,6 +114,13 @@ namespace Script.DataBase {
 
         public async UniTask SaveItemTable() {
             await SaveAsync(itemModelTableName, _itemModelTable, DataType.Json);
+        }
+
+        public UniTask<ItemModel[]> GetInventory(long groupUid) {
+            if (_itemModelByGroupUid.TryGetValue(groupUid, out var itemModels)) {
+                return UniTask.FromResult(itemModels.SelectMany(i => i.Value).ToArray());
+            }
+            return UniTask.FromResult(Array.Empty<ItemModel>());
         }
     }
 }
