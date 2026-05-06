@@ -15,6 +15,8 @@ namespace Script.DataBase {
 
             if (!File.Exists(fullPath))
                 throw new FileNotFoundException($"파일을 찾을 수 없습니다. Path: {fullPath}");
+            
+            Debug.Log($"File Path : {fullPath}");
 
             await using var stream = new FileStream(
                 fullPath,

@@ -46,11 +46,11 @@ namespace Script.GUI.Screen {
             }
         }
 
-        public override UniTask OpenInternal() {
+        public override async UniTask OpenInternal() {
+            await UniTask.WaitUntil(() => _groupService.Initialized);
             _dungeonProgress = _groupService.GetDungeon(Category.Running);
             _dungeonInfo     = GameInfoManager.Instance.Get<DungeonInfo>(_dungeonProgress.dungeonUid);
             _stage           = _dungeonInfo.stages.FirstOrDefault(r => r.guid.Value == _dungeonProgress.stageGuid);
-            return UniTask.CompletedTask;
         }
 
         public override UniTask CloseInternal() {

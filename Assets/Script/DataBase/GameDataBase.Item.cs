@@ -16,11 +16,19 @@ namespace Script.DataBase {
         private Dictionary<long, Dictionary<int, List<ItemModel>>> _itemModelByGroupUid;
 
         private async UniTask InitializeItemTable() {
-            _itemModelTable = await LoadAsync<ItemModelTable>(itemModelTableName, DataType.Json);
-            _itemModelByGroupUid = _itemModelTable.items
-                                                  .GroupBy(g => g.groupUid)
-                                                  .ToDictionary(e => e.Key, e =>
-                                                                    e.GroupBy(g => g.infoUid).ToDictionary(g => g.Key, g => g.ToList()));
+            if (Exists(itemModelTableName)) {
+                _itemModelTable = await LoadAsync<ItemModelTable>(itemModelTableName, DataType.Json);
+                _itemModelByGroupUid = _itemModelTable.items
+                                                      .GroupBy(g => g.groupUid)
+                                                      .ToDictionary(e => e.Key, e =>
+                                                                        e.GroupBy(g => g.infoUid).ToDictionary(g => g.Key, g => g.ToList()))
+                                    ?? new();
+            }
+            else {
+                _itemModelTable      = new();
+                _itemModelByGroupUid = new();
+                await SaveItemTable();
+            }
         }
 
         private ItemModel CreateItemModel(
@@ -120,6 +128,7 @@ namespace Script.DataBase {
             if (_itemModelByGroupUid.TryGetValue(groupUid, out var itemModels)) {
                 return UniTask.FromResult(itemModels.SelectMany(i => i.Value).ToArray());
             }
+
             return UniTask.FromResult(Array.Empty<ItemModel>());
         }
     }

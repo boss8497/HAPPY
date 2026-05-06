@@ -39,7 +39,8 @@ namespace Script.LifetimeScope {
             builder.Register<IScopeFactory, ScopeFactory>(Lifetime.Singleton);
 
             builder.Register<IFileStorage, FileStorage>(Lifetime.Singleton);
-            builder.Register<IDataBase, GameDataBase>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<GameDataBase>(Lifetime.Singleton)
+                   .As<IDataBase>();
             
             
             builder.RegisterEntryPoint<SceneLoader>(Lifetime.Singleton)

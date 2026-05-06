@@ -32,5 +32,6 @@ namespace Script.DataBase.Interface {
         );
 
         UniTask<ItemModel[]> GetInventory(long groupUid);
+        UniTask              SaveItemTable();
     }
 }

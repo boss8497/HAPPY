@@ -54,6 +54,7 @@ namespace Script.Client {
 
             var model = CreateGroupModel();
             await Req_SaveGroup(model);
+            await _dataBase.SaveItemTable();
             
             return model;
         }

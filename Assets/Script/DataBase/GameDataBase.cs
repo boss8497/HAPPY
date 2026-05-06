@@ -56,8 +56,6 @@ namespace Script.DataBase {
         }
 
         private async UniTask<T> LoadJsonAsync<T>(string path) {
-            EnsureInitialized();
-
             if (!_fileStorage.Exists(path))
                 return default;
 
@@ -66,15 +64,11 @@ namespace Script.DataBase {
         }
 
         private async UniTask SaveJsonAsync<T>(string path, T data, Formatting formatting = Formatting.None) {
-            EnsureInitialized();
-
             var json = JsonConvert.SerializeObject(data, formatting);
             await _fileStorage.SaveJsonAsync(path, json);
         }
 
         private async UniTask<T> LoadMessagePackAsync<T>(string path) {
-            EnsureInitialized();
-
             if (!_fileStorage.Exists(path))
                 return default;
 
@@ -82,13 +76,7 @@ namespace Script.DataBase {
         }
 
         private async UniTask SaveMessagePackAsync<T>(string path, T data) {
-            EnsureInitialized();
             await _fileStorage.SaveMessagePackAsync(path, data, MessagePackOptions);
-        }
-
-        private void EnsureInitialized() {
-            if (!Initialized)
-                throw new InvalidOperationException("GameDataBase is not initialized.");
         }
 
         public void Dispose() {
