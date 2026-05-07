@@ -104,12 +104,15 @@ namespace Script.GamePlay.Stat {
             }
         }
 
-        public void Release() {
+        public void Clear() {
             _originalStatus.Clear();
             for (int i = 0; i < (int)StatType.Max; i++) {
                 _calcValue[i] = _cacheValue[i] = _cachePercentValue[i] = 0;
             }
+        }
 
+        public void Release() {
+            Clear();
             ListPool.Return<StatusInfo>(_originalStatus);
             _originalStatus = null;
         }

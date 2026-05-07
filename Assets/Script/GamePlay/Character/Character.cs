@@ -7,18 +7,15 @@ namespace Script.GamePlay.Character {
     [System.Serializable]
     public partial class Character : Unit.Unit, ICharacter, IPoolMember {
         #region Interface
+
         private IGameObjectPool _gameObjectPool;
-        public  string Key => _gameObjectPool?.Key ?? CharacterInfo?.prefab;
-        
-        public void   Set(IGameObjectPool gameObjectPool) {
-            _gameObjectPool = gameObjectPool;
-        }
-        
+        public  string          Key => _gameObjectPool?.Key ?? CharacterInfo?.prefab;
+
         //캐릭터 소환시 꼭 실행
         public void Initialize(int team, bool isPlayer = false) {
             SetState(CharacterState.None);
             _isPlayer = isPlayer;
-            
+
             // UnRegister는 진짜로 Destroy가 됐을 때 호출해준다.
             // 왠만하면 Pooling으로 사용하기 때문에 Release 호출했다가 
             // 지워지우는 말자.
@@ -28,14 +25,14 @@ namespace Script.GamePlay.Character {
             InitializeGamePlay();
             InitializeAction();
             InitializeBuff();
-            
+
             // Reactive 초기화, Reactive는 제일 마지막에 초기화가 좋음
             InitializeReactiveProperty();
-            
-            
+
+
             AddState(CharacterState.Initialized);
         }
-        
+
         public void Release() {
             _characterBehaviour?.Stop();
             ReleaseAction();
@@ -48,10 +45,15 @@ namespace Script.GamePlay.Character {
         public UniTask StartAsync() {
             //FSM 실행
             _characterBehaviour.Start();
-            
+
             return UniTask.CompletedTask;
         }
-
+        
+        // PoolMember Interface
+        public void Set(IGameObjectPool gameObjectPool) {
+            _gameObjectPool = gameObjectPool;
+        }
+        
         private void OnDestroy() {
             Release();
         }

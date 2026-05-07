@@ -20,6 +20,7 @@ namespace Script.GamePlay.Service {
 
         private GroupData  _groupData;
         public  IGroupData GroupData => _groupData;
+        public  long       GroupUid  => _groupData?.Model?.CurrentValue?.uid ?? 0;
 
         public bool Initialized { get; private set; }
 

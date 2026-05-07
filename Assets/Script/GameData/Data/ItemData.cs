@@ -10,11 +10,12 @@ namespace Script.GameData.Data {
     public class ItemData : IItemData, IDisposable {
         public ReactiveProperty<ItemModel> Model { get; private set; } = new();
 
-        public ReadOnlyReactiveProperty<int>      ItemUid  { get; set; }
-        public ReadOnlyReactiveProperty<int>      Level    { get; set; }
-        public ReadOnlyReactiveProperty<int>      Grade    { get; set; }
-        public ReadOnlyReactiveProperty<int>      Tier     { get; set; }
-        public ReadOnlyReactiveProperty<ItemInfo> ItemInfo { get; set; }
+        public ReadOnlyReactiveProperty<long>     ItemUid     { get; set; }
+        public ReadOnlyReactiveProperty<int>      ItemInfoUid { get; set; }
+        public ReadOnlyReactiveProperty<int>      Level       { get; set; }
+        public ReadOnlyReactiveProperty<int>      Grade       { get; set; }
+        public ReadOnlyReactiveProperty<int>      Tier        { get; set; }
+        public ReadOnlyReactiveProperty<ItemInfo> ItemInfo    { get; set; }
 
 
         private DisposableBag _disposableBag;
@@ -25,10 +26,15 @@ namespace Script.GameData.Data {
             }
 
 
-            ItemUid = Model.Select(i => i.infoUid)
+            ItemUid = Model.Select(i => i.uid)
                            .DistinctUntilChanged()
                            .ToReadOnlyReactiveProperty()
                            .AddTo(ref _disposableBag);
+
+            ItemInfoUid = Model.Select(i => i.infoUid)
+                               .DistinctUntilChanged()
+                               .ToReadOnlyReactiveProperty()
+                               .AddTo(ref _disposableBag);
 
             Level = Model.Select(i => i.level)
                          .DistinctUntilChanged()
@@ -45,10 +51,10 @@ namespace Script.GameData.Data {
                         .ToReadOnlyReactiveProperty()
                         .AddTo(ref _disposableBag);
 
-            ItemInfo = ItemUid.Select(i => GameInfoManager.Instance.Get<ItemInfo>(i))
-                              .DistinctUntilChanged()
-                              .ToReadOnlyReactiveProperty()
-                              .AddTo(ref _disposableBag);
+            ItemInfo = ItemInfoUid.Select(i => GameInfoManager.Instance.Get<ItemInfo>(i))
+                                  .DistinctUntilChanged()
+                                  .ToReadOnlyReactiveProperty()
+                                  .AddTo(ref _disposableBag);
 
 
             Update(model);

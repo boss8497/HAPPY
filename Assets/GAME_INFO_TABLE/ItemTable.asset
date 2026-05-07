@@ -27,6 +27,7 @@ MonoBehaviour:
         type: 1
         flag: 0
         statusUids: 
+        characterInfoUid: 0
     - rid: 4223259494780502115
       type: {class: ItemInfo, ns: Script.GameInfo.Item, asm: Script.GameInfo}
       data:
@@ -36,3 +37,4 @@ MonoBehaviour:
         type: 2
         flag: 0
         statusUids: 
+        characterInfoUid: 1

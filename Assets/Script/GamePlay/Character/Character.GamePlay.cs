@@ -78,13 +78,6 @@ namespace Script.GamePlay.Character {
             _characterBehaviour.Initialize(BehaviourInfo, this);
 
             _status ??= ClassPool.Get<Status>();
-
-
-            //TODO: 아직 레벨업 했을 때 status를 Update해주는 기능이 없는듯
-            using var _ = CreateValueContext();
-            foreach (var statusUid in _characterInfo.statusUids) {
-                _status.Add(GameInfoManager.Instance.Get<StatusInfo>(statusUid));
-            }
         }
 
 
@@ -110,7 +103,6 @@ namespace Script.GamePlay.Character {
             };
 
 
-        //TODO: Database 관련 로직이 없기 때문에 일단은 여기서 테스트 설정
         private ValueContext CreateValueContext(
             int levelOffset = 0,
             int gradeOffset = 0,
@@ -118,9 +110,9 @@ namespace Script.GamePlay.Character {
         ) {
             return new(
                 new ValueProvider()
-                    .Add("level", 1 + levelOffset)
-                    .Add("grade", 1 + gradeOffset)
-                    .Add("tier", 1 + tierOffset)
+                    .Add("level", (Item?.CurrentValue?.Level?.CurrentValue ?? 1) + levelOffset)
+                    .Add("grade", (Item?.CurrentValue?.Grade?.CurrentValue ?? 0) + gradeOffset)
+                    .Add("tier", (Item?.CurrentValue?.Tier?.CurrentValue ?? 0) + tierOffset)
             );
         }
     }

@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Script.DataBase.Enum;
 using Script.GameData.Model;
+using Script.GameInfo.Info.Enum;
 using Script.GameInfo.Item;
 
 namespace Script.DataBase.Interface {
@@ -33,5 +34,6 @@ namespace Script.DataBase.Interface {
 
         UniTask<ItemModel[]> GetInventory(long groupUid);
         UniTask              SaveItemTable();
+        UniTask<ItemModel>   LevelUpItem(ItemModel item, LevelType levelType);
     }
 }

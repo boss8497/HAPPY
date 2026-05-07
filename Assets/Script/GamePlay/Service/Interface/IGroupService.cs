@@ -6,6 +6,7 @@ using Script.GameInfo.Dungeon;
 namespace Script.GamePlay.Service.Interface {
     public interface IGroupService : IService {
         IGroupData GroupData { get; }
+        long GroupUid { get; }
 
         DungeonProgress GetDungeon(Category     dungeonCategory);
         UniTask         ClearedDungeon(Category dungeonCategory);

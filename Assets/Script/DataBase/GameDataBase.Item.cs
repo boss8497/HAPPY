@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using Script.DataBase.Enum;
 using Script.GameData.Model;
 using Script.GameInfo.Enum;
+using Script.GameInfo.Info.Enum;
 using Script.GameInfo.Item;
 using Script.GameInfo.Table;
 
@@ -130,6 +131,23 @@ namespace Script.DataBase {
             }
 
             return UniTask.FromResult(Array.Empty<ItemModel>());
+        }
+
+        public async UniTask<ItemModel> LevelUpItem(ItemModel item, LevelType levelType) {
+            switch (levelType) {
+                case LevelType.Grade:
+                    item.grade += 1;
+                    break;
+                case LevelType.Level:
+                    item.level += 1;
+                    break;
+                case LevelType.Tier:
+                    item.tier += 1;
+                    break;
+            }
+
+            await SaveItemTable();
+            return item;
         }
     }
 }

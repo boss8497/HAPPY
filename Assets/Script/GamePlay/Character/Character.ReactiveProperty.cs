@@ -1,5 +1,11 @@
-﻿using R3;
+﻿using System.Linq;
+using R3;
+using Script.GameData.Data;
+using Script.GameData.Model;
 using Script.GameInfo.Character;
+using Script.GameInfo.Info.Stat;
+using Script.GameInfo.Item;
+using Script.GameInfo.Table;
 using Script.GamePlay.ECS.Component;
 
 //Reactive 필드 및 로직
@@ -9,15 +15,16 @@ namespace Script.GamePlay.Character {
         public ReactiveProperty<CharacterState> State     { get; private set; } = new();
         public ReactiveProperty<double>         Health    { get; private set; } = new();
         public ReactiveProperty<double>         MaxHealth { get; private set; } = new();
+        public ReactiveProperty<ItemInfo>       ItemInfo  { get; private set; } = new();
 
-
-        public ReadOnlyReactiveProperty<bool> Initialized    { get; private set; }
-        public ReadOnlyReactiveProperty<bool> Jumping        { get; private set; }
-        public ReadOnlyReactiveProperty<bool> Running        { get; private set; }
-        public ReadOnlyReactiveProperty<bool> Die            { get; private set; }
-        public ReadOnlyReactiveProperty<bool> SystemControl  { get; private set; }
-        public ReadOnlyReactiveProperty<bool> CollisionState { get; private set; }
-        public ReadOnlyReactiveProperty<bool> OutSideMap     { get; private set; }
+        public ReadOnlyReactiveProperty<ItemData> Item           { get; private set; }
+        public ReadOnlyReactiveProperty<bool>     Initialized    { get; private set; }
+        public ReadOnlyReactiveProperty<bool>     Jumping        { get; private set; }
+        public ReadOnlyReactiveProperty<bool>     Running        { get; private set; }
+        public ReadOnlyReactiveProperty<bool>     Die            { get; private set; }
+        public ReadOnlyReactiveProperty<bool>     SystemControl  { get; private set; }
+        public ReadOnlyReactiveProperty<bool>     CollisionState { get; private set; }
+        public ReadOnlyReactiveProperty<bool>     OutSideMap     { get; private set; }
 
 
         private DisposableBag _reactiveDisposableBag;
@@ -39,6 +46,10 @@ namespace Script.GamePlay.Character {
                   })
                   .AddTo(ref _reactiveDisposableBag);
 
+            Item = ItemInfo.Select(i => i == null ? null : _itemService.GetItem(i.UID))
+                           .DistinctUntilChanged()
+                           .ToReadOnlyReactiveProperty()
+                           .AddTo(ref _reactiveDisposableBag);
 
             Initialized = State.Select(i => (i & CharacterState.Initialized) != 0)
                                .DistinctUntilChanged()
@@ -74,11 +85,23 @@ namespace Script.GamePlay.Character {
                               .DistinctUntilChanged()
                               .ToReadOnlyReactiveProperty()
                               .AddTo(ref _reactiveDisposableBag);
+            
+            Item.Select(i => i == null ? Observable.Empty<int>() : Observable.Merge(i.Level, i.Grade, i.Tier))
+                 .Subscribe((data) => {
+                     _status.Clear();
+                     using var _ = CreateValueContext();
+                     foreach (var statusUid in _characterInfo.statusUids) {
+                         _status.Add(GameInfoManager.Instance.Get<StatusInfo>(statusUid));
+                     }
+
+                     UpdateStatus();
+                 })
+                 .AddTo(ref _reactiveDisposableBag);
 
             // 여기서는 상태가 겹쳐 있을 거임
             State.Subscribe(SyncHitbox)
                  .AddTo(ref _reactiveDisposableBag);
-            
+
 
             SystemControl.CombineLatest(Initialized, (systemControl, initialized) => (systemControl, initialized))
                          .Subscribe(state => {
@@ -86,7 +109,7 @@ namespace Script.GamePlay.Character {
                              SetEnabledTag<UnitSystemControlEnable>(state.systemControl);
                          })
                          .AddTo(ref _reactiveDisposableBag);
-            
+
             OutSideMap.CombineLatest(Initialized, (outSideMap, initialized) => (outSideMap, initialized))
                       .Subscribe(state => {
                           if (state.initialized == false) return;
@@ -96,16 +119,16 @@ namespace Script.GamePlay.Character {
                           }
                       })
                       .AddTo(ref _reactiveDisposableBag);
-            
+
             Die.CombineLatest(Initialized, (die, initialized) => (die, initialized))
-                      .Subscribe(state => {
-                          if (state.initialized == false) return;
-                          if (state.die) {
-                              SetEnabledTag<UnitCollisionEnable>(false);
-                          }
-                      })
-                      .AddTo(ref _reactiveDisposableBag);
-            
+               .Subscribe(state => {
+                   if (state.initialized == false) return;
+                   if (state.die) {
+                       SetEnabledTag<UnitCollisionEnable>(false);
+                   }
+               })
+               .AddTo(ref _reactiveDisposableBag);
+
 
             switch (CharacterInfo.type) {
                 case CharacterType.Character:
@@ -131,6 +154,7 @@ namespace Script.GamePlay.Character {
             }
 
 
+            ItemInfo.OnNext(GameInfoManager.Instance.GetCollection<ItemInfo>().FirstOrDefault(r => r.characterInfoUid == CharacterInfo.UID));
             State.OnNext((_stageManager?.SystemControl?.CurrentValue ?? false) ? CharacterState.SystemControl : CharacterState.None);
             Health.OnNext(Status.Hp);
             MaxHealth.OnNext(Status.Hp);

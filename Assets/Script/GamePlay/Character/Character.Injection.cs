@@ -16,6 +16,7 @@ namespace Script.GamePlay.Character {
         private IGroupService     _groupService;
         private IObjectResolver   _resolver;
         private IStageEntityWorld _stageEntityWorld;
+        private IItemService      _itemService;
 
         [Inject]
         public void Constructor(
@@ -25,7 +26,8 @@ namespace Script.GamePlay.Character {
             IGroupService     groupService,
             IObjectResolver   resolver,
             IStageEntityWorld stageEntityWorld,
-            IGameTimer        gameTimer
+            IGameTimer        gameTimer,
+            IItemService      itemService
         ) {
             _stageManager     = stageManager;
             _playerControls   = playerControls;
@@ -34,6 +36,7 @@ namespace Script.GamePlay.Character {
             _resolver         = resolver;
             _stageEntityWorld = stageEntityWorld;
             GameTimer         = gameTimer;
+            _itemService      = itemService;
         }
 
         public IGameTimer      GameTimer      { get; private set; }

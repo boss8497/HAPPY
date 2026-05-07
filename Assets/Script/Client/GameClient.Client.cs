@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Script.DataBase.Enum;
 using Script.GameData.Model;
 using Script.GameInfo.Dungeon;
+using Script.GameInfo.Info.Enum;
 using Script.GameInfo.Table;
 
 namespace Script.Client {
@@ -65,6 +66,10 @@ namespace Script.Client {
 
         public async UniTask<ItemModel[]> Req_Inventory(long groupUid) {
             return await _dataBase.GetInventory(groupUid);
+        }
+
+        public async UniTask<ItemModel> Req_ItemLevelUp(ItemModel model, LevelType type) {
+            return await _dataBase.LevelUpItem(model, type);
         }
     }
 }
