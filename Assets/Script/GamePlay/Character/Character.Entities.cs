@@ -47,7 +47,7 @@ namespace Script.GamePlay.Character {
             if (entityManager.HasComponent<UnitCollisionEnable>(entity) == false) {
                 entityManager.AddComponentData<UnitCollisionEnable>(entity, new());
             }
-            SetEnabledTag<UnitCollisionEnable>(true);
+            SetEnabledTag<UnitCollisionEnable>(false);
 
             if (entityManager.HasComponent<UnitSystemControlEnable>(entity) == false) {
                 entityManager.AddComponentData<UnitSystemControlEnable>(entity, new());

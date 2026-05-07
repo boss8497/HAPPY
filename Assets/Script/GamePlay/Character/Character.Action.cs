@@ -7,6 +7,7 @@ using Script.GameInfo.Table;
 using Script.Utility.Runtime;
 using Script.GameInfo.Character;
 using Script.GamePlay.ECS.Component;
+using Script.GamePlay.Stage;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -57,6 +58,10 @@ namespace Script.GamePlay.Character {
                 case CharacterType.Obstacle:
                     // 캐릭터가 장애물에 Collision 됐을 때만 일단 설정
                     AddState(CharacterState.Collision);
+                    break;
+                
+                case CharacterType.Goal:
+                    _stageManager.AddState(StageState.Clear);
                     break;
             }
         }

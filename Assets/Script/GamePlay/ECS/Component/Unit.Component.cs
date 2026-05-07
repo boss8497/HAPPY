@@ -23,7 +23,6 @@ namespace Script.GamePlay.ECS.Component {
         public Entity                     Entity;
         public long                       Uid;
         public int                        Team;
-        public int                        InstanceId;
         public UnityObjectRef<GameObject> GameObject;
     }
 

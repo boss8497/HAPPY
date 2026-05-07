@@ -107,12 +107,7 @@ namespace Script.GamePlay.Stage {
                          })
                          .AddTo(ref _reactiveDisposableBag);
 
-            Fail.Subscribe(fail => {
-                    if (fail) { }
-                })
-                .AddTo(ref _reactiveDisposableBag);
-
-            Clear.Subscribe(clear => {
+            Clear.SubscribeAwait(async (clear, ct)=> {
                      if (clear) {
                          // 다음 Phase가 있는지 확인
                          if (Stage.CurrentValue.phaseInfos.Length - 1 > PhaseIndex.CurrentValue) {
@@ -120,6 +115,10 @@ namespace Script.GamePlay.Stage {
                              PhaseIndex.OnNext(PhaseIndex.CurrentValue + 1);
 
                              AddState(StageState.NextPhase);
+                         }
+                         else {
+                             AddState(StageState.SystemControl);
+                             await _screenManager.OpenAsync(_clearScreenKey, ct);
                          }
                      }
                  })

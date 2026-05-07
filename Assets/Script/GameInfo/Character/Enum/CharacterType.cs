@@ -5,5 +5,6 @@
         Buff,
         Score,
         Heart,
+        Goal,
     }
 }

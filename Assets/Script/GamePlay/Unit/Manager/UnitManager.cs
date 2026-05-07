@@ -106,7 +106,6 @@ namespace Script.GamePlay.Unit {
                 Entity     = entity,
                 Uid        = unit.UID,
                 Team       = unit.Team,
-                InstanceId = unit.GetInstanceID(),
                 GameObject = unit.gameObject,
             });
         }

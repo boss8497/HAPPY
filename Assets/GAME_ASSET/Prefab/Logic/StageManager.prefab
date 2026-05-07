@@ -235,3 +235,4 @@ MonoBehaviour:
   vCamera: {fileID: 6511851026027796913}
   failScreenKey: RunningFail
   hudScreenKey: RunningHUD
+  clearScreenKey: RunningClear
