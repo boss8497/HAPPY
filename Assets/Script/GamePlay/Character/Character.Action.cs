@@ -61,6 +61,7 @@ namespace Script.GamePlay.Character {
                     break;
                 
                 case CharacterType.Goal:
+                    _stageManager.AddState(StageState.SystemControl);
                     _stageManager.AddState(StageState.Clear);
                     break;
             }

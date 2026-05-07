@@ -117,7 +117,6 @@ namespace Script.GamePlay.Stage {
                              AddState(StageState.NextPhase);
                          }
                          else {
-                             AddState(StageState.SystemControl);
                              await _screenManager.OpenAsync(_clearScreenKey, ct);
                          }
                      }
