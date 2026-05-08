@@ -95,7 +95,7 @@ namespace Script.GamePlay.ECS.System {
                 if (index == j)
                     continue;
 
-                var otherHitBox = HitBoxes[index];
+                var otherHitBox = HitBoxes[j];
                 if (otherHitBox.Type == HitBoxType.Invisible) continue;
 
                 var unitB = Units[j];

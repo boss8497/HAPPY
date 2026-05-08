@@ -1,35 +1,34 @@
 ﻿using Cysharp.Threading.Tasks;
+using Script.GameInfo.Character;
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
-using CharacterInfo = Script.GameInfo.Character.CharacterInfo;
 
 namespace Script.GamePlay.Stage {
-    [System.Serializable]
-    public class ClientEnemySpawnAction : ClientActionBase {
-        private readonly EnemySpawnAction _enemySpawnAction;
+    public class ClientEnemySpawnArrayAction : ClientActionBase {
+        private readonly EnemySpawnArrayAction _enemySpawnAction;
 
         private IStageManager _stageManager;
         private CharacterInfo _characterInfo;
 
-        public ClientEnemySpawnAction(ActionBase action) : base(action) {
-            if (action is EnemySpawnAction enemySpawnAction) {
+        public ClientEnemySpawnArrayAction(ActionBase action) : base(action) {
+            if (action is EnemySpawnArrayAction enemySpawnAction) {
                 _enemySpawnAction = enemySpawnAction;
             }
         }
-
         public override UniTask Initialize(IStageManager stageManager) {
             _stageManager  = stageManager;
             _characterInfo = GameInfoManager.Instance.Get<CharacterInfo>(_enemySpawnAction.uid);
             return UniTask.CompletedTask;
         }
-
         public override UniTask Execute() {
-            var prefab = _stageManager.StagePooling.Pop(_characterInfo.prefab);
-            prefab.transform.position = _enemySpawnAction.position;
+            foreach (var position in _enemySpawnAction.positions) {
+                var prefab = _stageManager.StagePooling.Pop(_characterInfo.prefab);
+                prefab.transform.position = position;
             
-            var result = _stageManager.AddEnemy(prefab);
-            if (result == false) {
-                _stageManager.StagePooling.Push(prefab);
+                var result = _stageManager.AddEnemy(prefab);
+                if (result == false) {
+                    _stageManager.StagePooling.Push(prefab);
+                }   
             }
             return UniTask.CompletedTask;
         }

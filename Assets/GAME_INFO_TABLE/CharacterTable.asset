@@ -85,6 +85,18 @@ MonoBehaviour:
     hitbox:
       rid: 4223259507235749998
     hitboxes: []
+  - <UID>k__BackingField: 7
+    <ID>k__BackingField: BOX2
+    <Name>k__BackingField: "\uBC15\uC2A42"
+    type: 1
+    animationEvents: []
+    behaviourId: 2
+    statusUids: 0300000004000000
+    buffUids: 
+    prefab: f512230c4d58fd84fa9ba70dceff1f92
+    hitbox:
+      rid: 4223259530382016637
+    hitboxes: []
   references:
     version: 2
     RefIds:
@@ -92,8 +104,8 @@ MonoBehaviour:
       type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
         type: 2
-        offset: {x: 0, y: 1, z: 0}
-        size: {x: 1, y: 2, z: 1}
+        offset: {x: 0, y: 0.5, z: 0}
+        size: {x: 1, y: 1, z: 1}
         radius: 0
     - rid: 2476690126442070117
       type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
@@ -129,4 +141,11 @@ MonoBehaviour:
         type: 2
         offset: {x: 0, y: 10, z: 0}
         size: {x: 1, y: 20, z: 0}
+        radius: 0
+    - rid: 4223259530382016637
+      type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        type: 2
+        offset: {x: 0, y: 1, z: 0}
+        size: {x: 1, y: 2, z: 1}
         radius: 0
