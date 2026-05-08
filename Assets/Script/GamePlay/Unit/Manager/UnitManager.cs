@@ -107,6 +107,7 @@ namespace Script.GamePlay.Unit {
                 Uid        = unit.UID,
                 Team       = unit.Team,
                 GameObject = unit.gameObject,
+                IsPlayer   = unit.IsPlayer ? (byte)1 : (byte)0,
             });
         }
 

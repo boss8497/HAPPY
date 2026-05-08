@@ -87,6 +87,7 @@ namespace Script.GamePlay.Stage {
                 return false;
             }
             characterScript.Initialize(1, false);
+            characterScript.GameObject.SetActiveSafe(false);
             _enemies.Add(characterScript);
             return true;
         }

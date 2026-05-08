@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Character;
 using Script.GamePlay.Pool;
+using Script.Utility.Runtime;
 using UnityEngine;
 
 namespace Script.GamePlay.Character {

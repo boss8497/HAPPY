@@ -24,6 +24,7 @@ namespace Script.GamePlay.ECS.Component {
         public long                       Uid;
         public int                        Team;
         public UnityObjectRef<GameObject> GameObject;
+        public byte                       IsPlayer;
     }
 
     public struct HitBoxData : IComponentData {

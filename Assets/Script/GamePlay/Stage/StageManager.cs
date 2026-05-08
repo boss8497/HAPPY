@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameData.Model;
+using Script.GameInfo.Character;
 using Script.GameInfo.Enum;
 using Script.GamePlay.Character;
 using Script.GamePlay.ECS.Component;
@@ -79,18 +80,15 @@ namespace Script.GamePlay.Stage {
             await ExecuteAction(EventTiming.Begin);
         }
 
-        public async UniTask Start() {
+        public UniTask Start() {
             foreach (var character in _players) {
-                await character.StartAsync();
-            }
-
-            foreach (var enemy in _enemies) {
-                await enemy.StartAsync();
+                character.AddState(CharacterState.InSideMap);
             }
 
             StopLoop();
             _updateCts = new();
             UpdateLoop(_updateCts.Token).Forget();
+            return UniTask.CompletedTask;
         }
 
         //Update Loop

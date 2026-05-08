@@ -52,7 +52,6 @@ namespace Script.GamePlay.Character {
                 
                 case CharacterType.Score:
                     _stageManager.AddItemScore((float)otherCharacter.Status.Score);
-                    //SetEnabledTag<UnitCollisionDelayTag>(false);
                     break;
                 
                 case CharacterType.Obstacle:
@@ -61,8 +60,8 @@ namespace Script.GamePlay.Character {
                     break;
                 
                 case CharacterType.Goal:
-                    _stageManager.AddState(StageState.SystemControl);
                     _stageManager.AddState(StageState.Clear);
+                    _stageManager.AddState(StageState.SystemControl);
                     break;
             }
         }

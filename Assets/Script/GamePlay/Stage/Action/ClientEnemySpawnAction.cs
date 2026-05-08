@@ -2,6 +2,7 @@
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
+using Script.Utility.Runtime;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;

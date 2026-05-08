@@ -7,6 +7,8 @@ using Script.GameInfo.Info.Stat;
 using Script.GameInfo.Item;
 using Script.GameInfo.Table;
 using Script.GamePlay.ECS.Component;
+using Script.Utility.Runtime;
+using UnityEngine;
 
 //Reactive 필드 및 로직
 namespace Script.GamePlay.Character {
@@ -25,6 +27,7 @@ namespace Script.GamePlay.Character {
         public ReadOnlyReactiveProperty<bool>     SystemControl  { get; private set; }
         public ReadOnlyReactiveProperty<bool>     CollisionState { get; private set; }
         public ReadOnlyReactiveProperty<bool>     OutSideMap     { get; private set; }
+        public ReadOnlyReactiveProperty<bool>     InSideMap      { get; private set; }
 
 
         private DisposableBag _reactiveDisposableBag;
@@ -86,17 +89,22 @@ namespace Script.GamePlay.Character {
                               .ToReadOnlyReactiveProperty()
                               .AddTo(ref _reactiveDisposableBag);
             
-            Item.Select(i => i == null ? Observable.Empty<int>() : Observable.Merge(i.Level, i.Grade, i.Tier))
-                 .Subscribe((data) => {
-                     _status.Clear();
-                     using var _ = CreateValueContext();
-                     foreach (var statusUid in _characterInfo.statusUids) {
-                         _status.Add(GameInfoManager.Instance.Get<StatusInfo>(statusUid));
-                     }
+            InSideMap = State.Select(i => (i & CharacterState.InSideMap) != 0)
+                             .DistinctUntilChanged()
+                             .ToReadOnlyReactiveProperty()
+                             .AddTo(ref _reactiveDisposableBag);
 
-                     UpdateStatus();
-                 })
-                 .AddTo(ref _reactiveDisposableBag);
+            Item.Select(i => i == null ? Observable.Empty<int>() : Observable.Merge(i.Level, i.Grade, i.Tier))
+                .Subscribe((data) => {
+                    _status.Clear();
+                    using var _ = CreateValueContext();
+                    foreach (var statusUid in _characterInfo.statusUids) {
+                        _status.Add(GameInfoManager.Instance.Get<StatusInfo>(statusUid));
+                    }
+
+                    UpdateStatus();
+                })
+                .AddTo(ref _reactiveDisposableBag);
 
             // 여기서는 상태가 겹쳐 있을 거임
             State.Subscribe(SyncHitbox)
@@ -110,12 +118,28 @@ namespace Script.GamePlay.Character {
                          })
                          .AddTo(ref _reactiveDisposableBag);
 
+            InSideMap.CombineLatest(Initialized, (inSideMap, initialized) => (inSideMap, initialized))
+                      .SubscribeAwait(async (state, ct) => {
+                          if (state.initialized == false) return;
+                          if (state.inSideMap) {
+                              gameObject.SetActiveSafe(true);
+                              await StartAsync();
+                              SetEnabledTag<UnitCollisionEnable>(true);
+                              Debug.Log($"InSideMap! {gameObject.name}");
+                          }
+                      })
+                      .AddTo(ref _reactiveDisposableBag);
+            
             OutSideMap.CombineLatest(Initialized, (outSideMap, initialized) => (outSideMap, initialized))
                       .Subscribe(state => {
                           if (state.initialized == false) return;
                           if (state.outSideMap) {
-                              _stageManager.AddRemoveEnemy(this);
+                              if (!IsPlayer) {
+                                  _stageManager.AddRemoveEnemy(this);
+                              }
+
                               SetEnabledTag<UnitCollisionEnable>(false);
+                              Debug.Log($"OutSideMap! {gameObject.name}");
                           }
                       })
                       .AddTo(ref _reactiveDisposableBag);

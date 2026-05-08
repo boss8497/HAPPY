@@ -27,8 +27,13 @@ namespace Script.GamePlay.ECS.System {
                 }
                 
                 var inSideOffset = GetHalfSize(hitBoxData.ValueRO);
-                if (transform.Position.x <= inSidePosX + inSideOffset) {
-                    SystemAPI.SetComponentEnabled<UnitCollisionEnable>(unitData.ValueRW.Entity, true);
+                if (unitData.ValueRO.IsPlayer <= 0 && transform.Position.x <= inSidePosX + inSideOffset) {
+                    if (unitData.ValueRO.GameObject.Value.TryGetComponent<Character.Character>(out var characterScript) && 
+                        characterScript.InSideMap.CurrentValue == false &&
+                        characterScript.Initialized.CurrentValue
+                       ) {
+                        characterScript.AddState(CharacterState.InSideMap);
+                    }
                 }
 
                 // 왼쪽으로 사라져 기본 - Offset

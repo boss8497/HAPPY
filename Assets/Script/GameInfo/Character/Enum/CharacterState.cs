@@ -14,5 +14,6 @@ namespace Script.GameInfo.Character {
         Sliding       = 1 << 6,
         Collision     = 1 << 7,
         OutSideMap    = 1 << 8, // 맵 밖으로 나갔을때 추가되는 State 사실상 Player(Character Type)는 거의 쓸일이 없다.
+        InSideMap     = 1 << 9, // 맵 안으로 들어왔을 때 Player는 거의 사용 안함
     }
 }
