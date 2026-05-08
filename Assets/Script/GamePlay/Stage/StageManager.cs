@@ -125,6 +125,7 @@ namespace Script.GamePlay.Stage {
             RunningScore.OnNext(character.Transform.position.x);
         }
 
+        // ECS에서 Update 해줌
         private void UpdateCamera() {
             var entityManager   = _entityWorld.EntityManager;
             var cameraTransform = _cameraControls.MainCamera.transform;

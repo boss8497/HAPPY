@@ -167,11 +167,11 @@ namespace Script.GamePlay.Stage {
         private void SetSystemControl(bool isOn) {
             if (isOn) {
                 _systemControlStack += 1;
-                Debug.Log($"사용자 입력 차단 시작. Stack: {_systemControlStack}");
+                //Debug.Log($"사용자 입력 차단 시작. Stack: {_systemControlStack}");
             }
             else {
                 _systemControlStack -= 1;
-                Debug.Log($"사용자 입력 차단 해제. Stack: {_systemControlStack}");
+                //Debug.Log($"사용자 입력 차단 해제. Stack: {_systemControlStack}");
             }
 
             if (_systemControlStack < 0) {

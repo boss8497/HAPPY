@@ -75,9 +75,9 @@ namespace Script.GamePlay.Character {
         // Collision은 Def의 영향을 안받기 때문에 일단 따로 계산해 줌
         private void ApplyCollision(Character otherCharacter) {
             var collisionDamage = otherCharacter.Status.Collision;
+            Debug.LogError($"충돌했다고해!!! me: {CharacterInfo.Name} other: {otherCharacter.CharacterInfo.Name} damage: {collisionDamage}");
             if (collisionDamage <= 0d) return;
             
-            Debug.LogError($"충돌했다고해!!! me: {CharacterInfo.Name} other: {otherCharacter.CharacterInfo.Name} damage: {collisionDamage}");
             ApplyHealth(-collisionDamage);
         }
         

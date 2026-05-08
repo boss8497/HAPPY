@@ -8,8 +8,9 @@ using UnityEngine;
 namespace Script.GamePlay.Character {
     [Serializable]
     public class ClientDieNode : ClientNodeBase, IClassPool {
-        private Character    _character;
-        private DieAnimation _dieAnimation;
+        private readonly float        _delay = 2.0f;
+        private          Character    _character;
+        private          DieAnimation _dieAnimation;
 
         public override ClientNodeBase Initialize(CharacterBehaviour characterBehaviour, NodeBase nodeBase) {
             base.Initialize(characterBehaviour, nodeBase);
@@ -26,7 +27,7 @@ namespace Script.GamePlay.Character {
         }
 
         protected override async UniTask Update(CancellationToken cts) {
-            Debug.LogError($"죽었어!!! {CharacterBehaviour.Character.CharacterInfo.Name}");
+            //Debug.LogError($"죽었어!!! {CharacterBehaviour.Character.CharacterInfo.Name}");
             
             var dieAnimationTime = _characterBehaviour.Character.SetAnimation(nameof(AnimationName.DIE), false);
             await UniTask.WaitForSeconds(dieAnimationTime, cancellationToken: cts);
@@ -36,6 +37,7 @@ namespace Script.GamePlay.Character {
             }
             
             if(_character.IsPlayer == false) {
+                await UniTask.WaitForSeconds(_delay, cancellationToken: cts);
                 _character.StageManager.AddRemoveEnemy(_character);
             }
         }

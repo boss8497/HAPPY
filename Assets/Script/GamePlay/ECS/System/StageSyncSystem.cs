@@ -7,6 +7,8 @@ namespace Script.GamePlay.ECS.System {
     [DisableAutoCreation]
     [UpdateInGroup(typeof(LateSimulationSystemGroup))]
     public partial class StageSyncSystem : SystemBase {
+        private float _offsetRate = 3.0f;
+        
         protected override void OnUpdate() {
             var cameraData      = SystemAPI.GetSingletonRW<CameraData>();
             var camera          = cameraData.ValueRO.Camera.Value;
@@ -26,7 +28,7 @@ namespace Script.GamePlay.ECS.System {
                     originalGameObject.transform.rotation = transform.Rotation;
                 }
                 
-                var inSideOffset = GetHalfSize(hitBoxData.ValueRO);
+                var inSideOffset = GetHalfSize(hitBoxData.ValueRO) * _offsetRate;
                 if (unitData.ValueRO.IsPlayer <= 0 && transform.Position.x <= inSidePosX + inSideOffset) {
                     if (unitData.ValueRO.GameObject.Value.TryGetComponent<Character.Character>(out var characterScript) && 
                         characterScript.InSideMap.CurrentValue == false &&
@@ -37,7 +39,7 @@ namespace Script.GamePlay.ECS.System {
                 }
 
                 // 왼쪽으로 사라져 기본 - Offset
-                var outSideOffset = -GetHalfSize(hitBoxData.ValueRO);
+                var outSideOffset = -GetHalfSize(hitBoxData.ValueRO) * _offsetRate;
                 if (transform.Position.x <= outSidePosX + outSideOffset) {
                     if (unitData.ValueRO.GameObject.Value.TryGetComponent<Character.Character>(out var characterScript) && 
                         characterScript.SystemControl.CurrentValue == false &&

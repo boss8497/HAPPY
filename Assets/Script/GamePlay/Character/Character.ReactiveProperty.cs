@@ -125,7 +125,6 @@ namespace Script.GamePlay.Character {
                               gameObject.SetActiveSafe(true);
                               await StartAsync();
                               SetEnabledTag<UnitCollisionEnable>(true);
-                              Debug.Log($"InSideMap! {gameObject.name}");
                           }
                       })
                       .AddTo(ref _reactiveDisposableBag);
@@ -137,9 +136,7 @@ namespace Script.GamePlay.Character {
                               if (!IsPlayer) {
                                   _stageManager.AddRemoveEnemy(this);
                               }
-
                               SetEnabledTag<UnitCollisionEnable>(false);
-                              Debug.Log($"OutSideMap! {gameObject.name}");
                           }
                       })
                       .AddTo(ref _reactiveDisposableBag);

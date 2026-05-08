@@ -89,7 +89,7 @@ namespace Script.GamePlay.ECS.System {
 
             RemoveExpiredDelay(delayBuffer, CurrentTime);
 
-            var hasCollision = false;
+            //var hasCollision = false;
 
             for (int j = 0; j < Entities.Length; j++) {
                 if (index == j)
@@ -116,6 +116,7 @@ namespace Script.GamePlay.ECS.System {
                     continue;
                 }
 
+                // EntityA Set
                 resultBuffer.Add(new UnitCollisionResult {
                     OtherEntity = entityB,
                     OtherUid    = unitB.Uid,
@@ -126,11 +127,26 @@ namespace Script.GamePlay.ECS.System {
                     OtherUid = unitB.Uid,
                 });
 
-                hasCollision = true;
-            }
-
-            if (hasCollision) {
                 CollisionTagLookup.SetComponentEnabled(entityA, true);
+                
+                // EntityB Set
+                var delayBufferB  = DelayLookup[entityB];
+                var resultBufferB = ResultLookup[entityB];
+                
+                if (ContainsDelay(delayBufferB, unitA.Uid))
+                    continue;
+                
+                resultBufferB.Add(new UnitCollisionResult {
+                    OtherEntity = entityA,
+                    OtherUid    = unitA.Uid,
+                    OtherTeam   = unitA.Team,
+                });
+
+                delayBufferB.Add(new UnitCollisionDelay() {
+                    OtherUid = unitA.Uid,
+                });
+
+                CollisionTagLookup.SetComponentEnabled(entityB, true);
             }
         }
 
