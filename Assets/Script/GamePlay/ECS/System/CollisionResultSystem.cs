@@ -36,23 +36,6 @@ namespace Script.GamePlay.ECS.System {
                 foreach (var result in results) {
                     // Team 체크는 Collision System에서 이미 확인
                     characterScript.Collision(result.OtherUid);
-                    var collisionDelay = characterScript.GetCollisionDelayTime();
-                    var delayBuffer    = delayLookup[unitRef.ValueRO.Entity];
-                    var index          = FindDelayIndex(delayBuffer, result.OtherUid);
-
-                    // CollisionSystem에서 버퍼 등록을 하는데 없으면 문제가 있음..
-                    // 새로 만들어 준다?
-                    if (index <= 0) {
-                        delayBuffer.Add(new UnitCollisionDelay {
-                                            ExpireTime = gameTimer.Elapsed + collisionDelay,
-                                            OtherUid   = result.OtherUid
-                                        });
-                    }
-                    else {
-                        var oldDelayBuffer = delayBuffer[index];
-                        oldDelayBuffer.ExpireTime = gameTimer.Elapsed + collisionDelay;
-                        delayBuffer[index]        = oldDelayBuffer;
-                    }
                 }
 
                 results.Clear();

@@ -31,6 +31,7 @@ namespace Script.GamePlay.ECS.System {
                 var inSideOffset = GetHalfSize(hitBoxData.ValueRO) * _offsetRate;
                 if (unitData.ValueRO.IsPlayer <= 0 && transform.Position.x <= inSidePosX + inSideOffset) {
                     if (unitData.ValueRO.GameObject.Value.TryGetComponent<Character.Character>(out var characterScript) && 
+                        characterScript.SystemControl.CurrentValue == false &&
                         characterScript.InSideMap.CurrentValue == false &&
                         characterScript.Initialized.CurrentValue
                        ) {
@@ -42,6 +43,7 @@ namespace Script.GamePlay.ECS.System {
                 var outSideOffset = -GetHalfSize(hitBoxData.ValueRO) * _offsetRate;
                 if (transform.Position.x <= outSidePosX + outSideOffset) {
                     if (unitData.ValueRO.GameObject.Value.TryGetComponent<Character.Character>(out var characterScript) && 
+                        characterScript.InSideMap.CurrentValue &&
                         characterScript.SystemControl.CurrentValue == false &&
                         characterScript.OutSideMap.CurrentValue == false &&
                         characterScript.Initialized.CurrentValue

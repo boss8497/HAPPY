@@ -14,6 +14,7 @@ namespace Script.GamePlay.Unit {
         public abstract Transform     Transform     { get; }
         public abstract bool          IsPlayer      { get; }
         public abstract CharacterType CharacterType { get; }
+        public abstract float         GetCollisionDelayTime();
 
         public void Set(long uid, int team) {
             _uid  = uid;

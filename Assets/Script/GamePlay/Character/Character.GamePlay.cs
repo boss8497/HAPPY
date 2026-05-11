@@ -95,11 +95,9 @@ namespace Script.GamePlay.Character {
 
         // 상대방에게 캐릭터를 다시 받는 DelayTime ECS에서 사용하고 이 시간이 지나야
         // 상대방과 충돌 시 데미지를 받음
-        public float GetCollisionDelayTime()
-            => CharacterInfo.type switch {
-                CharacterType.Obstacle  => 1f,
-                CharacterType.Character => 1f,
-                _                       => 0f
+        public override float GetCollisionDelayTime()
+            => CharacterInfo?.type switch {
+                _                       => 1f
             };
 
 

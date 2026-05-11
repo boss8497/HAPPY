@@ -25,6 +25,7 @@ namespace Script.GamePlay.ECS.Component {
         public int                        Team;
         public UnityObjectRef<GameObject> GameObject;
         public byte                       IsPlayer;
+        public float                      CollisionDelay;
     }
 
     public struct HitBoxData : IComponentData {

@@ -125,6 +125,7 @@ namespace Script.GamePlay.ECS.System {
 
                 delayBuffer.Add(new UnitCollisionDelay() {
                     OtherUid = unitB.Uid,
+                    ExpireTime = CurrentTime + unitB.CollisionDelay,
                 });
 
                 CollisionTagLookup.SetComponentEnabled(entityA, true);
@@ -132,6 +133,8 @@ namespace Script.GamePlay.ECS.System {
                 // EntityB Set
                 var delayBufferB  = DelayLookup[entityB];
                 var resultBufferB = ResultLookup[entityB];
+                
+                RemoveExpiredDelay(delayBufferB, CurrentTime);
                 
                 if (ContainsDelay(delayBufferB, unitA.Uid))
                     continue;
@@ -143,7 +146,8 @@ namespace Script.GamePlay.ECS.System {
                 });
 
                 delayBufferB.Add(new UnitCollisionDelay() {
-                    OtherUid = unitA.Uid,
+                    OtherUid   = unitA.Uid,
+                    ExpireTime = CurrentTime + unitA.CollisionDelay,
                 });
 
                 CollisionTagLookup.SetComponentEnabled(entityB, true);

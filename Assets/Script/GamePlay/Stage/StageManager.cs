@@ -151,6 +151,7 @@ namespace Script.GamePlay.Stage {
         private void UpdateRemoveEnemy() {
             if (_RemoveEnemies.Count <= 0) return;
             foreach (var outSideEnemy in _RemoveEnemies) {
+                Debug.LogError($"{outSideEnemy.GameObject.name} OutSideMap Remove!!");
                 RemoveEnemy(outSideEnemy);
             }
             _RemoveEnemies.Clear();
@@ -177,11 +178,11 @@ namespace Script.GamePlay.Stage {
             await _screenManager.CloseAllAsync(true);
             StopLoop();
 
+            ResetCamera();
             ReleaseCharacter();
             ResetTrigger();
             ReleaseAction();
             ResetReactive();
-            ResetCamera();
 
             await Test();
         }

@@ -19,11 +19,11 @@ namespace Script.GamePlay.Stage {
         public ClientEnemySpawnAction(ActionBase action) : base(action) {
             if (action is EnemySpawnAction enemySpawnAction) {
                 _enemySpawnAction = enemySpawnAction;
-                _spawnDataQueue   = new(_enemySpawnAction.spawnData.OrderBy(o => o.position.x));
             }
         }
 
         public override void Initialize(IStageManager stageManager) {
+            _spawnDataQueue = new(_enemySpawnAction.spawnData.OrderBy(o => o.position.x));
             _stageManager   = stageManager;
             _cameraControls = _stageManager?.CameraControls;
         }
@@ -49,6 +49,7 @@ namespace Script.GamePlay.Stage {
         }
 
         public override void Release() {
+            _spawnDataQueue.Clear();
             _stageManager   = null;
             _spawnDataQueue = null;
         }

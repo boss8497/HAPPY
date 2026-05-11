@@ -108,6 +108,7 @@ namespace Script.GamePlay.Unit {
                 Team       = unit.Team,
                 GameObject = unit.gameObject,
                 IsPlayer   = unit.IsPlayer ? (byte)1 : (byte)0,
+                CollisionDelay = unit.GetCollisionDelayTime(),
             });
         }
 
