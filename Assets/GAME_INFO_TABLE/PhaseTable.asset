@@ -27,8 +27,7 @@ MonoBehaviour:
         - rid: 2476689730211151970
         actions:
         - rid: 2451557340872441960
-        - rid: 4223259507235750011
-        - rid: 4223259530382016639
+        - rid: 4223259598952071168
     - rid: 2451557340872441960
       type: {class: PlayerSpawnAction, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
       data:
@@ -43,32 +42,27 @@ MonoBehaviour:
       type: {class: PlayerDieTrigger, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
       data:
         type: 0
-    - rid: 4223259507235750011
+    - rid: 4223259598952071168
       type: {class: EnemySpawnAction, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
       data:
         guid:
-          v0: 410234286
-          v1: 1256900479
-          v2: 1115450790
-          v3: 4089556332
-        timing: 0
-        uid: 6
-        position: {x: 300, y: 0, z: 0}
-    - rid: 4223259530382016639
-      type: {class: EnemySpawnArrayAction, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
-      data:
-        guid:
-          v0: 2775423676
-          v1: 1233790092
-          v2: 2803614120
-          v3: 2777460065
-        timing: 0
-        uid: 2
-        positions:
-        - {x: 5, y: 0, z: 0}
-        - {x: 10, y: 0, z: 0}
-        - {x: 15, y: 0, z: 0}
-        - {x: 30, y: 0, z: 0}
-        - {x: 35, y: 0, z: 0}
-        - {x: 50, y: 0, z: 0}
-        - {x: 53, y: 0, z: 0}
+          v0: 2741578429
+          v1: 1110840457
+          v2: 581200561
+          v3: 3703256381
+        timing: 1
+        spawnData:
+        - uid: 2
+          position: {x: 5, y: 0, z: 0}
+        - uid: 2
+          position: {x: 10, y: 0, z: 0}
+        - uid: 7
+          position: {x: 20, y: 0, z: 0}
+        - uid: 2
+          position: {x: 25, y: 0, z: 0}
+        - uid: 4
+          position: {x: 30, y: 0, z: 0}
+        - uid: 5
+          position: {x: 35, y: 0, z: 0}
+        - uid: 6
+          position: {x: 100, y: 0, z: 0}

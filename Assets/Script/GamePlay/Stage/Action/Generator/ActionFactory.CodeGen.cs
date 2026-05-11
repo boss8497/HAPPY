@@ -8,7 +8,6 @@ namespace Script.GamePlay.Stage {
         private static global::Script.GamePlay.Stage.ClientActionBase CreateInternal(global::Script.GameInfo.Dungeon.ActionBase action) {
             return action switch {
                 global::Script.GameInfo.Dungeon.EnemySpawnAction typed => new global::Script.GamePlay.Stage.ClientEnemySpawnAction(typed),
-                global::Script.GameInfo.Dungeon.EnemySpawnArrayAction typed => new global::Script.GamePlay.Stage.ClientEnemySpawnArrayAction(typed),
                 global::Script.GameInfo.Dungeon.PlayerSpawnAction typed => new global::Script.GamePlay.Stage.ClientPlayerSpawnAction(typed),
                 _ => null,
             };

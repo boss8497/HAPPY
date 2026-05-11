@@ -26,15 +26,14 @@ namespace Script.GamePlay.Stage {
             }
         }
 
-        public override UniTask Initialize(IStageManager stageManager) {
+        public override void Initialize(IStageManager stageManager) {
             // 일단 테스트 용으로 처음 캐릭터
             // 이 후에는 선택된 캐릭터를 플레이할 수 있도록..
             _stageManager = stageManager;
             _characterInfo = GameInfoManager.Instance.Get<CharacterInfo>(1);
-            return UniTask.CompletedTask;
         }
 
-        public override UniTask Execute() {
+        public override UniTask ExecuteAsync() {
             // 여기서 Pop한 Pool을 StageManager에서 Push를 해줌
             // Pop을 호출 했으면 StageManager에서 Push 로직 필요
             var prefab = _stageManager.StagePooling.Pop(_characterInfo.prefab);
@@ -46,8 +45,7 @@ namespace Script.GamePlay.Stage {
             return UniTask.CompletedTask;
         }
 
-        public override UniTask Release() {
-            return UniTask.CompletedTask;
+        public override void Release() {
         }
     }
 }

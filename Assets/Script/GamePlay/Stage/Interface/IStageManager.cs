@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using R3;
 using Script.GameData.Model;
 using Script.GameInfo.Dungeon;
+using Script.GamePlay.Camera;
 using Script.GamePlay.Character;
 using Script.GamePlay.Pool;
 using Script.GamePlay.Service.Interface;
@@ -12,9 +13,10 @@ using VContainer;
 namespace Script.GamePlay.Stage {
     public interface IStageManager {
         //Injection
-        IGroupService   Group        { get; }
-        IObjectResolver Resolver     { get; }
-        IStagePooling   StagePooling { get; }
+        IGroupService   Group          { get; }
+        IObjectResolver Resolver       { get; }
+        IStagePooling   StagePooling   { get; }
+        ICameraControls CameraControls { get; }
 
 
         //Reactive

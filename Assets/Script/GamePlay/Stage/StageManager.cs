@@ -16,8 +16,10 @@ using VContainer.Unity;
 
 namespace Script.GamePlay.Stage {
     public partial class StageManager : IStageManager, IInitializable, IDisposable {
-        private List<Character.ICharacter> _players;
-        public  List<Character.ICharacter> Players => _players;
+        private Dictionary<EventTiming, ClientActionBase[]> _actions;
+        
+        private List<Character.ICharacter>                  _players;
+        public  List<Character.ICharacter>                  Players => _players;
 
         private List<Character.ICharacter> _enemies;
         public  List<Character.ICharacter> Enemies => _enemies;
@@ -28,7 +30,7 @@ namespace Script.GamePlay.Stage {
 
         private int _systemControlStack = 0;
 
-        private CancellationTokenSource _updateCts;
+        private CancellationTokenSource                     _updateCts;
 
         public void Initialize() {
             Test().Forget();
@@ -62,6 +64,7 @@ namespace Script.GamePlay.Stage {
             InitializePool();
             InitializeReactiveProperty(dungeonProgress);
             InitializeTrigger();
+            InitializeAction();
         }
 
         private void InitializeCamera() {
@@ -72,12 +75,14 @@ namespace Script.GamePlay.Stage {
 
             entityManager.SetComponentData(_cameraEntity, new CameraData {
                                                Entity = _cameraEntity,
-                                               Camera = _cameraControls.MainCamera
+                                               Camera = CameraControls.MainCamera
                                            });
         }
 
         public async UniTask Begin() {
             await ExecuteAction(EventTiming.Begin);
+            // 시작 시 첫번째 틱 Update
+            await ExecuteAction(EventTiming.Update);
         }
 
         public UniTask Start() {
@@ -97,6 +102,7 @@ namespace Script.GamePlay.Stage {
             while (ct.IsCancellationRequested == false) {
                 UpdateRemoveEnemy();
                 UpdateRunningScore();
+                await ExecuteAction(EventTiming.Update);
 
                 var trigger = OnTriggerCheck();
                 if (trigger != null) {
@@ -128,7 +134,7 @@ namespace Script.GamePlay.Stage {
         // ECS에서 Update 해줌
         private void UpdateCamera() {
             var entityManager   = _entityWorld.EntityManager;
-            var cameraTransform = _cameraControls.MainCamera.transform;
+            var cameraTransform = CameraControls.MainCamera.transform;
 
             entityManager.SetComponentData(_cameraEntity, new LocalTransform {
                 Position = cameraTransform.position,
@@ -138,7 +144,7 @@ namespace Script.GamePlay.Stage {
 
             entityManager.SetComponentData(_cameraEntity, new CameraData {
                 Entity = _cameraEntity,
-                Camera = _cameraControls.MainCamera,
+                Camera = CameraControls.MainCamera,
             });
         }
 
@@ -173,6 +179,7 @@ namespace Script.GamePlay.Stage {
 
             ReleaseCharacter();
             ResetTrigger();
+            ReleaseAction();
             ResetReactive();
             ResetCamera();
 
@@ -180,11 +187,11 @@ namespace Script.GamePlay.Stage {
         }
 
         private void ResetCamera() {
-            _vCamera.LookAt                               = null;
-            _vCamera.Follow                               = null;
-            _vCamera.transform.position                   = Vector3.zero;
-            _targetGroup.Transform.position               = Vector3.zero;
-            _cameraControls.MainCamera.transform.position = Vector3.zero;
+            _vCamera.LookAt                              = null;
+            _vCamera.Follow                              = null;
+            _vCamera.transform.position                  = Vector3.zero;
+            _targetGroup.Transform.position              = Vector3.zero;
+            CameraControls.MainCamera.transform.position = Vector3.zero;
         }
 
         public void Release() {
@@ -203,14 +210,32 @@ namespace Script.GamePlay.Stage {
             PhaseIndex?.Dispose();
         }
 
+        private void InitializeAction() {
+            _actions = PhaseInfo.CurrentValue.actions
+                                   .Select(ActionFactory.Create)
+                                   .GroupBy(g => g.Timing)
+                                   .ToDictionary(r => r.Key, r => r.ToArray());
+            
+            foreach (var actionValue in _actions) {
+                foreach (var actionBase in actionValue.Value) {
+                    actionBase.Initialize(this);
+                }
+            }
+        }
+
+        private void ReleaseAction() {
+            foreach (var actionValue in _actions) {
+                foreach (var actionBase in actionValue.Value) {
+                    actionBase.Release();
+                }
+            }
+            _actions.Clear();
+        }
+
 
         private async UniTask ExecuteAction(EventTiming timing) {
-            foreach (var beginAction in PhaseInfo.CurrentValue.actions
-                                                 .Where(r => r.timing == timing)
-                                                 .Select(ActionFactory.Create)
-                    ) {
-                await beginAction.Initialize(this);
-                await beginAction.Execute();
+            foreach (var beginAction in _actions[timing]) {
+                await beginAction.ExecuteAsync();
             }
         }
     }

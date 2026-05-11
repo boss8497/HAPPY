@@ -14,16 +14,16 @@ namespace Script.GamePlay.Stage {
         private readonly IStageEntityWorld      _entityWorld;
         private readonly IScreenManager         _screenManager;
         private readonly IGameTimer             _gameTimer;
-        private readonly ICameraControls        _cameraControls;
 
 
         private readonly string _failScreenKey;
         private readonly string _hudScreenKey;
         private readonly string _clearScreenKey;
 
-        public IGroupService   Group        { get; private set; }
-        public IObjectResolver Resolver     { get; private set; }
-        public IStagePooling   StagePooling { get; private set; }
+        public IGroupService   Group          { get; private set; }
+        public IObjectResolver Resolver       { get; private set; }
+        public IStagePooling   StagePooling   { get; private set; }
+        public ICameraControls CameraControls { get; private set; }
 
 
         public StageManager(
@@ -50,7 +50,7 @@ namespace Script.GamePlay.Stage {
             _hudScreenKey   = hudScreenKey;
             _clearScreenKey = clearScreenKey;
             _gameTimer      = gameTimer;
-            _cameraControls = cameraControls;
+            CameraControls  = cameraControls;
             _vCamera        = vCamera;
         }
     }
