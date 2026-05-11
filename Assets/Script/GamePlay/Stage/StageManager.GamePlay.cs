@@ -31,6 +31,8 @@ namespace Script.GamePlay.Stage {
                 ListPool.Return(characterPool);
                 _enemies.Clear();
             }
+            
+            _RemoveEnemies?.Clear();
         }
         
         public bool AddCharacter(GameObject obj) {
