@@ -110,7 +110,17 @@ namespace Script.GUI.Screen {
         public virtual UniTask Release() {
             return UniTask.CompletedTask;
         }
+        
+        
+        #region Pooling
+        public GameObject PoolPop(string      key, Transform parent = null, bool active = true) {
+            return _screenManager.PoolPop(key, parent, active);
+        }
 
+        public void PoolPush(GameObject obj) {
+            _screenManager.PoolPush(obj);
+        }
+        #endregion
 
         #region Inspector
 

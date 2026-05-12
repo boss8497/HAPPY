@@ -16,7 +16,7 @@ namespace Script.GamePlay.Scene {
 
         public async UniTask LoadScene(string scenePath, CancellationToken ct = default) {
             await _screenManager.CloseAllAsync(true);
-            await _screenManager.LoadedScreenRelease();
+            await _screenManager.ResourceClear();
             var previousScene = SceneManager.GetActiveScene();
             
             var scene = await Addressables.LoadSceneAsync(scenePath, LoadSceneMode.Additive).ToUniTask(cancellationToken: ct);

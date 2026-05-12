@@ -1,6 +1,7 @@
 ﻿using Script.DataBase;
 using Script.DataBase.Interface;
 using Script.GameInfo.Attribute;
+using Script.GamePlay.Pool;
 using Script.GamePlay.Scene;
 using Script.GameSetting.Interface;
 using Script.GUI.Screen;
@@ -45,6 +46,9 @@ namespace Script.LifetimeScope {
             
             builder.RegisterEntryPoint<SceneLoader>(Lifetime.Singleton)
                    .As<ISceneLoader>();
+            
+            builder.RegisterEntryPoint<IUIPooling>(Lifetime.Singleton)
+                   .As<UIPooling>();
 
             RegisterScreenManager(builder);
         }

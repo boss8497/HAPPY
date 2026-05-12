@@ -405,7 +405,8 @@ namespace Script.GUI.Screen {
             return false;
         }
 
-        public async UniTask LoadedScreenRelease() {
+        public async UniTask ResourceClear() {
+            _uiPooling.Clear();
             foreach (var screen in _loadedScreens.Select(i => i.Value).ToArray()) {
                 await screen.Release();
                 Destroy(screen.GameObject);
