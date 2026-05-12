@@ -22,6 +22,18 @@ MonoBehaviour:
     m_Localized: "\uC0B0_1"
     m_Metadata:
       m_Items: []
+  - m_Id: 19177646957465600
+    m_Localized: "\uC0B0_2"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19177761352912896
+    m_Localized: "\uC0B0_3"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19177865967243264
+    m_Localized: "\uC0B0_4"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

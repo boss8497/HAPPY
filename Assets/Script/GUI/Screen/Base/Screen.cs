@@ -1,9 +1,11 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Script.GUI.Screen.Enum;
 using Script.GUI.Screen.Interface;
 using Script.Utility.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Pool;
 using VContainer;
 
 namespace Script.GUI.Screen {
@@ -19,6 +21,8 @@ namespace Script.GUI.Screen {
 
         [SerializeField]
         private ScreenLayerType layerType = ScreenLayerType.None;
+
+        private List<GameObject> _pools;
 
         public ScreenLayerType LayerType     => layerType;
         public string          Key           => key;
@@ -38,6 +42,13 @@ namespace Script.GUI.Screen {
 
         #region Open
 
+        /// <summary>
+        /// ScreenOpen 시 제일 먼저 호출되는 메서드, 호출 후 Active가 켜진다!!
+        /// </summary>
+        public async UniTask OpenAsync() {
+            _pools = ListPool.Get<GameObject>();
+            await OpenInternal();
+        }
         /// <summary>
         /// ScreenOpen 시 제일 먼저 호출되는 메서드, 호출 후 Active가 켜진다!!
         /// </summary>
@@ -84,6 +95,15 @@ namespace Script.GUI.Screen {
         /// <summary>
         /// Close 시 제일 먼저 호출되는 메서드
         /// </summary>
+        public async UniTask CloseAsync() {
+            await CloseInternal();
+            foreach (var pool in _pools.ToArray()) {
+                PoolPush(pool);
+            }
+            _pools.Clear();
+             ListPool<GameObject>.Release(_pools);
+        }
+        
         public abstract UniTask CloseInternal();
 
         /// <summary>
@@ -113,11 +133,15 @@ namespace Script.GUI.Screen {
         
         
         #region Pooling
-        public GameObject PoolPop(string      key, Transform parent = null, bool active = true) {
-            return _screenManager.PoolPop(key, parent, active);
+
+        public GameObject PoolPop(string path, Transform parent = null, bool active = true) {
+            var obj = _screenManager.PoolPop(path, parent, active);
+            _pools.Add(obj);
+            return obj;
         }
 
         public void PoolPush(GameObject obj) {
+            _pools.Remove(obj);
             _screenManager.PoolPush(obj);
         }
         #endregion

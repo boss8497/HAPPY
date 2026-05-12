@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Script.LifetimeScope.Locator;
 using Script.Utility.Runtime;
 using UnityEngine;
 using VContainer;
@@ -12,20 +13,23 @@ namespace Script.GamePlay.Pool {
     /// </summary>
     public class UIPooling : IInitializable, IDisposable, IUIPooling {
         private readonly Dictionary<string, GameObjectPool> _objectPools = new(StringComparer.Ordinal);
-        
-        public           Transform                          Root     { get; private set; }
-        public           IObjectResolver                    Resolver { get; private set; }
+        private readonly IScopeLocator                      _locator;
 
-        public UIPooling(IObjectResolver resolver) {
-            Resolver = resolver;
+        public Transform Root { get; private set; }
+
+        public IObjectResolver Resolver => _locator?.GetLastChildScope()?.Container;
+
+        public UIPooling(
+            IScopeLocator locator
+        ) {
+            _locator = locator;
         }
 
         public void Initialize() {
-            var root =  new GameObject("UIRoot");
+            var root = new GameObject("UIRoot");
             Root          = root.transform;
-            Root.position = new Vector3(int.MaxValue, int.MaxValue, int.MaxValue);
+            Root.position = new Vector3(int.MaxValue, int.MaxValue, 0);
             UnityEngine.Object.DontDestroyOnLoad(root);
-            
         }
 
         public GameObject Pop(string key, Transform parent = null, bool active = true) {
@@ -38,7 +42,7 @@ namespace Script.GamePlay.Pool {
             obj.transform.SetParent(parent);
             return obj;
         }
-        
+
         private GameObjectPool CreatePool(string key) {
             var pool = new GameObjectPool(this, key);
             _objectPools.Add(key, pool);
@@ -47,7 +51,7 @@ namespace Script.GamePlay.Pool {
 
         public bool Push(GameObject obj) {
             obj.SetActiveSafe(false);
-            
+
             if (obj.TryGetComponent<IPoolMember>(out var member) == false) {
                 Object.Destroy(obj);
                 return false;
@@ -76,7 +80,7 @@ namespace Script.GamePlay.Pool {
 
         private void Release() {
             Clear();
-            
+
             if (Root) {
                 Object.Destroy(Root);
             }

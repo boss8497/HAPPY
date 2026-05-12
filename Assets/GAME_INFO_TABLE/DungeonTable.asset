@@ -36,3 +36,33 @@ MonoBehaviour:
           description: 
           phaseInfos: 01000000
           scenePath: df3b36a662d48904294f72eb79029e88
+        - guid:
+            v0: 937873603
+            v1: 1241770501
+            v2: 2426583728
+            v3: 2298496010
+          id: Moutain_2
+          name: "\uC0B0_2"
+          description: 
+          phaseInfos: 01000000
+          scenePath: df3b36a662d48904294f72eb79029e88
+        - guid:
+            v0: 3447561144
+            v1: 1298301570
+            v2: 3600320693
+            v3: 4285537784
+          id: Moutain_3
+          name: "\uC0B0_3"
+          description: 
+          phaseInfos: 01000000
+          scenePath: df3b36a662d48904294f72eb79029e88
+        - guid:
+            v0: 1982846878
+            v1: 1113500117
+            v2: 2379947156
+            v3: 866927028
+          id: Moutain_4
+          name: "\uC0B0_4"
+          description: 
+          phaseInfos: 01000000
+          scenePath: df3b36a662d48904294f72eb79029e88

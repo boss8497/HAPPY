@@ -45,7 +45,7 @@ namespace Script.GamePlay.Pool {
                     member = _instance.AddComponent<PoolMember>();
                 }
                 member.Set(this);
-                
+                obj.transform.position =  Vector3.zero;
                 _stack.Push(obj);
             }
         }

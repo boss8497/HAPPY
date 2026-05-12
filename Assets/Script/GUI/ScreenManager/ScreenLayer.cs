@@ -21,7 +21,7 @@ namespace Script.GUI.Screen {
             
             _screens.Add(screen);
             
-            await screen.OpenInternal();
+            await screen.OpenAsync();
             
             screen.GameObject.SetActiveSafe(true);
             await screen.OpenAnimationAsync();
@@ -36,7 +36,7 @@ namespace Script.GUI.Screen {
                 return;
             }
 
-            await screen.CloseInternal();
+            await screen.CloseAsync();
             await screen.CloseAnimationAsync();
 
             await screen.CloseLateInternal();

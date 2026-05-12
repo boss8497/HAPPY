@@ -6,6 +6,8 @@ using Script.GameInfo.Table;
 using Script.GamePlay.Service.Interface;
 using Script.GamePlay.Scene;
 using Script.Utility.Runtime;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using VContainer;
 
@@ -33,8 +35,11 @@ namespace Script.GUI.Screen {
         private DungeonInfo     _dungeonInfo;
         private Stage           _stage;
 
+        
         // Inspector
-        public Button testStartBtn;
+        public AssetReferenceT<GameObject> element;
+        public RectTransform               contentRoot;
+        public Button                      testStartBtn;
 
         protected override void AwakeInternal() {
             base.AwakeInternal();
@@ -51,6 +56,10 @@ namespace Script.GUI.Screen {
             _dungeonProgress = _groupService.GetDungeon(Category.Running);
             _dungeonInfo     = GameInfoManager.Instance.Get<DungeonInfo>(_dungeonProgress.dungeonUid);
             _stage           = _dungeonInfo.stages.FirstOrDefault(r => r.guid.Value == _dungeonProgress.stageGuid);
+
+            for (int i = 0; i < _dungeonInfo.stages.Length; i++) {
+                PoolPop(element.AssetGUID, contentRoot);
+            }
         }
 
         public override UniTask CloseInternal() {

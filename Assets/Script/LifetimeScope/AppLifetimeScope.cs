@@ -47,8 +47,8 @@ namespace Script.LifetimeScope {
             builder.RegisterEntryPoint<SceneLoader>(Lifetime.Singleton)
                    .As<ISceneLoader>();
             
-            builder.RegisterEntryPoint<IUIPooling>(Lifetime.Singleton)
-                   .As<UIPooling>();
+            builder.RegisterEntryPoint<UIPooling>(Lifetime.Singleton)
+                   .As<IUIPooling>();
 
             RegisterScreenManager(builder);
         }

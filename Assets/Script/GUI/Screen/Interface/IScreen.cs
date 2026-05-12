@@ -13,12 +13,14 @@ namespace Script.GUI.Screen {
         RectTransform   RectTransform { get; }
         GameObject      GameObject    { get; }
 
+        UniTask OpenAsync();
         UniTask OpenInternal();
         UniTask OpenLateInternal();
         UniTask OpenAnimationAsync();
 
         void          Back();
         UniTask       BackAsync();
+        UniTask       CloseAsync();
         UniTask       CloseInternal();
         UniTask       CloseLateInternal();
         UniTask       CloseAnimationAsync();
