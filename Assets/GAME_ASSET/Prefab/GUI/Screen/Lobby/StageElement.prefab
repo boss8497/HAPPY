@@ -213,7 +213,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 18
   m_fontSizeBase: 48
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -267,6 +267,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 546637386668160788}
+  - component: {fileID: 3816726892056735002}
   m_Layer: 5
   m_Name: StageElement
   m_TagString: Untagged
@@ -294,3 +295,17 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3816726892056735002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7529136163590652289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2500d874ae164b9fb8324621b77c02fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Script.GUI.ViewModel::Script.GUI.ViewModel.StageElement
+  indexText: {fileID: 5034265435264028397}
+  startBtn: {fileID: 4666537749055522075}

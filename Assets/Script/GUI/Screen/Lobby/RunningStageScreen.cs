@@ -5,6 +5,7 @@ using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
 using Script.GamePlay.Service.Interface;
 using Script.GamePlay.Scene;
+using Script.GUI.ViewModel;
 using Script.Utility.Runtime;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -39,17 +40,6 @@ namespace Script.GUI.Screen {
         // Inspector
         public AssetReferenceT<GameObject> element;
         public RectTransform               contentRoot;
-        public Button                      testStartBtn;
-
-        protected override void AwakeInternal() {
-            base.AwakeInternal();
-
-            if (testStartBtn != null) {
-                testStartBtn.ClickAddListener(() => {
-                    _sceneLoader.LoadScene(_stage.scenePath).Forget();
-                });
-            }
-        }
 
         public override async UniTask OpenInternal() {
             await UniTask.WaitUntil(() => _groupService.Initialized);
@@ -57,8 +47,13 @@ namespace Script.GUI.Screen {
             _dungeonInfo     = GameInfoManager.Instance.Get<DungeonInfo>(_dungeonProgress.dungeonUid);
             _stage           = _dungeonInfo.stages.FirstOrDefault(r => r.guid.Value == _dungeonProgress.stageGuid);
 
-            for (int i = 0; i < _dungeonInfo.stages.Length; i++) {
-                PoolPop(element.AssetGUID, contentRoot);
+            foreach (var stage in _dungeonInfo.stages) {
+                var obj          = PoolPop(element.AssetGUID, contentRoot);
+                var stageElement = obj.GetComponent<StageElement>();
+                if (stageElement != null) {
+                    stageElement.InitializeReactive();
+                    stageElement.SetReactive(stage, _dungeonInfo);
+                }
             }
         }
 
