@@ -50,6 +50,13 @@ namespace Script.GUI.Screen {
                 if (stageElement != null) {
                     stageElement.InitializeReactive();
                     stageElement.SetReactive(stage, _dungeonInfo);
+                    
+                    if(stageElement.startBtn != null) {
+                        stageElement.startBtn.ClickAddListener(() => {
+                            if (stageElement.Stage?.CurrentValue == null || stageElement.DungeonInfo?.CurrentValue == null) return;
+                            _groupService.EnterDungeon(stageElement.DungeonInfo.CurrentValue, stageElement.Stage.CurrentValue).Forget();
+                        });
+                    }
                 }
             }
         }

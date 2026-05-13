@@ -13,41 +13,42 @@ using VContainer;
 namespace Script.GUI.ViewModel {
     public class StageElement : MonoBehaviour {
         // Reactive
-        private IGroupService   _groupService;
-        
+        private IGroupService _groupService;
+
         [Inject]
         public void Inject(
-            IGroupService   groupService
+            IGroupService groupService
         ) {
             _groupService = groupService;
         }
-        
-        
+
+
         [SerializeField]
         private TMP_Text indexText;
 
         [SerializeField]
-        private Button startBtn;
+        public Button startBtn;
 
 
-        public ReactiveProperty<Stage>       Stage       { get; set; } = new();
-        public ReactiveProperty<DungeonInfo> DungeonInfo { get; set; } = new();
+        public ReactiveProperty<Stage>        Stage         { get; set; } = new();
+        public ReactiveProperty<DungeonInfo>  DungeonInfo   { get; set; } = new();
+        public ReadOnlyReactiveProperty<bool> CanEnterStage { get; set; }
 
 
         private DisposableBag _disposableBag;
 
-        private void Awake() {
-            if(startBtn != null) {
-                startBtn.ClickAddListener(() => {
-                    if (Stage?.CurrentValue == null) return;
-                    _groupService.EnterDungeon(DungeonInfo.CurrentValue, Stage.CurrentValue).Forget();
-                });
-            }
-        }
-
 
         public void InitializeReactive() {
             _disposableBag = new();
+
+            CanEnterStage = DungeonInfo.CombineLatest(Stage, (dungeon, stage) => (dungeon, stage))
+                                       .Select(i => {
+                                           if (i.dungeon == null || i.stage == null) return false;
+                                           return _groupService.CanEnterStage(i.dungeon, i.stage);
+                                       })
+                                       .DistinctUntilChanged()
+                                       .ToReadOnlyReactiveProperty()
+                                       .AddTo(ref _disposableBag);
 
             Stage.CombineLatest(DungeonInfo, (stage, dungeonInfo) => (stage, dungeonInfo))
                  .Subscribe(data => {
@@ -55,6 +56,13 @@ namespace Script.GUI.ViewModel {
                      indexText.SetText($"{data.dungeonInfo.stages.FindIndex(s => s.guid.Value == data.stage.guid.Value) + 1}");
                  })
                  .AddTo(ref _disposableBag);
+
+            CanEnterStage.Subscribe(canEnter => {
+                             if (startBtn != null) {
+                                 startBtn.interactable = canEnter;
+                             }
+                         })
+                         .AddTo(ref _disposableBag);
         }
 
         public void SetReactive(Stage value, DungeonInfo sub) {

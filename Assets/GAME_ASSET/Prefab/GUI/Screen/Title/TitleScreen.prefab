@@ -93,6 +93,7 @@ MonoBehaviour:
   layerType: 0
   option: 1
   _backButtons: []
+  lobbyDungeonUid: 1
   startBtn: {fileID: 394649621739783277}
 --- !u!1 &6500499568062530898
 GameObject:

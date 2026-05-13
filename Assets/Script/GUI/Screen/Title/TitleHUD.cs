@@ -1,11 +1,13 @@
 ﻿using System.Linq;
 using Cysharp.Threading.Tasks;
+using Script.GameInfo.Attribute;
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
 using Script.GamePlay.Service.Interface;
 using Script.LifetimeScope.Interface;
 using Script.LifetimeScope.Locator;
 using Script.Utility.Runtime;
+using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 
@@ -22,6 +24,9 @@ namespace Script.GUI.Screen {
         }
 
         // Inspector
+        [SerializeField, Dungeon]
+        private int lobbyDungeonUid;
+
         public Button startBtn;
 
 
@@ -41,7 +46,6 @@ namespace Script.GUI.Screen {
 
         private async UniTask EnterLobbyAsync() {
             var groupLifeTimeScope = await CreateGroupScope();
-            var lobbyDungeonUid    = GameInfoManager.Instance.Config.lobby;
             var lobbyDungeonInfo   = GameInfoManager.Instance.Get<DungeonInfo>(lobbyDungeonUid);
             var group              = groupLifeTimeScope.Container.Resolve<IGroupService>();
             await group.EnterDungeon(lobbyDungeonInfo, lobbyDungeonInfo.stages.FirstOrDefault());

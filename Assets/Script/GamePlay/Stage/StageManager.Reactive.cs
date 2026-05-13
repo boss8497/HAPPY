@@ -102,6 +102,7 @@ namespace Script.GamePlay.Stage {
                              AddState(StageState.NextPhase);
                          }
                          else {
+                             await Group.ClearedDungeon(DungeonInfo.CurrentValue, Stage.CurrentValue);
                              await _screenManager.OpenAsync(_clearScreenKey, ct);
                          }
                      }

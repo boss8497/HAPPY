@@ -7,11 +7,14 @@ using Script.GameInfo.Dungeon;
 namespace Script.GamePlay.Service.Interface {
     public interface IGroupService : IService {
         IGroupData GroupData { get; }
-        long GroupUid { get; }
+        long       GroupUid  { get; }
 
-        DungeonProgress           GetDungeon(Category      dungeonCategory);
-        UniTask                   ClearedDungeon(Category  dungeonCategory);
-        UniTask                   EnterDungeon(DungeonInfo dungeonInfo, Stage stage);
+        DungeonProgress           GetDungeon(Category        dungeonCategory);
+        bool                      IsCleared(DungeonInfo      dungeonInfo, Stage stage);
+        bool                      CanEnterStage(DungeonInfo  dungeonInfo, Stage stage);
+        UniTask                   ClearedDungeon(Category    dungeonCategory);
+        UniTask                   ClearedDungeon(DungeonInfo dungeonInfo, Stage stage);
+        UniTask                   EnterDungeon(DungeonInfo   dungeonInfo, Stage stage);
         Tuple<DungeonInfo, Stage> GetEnterDungeon();
     }
 }
