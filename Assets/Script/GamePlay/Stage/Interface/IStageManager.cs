@@ -20,26 +20,25 @@ namespace Script.GamePlay.Stage {
 
 
         //Reactive
-        ReactiveProperty<StageState>   State         { get; }
-        ReactiveProperty<float>        Score         { get; }
-        ReactiveProperty<float>        RunningScore  { get; }
-        ReactiveProperty<float>        ItemScore     { get; }
-        ReadOnlyReactiveProperty<bool> Initialized   { get; }
-        ReadOnlyReactiveProperty<bool> SystemControl { get; }
-        ReadOnlyReactiveProperty<bool> Fail          { get; }
-        ReadOnlyReactiveProperty<bool> Clear         { get; }
-        ReadOnlyReactiveProperty<bool> NextPhase     { get; }
-        ReadOnlyReactiveProperty<bool> ReStartState  { get; }
+        ReactiveProperty<DungeonInfo>            DungeonInfo   { get; }
+        ReactiveProperty<GameInfo.Dungeon.Stage> Stage         { get; }
+        ReactiveProperty<StageState>             State         { get; }
+        ReactiveProperty<float>                  Score         { get; }
+        ReactiveProperty<float>                  RunningScore  { get; }
+        ReactiveProperty<float>                  ItemScore     { get; }
+        ReadOnlyReactiveProperty<bool>           Initialized   { get; }
+        ReadOnlyReactiveProperty<bool>           SystemControl { get; }
+        ReadOnlyReactiveProperty<bool>           Fail          { get; }
+        ReadOnlyReactiveProperty<bool>           Clear         { get; }
+        ReadOnlyReactiveProperty<bool>           NextPhase     { get; }
+        ReadOnlyReactiveProperty<bool>           ReStartState  { get; }
 
-
-        ReadOnlyReactiveProperty<DungeonInfo>            DungeonInfo { get; }
-        ReadOnlyReactiveProperty<GameInfo.Dungeon.Stage> Stage       { get; }
 
         //GamePlay
         List<Character.ICharacter> Players { get; }
         List<Character.ICharacter> Enemies { get; }
 
-        void    Initialize(DungeonProgress dungeonProgress);
+        void    Initialize(DungeonInfo dungeonInfo, GameInfo.Dungeon.Stage stage);
         UniTask Begin();
         UniTask Start();
         UniTask End();

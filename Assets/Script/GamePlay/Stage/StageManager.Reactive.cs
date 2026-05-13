@@ -10,30 +10,28 @@ using UnityEngine;
 
 namespace Script.GamePlay.Stage {
     public partial class StageManager {
-        public ReactiveProperty<DungeonProgress> DungeonProgress { get; private set; } = new();
-        public ReactiveProperty<StageState>      State           { get; private set; } = new(StageState.None);
-        public ReactiveProperty<int>             PhaseIndex      { get; private set; } = new(0);
+        public ReactiveProperty<StageState> State      { get; private set; } = new(StageState.None);
+        public ReactiveProperty<int>        PhaseIndex { get; private set; } = new(0);
+
+        public ReactiveProperty<DungeonInfo>            DungeonInfo { get; private set; } = new();
+        public ReactiveProperty<GameInfo.Dungeon.Stage> Stage       { get; private set; } = new();
 
         public ReactiveProperty<float> Score        { get; private set; } = new();
         public ReactiveProperty<float> RunningScore { get; private set; } = new();
         public ReactiveProperty<float> ItemScore    { get; private set; } = new();
 
-        public ReadOnlyReactiveProperty<bool> Initialized   { get; private set; }
-        public ReadOnlyReactiveProperty<bool> SystemControl { get; private set; }
-        public ReadOnlyReactiveProperty<bool> Fail          { get; private set; }
-        public ReadOnlyReactiveProperty<bool> Clear         { get; private set; }
-        public ReadOnlyReactiveProperty<bool> NextPhase     { get; private set; }
-        public ReadOnlyReactiveProperty<bool> ReStartState  { get; private set; }
-
-
-        public ReadOnlyReactiveProperty<DungeonInfo>            DungeonInfo { get; private set; }
-        public ReadOnlyReactiveProperty<GameInfo.Dungeon.Stage> Stage       { get; private set; }
-        public ReadOnlyReactiveProperty<PhaseInfo>              PhaseInfo   { get; private set; }
+        public ReadOnlyReactiveProperty<bool>      Initialized   { get; private set; }
+        public ReadOnlyReactiveProperty<bool>      SystemControl { get; private set; }
+        public ReadOnlyReactiveProperty<bool>      Fail          { get; private set; }
+        public ReadOnlyReactiveProperty<bool>      Clear         { get; private set; }
+        public ReadOnlyReactiveProperty<bool>      NextPhase     { get; private set; }
+        public ReadOnlyReactiveProperty<bool>      ReStartState  { get; private set; }
+        public ReadOnlyReactiveProperty<PhaseInfo> PhaseInfo     { get; private set; }
 
 
         private DisposableBag _reactiveDisposableBag;
 
-        private void InitializeReactiveProperty(DungeonProgress dungeonProgress) {
+        private void InitializeReactiveProperty(DungeonInfo dungeonInfo, GameInfo.Dungeon.Stage stage) {
             _reactiveDisposableBag = new();
 
             Initialized = State.Select(i => (i & StageState.Initialized) != 0)
@@ -67,19 +65,6 @@ namespace Script.GamePlay.Stage {
                                 .ToReadOnlyReactiveProperty()
                                 .AddTo(ref _reactiveDisposableBag);
 
-            DungeonInfo = DungeonProgress.Select(i => i == null ? null : GameInfoManager.Instance.Get<DungeonInfo>(i.dungeonUid))
-                                         .DistinctUntilChanged()
-                                         .ToReadOnlyReactiveProperty()
-                                         .AddTo(ref _reactiveDisposableBag);
-
-            Stage = DungeonProgress.CombineLatest(DungeonInfo, (progress, info) => {
-                                       if (progress == null || info == null) return null;
-                                       return info.stages.FirstOrDefault(r => r.guid.Value == progress.stageGuid);
-                                   })
-                                   .DistinctUntilChanged()
-                                   .ToReadOnlyReactiveProperty()
-                                   .AddTo(ref _reactiveDisposableBag);
-
             PhaseInfo = PhaseIndex.CombineLatest(Stage, (index, stage) => index >= stage.phaseInfos.Length ? null : GameInfoManager.Instance.Get<PhaseInfo>(stage.phaseInfos[index]))
                                   .DistinctUntilChanged()
                                   .ToReadOnlyReactiveProperty()
@@ -107,7 +92,7 @@ namespace Script.GamePlay.Stage {
                          })
                          .AddTo(ref _reactiveDisposableBag);
 
-            Clear.SubscribeAwait(async (clear, ct)=> {
+            Clear.SubscribeAwait(async (clear, ct) => {
                      if (clear) {
                          // 다음 Phase가 있는지 확인
                          if (Stage.CurrentValue.phaseInfos.Length - 1 > PhaseIndex.CurrentValue) {
@@ -144,7 +129,8 @@ namespace Script.GamePlay.Stage {
 
             RunningScore.OnNext(0);
             ItemScore.OnNext(0);
-            DungeonProgress.OnNext(dungeonProgress);
+            DungeonInfo.OnNext(dungeonInfo);
+            Stage.OnNext(stage);
             PhaseIndex.OnNext(0);
         }
 
@@ -154,7 +140,8 @@ namespace Script.GamePlay.Stage {
 
         private void ReleaseReactive() {
             ResetReactive();
-            DungeonProgress.Dispose();
+            DungeonInfo.Dispose();
+            Stage.Dispose();
             State.Dispose();
             PhaseIndex.Dispose();
             Score.Dispose();

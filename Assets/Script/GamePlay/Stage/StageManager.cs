@@ -5,6 +5,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameData.Model;
 using Script.GameInfo.Character;
+using Script.GameInfo.Dungeon;
 using Script.GameInfo.Enum;
 using Script.GamePlay.Character;
 using Script.GamePlay.ECS.Component;
@@ -33,24 +34,19 @@ namespace Script.GamePlay.Stage {
         private CancellationTokenSource                     _updateCts;
 
         public void Initialize() {
-            Test().Forget();
+            InitializeAsync().Forget();
         }
-
-        // 테스트 코드
-        // StageLoader 부재
-        // StageLoader에서 순차 적으로 Call이 되어야 하며
-        // DungeonInfo 에는 이미 Scene안에 BackGround 및 StageLifeTimeScope가 있음
-        // 그래서 StageManager 에서는 Trigger 및 Action 실행 해서 
-        public async UniTask Test() {
+        
+        public async UniTask InitializeAsync() {
             ResetState();
             _screenManager.OpenAsync(_hudScreenKey).Forget();
 
             await UniTask.WaitUntil(() => Group?.Initialized ?? false);
             await UniTask.WaitUntil(() => _entityWorld.IsAlive);
-            var dungeon = Group.GroupData.Model.CurrentValue.dungeonProgresses.FirstOrDefault();
+            var enterDungeonInfo = Group.GetEnterDungeon();
 
             AddState(StageState.SystemControl);
-            Initialize(dungeon);
+            Initialize(enterDungeonInfo.Item1, enterDungeonInfo.Item2);
             AddState(StageState.Initialized);
 
             await Begin();
@@ -59,10 +55,10 @@ namespace Script.GamePlay.Stage {
             RemoveState(StageState.SystemControl);
         }
 
-        public void Initialize(DungeonProgress dungeonProgress) {
+        public void Initialize(DungeonInfo dungeonInfo, GameInfo.Dungeon.Stage stage) {
             InitializeCamera();
             InitializePool();
-            InitializeReactiveProperty(dungeonProgress);
+            InitializeReactiveProperty(dungeonInfo, stage);
             InitializeTrigger();
             InitializeAction();
         }
@@ -184,7 +180,7 @@ namespace Script.GamePlay.Stage {
             ReleaseAction();
             ResetReactive();
 
-            await Test();
+            await InitializeAsync();
         }
 
         private void ResetCamera() {
@@ -205,10 +201,6 @@ namespace Script.GamePlay.Stage {
 
         public void Dispose() {
             Release();
-
-            DungeonProgress?.Dispose();
-            State?.Dispose();
-            PhaseIndex?.Dispose();
         }
 
         private void InitializeAction() {

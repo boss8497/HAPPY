@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DungeonTable
   m_EditorClassIdentifier: Script.Table::Script.GameInfo.Table.DungeonTable
   DungeonInfos:
+  - rid: 4223259646659919970
   - rid: 2451557340872441957
   references:
     version: 2
@@ -20,10 +21,10 @@ MonoBehaviour:
     - rid: 2451557340872441957
       type: {class: DungeonInfo, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
       data:
-        <UID>k__BackingField: 1
+        <UID>k__BackingField: 2
         <ID>k__BackingField: Moutain
         <Name>k__BackingField: "\uC0B0"
-        category: 0
+        category: 1
         nextDungeonUid: 0
         stages:
         - guid:
@@ -66,3 +67,22 @@ MonoBehaviour:
           description: 
           phaseInfos: 01000000
           scenePath: df3b36a662d48904294f72eb79029e88
+    - rid: 4223259646659919970
+      type: {class: DungeonInfo, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
+      data:
+        <UID>k__BackingField: 1
+        <ID>k__BackingField: Lobby
+        <Name>k__BackingField: "\uB85C\uBE44"
+        category: 0
+        nextDungeonUid: 0
+        stages:
+        - guid:
+            v0: 89655288
+            v1: 1285638006
+            v2: 4242970504
+            v3: 2986827904
+          id: Lobby_1
+          name: "\uB85C\uBE44_1"
+          description: 
+          phaseInfos: 
+          scenePath: c67ee9c5192c4914582a56bceab39eac

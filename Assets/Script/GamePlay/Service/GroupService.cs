@@ -9,6 +9,7 @@ using Script.GameData.Data.Interface;
 using Script.GameData.Model;
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
+using Script.GamePlay.Scene;
 using Script.GamePlay.Service.Interface;
 using Script.Utility.Runtime;
 using UnityEngine;
@@ -16,7 +17,8 @@ using VContainer.Unity;
 
 namespace Script.GamePlay.Service {
     public class GroupService : IGroupService, IInitializable {
-        private readonly IClient _client;
+        private readonly IClient      _client;
+        private readonly ISceneLoader _sceneLoader;
 
         private GroupData  _groupData;
         public  IGroupData GroupData => _groupData;
@@ -25,10 +27,14 @@ namespace Script.GamePlay.Service {
         public bool Initialized { get; private set; }
 
 
+        private Tuple<DungeonInfo, Stage> _enterDungeon;
+
         public GroupService(
-            IClient client
+            IClient      client,
+            ISceneLoader sceneLoader
         ) {
-            _client = client;
+            _client      = client;
+            _sceneLoader = sceneLoader;
         }
 
         public void Initialize() {
@@ -38,8 +44,20 @@ namespace Script.GamePlay.Service {
         private async UniTaskVoid InitializeAsync() {
             //첫 접속
             var model = await _client.Req_Group();
-            _groupData = new GroupData(model);
+            _groupData  = new GroupData(model);
             Initialized = true;
+        }
+
+        public async UniTask EnterDungeon(DungeonInfo dungeonInfo, Stage stage) {
+            var result = await _client.Req_EnterDungeon(dungeonInfo, stage);
+            if (result) {
+                _enterDungeon = new(dungeonInfo, stage);
+                await _sceneLoader.LoadScene(stage.scenePath);
+            }
+        }
+
+        public Tuple<DungeonInfo, Stage> GetEnterDungeon() {
+            return _enterDungeon;
         }
 
         public DungeonProgress GetDungeon(Category dungeonCategory) {

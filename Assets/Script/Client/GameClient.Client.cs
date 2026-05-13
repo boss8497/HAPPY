@@ -6,6 +6,7 @@ using Script.GameData.Model;
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Info.Enum;
 using Script.GameInfo.Table;
+using Script.Utility.Runtime;
 
 namespace Script.Client {
     /// <summary>
@@ -20,20 +21,18 @@ namespace Script.Client {
                 // 일단 uid는 1로 설정
                 groupModel.uid = 1;
 
-                var dungeonInfo = GameInfoManager.Instance.Get<DungeonInfo>(GameInfoManager.Instance.Config.startDungeon);
-                if (dungeonInfo == null) {
-                    throw new Exception($"시작 던전 정보가 없습니다. DungeonId: {GameInfoManager.Instance?.Config?.startDungeon}");
-                }
-            
-                // 던전 정보 생성
-                groupModel.dungeonProgresses = new []{
-                    new DungeonProgress {
+                var dungeonProgress = ListPool.Get<DungeonProgress>();
+                foreach (var dungeonInfo in GameInfoManager.Instance.GetCollection<DungeonInfo>()) {
+                    // 던전 정보 생성
+                    dungeonProgress.Add(new DungeonProgress {
                         dungeonUid = dungeonInfo.UID,
                         stageGuid  = dungeonInfo.stages?.FirstOrDefault()?.guid.Value ?? Guid.Empty,
                         cleared    = false,
                         category   = (int)dungeonInfo.category,
-                    }
-                };
+                    });
+                }
+                groupModel.dungeonProgresses = dungeonProgress.ToArray();
+                ListPool.Return(dungeonProgress);
 
                 var gameConfiguration = GameInfoManager.Instance.Config;
                 foreach (var startItem in gameConfiguration.startItems) {
@@ -70,6 +69,10 @@ namespace Script.Client {
 
         public async UniTask<ItemModel> Req_ItemLevelUp(ItemModel model, LevelType type) {
             return await _dataBase.LevelUpItem(model, type);
+        }
+
+        public UniTask<bool> Req_EnterDungeon(DungeonInfo dungeonInfo, Stage stage) {
+            return UniTask.FromResult(true);
         }
     }
 }

@@ -17,17 +17,14 @@ namespace Script.GUI.Screen {
         // Reactive
         private IGroupService   _groupService;
         private IObjectResolver _objectResolver;
-        private ISceneLoader    _sceneLoader;
 
         [Inject]
         public void InjectSelf(
             IGroupService   groupService,
-            IObjectResolver objectResolver,
-            ISceneLoader    sceneLoader
+            IObjectResolver objectResolver
         ) {
             _groupService   = groupService;
             _objectResolver = objectResolver;
-            _sceneLoader    = sceneLoader;
         }
 
 

@@ -15,7 +15,7 @@ namespace Script.GameInfo.Info {
         public float maxJumpTime;
 
         [Dungeon]
-        public int startDungeon;
+        public int lobby;
 
         public ItemReward[] startItems = Array.Empty<ItemReward>();
 
@@ -29,7 +29,7 @@ namespace Script.GameInfo.Info {
                 Components   = Components.ToArray(),
                 ID           = ID,
                 Name         = Name,
-                startDungeon = startDungeon,
+                lobby        = lobby,
                 startItems   = startItems?.ToArray() ?? Array.Empty<ItemReward>(),
             };
         }

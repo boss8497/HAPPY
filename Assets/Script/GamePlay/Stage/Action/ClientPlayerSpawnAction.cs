@@ -10,7 +10,6 @@ using CharacterInfo = Script.GameInfo.Character.CharacterInfo;
 using Object = UnityEngine.Object;
 
 namespace Script.GamePlay.Stage {
-    //TODO: 테스트 코드가 있음
     [System.Serializable]
     public class ClientPlayerSpawnAction : ClientActionBase {
         private PlayerSpawnAction _playerSpawnAction;

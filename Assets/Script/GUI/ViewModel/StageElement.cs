@@ -14,15 +14,12 @@ namespace Script.GUI.ViewModel {
     public class StageElement : MonoBehaviour {
         // Reactive
         private IGroupService   _groupService;
-        private ISceneLoader    _sceneLoader;
         
         [Inject]
         public void Inject(
-            IGroupService   groupService,
-            ISceneLoader    sceneLoader
+            IGroupService   groupService
         ) {
-            _groupService   = groupService;
-            _sceneLoader    = sceneLoader;
+            _groupService = groupService;
         }
         
         
@@ -43,7 +40,7 @@ namespace Script.GUI.ViewModel {
             if(startBtn != null) {
                 startBtn.ClickAddListener(() => {
                     if (Stage?.CurrentValue == null) return;
-                    _sceneLoader.LoadScene(Stage.CurrentValue.scenePath).Forget();
+                    _groupService.EnterDungeon(DungeonInfo.CurrentValue, Stage.CurrentValue).Forget();
                 });
             }
         }
