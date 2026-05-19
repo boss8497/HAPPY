@@ -15,6 +15,7 @@ MonoBehaviour:
   ItemInfos:
   - rid: 4223259494780502112
   - rid: 4223259494780502115
+  - rid: 4223259779756720130
   references:
     version: 2
     RefIds:
@@ -38,3 +39,13 @@ MonoBehaviour:
         flag: 0
         statusUids: 
         characterInfoUid: 1
+    - rid: 4223259779756720130
+      type: {class: ItemInfo, ns: Script.GameInfo.Item, asm: Script.GameInfo}
+      data:
+        <UID>k__BackingField: 3
+        <ID>k__BackingField: Noelle
+        <Name>k__BackingField: "\uB178\uC5D8"
+        type: 2
+        flag: 0
+        statusUids: 
+        characterInfoUid: 8

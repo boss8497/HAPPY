@@ -24,7 +24,14 @@ MonoBehaviour:
     prefab: 01a9eed2b095cdd4b99094ba5363d4da
     hitbox:
       rid: 2476690126442070119
-    hitboxes: []
+    hitboxes:
+    - state: 0
+      hitbox:
+        type: 0
+        offset: {x: 0, y: 0, z: 0}
+        size: {x: 0, y: 0, z: 0}
+        radius: 0
+      priority: 0
   - <UID>k__BackingField: 2
     <ID>k__BackingField: BOX
     <Name>k__BackingField: "\uBC15\uC2A4"
@@ -80,7 +87,7 @@ MonoBehaviour:
     animationEvents: []
     behaviourId: 2
     statusUids: 0b0000000c000000
-    buffUids: 
+    buffUids: 00000000
     prefab: 6c388b159ffe4fc4382adcc8d7d8552f
     hitbox:
       rid: 4223259507235749998
@@ -92,10 +99,22 @@ MonoBehaviour:
     animationEvents: []
     behaviourId: 2
     statusUids: 0300000004000000
-    buffUids: 
+    buffUids: 00000000
     prefab: f512230c4d58fd84fa9ba70dceff1f92
     hitbox:
       rid: 4223259530382016637
+    hitboxes: []
+  - <UID>k__BackingField: 8
+    <ID>k__BackingField: NOELLE
+    <Name>k__BackingField: "\uB178\uC5D8"
+    type: 0
+    animationEvents: []
+    behaviourId: 1
+    statusUids: 0100000002000000
+    buffUids: 
+    prefab: 85334c42989dab14abb41fdb0bc61a47
+    hitbox:
+      rid: 4223259779756720129
     hitboxes: []
   references:
     version: 2
@@ -148,4 +167,11 @@ MonoBehaviour:
         type: 2
         offset: {x: 0, y: 1, z: 0}
         size: {x: 1, y: 2, z: 1}
+        radius: 0
+    - rid: 4223259779756720129
+      type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        type: 2
+        offset: {x: 0, y: 1.25, z: 0}
+        size: {x: 1, y: 2.5, z: 0}
         radius: 0
