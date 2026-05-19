@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using JetBrains.Annotations;
 using Script.GUI.Screen.Enum;
 using Script.GUI.Screen.Interface;
+using Script.GUI.ScreenData.Interface;
 using Script.Utility.Runtime;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -102,6 +103,10 @@ namespace Script.GUI.Screen {
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="KeyNotFoundException"></exception>
         public async UniTask OpenAsync(string key, CancellationToken ct = default) {
+            await OpenAsync(null, key, ct);
+        }
+        
+        public async UniTask OpenAsync(IScreenOption screenOption, string key, CancellationToken ct = default) {
             if (string.IsNullOrEmpty(key)) {
                 Debug.LogError("Screen ID cannot be null or empty");
                 return;
@@ -166,7 +171,7 @@ namespace Script.GUI.Screen {
             InsertScreen(screenScript);
 
             var layer = _layers[(int)screenScript.LayerType];
-            await layer.OpenScreen(screenScript);
+            await layer.OpenScreen(screenScript, screenOption);
             RemoveState(ScreenManagerState.OpeningScreen);
         }
 

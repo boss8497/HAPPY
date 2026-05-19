@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Script.GameInfo.Attribute;
+using Script.GUI.ScreenData.Interface;
 using Script.Utility.Runtime;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,9 +22,10 @@ namespace Script.GUI.Screen {
             });
         }
         
-        public override UniTask OpenInternal() {
+        public override UniTask OpenInternal(IScreenOption data) {
             return UniTask.CompletedTask;
         }
+
         public override UniTask CloseInternal() {
             return UniTask.CompletedTask;
         }

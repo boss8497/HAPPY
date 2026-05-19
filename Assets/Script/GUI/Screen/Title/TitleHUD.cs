@@ -4,6 +4,7 @@ using Script.GameInfo.Attribute;
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
 using Script.GamePlay.Service.Interface;
+using Script.GUI.ScreenData.Interface;
 using Script.LifetimeScope.Interface;
 using Script.LifetimeScope.Locator;
 using Script.Utility.Runtime;
@@ -58,8 +59,7 @@ namespace Script.GUI.Screen {
             return _scopeFactory.CreateScope(ScopeType.Group);
         }
 
-
-        public override UniTask OpenInternal() {
+        public override UniTask OpenInternal(IScreenOption data) {
             return UniTask.CompletedTask;
         }
 

@@ -5,6 +5,7 @@ using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
 using Script.GamePlay.Service.Interface;
 using Script.GamePlay.Scene;
+using Script.GUI.ScreenData.Interface;
 using Script.GUI.ViewModel;
 using Script.Utility.Runtime;
 using UnityEngine;
@@ -37,8 +38,8 @@ namespace Script.GUI.Screen {
         // Inspector
         public AssetReferenceT<GameObject> element;
         public RectTransform               contentRoot;
-
-        public override async UniTask OpenInternal() {
+        
+        public override async UniTask OpenInternal(IScreenOption data) {
             await UniTask.WaitUntil(() => _groupService.Initialized);
             _dungeonProgress = _groupService.GetDungeon(Category.Running);
             _dungeonInfo     = GameInfoManager.Instance.Get<DungeonInfo>(_dungeonProgress.dungeonUid);

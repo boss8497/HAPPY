@@ -2,6 +2,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GUI.Screen.Enum;
+using Script.GUI.ScreenData.Interface;
 using UnityEngine;
 
 namespace Script.GUI.Screen.Interface {
@@ -10,7 +11,8 @@ namespace Script.GUI.Screen.Interface {
         bool               Initialized { get; }
 
         void    Initialize();
-        UniTask OpenAsync(string key, CancellationToken ct = default);
+        UniTask OpenAsync(string        key,          CancellationToken ct                        = default);
+        UniTask OpenAsync(IScreenOption screenOption, string            key, CancellationToken ct = default);
 
 
         UniTask CloseAllAsync(bool force = false);

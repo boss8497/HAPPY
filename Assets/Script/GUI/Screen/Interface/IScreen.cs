@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Script.GUI.Screen.Enum;
+using Script.GUI.ScreenData.Interface;
 using UnityEngine;
 
 namespace Script.GUI.Screen {
@@ -13,8 +14,8 @@ namespace Script.GUI.Screen {
         RectTransform   RectTransform { get; }
         GameObject      GameObject    { get; }
 
-        UniTask OpenAsync();
-        UniTask OpenInternal();
+        UniTask OpenAsync(IScreenOption    data);
+        UniTask OpenInternal(IScreenOption screenOption);
         UniTask OpenLateInternal();
         UniTask OpenAnimationAsync();
 

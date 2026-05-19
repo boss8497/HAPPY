@@ -2,6 +2,7 @@
 using Cysharp.Threading.Tasks;
 using Script.GUI.Screen.Enum;
 using Script.GUI.Screen.Interface;
+using Script.GUI.ScreenData.Interface;
 using Script.Utility.Runtime;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -45,14 +46,14 @@ namespace Script.GUI.Screen {
         /// <summary>
         /// ScreenOpen 시 제일 먼저 호출되는 메서드, 호출 후 Active가 켜진다!!
         /// </summary>
-        public async UniTask OpenAsync() {
+        public async UniTask OpenAsync(IScreenOption data) {
             _pools = ListPool.Get<GameObject>();
-            await OpenInternal();
+            await OpenInternal(data);
         }
         /// <summary>
         /// ScreenOpen 시 제일 먼저 호출되는 메서드, 호출 후 Active가 켜진다!!
         /// </summary>
-        public abstract UniTask OpenInternal();
+        public abstract UniTask OpenInternal(IScreenOption screenOption);
 
         /// <summary>
         /// ScreenOpen 시 제일 마지막 호출되는 메서드

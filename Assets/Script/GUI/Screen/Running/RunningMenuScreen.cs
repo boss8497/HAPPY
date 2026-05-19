@@ -2,6 +2,7 @@
 using Script.GamePlay.Scene;
 using Script.GamePlay.Stage;
 using Script.GameSetting.Interface;
+using Script.GUI.ScreenData.Interface;
 using Script.Utility.Runtime;
 using UnityEngine.UI;
 using VContainer;
@@ -54,13 +55,12 @@ namespace Script.GUI.Screen {
             _stageManager?.ReStart().Forget();
         }
 
-
-        public override UniTask OpenInternal() {
+        public override UniTask OpenInternal(IScreenOption data) {
             _stageManager.Pause();
             _stageManager.AddState(StageState.SystemControl);
             return UniTask.CompletedTask;
         }
-        
+
         public override UniTask CloseInternal() {
             _stageManager.Resume();
             _stageManager.RemoveState(StageState.SystemControl);

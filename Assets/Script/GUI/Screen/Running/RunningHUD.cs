@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using R3;
 using Script.GameInfo.Attribute;
 using Script.GamePlay.Stage;
+using Script.GUI.ScreenData.Interface;
 using Script.Utility.Runtime;
 using TMPro;
 using UnityEngine;
@@ -58,7 +59,7 @@ namespace Script.GUI.Screen {
             SetHp(0, 0);
         }
 
-        public override UniTask OpenInternal() {
+        public override UniTask OpenInternal(IScreenOption data) {
             _disposableBag.Dispose();
             _disposableBag = new();
 

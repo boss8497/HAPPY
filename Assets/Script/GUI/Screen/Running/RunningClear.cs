@@ -2,6 +2,7 @@
 using Script.GamePlay.Scene;
 using Script.GamePlay.Stage;
 using Script.GameSetting.Interface;
+using Script.GUI.ScreenData.Interface;
 using Script.Utility.Runtime;
 using UnityEngine.UI;
 using VContainer;
@@ -44,10 +45,9 @@ namespace Script.GUI.Screen {
             lobbyBtn.ClickAddListener(EnterLobby, false);
         }
 
-        public override UniTask OpenInternal() {
+        public override UniTask OpenInternal(IScreenOption data) {
             return UniTask.CompletedTask;
         }
-
 
         public override UniTask CloseInternal() {
             return UniTask.CompletedTask;

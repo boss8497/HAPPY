@@ -24,14 +24,7 @@ MonoBehaviour:
     prefab: 01a9eed2b095cdd4b99094ba5363d4da
     hitbox:
       rid: 2476690126442070119
-    hitboxes:
-    - state: 0
-      hitbox:
-        type: 0
-        offset: {x: 0, y: 0, z: 0}
-        size: {x: 0, y: 0, z: 0}
-        radius: 0
-      priority: 0
+    hitboxes: []
   - <UID>k__BackingField: 2
     <ID>k__BackingField: BOX
     <Name>k__BackingField: "\uBC15\uC2A4"

@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Script.GamePlay.Stage;
+using Script.GUI.ScreenData.Interface;
 using Script.Utility.Runtime;
 using UnityEngine.UI;
 using VContainer;
@@ -31,10 +32,9 @@ namespace Script.GUI.Screen {
             restartBtn.ClickAddListener(Restart, false);
         }
 
-        public override UniTask OpenInternal() {
+        public override UniTask OpenInternal(IScreenOption data) {
             return UniTask.CompletedTask;
         }
-
 
         public override UniTask CloseInternal() {
             return UniTask.CompletedTask;
