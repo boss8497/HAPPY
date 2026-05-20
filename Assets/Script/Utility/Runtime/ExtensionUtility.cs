@@ -9,6 +9,12 @@ namespace Script.Utility.Runtime {
             obj.SetActive(active);
         }
 
+        public static void SetActiveSafe(this Component component, bool active) {
+            var obj = component?.gameObject;
+            if (obj == null || obj.activeSelf == active) return;
+            obj.SetActive(active);
+        }
+
         public static void ClickAddListener(this Button btn, UnityAction listener, bool removeAll = true) {
             if (btn == null || listener == null) return;
             if (removeAll) {
