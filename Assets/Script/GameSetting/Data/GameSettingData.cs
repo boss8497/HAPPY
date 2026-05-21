@@ -6,14 +6,5 @@ namespace Script.GameSetting.Data {
     public struct GameSettingData {
         public int frameRate;
         public int vSyncCount;
-
-        [AssetPath(typeof(Scene))]
-        public string startUpScenePath;
-
-        [AssetPath(typeof(Scene))]
-        public string titleScenePath;
-
-        [AssetPath(typeof(Scene))]
-        public string lobbyScenePath;
     }
 }

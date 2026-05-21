@@ -4,6 +4,7 @@ using Script.GameInfo.Attribute;
 using Script.GameInfo.Base;
 using Script.GameInfo.Item;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Script.GameInfo.Info {
     [System.Serializable]
@@ -19,18 +20,31 @@ namespace Script.GameInfo.Info {
 
         public ItemReward[] startItems = Array.Empty<ItemReward>();
 
+
+        [AssetPath(typeof(Scene))]
+        public string startUpScenePath;
+
+        [AssetPath(typeof(Scene))]
+        public string titleScenePath;
+
+        [AssetPath(typeof(Scene))]
+        public string lobbyScenePath;
+
         public ConfigurationInfo Clone() {
             return new() {
-                gravity      = gravity,
-                fallGravity  = fallGravity,
-                minJumpTime  = minJumpTime,
-                maxJumpTime  = maxJumpTime,
-                UID          = UID,
-                Components   = Components.ToArray(),
-                ID           = ID,
-                Name         = Name,
-                lobby        = lobby,
-                startItems   = startItems?.ToArray() ?? Array.Empty<ItemReward>(),
+                gravity          = gravity,
+                fallGravity      = fallGravity,
+                minJumpTime      = minJumpTime,
+                maxJumpTime      = maxJumpTime,
+                UID              = UID,
+                Components       = Components.ToArray(),
+                ID               = ID,
+                Name             = Name,
+                lobby            = lobby,
+                startItems       = startItems?.ToArray() ?? Array.Empty<ItemReward>(),
+                startUpScenePath = startUpScenePath,
+                titleScenePath   = titleScenePath,
+                lobbyScenePath   = lobbyScenePath,
             };
         }
     }

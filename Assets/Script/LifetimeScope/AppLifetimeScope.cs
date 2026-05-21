@@ -26,6 +26,11 @@ namespace Script.LifetimeScope {
         [AssetPath(typeof(GameObject))]
         public string screenManagerPath;
 
+        /// <summary>
+        /// 순서대로 초기화가 진행되는건 아니지만
+        /// 여기 순서대로 초기화 순서를 가져간다고 생각하자.
+        /// IsInitialize 같은 대기를 위해서
+        /// </summary>
         protected override void Configure(IContainerBuilder builder) {
             builder.RegisterEntryPoint<GameSetting.GameSetting>(Lifetime.Singleton)
                    .As<IGameSetting>();
@@ -51,6 +56,9 @@ namespace Script.LifetimeScope {
                    .As<IUIPooling>();
 
             RegisterScreenManager(builder);
+            
+            builder.RegisterEntryPoint<Localize.Localize>(Lifetime.Singleton)
+                   .As<Localize.ILocalize>();
         }
 
         private void RegisterScreenManager(IContainerBuilder builder) {

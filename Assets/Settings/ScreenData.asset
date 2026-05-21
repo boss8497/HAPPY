@@ -62,3 +62,10 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 1
+  - id: MessageBox
+    screen:
+      m_AssetGUID: ff43bc4c9755aab48b0a4635c7804b89
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1

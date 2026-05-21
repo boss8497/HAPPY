@@ -100,11 +100,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 763fc67363fe2e64b8033420ee1fb11a
-    m_Address: GameSettingAsset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9d14e8ced218598418800f4df083d6c3
     m_Address: UNIT_BOOSTER
     m_ReadOnly: 0

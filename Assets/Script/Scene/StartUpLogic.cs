@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using Script.GameInfo.Table;
 using Script.GamePlay.Scene;
 using Script.GameSetting.Interface;
 using Script.GUI.Screen.Interface;
@@ -41,7 +42,8 @@ namespace Script.Scene {
             await InitializeGameSetting();
             await InitializeScreenManager();
             await CreateClientScope();
-            await _sceneLoader.LoadScene(_gameSetting.TitleScenePath);
+            
+            await _sceneLoader.LoadScene(GameInfoManager.Instance.Config.titleScenePath);
         }
 
         private async UniTask CreateClientScope() {

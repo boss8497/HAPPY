@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using Script.GameInfo.Table;
 using Script.GamePlay.Scene;
 using Script.GamePlay.Stage;
 using Script.GameSetting.Interface;
@@ -22,8 +23,6 @@ namespace Script.GUI.Screen {
         /// Inject
         /// </summary>
         private IStageManager _stageManager;
-
-        private IGameSetting _gameSetting;
         private ISceneLoader _sceneLoader;
 
         [Inject]
@@ -33,7 +32,6 @@ namespace Script.GUI.Screen {
             ISceneLoader  sceneLoader
         ) {
             _stageManager = stageManager;
-            _gameSetting  = gameSetting;
             _sceneLoader  = sceneLoader;
         }
 
@@ -62,7 +60,7 @@ namespace Script.GUI.Screen {
         }
 
         private async UniTask EnterLobbyAsync() {
-            await _sceneLoader.LoadScene(_gameSetting.LobbyScenePath);
+            await _sceneLoader.LoadScene(GameInfoManager.Instance.Config.lobbyScenePath);
 
             _enterLobby = false;
         }

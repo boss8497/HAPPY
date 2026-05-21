@@ -13,11 +13,6 @@ namespace Script.GameSetting {
         public GameSettingData GameSettingData { get; private set; }
         public bool            Initialized     { get; private set; }
 
-
-        public string TitleScenePath   => GameSettingData.titleScenePath;
-        public string StartUpScenePath => GameSettingData.startUpScenePath;
-        public string LobbyScenePath   => GameSettingData.lobbyScenePath;
-
         public void Initialize() {
             LoadGameSettingData();
             InitializeGameSetting();
