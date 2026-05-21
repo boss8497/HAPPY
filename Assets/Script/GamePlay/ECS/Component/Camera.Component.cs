@@ -1,5 +1,4 @@
-﻿using Script.GamePlay.Camera;
-using Unity.Entities;
+﻿using Unity.Entities;
 
 namespace Script.GamePlay.ECS.Component {
     public struct CameraEntityTag : IComponentData { }

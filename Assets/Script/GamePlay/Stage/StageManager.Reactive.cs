@@ -1,12 +1,7 @@
-﻿using System.Linq;
-using R3;
-using Script.GameData.Model;
+﻿using R3;
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
 using Script.GameInfo.Character;
-using Script.GamePlay.Character;
-using Unity.Plastic.Antlr3.Runtime;
-using UnityEngine;
 
 namespace Script.GamePlay.Stage {
     public partial class StageManager {

@@ -81,9 +81,9 @@ MonoBehaviour:
       - m_Id: 6e67b6e9eb0c3c0479f2f4a9ed57f546
         m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
       - m_Id: a1ba0ac18c1c7494c924219537c4a735
-        m_Value: 'ServerData/[BuildTarget]'
+        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
       - m_Id: acb1b0bad3f043c409e1cd45e54a0ca6
-        m_Value: <undefined>
+        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
       - m_Id: d00eaeb968b5195439902cd091b26f9a
         m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
     m_ProfileEntryNames:

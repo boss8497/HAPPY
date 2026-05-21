@@ -1,4 +1,4 @@
-﻿using Codice.CM.Common;
+﻿using Script.GameInfo.Enum;
 using Script.GUI.ScreenData.Interface;
 
 namespace Script.GUI.ScreenData {

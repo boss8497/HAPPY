@@ -176,7 +176,7 @@ namespace Script.GamePlay {
                 }
             }
         }
-    }
-    
+        
 #endif
+    }
 }

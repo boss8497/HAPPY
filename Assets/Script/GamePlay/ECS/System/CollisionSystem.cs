@@ -1,5 +1,4 @@
-﻿using Codice.CM.Common;
-using Script.GameInfo.Character;
+﻿using Script.GameInfo.Character;
 using Script.GamePlay.ECS.Component;
 using Unity.Burst;
 using Unity.Collections;
@@ -7,7 +6,6 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
 namespace Script.GamePlay.ECS.System {
     [DisableAutoCreation]
