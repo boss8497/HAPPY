@@ -35,6 +35,10 @@ MonoBehaviour:
     m_Key: Name/055807f8-4776-4ca1-8897-e6fc806007b2
     m_Metadata:
       m_Items: []
+  - m_Id: 22974633142063104
+    m_Key: Stage
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

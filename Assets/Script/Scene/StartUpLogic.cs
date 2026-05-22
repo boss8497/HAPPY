@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Script.Addressable;
 using Script.GameInfo.Table;
@@ -9,8 +8,6 @@ using Script.GUI.Screen.Interface;
 using Script.LifetimeScope.Interface;
 using Script.LifetimeScope.Locator;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.SceneManagement;
 using VContainer;
 
 
