@@ -18,17 +18,32 @@ MonoBehaviour:
   - m_GUID: 763fc67363fe2e64b8033420ee1fb11a
     m_Address: GameSettingAsset
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - AppLifetimeScope
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 837e3c2172d8fc3469a0914deb00f65b
     m_Address: VContainerSettings
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - AppLifetimeScope
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac9886f4452737d44b85036ab46d5985
+    m_Address: ScreenData
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AppLifetimeScope
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: afa9d29802d85304a8def575ac111a74
     m_Address: LocalizationSettings
     m_ReadOnly: 0
-    m_SerializedLabels: []
+    m_SerializedLabels:
+    - AppLifetimeScope
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff43bc4c9755aab48b0a4635c7804b89
+    m_Address: MessageBox
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AppLifetimeScope
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1e304275c87eee54c87e0067d1737427, type: 2}

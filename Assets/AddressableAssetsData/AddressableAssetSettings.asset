@@ -108,6 +108,7 @@ MonoBehaviour:
     - default
     - Locale-ko
     - Locale
+    - AppLifetimeScope
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 3597175878da503468b35b127eaa6dd5, type: 2}

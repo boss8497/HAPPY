@@ -11,7 +11,8 @@ using VContainer.Unity;
 
 namespace Script.Addressable {
     public class Addressable : IAddressable, IInitializable, IDisposable {
-        private const string DefaultTestUrl = "https://connectivitycheck.gstatic.com/generate_204";
+        private readonly string _defaultTestUrl = "https://connectivitycheck.gstatic.com/generate_204";
+        private readonly string _appLabels      = $"AppLifetimeScope";
 
         public bool IsInitialized { get; private set; }
 
@@ -39,8 +40,17 @@ namespace Script.Addressable {
             IsInitialized = true;
         }
 
+        public async UniTask LoadAppLabelsAsync(CancellationToken ct = default) {
+            var result = await HasInternetConnectionAsync(3, ct);
+            if (result == false) {
+                throw new Exception("Addressable LoadAppLabels failed.");
+            }
 
-        public static async UniTask<bool> UpdateCatalogsAsync(
+            await DownloadDependenciesAsync(_appLabels, null, ct);
+        }
+
+
+        public async UniTask<bool> UpdateCatalogsAsync(
             bool              autoCleanBundleCache = true,
             CancellationToken cancellationToken    = default
         ) {
@@ -91,12 +101,12 @@ namespace Script.Addressable {
             Addressables.Release(checkHandle);
 
             if (!success)
-                throw new Exception("Addressables UpdateCatalogs failed.");
+                throw new Exception("Addressable UpdateCatalogs failed.");
 
             return true;
         }
 
-        public static async UniTask<long> GetDownloadSizeAsync(
+        public async UniTask<long> GetDownloadSizeAsync(
             object            key,
             CancellationToken cancellationToken = default
         ) {
@@ -109,7 +119,7 @@ namespace Script.Addressable {
 
             if (handle.Status != AsyncOperationStatus.Succeeded) {
                 Addressables.Release(handle);
-                throw new Exception($"Addressables GetDownloadSize failed. key: {key}");
+                throw new Exception($"Addressable GetDownloadSize failed. key: {key}");
             }
 
             var size = handle.Result;
@@ -117,7 +127,7 @@ namespace Script.Addressable {
             return size;
         }
 
-        public static async UniTask DownloadDependenciesAsync(
+        public async UniTask DownloadDependenciesAsync(
             object            key,
             IProgress<float>  progress          = null,
             CancellationToken cancellationToken = default
@@ -149,24 +159,24 @@ namespace Script.Addressable {
             Addressables.Release(handle);
 
             if (!success)
-                throw new Exception($"Addressables DownloadDependencies failed. key: {key}");
+                throw new Exception($"Addressable DownloadDependencies failed. key: {key}");
         }
 
-        public static async UniTask<bool> HasInternetConnectionAsync(
-            int               timeoutSeconds    = 3,
-            CancellationToken cancellationToken = default
+        public async UniTask<bool> HasInternetConnectionAsync(
+            int               timeout = 3,
+            CancellationToken ct      = default
         ) {
             if (Application.internetReachability == NetworkReachability.NotReachable)
                 return false;
 
-            using var request = UnityWebRequest.Get(DefaultTestUrl);
-            request.timeout = timeoutSeconds;
+            using var request = UnityWebRequest.Get(_defaultTestUrl);
+            request.timeout = timeout;
 
             var operation = request.SendWebRequest();
 
             while (!operation.isDone) {
-                cancellationToken.ThrowIfCancellationRequested();
-                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+                ct.ThrowIfCancellationRequested();
+                await UniTask.Yield(PlayerLoopTiming.Update, ct);
             }
 
             return request.result == UnityWebRequest.Result.Success
