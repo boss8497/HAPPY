@@ -40,7 +40,7 @@ MonoBehaviour:
     - AppLifetimeScope
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ff43bc4c9755aab48b0a4635c7804b89
-    m_Address: MessageBox
+    m_Address: ErrorMessage
     m_ReadOnly: 0
     m_SerializedLabels:
     - AppLifetimeScope

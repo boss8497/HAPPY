@@ -455,7 +455,7 @@ GameObject:
   - component: {fileID: 2908430877947960736}
   - component: {fileID: 2459220008164521857}
   m_Layer: 5
-  m_Name: MessageBox
+  m_Name: ErrorMessage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -499,12 +499,25 @@ MonoBehaviour:
   option: 0
   _backButtons:
   - {fileID: 9009934160669420333}
+  titleLocalizeText:
+    _localizedString:
+      m_TableReference:
+        m_TableCollectionName: GUID:b324019ed3b36c240b053c5ebeefa3b9
+      m_TableEntryReference:
+        m_KeyId: 10872098816
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
   titleText: {fileID: 8535172241606199261}
   messageText: {fileID: 2296475306289921493}
   okButton: {fileID: 3372465154251011203}
   cancelButton: {fileID: 6250013470064836875}
   yesButton: {fileID: 7807019728090689439}
   noButton: {fileID: 6366535567681944926}
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &2957788094054929726
 GameObject:
   m_ObjectHideFlags: 0

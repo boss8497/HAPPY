@@ -10,21 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
-  m_Name: ErrorMessage_ko
+  m_Name: GUI_ko
   m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
   m_LocaleId:
     m_Code: ko
-  m_SharedData: {fileID: 11400000, guid: a0b0ad614cd832048906fdb923df93b1, type: 2}
+  m_SharedData: {fileID: 11400000, guid: b324019ed3b36c240b053c5ebeefa3b9, type: 2}
   m_Metadata:
     m_Items: []
   m_TableData:
-  - m_Id: 17075474432
-    m_Localized: "\uC624\uB958"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 19610309431296
-    m_Localized: "\uC774 \uC804 \uC2A4\uD14C\uC774\uC9C0\uB97C \uD074\uB9AC\uC5B4
-      \uD574\uC57C\uB429\uB2C8\uB2E4."
+  - m_Id: 10872098816
+    m_Localized: "\uC54C\uB9BC"
     m_Metadata:
       m_Items: []
   references:
