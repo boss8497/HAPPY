@@ -28,6 +28,7 @@ namespace Script.GUI.ViewModel {
 
         [SerializeField]
         public Button startBtn;
+        public Button errorBtn;
 
 
         public ReactiveProperty<Stage>        Stage         { get; set; } = new();
@@ -58,6 +59,7 @@ namespace Script.GUI.ViewModel {
                  .AddTo(ref _disposableBag);
 
             CanEnterStage.Subscribe(canEnter => {
+                             errorBtn.SetActiveSafe(canEnter == false);
                              if (startBtn != null) {
                                  startBtn.interactable = canEnter;
                              }

@@ -1,7 +1,9 @@
 ﻿using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameData.Model;
 using Script.GameInfo.Dungeon;
+using Script.GameInfo.Enum;
 using Script.GameInfo.Table;
 using Script.GamePlay.Service.Interface;
 using Script.GamePlay.Scene;
@@ -34,11 +36,12 @@ namespace Script.GUI.Screen {
         private DungeonInfo     _dungeonInfo;
         private Stage           _stage;
 
-        
+
         // Inspector
         public AssetReferenceT<GameObject> element;
         public RectTransform               contentRoot;
-        
+        public ErrorMessage                errorMessage;
+
         public override async UniTask OpenInternal(IScreenOption data) {
             await UniTask.WaitUntil(() => _groupService.Initialized);
             _dungeonProgress = _groupService.GetDungeon(Category.Running);
@@ -51,11 +54,16 @@ namespace Script.GUI.Screen {
                 if (stageElement != null) {
                     stageElement.InitializeReactive();
                     stageElement.SetReactive(stage, _dungeonInfo);
-                    
-                    if(stageElement.startBtn != null) {
+
+                    if (stageElement.startBtn != null) {
                         stageElement.startBtn.ClickAddListener(() => {
                             if (stageElement.Stage?.CurrentValue == null || stageElement.DungeonInfo?.CurrentValue == null) return;
                             _groupService.EnterDungeon(stageElement.DungeonInfo.CurrentValue, stageElement.Stage.CurrentValue).Forget();
+                        });
+                    }
+                    if (stageElement.errorBtn != null) {
+                        stageElement.errorBtn.ClickAddListener(() => {
+                            ScreenManager.OpenErrorMessage(errorMessage, CancellationToken.None).Forget();
                         });
                     }
                 }

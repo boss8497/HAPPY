@@ -134,6 +134,7 @@ MonoBehaviour:
     m_SubObjectGUID: 
     m_EditorAssetChanged: 1
   contentRoot: {fileID: 2176788388187499534}
+  errorMessage: 1
 --- !u!1 &2945419906261856334
 GameObject:
   m_ObjectHideFlags: 0

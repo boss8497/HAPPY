@@ -494,7 +494,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 784cb890c64a46d781d4d8308cf319e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Script.GUI.Screen::Script.GUI.Screen.PopUp.MessageBox
-  key: MessageBox
+  key: ErrorMessage
   layerType: 3
   option: 0
   _backButtons:
