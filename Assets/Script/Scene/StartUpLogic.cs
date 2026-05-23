@@ -19,7 +19,7 @@ namespace Script.Scene {
         private IScreenManager _screenManager;
         private ISceneLoader   _sceneLoader;
 
-        [Inject]
+        [Inject] 
         public void Constructor(
             IAddressable   addressable,
             IScopeFactory  scopeFactory,
