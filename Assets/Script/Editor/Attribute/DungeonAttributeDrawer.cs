@@ -19,7 +19,7 @@ namespace Script.Editor.Attribute {
 
     public class DungeonAttributeDrawer : InfoBaseAttribute<DungeonAttribute, DungeonInfo, DungeonSelector> {
         protected override string GetName(DungeonInfo value) {
-            return value.ID;
+            return $"{value.ID}({value.Name})";
         }
 
         protected override int GetUid(DungeonInfo value) {

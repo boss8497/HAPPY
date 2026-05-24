@@ -78,6 +78,12 @@ namespace Script.DataBase {
         private async UniTask SaveMessagePackAsync<T>(string path, T data) {
             await _fileStorage.SaveMessagePackAsync(path, data, MessagePackOptions);
         }
+        
+        public async UniTask<bool> DeleteAsync(string path) {
+            if (!_fileStorage.Exists(path))
+                return false;
+            return await _fileStorage.DeleteAsync(path);
+        }
 
         public void Dispose() {
             // TODO release managed resources here

@@ -11,7 +11,7 @@ namespace Script.DataBase.Interface {
         UniTask    SaveMessagePackAsync<T>(string path, T                            value,        MessagePackSerializerOptions options = null);
         UniTask<T> LoadMessagePackAsync<T>(string path, MessagePackSerializerOptions options = null);
 
-        UniTask DeleteAsync(string path);
+        UniTask<bool> DeleteAsync(string path);
         UniTask CopyAsync(string   sourceRelativePath, string destinationRelativePath);
 
         string GetFullPath(string path);

@@ -18,7 +18,8 @@ namespace Script.GameInfo.Info {
         [Dungeon]
         public int lobby;
 
-        public ItemReward[] startItems = Array.Empty<ItemReward>();
+        [Reward]
+        public int startItems;
 
 
         [AssetPath(typeof(Scene))]
@@ -41,7 +42,7 @@ namespace Script.GameInfo.Info {
                 ID               = ID,
                 Name             = Name,
                 lobby            = lobby,
-                startItems       = startItems?.ToArray() ?? Array.Empty<ItemReward>(),
+                startItems       = startItems,
                 startUpScenePath = startUpScenePath,
                 titleScenePath   = titleScenePath,
                 lobbyScenePath   = lobbyScenePath,

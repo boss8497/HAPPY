@@ -149,5 +149,11 @@ namespace Script.DataBase {
             await SaveItemTable();
             return item;
         }
+        
+        public UniTask RemoveGroupItems(long groupUid) {
+            _itemModelByGroupUid.Remove(groupUid);
+            _itemModelTable.items.RemoveAll(r => r.groupUid == groupUid);
+            return UniTask.CompletedTask;
+        }
     }
 }

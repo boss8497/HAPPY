@@ -1,30 +1,29 @@
-﻿using Script.GameInfo.Attribute;
-using Script.GameInfo.Info;
+﻿using Script.GameInfo;
+using Script.GameInfo.Attribute;
 using Script.GameInfo.Table;
 using Sirenix.OdinInspector.Editor;
 
 namespace Script.Editor.Attribute {
-    
-    public class BuffSelector : OdinSelector<BuffInfo> {
+    public class RewardSelector : OdinSelector<RewardInfo> {
         protected override void BuildSelectionTree(OdinMenuTree tree) {
             tree.Config.DrawSearchToolbar             = true;
             tree.Config.ConfirmSelectionOnDoubleClick = true;
             tree.Config.SelectMenuItemsOnMouseDown    = true;
             tree.Selection.SupportsMultiSelect        = false;
 
-            foreach (var buff in GameInfoManager.Instance.GetCollection<BuffInfo>()) {
-                tree.MenuItems.Add(new OdinMenuItem(tree, $"{buff.ID}({buff.Name})", buff));
+            foreach (var itemInfo in GameInfoManager.Instance.GetCollection<RewardInfo>()) {
+                tree.MenuItems.Add(new OdinMenuItem(tree, $"{itemInfo.ID}({itemInfo.Name})", itemInfo));
             }
         }
     }
 
-    
-    public class BuffAttributeDrawer  : InfoBaseAttribute<BuffAttribute, BuffInfo,BuffSelector> {
-        protected override string GetName(BuffInfo value) {
+
+    public class RewardAttributeDrawer : InfoBaseAttribute<RewardAttribute, RewardInfo, RewardSelector> {
+        protected override string GetName(RewardInfo value) {
             return $"{value.ID}({value.Name})";
         }
 
-        protected override int GetUid(BuffInfo value) {
+        protected override int GetUid(RewardInfo value) {
             return value?.UID ?? 0;
         }
     }

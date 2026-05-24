@@ -21,7 +21,7 @@ namespace Script.Editor.Attribute {
     
     public class CharacterAttributeDrawer : InfoBaseAttribute<CharacterAttribute, CharacterInfo, CharacterSelector> {
         protected override string GetName(CharacterInfo value) {
-            return value.ID;
+            return $"{value.ID}({value.Name})";
         }
 
         protected override int GetUid(CharacterInfo value) {

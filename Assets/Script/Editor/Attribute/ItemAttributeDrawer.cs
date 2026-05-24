@@ -21,7 +21,7 @@ namespace Script.Editor.Attribute {
 
     public class ItemAttributeDrawer : InfoBaseAttribute<ItemAttribute, ItemInfo, ItemSelector> {
         protected override string GetName(ItemInfo value) {
-            return value.ID;
+            return $"{value.ID}({value.Name})";
         }
 
         protected override int GetUid(ItemInfo value) {

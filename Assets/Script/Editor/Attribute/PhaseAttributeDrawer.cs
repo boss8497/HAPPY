@@ -19,7 +19,7 @@ namespace Script.Editor.Attribute {
 
     public class PhaseAttributeDrawer : InfoBaseAttribute<PhaseAttribute, PhaseInfo, PhaseSelector> {
         protected override string GetName(PhaseInfo value) {
-            return value.ID;
+            return $"{value.ID}({value.Name})";
         }
 
         protected override int GetUid(PhaseInfo value) {

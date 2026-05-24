@@ -9,6 +9,7 @@ namespace Script.GameInfo.Table {
             "DungeonTable",
             "ItemTable",
             "PhaseTable",
+            "RewardTable",
             "StatusTable",
         };
     }

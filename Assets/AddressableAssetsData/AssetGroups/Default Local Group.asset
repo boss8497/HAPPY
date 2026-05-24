@@ -105,6 +105,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a167b42969a3a9d4c88379d7e9eeb2cd
+    m_Address: RewardTable
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a78e1de45129be74f90779e257b6503d
     m_Address: ItemTable
     m_ReadOnly: 0

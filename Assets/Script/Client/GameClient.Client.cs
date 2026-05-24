@@ -3,6 +3,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Script.DataBase.Enum;
 using Script.GameData.Model;
+using Script.GameInfo;
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Info.Enum;
 using Script.GameInfo.Table;
@@ -16,7 +17,7 @@ namespace Script.Client {
         private readonly string    _groupPath = $"{nameof(GroupModel)}.json";
         
         public async UniTask<GroupModel> Req_Group() {
-            GroupModel CreateGroupModel() {
+            GroupModel CreateGroup() {
                 var groupModel = new GroupModel();
                 // 일단 uid는 1로 설정
                 groupModel.uid = 1;
@@ -35,7 +36,8 @@ namespace Script.Client {
                 ListPool.Return(dungeonProgress);
 
                 var gameConfiguration = GameInfoManager.Instance.Config;
-                foreach (var startItem in gameConfiguration.startItems) {
+                var startItems        = GameInfoManager.Instance.Get<RewardInfo>(gameConfiguration.startItems);
+                foreach (var startItem in startItems.itemRewards) {
                     _dataBase.AddItem(groupModel.uid, startItem);
                 }
                 
@@ -47,12 +49,12 @@ namespace Script.Client {
             }
             await UniTask.WaitUntil(() => _dataBase.Initialized);
 
-            //첫 접속
+            //첫 접속 확인
             if (_dataBase.Exists(_groupPath)) {
                 return await Load();
             }
 
-            var model = CreateGroupModel();
+            var model = CreateGroup();
             await Req_SaveGroup(model);
             await _dataBase.SaveItemTable();
             
@@ -73,6 +75,18 @@ namespace Script.Client {
 
         public UniTask<bool> Req_EnterDungeon(DungeonInfo dungeonInfo, Stage stage) {
             return UniTask.FromResult(true);
+        }
+
+        public async UniTask Req_RemoveGroup() {
+            async UniTask<GroupModel> Load() {
+                return await _dataBase.LoadAsync<GroupModel>(_groupPath, DataType.Json);
+            }
+            
+            if (_dataBase.Exists(_groupPath)) {
+                var group = await Load();
+                await _dataBase.RemoveGroupItems(group.uid);
+                await _dataBase.DeleteAsync(_groupPath);
+            }
         }
     }
 }

@@ -127,13 +127,13 @@ namespace Script.DataBase {
             return File.Exists(GetFullPath(path));
         }
 
-        public UniTask DeleteAsync(string path) {
+        public UniTask<bool> DeleteAsync(string path) {
             var fullPath = GetFullPath(path);
 
             if (File.Exists(fullPath))
                 File.Delete(fullPath);
 
-            return UniTask.CompletedTask;
+            return UniTask.FromResult(true);
         }
 
         public UniTask CopyAsync(string sourceRelativePath, string destinationRelativePath) {

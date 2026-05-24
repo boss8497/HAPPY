@@ -19,7 +19,7 @@ namespace Script.Editor.Attribute {
 
     public class BehaviourAttributeDrawer : InfoBaseAttribute<BehaviourAttribute, BehaviourInfo,BehaviourSelector> {
         protected override string GetName(BehaviourInfo value) {
-            return value.ID;
+            return $"{value.ID}({value.Name})";
         }
 
         protected override int GetUid(BehaviourInfo value) {

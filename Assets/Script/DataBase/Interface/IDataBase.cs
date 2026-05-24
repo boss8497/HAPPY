@@ -13,9 +13,10 @@ namespace Script.DataBase.Interface {
     public interface IDataBase {
         bool Initialized { get; }
 
-        UniTask<T> LoadAsync<T>(string path, DataType type                = DataType.Json);
-        UniTask    SaveAsync<T>(string path, T        data, DataType type = DataType.Json);
-        bool       Exists(string       path);
+        UniTask<T>    LoadAsync<T>(string path, DataType type                = DataType.Json);
+        UniTask       SaveAsync<T>(string path, T        data, DataType type = DataType.Json);
+        bool          Exists(string       path);
+        UniTask<bool> DeleteAsync(string  path);
 
 
         ItemModel AddItem(
@@ -35,5 +36,6 @@ namespace Script.DataBase.Interface {
         UniTask<ItemModel[]> GetInventory(long groupUid);
         UniTask              SaveItemTable();
         UniTask<ItemModel>   LevelUpItem(ItemModel item, LevelType levelType);
+        UniTask RemoveGroupItems(long groupUid);
     }
 }

@@ -10,5 +10,6 @@ namespace Script.Client {
         UniTask<ItemModel[]> Req_Inventory(long           groupUid);
         UniTask<ItemModel>   Req_ItemLevelUp(ItemModel    model,       LevelType type);
         UniTask<bool>        Req_EnterDungeon(DungeonInfo dungeonInfo, Stage     stage);
+        UniTask              Req_RemoveGroup();
     }
 }

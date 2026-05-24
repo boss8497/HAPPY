@@ -21,7 +21,7 @@ namespace Script.Editor.Attribute {
     
     public class StatusAttributeDrawer : InfoBaseAttribute<StatusAttribute, StatusInfo, StatusSelector>{
         protected override string GetName(StatusInfo value) {
-            return value?.Name ?? "no name";
+            return $"{value.ID}({value.Name})";
         }
         protected override int    GetUid(StatusInfo  value) {
             return value?.UID ?? -1;
