@@ -14,7 +14,7 @@ namespace Script.GameInfo.Item {
         [ShowIf("@type != Script.GameInfo.Enum.ItemType.Character"), Status]
         public int[] statusUids = Array.Empty<int>();
         
-        [ShowIf("@type == Script.GameInfo.Enum.ItemType.Character"), Character]
+        [ShowIf("@type == Script.GameInfo.Enum.ItemType.Character || type == Script.GameInfo.Enum.ItemType.Obstacle"), Character]
         public int characterInfoUid;
     }
 }

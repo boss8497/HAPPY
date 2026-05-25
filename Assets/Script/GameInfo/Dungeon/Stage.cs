@@ -22,6 +22,9 @@ namespace Script.GameInfo.Dungeon {
 
         [AssetPath(typeof(Scene))]
         public string scenePath = string.Empty;
+        
+        [Reward]
+        public int[] rewards =  Array.Empty<int>();
 
 
         public static bool operator ==(Stage left, Stage right) {

@@ -21,17 +21,7 @@ MonoBehaviour:
     minJumpTime: 0.15
     maxJumpTime: 0.3
     lobby: 1
-    startItems:
-    - itemUid: 1
-      count: 1
-      level: 1
-      grade: 0
-      tier: 0
-    - itemUid: 2
-      count: 1
-      level: 1
-      grade: 0
-      tier: 0
+    startItems: 1
     startUpScenePath: 3030a0516981d8143b9a4593cef2096d
     titleScenePath: 2c0311a93cfb8e9429e72de71ce756c9
     lobbyScenePath: c67ee9c5192c4914582a56bceab39eac

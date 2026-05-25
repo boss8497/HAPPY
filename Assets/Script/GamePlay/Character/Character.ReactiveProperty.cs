@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using R3;
 using Script.GameData.Data;
 using Script.GameData.Model;
@@ -36,6 +37,8 @@ namespace Script.GamePlay.Character {
         private void InitializeReactiveProperty() {
             _reactiveDisposableBag.Dispose();
             _reactiveDisposableBag = new();
+            
+            var characterItemInfo = GameInfoManager.Instance.GetCollection<ItemInfo>().FirstOrDefault(r => r.characterInfoUid == CharacterInfo.UID);
 
 
             Health.Subscribe(health => {
@@ -49,10 +52,26 @@ namespace Script.GamePlay.Character {
                   })
                   .AddTo(ref _reactiveDisposableBag);
 
-            Item = ItemInfo.Select(i => i == null ? null : _itemService.GetItem(i.UID))
-                           .DistinctUntilChanged()
-                           .ToReadOnlyReactiveProperty()
-                           .AddTo(ref _reactiveDisposableBag);
+            if (CharacterInfo.type == CharacterType.Character) {
+                if (characterItemInfo == null) {
+                    throw new Exception($"캐릭터 {CharacterInfo.UID}에 해당하는 ItemInfo가 존재하지 않습니다.");
+                }
+                Item = ItemInfo.CombineLatest(_itemService.SubscribeItemInfoUid(characterItemInfo.UID), (info, infoSubscribe) => (info, infoSubscribe))
+                               .Select(data => {
+                                   if (data.info == null) return Observable.Return<ItemData>(null);
+                                   return _itemService.GetItem(data.info.UID).AsObservable();
+                               })
+                               .Switch()
+                               .ToReadOnlyReactiveProperty()
+                               .AddTo(ref _reactiveDisposableBag);   
+            }
+            else {
+                Item = ItemInfo.Select(i => i == null ? Observable.Return<ItemData>(null) : _itemService.GetItem(i.UID))
+                               .Switch()
+                               .DistinctUntilChanged()
+                               .ToReadOnlyReactiveProperty()
+                               .AddTo(ref _reactiveDisposableBag);
+            }
 
             Initialized = State.Select(i => (i & CharacterState.Initialized) != 0)
                                .DistinctUntilChanged()
@@ -175,7 +194,7 @@ namespace Script.GamePlay.Character {
             }
 
 
-            ItemInfo.OnNext(GameInfoManager.Instance.GetCollection<ItemInfo>().FirstOrDefault(r => r.characterInfoUid == CharacterInfo.UID));
+            ItemInfo.OnNext(characterItemInfo);
             State.OnNext((_stageManager?.SystemControl?.CurrentValue ?? false) ? CharacterState.SystemControl : CharacterState.None);
             Health.OnNext(Status.Hp);
             MaxHealth.OnNext(Status.Hp);

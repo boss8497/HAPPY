@@ -2,6 +2,7 @@
     public enum ItemType {
         None,
         Group,
-        Character
+        Character,
+        Obstacle,
     }
 }
