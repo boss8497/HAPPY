@@ -11,5 +11,6 @@ namespace Script.Client {
         UniTask<ItemModel>   Req_ItemLevelUp(ItemModel    model,       LevelType type);
         UniTask<bool>        Req_EnterDungeon(DungeonInfo dungeonInfo, Stage     stage);
         UniTask              Req_RemoveGroup();
+        UniTask<ItemModel[]> Req_ClearStage(DungeonInfo dungeonInfo, Stage stage);
     }
 }

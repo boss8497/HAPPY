@@ -33,6 +33,11 @@ namespace Script.DataBase.Interface {
             ItemReward reward
         );
 
+        ItemModel[] AddRewards(
+            long  groupUid,
+            int[] rewardInfoUids
+        );
+
         UniTask<ItemModel[]> GetInventory(long groupUid);
         UniTask              SaveItemTable();
         UniTask<ItemModel>   LevelUpItem(ItemModel item, LevelType levelType);

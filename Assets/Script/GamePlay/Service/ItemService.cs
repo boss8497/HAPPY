@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using R3;
 using Script.Client;
 using Script.GameData.Data;
+using Script.GameData.Model;
 using Script.GameInfo.Info.Enum;
 using Script.GamePlay.Service.Interface;
 using VContainer.Unity;
@@ -13,9 +14,8 @@ namespace Script.GamePlay.Service {
     /// <summary>
     /// 같은 Item의 Uid라도 Grade, Tier에 따라 여러개가 존재할 수 있음
     /// </summary>
-    public class ItemService : IItemService, IInitializable {
-        private readonly IClient       _client;
-        private readonly IGroupService _groupService;
+    public class ItemService : IItemService {
+        private readonly IClient _client;
 
         private List<ReactiveProperty<ItemData>> _items;
 
@@ -31,26 +31,12 @@ namespace Script.GamePlay.Service {
 
 
         public ItemService(
-            IClient       client,
-            IGroupService groupService
+            IClient client
         ) {
-            _client       = client;
-            _groupService = groupService;
+            _client = client;
         }
 
-
-        public void Initialize() {
-            InitializeAsync().Forget();
-        }
-
-        private async UniTaskVoid InitializeAsync() {
-            await UniTask.WaitUntil(() => _groupService.Initialized);
-            var groupUid = _groupService.GroupUid;
-            if (groupUid == 0)
-                throw new System.Exception("GroupUid is 0");
-
-            var items = await _client.Req_Inventory(groupUid);
-
+        public UniTask InitializeAsync(ItemModel[] items) {
             _items = items.Select(i => {
                               var reactive = new ReactiveProperty<ItemData>();
                               reactive.OnNext(new ItemData(i));
@@ -62,15 +48,17 @@ namespace Script.GamePlay.Service {
             _itemsByUid = _items.ToDictionary(i => i.Value.ItemUid.CurrentValue, i => i);
 
             Initialized = true;
+            return UniTask.CompletedTask;
         }
 
         [CanBeNull]
         public ReactiveProperty<int> SubscribeItemInfoUid(int infoUid) {
             if (infoUid <= 0) return null;
-            
-            if(_itemInfoUidSubscriber.TryGetValue(infoUid, out var subscriber)) {
+
+            if (_itemInfoUidSubscriber.TryGetValue(infoUid, out var subscriber)) {
                 return subscriber;
             }
+
             var reactive = new ReactiveProperty<int>(infoUid);
             _itemInfoUidSubscriber.Add(infoUid, reactive);
             return reactive;
@@ -106,12 +94,13 @@ namespace Script.GamePlay.Service {
                 var reactive = new ReactiveProperty<ItemData>(item);
                 _items.Add(reactive);
                 _itemsByUid.Add(item.ItemUid.CurrentValue, reactive);
-                if(_itemsByInfoUid.TryGetValue(item.ItemInfoUid.CurrentValue, out var items)) {
+                if (_itemsByInfoUid.TryGetValue(item.ItemInfoUid.CurrentValue, out var items)) {
                     items.Add(reactive);
                 }
                 else {
                     _itemsByInfoUid.Add(item.ItemInfoUid.CurrentValue, new List<ReactiveProperty<ItemData>> { reactive });
                 }
+
                 reactive.ForceNotify();
             }
 
@@ -119,7 +108,7 @@ namespace Script.GamePlay.Service {
         }
 
         private void UpdateItemInfoUid(int infoUid) {
-            if(_itemInfoUidSubscriber.TryGetValue(infoUid, out var subscriber)) {
+            if (_itemInfoUidSubscriber.TryGetValue(infoUid, out var subscriber)) {
                 subscriber.ForceNotify();
             }
         }
@@ -134,6 +123,17 @@ namespace Script.GamePlay.Service {
             item.Update(model);
             itemData.ForceNotify();
             UpdateItemInfoUid(item.ItemInfoUid.CurrentValue);
+        }
+
+        public UniTask UpdateItems(ItemModel[] items) {
+            foreach (var item in items) {
+                var itemData = GetItem(item.uid);
+                if (itemData == null) continue;
+                itemData.CurrentValue.Update(item);
+                itemData.ForceNotify();
+                UpdateItemInfoUid(item.infoUid);
+            }
+            return UniTask.CompletedTask;
         }
     }
 }

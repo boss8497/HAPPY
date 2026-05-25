@@ -4,6 +4,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Script.DataBase.Enum;
 using Script.GameData.Model;
+using Script.GameInfo;
 using Script.GameInfo.Enum;
 using Script.GameInfo.Info.Enum;
 using Script.GameInfo.Item;
@@ -111,6 +112,24 @@ namespace Script.DataBase {
             }
 
             return CreateItemModel(groupUid, reward.itemUid, reward.count, reward.level, reward.grade, reward.tier);
+        }
+        public ItemModel[] AddRewards(
+            long  groupUid,
+            int[] rewardInfoUids
+        ) {
+            var items = new List<ItemModel>();
+            
+            foreach (var rewardInfoUid in rewardInfoUids) {
+                var rewardInfo = GameInfoManager.Instance.Get<RewardInfo>(rewardInfoUid);
+                foreach (var reward in rewardInfo.itemRewards) {
+                    var itemInfo = GameInfoManager.Instance.Get<ItemInfo>(reward.itemUid);
+                    items.Add(itemInfo.flag.HasFlag(ItemFlag.Stack)
+                                  ? AddItemTableCount(groupUid, reward.itemUid, reward.count, reward.level, reward.grade, reward.tier)
+                                  : CreateItemModel(groupUid, reward.itemUid, reward.count, reward.level, reward.grade, reward.tier));
+                }
+            }
+
+            return items.ToArray();
         }
 
         public bool HasItem(long groupUid, int itemUid) {
