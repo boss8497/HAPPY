@@ -7,7 +7,7 @@ using Script.GameInfo.Info.Enum;
 namespace Script.GamePlay.Service.Interface {
     public interface IItemService : IService {
         UniTask                    InitializeAsync(ItemModel[] items);
-        ReactiveProperty<int>      SubscribeItemInfoUid(int    infoUid);
+        ReactiveProperty<int>      SubscribeItemInfoUidUpdate(int    infoUid);
         ReactiveProperty<ItemData> GetItem(int                 infoUid);
         ReactiveProperty<ItemData> GetItem(long                itemUid);
         UniTask                    ItemLevelUp(ItemData        item, LevelType type);

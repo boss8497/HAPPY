@@ -52,7 +52,7 @@ namespace Script.GamePlay.Service {
         }
 
         [CanBeNull]
-        public ReactiveProperty<int> SubscribeItemInfoUid(int infoUid) {
+        public ReactiveProperty<int> SubscribeItemInfoUidUpdate(int infoUid) {
             if (infoUid <= 0) return null;
 
             if (_itemInfoUidSubscriber.TryGetValue(infoUid, out var subscriber)) {

@@ -22,6 +22,7 @@ MonoBehaviour:
     statusUids: 0100000002000000
     buffUids: 00000000
     prefab: 01a9eed2b095cdd4b99094ba5363d4da
+    skeletonDataAsset: d6a649bc1f971dc4da8caa7df6c7806b
     hitbox:
       rid: 2476690126442070119
     hitboxes: []
@@ -34,6 +35,7 @@ MonoBehaviour:
     statusUids: 0300000004000000
     buffUids: 00000000
     prefab: ad6d812305dc0ad4a96bba138bde157e
+    skeletonDataAsset: 
     hitbox:
       rid: 2476690126442070113
     hitboxes: []
@@ -46,6 +48,7 @@ MonoBehaviour:
     statusUids: 0500000006000000
     buffUids: 00000000
     prefab: ff5520d113746314f90b6bef03234075
+    skeletonDataAsset: 
     hitbox:
       rid: 2476690126442070121
     hitboxes: []
@@ -58,6 +61,7 @@ MonoBehaviour:
     statusUids: 0700000008000000
     buffUids: 00000000
     prefab: 1ce6eef5a601cd240aaa91aff9b7807a
+    skeletonDataAsset: 
     hitbox:
       rid: 2476690126442070123
     hitboxes: []
@@ -70,6 +74,7 @@ MonoBehaviour:
     statusUids: 0b0000000c000000
     buffUids: 01000000
     prefab: 9d14e8ced218598418800f4df083d6c3
+    skeletonDataAsset: 
     hitbox:
       rid: 2476690126442070117
     hitboxes: []
@@ -82,6 +87,7 @@ MonoBehaviour:
     statusUids: 0b0000000c000000
     buffUids: 00000000
     prefab: 6c388b159ffe4fc4382adcc8d7d8552f
+    skeletonDataAsset: 
     hitbox:
       rid: 4223259507235749998
     hitboxes: []
@@ -94,6 +100,7 @@ MonoBehaviour:
     statusUids: 0300000004000000
     buffUids: 00000000
     prefab: f512230c4d58fd84fa9ba70dceff1f92
+    skeletonDataAsset: 
     hitbox:
       rid: 4223259530382016637
     hitboxes: []
@@ -106,6 +113,7 @@ MonoBehaviour:
     statusUids: 0100000002000000
     buffUids: 
     prefab: 85334c42989dab14abb41fdb0bc61a47
+    skeletonDataAsset: 66419e413984c364ebecbb3783b45806
     hitbox:
       rid: 4223259779756720129
     hitboxes: []

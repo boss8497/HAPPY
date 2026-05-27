@@ -56,7 +56,7 @@ namespace Script.GamePlay.Character {
                 if (characterItemInfo == null) {
                     throw new Exception($"캐릭터 {CharacterInfo.UID}에 해당하는 ItemInfo가 존재하지 않습니다.");
                 }
-                Item = ItemInfo.CombineLatest(_itemService.SubscribeItemInfoUid(characterItemInfo.UID), (info, infoSubscribe) => (info, infoSubscribe))
+                Item = ItemInfo.CombineLatest(_itemService.SubscribeItemInfoUidUpdate(characterItemInfo.UID), (info, infoSubscribe) => (info, infoSubscribe))
                                .Select(data => {
                                    if (data.info == null) return Observable.Return<ItemData>(null);
                                    return _itemService.GetItem(data.info.UID).AsObservable();

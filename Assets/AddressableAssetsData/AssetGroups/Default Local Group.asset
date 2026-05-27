@@ -80,6 +80,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 66419e413984c364ebecbb3783b45806
+    m_Address: UNIT_NOELLE_SkeletonData
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 699f7a6dff736a2489802c5f5c8238e4
     m_Address: CharacterTable
     m_ReadOnly: 0
@@ -120,6 +125,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b3df74d67e4382940b03c169637ee0da
+    m_Address: CharacterElement
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b7c9bcc57a3ef324d89b7700822cd0f3
     m_Address: LobbyHUD
     m_ReadOnly: 0
@@ -142,6 +152,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d114d28b9e4be7c4584fc9c1c89d57c1
     m_Address: BuffTable
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d6a649bc1f971dc4da8caa7df6c7806b
+    m_Address: UNIT_BOMI_WATER_SkeletonData
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

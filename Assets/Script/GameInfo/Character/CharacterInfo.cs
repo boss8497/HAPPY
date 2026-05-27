@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Script.GameInfo.Base;
 using Script.GameInfo.Attribute;
 using Sirenix.OdinInspector;
+using Spine.Unity;
 using UnityEngine;
 
 namespace Script.GameInfo.Character {
@@ -25,6 +26,9 @@ namespace Script.GameInfo.Character {
 
         [AssetPath(typeof(GameObject))]
         public string prefab;
+        
+        [AssetPath(typeof(SkeletonDataAsset))]
+        public string skeletonDataAsset;
 
         // 기본 Invisible로 생성 해준다
         // Invisible이면 쿼리에 등록은 되지만 Continue
