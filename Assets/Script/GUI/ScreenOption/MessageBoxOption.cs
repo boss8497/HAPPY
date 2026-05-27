@@ -11,9 +11,11 @@ namespace Script.GUI.ScreenData {
     }
 
     public class MessageBoxOption : IScreenOption, IClassPool {
-        public string      Title   { get; set; }
-        public string      Message { get; set; }
-        public MessageType Type    { get; set; }
+        public string Title   { get; set; }
+        public string Message { get; set; }
+
+        public object[]    Arguments { get; set; }
+        public MessageType Type      { get; set; }
 
         public UnityAction OkAction     { get; set; }
         public UnityAction CancelAction { get; set; }
@@ -23,6 +25,7 @@ namespace Script.GUI.ScreenData {
         public MessageBoxOption() {
             Title        = string.Empty;
             Message      = string.Empty;
+            Arguments    = Array.Empty<object>();
             OkAction     = null;
             CancelAction = null;
             YesAction    = null;
@@ -32,6 +35,7 @@ namespace Script.GUI.ScreenData {
         public MessageBoxOption(
             string      title,
             string      message,
+            object[]    arguments    = null,
             MessageType messageType  = MessageType.Ok,
             UnityAction okAction     = null,
             UnityAction cancelAction = null,
@@ -40,6 +44,7 @@ namespace Script.GUI.ScreenData {
         ) {
             Title        = title;
             Message      = message;
+            Arguments    = arguments ?? Array.Empty<object>();
             OkAction     = okAction;
             CancelAction = cancelAction;
             YesAction    = yesAction;
@@ -50,6 +55,7 @@ namespace Script.GUI.ScreenData {
         public void Set(
             string      title,
             string      message,
+            object[]    arguments    = null,
             MessageType messageType  = MessageType.Ok,
             UnityAction okAction     = null,
             UnityAction cancelAction = null,
@@ -58,6 +64,7 @@ namespace Script.GUI.ScreenData {
         ) {
             Title        = title;
             Message      = message;
+            Arguments    = arguments ?? Array.Empty<object>();
             OkAction     = okAction;
             CancelAction = cancelAction;
             YesAction    = yesAction;
@@ -65,11 +72,12 @@ namespace Script.GUI.ScreenData {
             Type         = messageType;
         }
 
-        public void OnRent() {
-        }
+        public void OnRent() { }
+
         public void OnReturn() {
             Title        = string.Empty;
             Message      = string.Empty;
+            Arguments    = Array.Empty<object>();
             OkAction     = null;
             CancelAction = null;
             YesAction    = null;

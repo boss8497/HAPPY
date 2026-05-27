@@ -11,7 +11,7 @@ namespace Script.GUI.Screen {
         private string _errorMessageTitle;
 
 
-        public async UniTask OpenErrorMessage(ErrorMessage errorMessage, CancellationToken ct) {
+        public async UniTask OpenErrorMessage(ErrorMessage errorMessage, CancellationToken ct = default, object[] arguments = null) {
             if (string.IsNullOrEmpty(_errorMessageTitle)) {
                 _errorMessageTitle = await _localize.GetErrorMessage(ErrorMessage.Error);
             }
@@ -21,7 +21,8 @@ namespace Script.GUI.Screen {
             var option = ClassPool.Get<MessageBoxOption>();
             option.Set(
                 _errorMessageTitle,
-                message
+                message,
+                arguments
             );
 
             await OpenAsync(option, _errorMessagePath, ct);

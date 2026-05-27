@@ -32,7 +32,7 @@ namespace Script.GamePlay.Stage {
                 _enemies.Clear();
             }
             
-            _RemoveEnemies?.Clear();
+            _removeEnemies?.Clear();
         }
         
         public bool AddCharacter(GameObject obj) {

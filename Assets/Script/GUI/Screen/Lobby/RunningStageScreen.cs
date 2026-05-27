@@ -51,7 +51,7 @@ namespace Script.GUI.Screen {
         public AssetReferenceT<GameObject> characterElement;
         public RectTransform               characterContentRoot;
         public ErrorMessage                characterErrorMessage;
-        
+
         private List<CharacterElement> _characterElements;
 
         public override async UniTask OpenInternal(IScreenOption data) {
@@ -61,7 +61,7 @@ namespace Script.GUI.Screen {
             _stage           = _dungeonInfo.stages.FirstOrDefault(r => r.guid.Value == _dungeonProgress.stageGuid);
 
             foreach (var stage in _dungeonInfo.stages) {
-                var obj          = PoolPop(this.stageElement.AssetGUID, stageContentRoot);
+                var obj                = PoolPop(this.stageElement.AssetGUID, stageContentRoot);
                 var stageElementScript = obj.GetComponent<StageElement>();
                 if (stageElementScript != null) {
                     stageElementScript.InitializeReactive();
@@ -70,7 +70,8 @@ namespace Script.GUI.Screen {
                     if (stageElementScript.startBtn != null) {
                         stageElementScript.startBtn.ClickAddListener(() => {
                             if (stageElementScript.Stage?.CurrentValue == null || stageElementScript.DungeonInfo?.CurrentValue == null) return;
-                            _groupService.EnterDungeon(stageElementScript.DungeonInfo.CurrentValue, stageElementScript.Stage.CurrentValue).Forget();
+                            var selectCharacter = _characterElements.FirstOrDefault(r => r.Selected);
+                            _groupService.EnterDungeon(stageElementScript.DungeonInfo.CurrentValue, stageElementScript.Stage.CurrentValue, selectCharacter?.Item?.CurrentValue).Forget();
                         });
                     }
 
@@ -91,15 +92,22 @@ namespace Script.GUI.Screen {
                 var characterElementScript = obj.GetComponent<CharacterElement>();
                 if (characterElementScript != null) {
                     characterElementScript.InitializeReactive();
-                    characterElementScript.SetReactive(character);
+                    await characterElementScript.SetReactive(character);
                     characterElementScript.selectButton.ClickAddListener(SelectCharacter);
                     _characterElements.Add(characterElementScript);
                 }
             }
+
+            var firstSelect = _characterElements.FirstOrDefault();
+            if (firstSelect != null) {
+                firstSelect.Selector = this;
+                firstSelect.Select();
+            }
+
+            await UniTask.Yield();
         }
 
-        private void SelectCharacter() {
-        }
+        private void SelectCharacter() { }
 
         public override UniTask CloseInternal() {
             if (_characterElements != null) {

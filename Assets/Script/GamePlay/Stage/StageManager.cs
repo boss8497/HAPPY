@@ -18,25 +18,25 @@ using VContainer.Unity;
 namespace Script.GamePlay.Stage {
     public partial class StageManager : IStageManager, IInitializable, IDisposable {
         private Dictionary<EventTiming, ClientActionBase[]> _actions;
-        
-        private List<Character.ICharacter>                  _players;
-        public  List<Character.ICharacter>                  Players => _players;
+
+        private List<Character.ICharacter> _players;
+        public  List<Character.ICharacter> Players => _players;
 
         private List<Character.ICharacter> _enemies;
         public  List<Character.ICharacter> Enemies => _enemies;
 
-        private List<Character.ICharacter> _RemoveEnemies;
+        private List<Character.ICharacter> _removeEnemies;
 
         private Entity _cameraEntity;
 
         private int _systemControlStack = 0;
 
-        private CancellationTokenSource                     _updateCts;
+        private CancellationTokenSource _updateCts;
 
         public void Initialize() {
             InitializeAsync().Forget();
         }
-        
+
         public async UniTask InitializeAsync() {
             ResetState();
             _screenManager.OpenAsync(_hudScreenKey).Forget();
@@ -145,17 +145,18 @@ namespace Script.GamePlay.Stage {
         }
 
         private void UpdateRemoveEnemy() {
-            if (_RemoveEnemies.Count <= 0) return;
-            foreach (var outSideEnemy in _RemoveEnemies) {
+            if (_removeEnemies.Count <= 0) return;
+            foreach (var outSideEnemy in _removeEnemies) {
                 Debug.LogError($"{outSideEnemy.GameObject.name} OutSideMap Remove!!");
                 RemoveEnemy(outSideEnemy);
             }
-            _RemoveEnemies.Clear();
+
+            _removeEnemies.Clear();
         }
 
         public void AddRemoveEnemy(ICharacter enemy) {
-            if (_RemoveEnemies.Any(a => ReferenceEquals(a, enemy))) return;
-            _RemoveEnemies.Add(enemy);
+            if (_removeEnemies.Any(a => ReferenceEquals(a, enemy))) return;
+            _removeEnemies.Add(enemy);
         }
 
         public async UniTask End() {
@@ -205,10 +206,10 @@ namespace Script.GamePlay.Stage {
 
         private void InitializeAction() {
             _actions = PhaseInfo.CurrentValue.actions
-                                   .Select(ActionFactory.Create)
-                                   .GroupBy(g => g.Timing)
-                                   .ToDictionary(r => r.Key, r => r.ToArray());
-            
+                                .Select(ActionFactory.Create)
+                                .GroupBy(g => g.Timing)
+                                .ToDictionary(r => r.Key, r => r.ToArray());
+
             foreach (var actionValue in _actions) {
                 foreach (var actionBase in actionValue.Value) {
                     actionBase.Initialize(this);
@@ -222,6 +223,7 @@ namespace Script.GamePlay.Stage {
                     actionBase.Release();
                 }
             }
+
             _actions.Clear();
         }
 

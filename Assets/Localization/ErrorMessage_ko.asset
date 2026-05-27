@@ -27,6 +27,10 @@ MonoBehaviour:
       \uD574\uC57C\uB429\uB2C8\uB2E4."
     m_Metadata:
       m_Items: []
+  - m_Id: 1601090563280896
+    m_Localized: "\uC544\uC774\uD15C\uC774 \uC5C6\uC2B5\uB2C8\uB2E4."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

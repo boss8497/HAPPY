@@ -1,5 +1,6 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
+using Script.GameData.Data;
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace Script.GamePlay.Stage {
     public class ClientPlayerSpawnAction : ClientActionBase {
         private PlayerSpawnAction _playerSpawnAction;
         private IStageManager     _stageManager;
+        private ItemData          _characterItem;
         private CharacterInfo     _characterInfo;
 
         public ClientPlayerSpawnAction(ActionBase action) : base(action) {
@@ -29,7 +31,8 @@ namespace Script.GamePlay.Stage {
             // 일단 테스트 용으로 처음 캐릭터
             // 이 후에는 선택된 캐릭터를 플레이할 수 있도록..
             _stageManager = stageManager;
-            _characterInfo = GameInfoManager.Instance.Get<CharacterInfo>(1);
+            _characterItem = _stageManager.Group.GetCharacterItem();
+            _characterInfo = GameInfoManager.Instance.Get<CharacterInfo>(_characterItem.ItemInfo.CurrentValue.characterInfoUid);
         }
 
         public override UniTask ExecuteAsync() {
@@ -37,14 +40,14 @@ namespace Script.GamePlay.Stage {
             // Pop을 호출 했으면 StageManager에서 Push 로직 필요
             var prefab = _stageManager.StagePooling.Pop(_characterInfo.prefab);
             prefab.transform.position = _playerSpawnAction.position;
-            
+
             if (_stageManager.AddCharacter(prefab) == false) {
                 _stageManager.StagePooling.Push(prefab);
             }
+
             return UniTask.CompletedTask;
         }
 
-        public override void Release() {
-        }
+        public override void Release() { }
     }
 }

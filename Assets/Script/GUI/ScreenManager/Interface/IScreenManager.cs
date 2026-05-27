@@ -25,6 +25,6 @@ namespace Script.GUI.Screen.Interface {
         GameObject PoolPop(string      key, Transform parent = null, bool active = true);
         bool       PoolPush(GameObject obj);
 
-        UniTask OpenErrorMessage(ErrorMessage errorMessage, CancellationToken ct);
+        UniTask OpenErrorMessage(ErrorMessage errorMessage, CancellationToken ct = default, object[] arguments = null);
     }
 }

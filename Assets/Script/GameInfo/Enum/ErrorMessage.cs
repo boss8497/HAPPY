@@ -2,5 +2,6 @@
     public enum ErrorMessage {
         Error,
         NeedPreviousStageClear,
+        HasNotItemParam,
     }
 }

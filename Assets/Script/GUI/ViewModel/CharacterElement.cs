@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Cysharp.Threading.Tasks;
 using R3;
 using Script.GameData.Data;
 using Script.GameInfo.Item;
@@ -24,6 +25,7 @@ namespace Script.GUI.ViewModel {
         ) {
             _itemService = itemService;
         }
+
         public Button selectButton;
         public Button disableButton;
 
@@ -36,8 +38,8 @@ namespace Script.GUI.ViewModel {
         private ReactiveProperty<CharacterInfo> CharacterInfo { get; set; } = new();
         private ReactiveProperty<ItemInfo>      ItemInfo      { get; set; } = new();
 
-        private ReadOnlyReactiveProperty<ItemData> Item    { get; set; }
-        private ReadOnlyReactiveProperty<bool>     HasItem { get; set; }
+        public ReadOnlyReactiveProperty<ItemData> Item    { get; set; }
+        public ReadOnlyReactiveProperty<bool>     HasItem { get; set; }
 
 
         private AsyncOperationHandle<SkeletonDataAsset> _skeletonHandle;
@@ -57,40 +59,22 @@ namespace Script.GUI.ViewModel {
                            .Switch()
                            .ToReadOnlyReactiveProperty()
                            .AddTo(ref _disposableBag);
-            
+
             HasItem = Item.Select(i => i != null)
                           .DistinctUntilChanged()
                           .ToReadOnlyReactiveProperty()
-                          .AddTo(ref  _disposableBag);
-
-            CharacterInfo.SubscribeAwait(async (info, ct) => {
-                             var isOn = info != null;
-                             skeletonGraphic.SetActiveSafe(isOn);
-
-                             if (_skeletonHandle.IsValid()) {
-                                 Addressables.Release(_skeletonHandle);
-                             }
-
-                             if (isOn) {
-                                 _skeletonHandle = Addressables.LoadAssetAsync<SkeletonDataAsset>(info.skeletonDataAsset);
-                                 await _skeletonHandle.Task;
-                                 skeletonGraphic.skeletonDataAsset = _skeletonHandle.Result;
-                                 skeletonGraphic.Initialize(true);
-                                 skeletonGraphic.StartAnimation("IDLE", true);
-                             }
-                         })
-                         .AddTo(ref _disposableBag);
+                          .AddTo(ref _disposableBag);
 
             HasItem.Subscribe(hasItem => {
                        selectButton.interactable  = hasItem;
                        disableButton.interactable = !hasItem;
-                       
+
                        disableObject.SetActiveSafe(!hasItem);
                    })
                    .AddTo(ref _disposableBag);
         }
 
-        public void SetReactive(CharacterInfo info) {
+        public async UniTask SetReactive(CharacterInfo info) {
             _subScribeDisposableBag.Dispose();
             var characterItemInfo = GameInfoManager.Instance.GetCollection<ItemInfo>().FirstOrDefault(r => r.characterInfoUid == info.UID);
 
@@ -101,6 +85,26 @@ namespace Script.GUI.ViewModel {
                 _itemService.SubscribeItemInfoUidUpdate(info.UID)
                             .Subscribe(uid => { ItemInfo.ForceNotify(); })
                             .AddTo(ref _subScribeDisposableBag);
+            }
+
+            await UpdateSkeleton(info);
+        }
+
+        private async UniTask UpdateSkeleton(CharacterInfo info) {
+            var isOn = info != null;
+            skeletonGraphic.SetActiveSafe(isOn);
+
+            if (_skeletonHandle.IsValid()) {
+                Addressables.Release(_skeletonHandle);
+            }
+
+            if (isOn) {
+                _skeletonHandle = Addressables.LoadAssetAsync<SkeletonDataAsset>(info.skeletonDataAsset);
+                await _skeletonHandle.Task;
+                skeletonGraphic.skeletonDataAsset = _skeletonHandle.Result;
+                                 
+                skeletonGraphic.Initialize(true);
+                skeletonGraphic.StartAnimation("IDLE", true);
             }
         }
 
@@ -114,6 +118,9 @@ namespace Script.GUI.ViewModel {
             if (_skeletonHandle.IsValid()) {
                 Addressables.Release(_skeletonHandle);
             }
+
+            CharacterInfo.OnNext(null);
+            ItemInfo.OnNext(null);
         }
 
         protected override void OnEnableInternal() {
@@ -125,9 +132,7 @@ namespace Script.GUI.ViewModel {
             _key = 0;
         }
 
-        public override void OnSelectInternal() {
-        }
-        public override void OnDeSelectInternal() {
-        }
+        public override void OnSelectInternal()   { }
+        public override void OnDeSelectInternal() { }
     }
 }

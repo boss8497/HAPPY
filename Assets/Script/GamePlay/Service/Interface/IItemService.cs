@@ -6,11 +6,16 @@ using Script.GameInfo.Info.Enum;
 
 namespace Script.GamePlay.Service.Interface {
     public interface IItemService : IService {
-        UniTask                    InitializeAsync(ItemModel[] items);
-        ReactiveProperty<int>      SubscribeItemInfoUidUpdate(int    infoUid);
-        ReactiveProperty<ItemData> GetItem(int                 infoUid);
-        ReactiveProperty<ItemData> GetItem(long                itemUid);
-        UniTask                    ItemLevelUp(ItemData        item, LevelType type);
-        UniTask                    UpdateItems(ItemModel[]     items);
+        UniTask               InitializeAsync(ItemModel[]    items);
+        ReactiveProperty<int> SubscribeItemInfoUidUpdate(int infoUid);
+        
+        bool                  HasItem(ItemData               item);
+        bool                  HasItem(long                   itemUid);
+        bool                  HasItem(int                    itemInfoUid);
+        
+        ReactiveProperty<ItemData> GetItem(int                    infoUid);
+        ReactiveProperty<ItemData> GetItem(long                   itemUid);
+        UniTask                    ItemLevelUp(ItemData           item, LevelType type);
+        UniTask                    UpdateItems(ItemModel[]        items);
     }
 }

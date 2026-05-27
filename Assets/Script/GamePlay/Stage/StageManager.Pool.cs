@@ -7,7 +7,7 @@ namespace Script.GamePlay.Stage {
         private void InitializePool() {
             _players        ??= ListPool.Get<Character.ICharacter>();
             _enemies        ??= ListPool.Get<Character.ICharacter>();
-            _RemoveEnemies ??= ListPool.Get<Character.ICharacter>();
+            _removeEnemies ??= ListPool.Get<Character.ICharacter>();
         }
 
         private void ReleasePool() {
@@ -15,7 +15,7 @@ namespace Script.GamePlay.Stage {
 
             ListPool.Return(_players);
             ListPool.Return(_enemies);
-            ListPool.Return(_RemoveEnemies);
+            ListPool.Return(_removeEnemies);
         }
     }
 }

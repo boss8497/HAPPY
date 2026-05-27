@@ -23,6 +23,10 @@ MonoBehaviour:
     m_Key: NeedPreviousStageClear
     m_Metadata:
       m_Items: []
+  - m_Id: 1601090563280896
+    m_Key: HasNotItemParam
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

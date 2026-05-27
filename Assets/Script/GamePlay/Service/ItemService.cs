@@ -64,6 +64,18 @@ namespace Script.GamePlay.Service {
             return reactive;
         }
 
+        public bool HasItem(ItemData item) {
+            return _itemsByUid.ContainsKey(item.ItemUid.CurrentValue);
+        }
+        
+        public bool HasItem(long itemUid) {
+            return _itemsByUid.ContainsKey(itemUid);
+        }
+        
+        public bool HasItem(int itemInfoUid) {
+            return _itemsByInfoUid.ContainsKey(itemInfoUid);
+        }
+
         [CanBeNull]
         public ReactiveProperty<ItemData> GetItem(int infoUid) {
             if (_itemsByInfoUid.TryGetValue(infoUid, out var items)) {
