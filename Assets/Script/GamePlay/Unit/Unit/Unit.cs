@@ -1,9 +1,11 @@
 using Script.GameInfo.Character;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Script.GamePlay.Unit {
     [System.Serializable]
     public abstract class Unit : MonoBehaviour {
+        [ShowInInspector]
         protected long _uid;
         protected int  _team;
 

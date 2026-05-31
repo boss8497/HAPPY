@@ -9,6 +9,7 @@ using Script.GameInfo.Table;
 using Script.GameTimer;
 using Script.Utility.Runtime;
 using Unity.Collections;
+using UnityEngine;
 
 namespace Script.Buff {
     /// <summary>
@@ -24,20 +25,23 @@ namespace Script.Buff {
         private IBuffOwner _owner;
         private IGameTimer _gameTimer;
 
-        private List<Buff>     _buffs;
+        private List<Buff>   _buffs;
         private List<UmBuff> _umBuffs;
 
         private CancellationTokenSource _cts;
+
+        public bool IsInitialize { get; private set; } = false;
 
 
         public void Initialize(IBuffOwner owner, IGameTimer gameTimer) {
             // 글쌔 16개 이상 버프를 가지고 있을까..? 디버프도 생각해야되긴 한데 일단은 16
             // 너무 적은 숫자라서 Burst로 이득을볼 수 있을까? 흐음
             //_umBuffs     = new (16, Allocator.Persistent);
-            _umBuffs   = ListPool.Get<UmBuff>();
-            _owner     = owner;
-            _gameTimer = gameTimer;
-            _buffs     = ListPool.Get<Buff>();
+            _owner       = owner;
+            _gameTimer   = gameTimer;
+            _buffs       = ListPool.Get<Buff>();
+            _umBuffs     = ListPool.Get<UmBuff>();
+            IsInitialize = true;
         }
 
         private async UniTask Update(CancellationToken ct) {
@@ -54,18 +58,20 @@ namespace Script.Buff {
                     foreach (var buff in removeBuffs) {
                         RemoveBuff(buff);
                     }
+
                     removeBuffs.Clear();
                 }
+
                 ListPool.Return(removeBuffs);
-                
+
                 var isCancel = await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken: ct).SuppressCancellationThrow();
                 if (isCancel) {
                     break;
                 }
             }
         }
-        
-        
+
+
         public void AddBuffs(int[] uids) {
             if ((uids?.Length ?? 0) <= 0) return;
 
@@ -75,7 +81,7 @@ namespace Script.Buff {
                 AddBuff(buffInfo);
                 statInfos.AddRange(buffInfo.statusUid.Select(i => GameInfoManager.Instance.Get<StatusInfo>(i)));
             }
-            
+
             _owner.AddStatus(statInfos);
             statInfos.Clear();
             ListPool.Return(statInfos);
@@ -86,13 +92,21 @@ namespace Script.Buff {
             var buff   = ClassPool.Get<Buff>();
             var newUid = NewUid();
             buff.Initialize(buffInfo, newUid);
-            
+
+            if (_buffs == null) {
+                _buffs = ListPool.Get<Buff>();
+            }
+
+            if (_umBuffs == null) {
+                _umBuffs = ListPool.Get<UmBuff>();
+            }
+
             _buffs.Add(buff);
-            _umBuffs.Add(new () {
-                buffUid = newUid,
-                endTime = buffInfo.time + _gameTimer.Elapsed
-            });
-            
+            _umBuffs.Add(new() {
+                             buffUid = newUid,
+                             endTime = buffInfo.time + _gameTimer.Elapsed
+                         });
+
             if (_cts == null) {
                 _cts = new();
                 Update(_cts.Token).Forget();
@@ -106,7 +120,7 @@ namespace Script.Buff {
             _buffs.Remove(buff);
             _umBuffs.RemoveSwapBack(r => r.buffUid == uid);
             _owner.RemoveStatus(buff.StatusInfos);
-            
+
             ClassPool.Release(buff);
 
             if (_umBuffs.Count <= 0) {
@@ -121,20 +135,39 @@ namespace Script.Buff {
         }
 
         public void OnRent() {
+            IsInitialize = false;
         }
 
         public void OnReturn() {
-            ListPool.Return(_buffs);
-            ListPool.Return(_umBuffs);
+            Release();
+            IsInitialize = false;
         }
 
-        public void Dispose() {
+        public void Release() {
             if (_cts is { IsCancellationRequested: false }) {
                 _cts.Cancel();
                 _cts.Dispose();
                 _cts = null;
             }
-            OnReturn();
+
+            if (_buffs != null) {
+                _buffs.Clear();
+                ListPool.Return(_buffs);
+            }
+
+            if (_umBuffs != null) {
+                _buffs.Clear();
+                ListPool.Return(_umBuffs);
+            }
+
+            _umBuffs   = null;
+            _owner     = null;
+            _gameTimer = null;
+            _buffs     = null;
+        }
+
+        public void Dispose() {
+            Release();
         }
     }
 }

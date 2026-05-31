@@ -3,18 +3,23 @@ using Cysharp.Threading.Tasks;
 using Script.Buff;
 using Script.GameInfo.Info.Stat;
 using Script.Utility.Runtime;
+using UnityEngine;
 
 namespace Script.GamePlay.Character {
     public partial class Character : IBuffOwner {
         private BuffSystem _buffSystem;
         
+
         private void InitializeBuff() {
             _buffSystem = ClassPool.Get<BuffSystem>();
             _buffSystem.Initialize(this, GameTimer);
         }
 
         private void ReleaseBuff() {
-            ClassPool.Release(_buffSystem);
+            if (_buffSystem != null) {
+                ClassPool.Release(_buffSystem);
+            }
+            _buffSystem = null;
         }
 
         private void ApplyBuff(int[] buffUids) {
