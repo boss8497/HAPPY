@@ -27,7 +27,7 @@ namespace Script.GameData.Data {
         private Status _status;
         public  Status Status => _status;
         public  double Jump   => Status.Jump;
-        public  double Health => Status.Heart;
+        public  double Health => Status.Hp;
         public  double Speed  => Status.Spd;
 
         private DisposableBag _disposableBag;

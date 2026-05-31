@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Script.Table::Script.GameInfo.Table.RewardTable
   RewardInfos:
   - rid: 4223259904432144484
+  - rid: 4223260050439798968
   references:
     version: 2
     RefIds:
@@ -31,6 +32,19 @@ MonoBehaviour:
           grade: 0
           tier: 0
         - itemUid: 2
+          count: 1
+          level: 1
+          grade: 0
+          tier: 0
+    - rid: 4223260050439798968
+      type: {class: RewardInfo, ns: Script.GameInfo, asm: Script.GameInfo}
+      data:
+        <UID>k__BackingField: 2
+        <ID>k__BackingField: NoellReward
+        <Name>k__BackingField: "\uCE90\uB9AD\uD130_\uB178\uC5D8_\uBCF4\uC0C1"
+        type: 1
+        itemRewards:
+        - itemUid: 3
           count: 1
           level: 1
           grade: 0
