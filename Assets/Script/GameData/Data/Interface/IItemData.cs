@@ -1,14 +1,22 @@
 ﻿using R3;
 using Script.GameData.Model;
+using Script.GameInfo.Character;
 using Script.GameInfo.Item;
+using Script.GamePlay.Stat;
 
 namespace Script.GameData.Data.Interface {
     public interface IItemData : IData<ItemModel> {
-        public ReadOnlyReactiveProperty<long>     ItemUid     { get; set; }
-        public ReadOnlyReactiveProperty<int>      ItemInfoUid { get; set; }
-        public ReadOnlyReactiveProperty<int>      Level       { get; set; }
-        public ReadOnlyReactiveProperty<int>      Grade       { get; set; }
-        public ReadOnlyReactiveProperty<int>      Tier        { get; set; }
-        public ReadOnlyReactiveProperty<ItemInfo> ItemInfo    { get; set; }
+        ReadOnlyReactiveProperty<long>          ItemUid       { get; }
+        ReadOnlyReactiveProperty<int>           ItemInfoUid   { get; }
+        ReadOnlyReactiveProperty<int>           Level         { get; }
+        ReadOnlyReactiveProperty<int>           Grade         { get; }
+        ReadOnlyReactiveProperty<int>           Tier          { get; }
+        ReadOnlyReactiveProperty<ItemInfo>      ItemInfo      { get; }
+        ReadOnlyReactiveProperty<CharacterInfo> CharacterInfo { get; }
+
+        Status Status { get; }
+        double Jump   { get; }
+        double Health { get; }
+        double Speed  { get; }
     }
 }

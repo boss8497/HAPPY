@@ -35,8 +35,8 @@ namespace Script.GUI.ViewModel {
         private SkeletonGraphic skeletonGraphic;
 
 
-        private ReactiveProperty<CharacterInfo> CharacterInfo { get; set; } = new();
-        private ReactiveProperty<ItemInfo>      ItemInfo      { get; set; } = new();
+        public ReactiveProperty<CharacterInfo> CharacterInfo { get; private set; } = new();
+        public ReactiveProperty<ItemInfo>      ItemInfo      { get; private set; } = new();
 
         public ReadOnlyReactiveProperty<ItemData> Item    { get; set; }
         public ReadOnlyReactiveProperty<bool>     HasItem { get; set; }
@@ -102,7 +102,7 @@ namespace Script.GUI.ViewModel {
                 _skeletonHandle = Addressables.LoadAssetAsync<SkeletonDataAsset>(info.skeletonDataAsset);
                 await _skeletonHandle.Task;
                 skeletonGraphic.skeletonDataAsset = _skeletonHandle.Result;
-                                 
+
                 skeletonGraphic.Initialize(true);
                 skeletonGraphic.StartAnimation("IDLE", true);
             }

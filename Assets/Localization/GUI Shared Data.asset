@@ -19,6 +19,22 @@ MonoBehaviour:
     m_Key: Alram
     m_Metadata:
       m_Items: []
+  - m_Id: 3027230622396416
+    m_Key: HealthText
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3027449179189248
+    m_Key: New Entry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3027611330981888
+    m_Key: SpeedText
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3027699784658944
+    m_Key: JumpText
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
