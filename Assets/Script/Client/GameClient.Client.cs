@@ -109,7 +109,7 @@ namespace Script.Client {
             // clearedIndex = -1 이라면 아마 이전 던전의 Stage일 가능성이 있음. 아니면 해킹 및 버그로 다음 던전 사용이기 때문에 return
             if (clearedIndex < 0 || clearedIndex < stageIndex) return rewards;
 
-            if (dungeonProgress.cleared == false && clearedIndex > stageIndex) {
+            if (dungeonProgress.cleared == false && clearedIndex < stageIndex) {
                 throw new Exception($"이 전 스테이지를 클리어하지 않고 먼저 스테이지를 클리어할 수 없습니다.");
             }
 

@@ -23,5 +23,13 @@ namespace Script.Utility.Runtime {
 
             btn.onClick.AddListener(listener);
         }
+        public static void AddListener(this UnityEvent unityEvent, UnityAction listener, bool removeAll = true) {
+            if (unityEvent == null || listener == null) return;
+            if (removeAll) {
+                unityEvent.RemoveAllListeners();
+            }
+
+            unityEvent.AddListener(listener);
+        }
     }
 }

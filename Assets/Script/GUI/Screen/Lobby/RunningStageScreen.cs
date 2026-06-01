@@ -107,7 +107,7 @@ namespace Script.GUI.Screen {
                 if (characterElementScript != null) {
                     characterElementScript.InitializeReactive();
                     await characterElementScript.SetReactive(character);
-                    characterElementScript.selectButton.ClickAddListener(() => { SelectCharacter(character); });
+                    ExtensionUtility.AddListener(characterElementScript.OnSelect, () => { SelectCharacter(character); });
                     _characterElements.Add(characterElementScript);
                 }
             }
