@@ -140,7 +140,10 @@ namespace Script.GamePlay.Service {
         public UniTask UpdateItems(ItemModel[] items) {
             foreach (var item in items) {
                 var itemData = GetItem(item.uid);
-                if (itemData == null) continue;
+                if (itemData == null) {
+                    AddItem(new ItemData(item));
+                    continue;
+                }
                 itemData.CurrentValue.Update(item);
                 itemData.ForceNotify();
                 UpdateItemInfoUid(item.infoUid);
