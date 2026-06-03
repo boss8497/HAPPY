@@ -35,6 +35,10 @@ MonoBehaviour:
     m_Key: JumpText
     m_Metadata:
       m_Items: []
+  - m_Id: 4115768766042112
+    m_Key: LevelExpText
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

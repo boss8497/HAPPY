@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Linq;
 using Expression;
 using R3;
 using Script.GameData.Data.Interface;
 using Script.GameData.Model;
+using Script.GameInfo;
 using Script.GameInfo.Item;
 using Script.GameInfo.Character;
+using Script.GameInfo.Info.Enum;
 using Script.GameInfo.Info.Stat;
 using Script.GameInfo.Table;
 using Script.GamePlay.Stat;
@@ -20,7 +23,9 @@ namespace Script.GameData.Data {
         public ReadOnlyReactiveProperty<int>           Level         { get; private set; }
         public ReadOnlyReactiveProperty<int>           Grade         { get; private set; }
         public ReadOnlyReactiveProperty<int>           Tier          { get; private set; }
-        public ReadOnlyReactiveProperty<double[]>      Exp           { get; private set; }
+        public ReadOnlyReactiveProperty<double>        LevelExp      { get; private set; }
+        public ReadOnlyReactiveProperty<ExpInfo[]>     ExpInfos      { get; private set; }
+        public ReadOnlyReactiveProperty<double>        LevelExpMax   { get; private set; }
         public ReadOnlyReactiveProperty<ItemInfo>      ItemInfo      { get; private set; }
         public ReadOnlyReactiveProperty<CharacterInfo> CharacterInfo { get; private set; }
 
@@ -65,10 +70,27 @@ namespace Script.GameData.Data {
                         .ToReadOnlyReactiveProperty()
                         .AddTo(ref _disposableBag);
 
-            Exp = Model.Select(i => i.exp)
-                       .DistinctUntilChanged()
-                       .ToReadOnlyReactiveProperty()
-                       .AddTo(ref _disposableBag);
+            LevelExp = Model.Select(i => i?.exp[(int)LevelType.Level] ?? 0)
+                            .DistinctUntilChanged()
+                            .ToReadOnlyReactiveProperty()
+                            .AddTo(ref _disposableBag);
+
+            ExpInfos = Model.Select(i => {
+                                var itemInfo = i.ItemInfo;
+                                if (itemInfo == null) return null;
+                                return itemInfo.expUids.Select(s => GameInfoManager.Instance.Get<ExpInfo>(s)).ToArray();
+                            })
+                            .DistinctUntilChanged()
+                            .ToReadOnlyReactiveProperty()
+                            .AddTo(ref _disposableBag);
+
+            LevelExpMax = ExpInfos.Select(i => {
+                                      using var _ = CreateValueContext();
+                                      return i.Where(r => r.levelType == LevelType.Level).Sum(s => s.Calc());
+                                  })
+                                  .DistinctUntilChanged()
+                                  .ToReadOnlyReactiveProperty()
+                                  .AddTo(ref _disposableBag);
 
             ItemInfo = ItemInfoUid.Select(i => GameInfoManager.Instance.Get<ItemInfo>(i))
                                   .DistinctUntilChanged()
