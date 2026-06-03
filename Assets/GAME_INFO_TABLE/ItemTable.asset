@@ -26,8 +26,8 @@ MonoBehaviour:
         <UID>k__BackingField: 4
         <ID>k__BackingField: Character_Level_Exp
         <Name>k__BackingField: "\uCE90\uB9AD\uD130_\uB808\uBCA8_\uC544\uC774\uD15C"
-        type: 4
-        flag: 14
+        type: 5
+        flag: 15
         statusUids: 
         characterInfoUid: 0
         expUids: 

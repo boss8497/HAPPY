@@ -5,5 +5,6 @@
         Character,
         Obstacle,
         Exp,
+        CharacterExp,
     }
 }

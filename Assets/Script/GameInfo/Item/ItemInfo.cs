@@ -18,6 +18,6 @@ namespace Script.GameInfo.Item {
         public int characterInfoUid;
 
         [Exp]
-        public int[] expUids;
+        public int[] expUids = Array.Empty<int>();
     }
 }

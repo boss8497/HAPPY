@@ -2,5 +2,7 @@
     public enum RewardType {
         StartItem,
         StageClear,
+        CharacterExp,
+        Exp,
     }
 }

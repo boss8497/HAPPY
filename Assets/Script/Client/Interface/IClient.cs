@@ -9,8 +9,8 @@ namespace Script.Client {
         UniTask              Req_SaveGroup(GroupModel     model);
         UniTask<ItemModel[]> Req_Inventory(long           groupUid);
         UniTask<ItemModel>   Req_ItemLevelUp(ItemModel    model,       LevelType type);
-        UniTask<bool>        Req_EnterDungeon(DungeonInfo dungeonInfo, Stage     stage);
+        UniTask<bool>        Req_EnterDungeon(DungeonInfo dungeonInfo, Stage     stage, long characterUid);
         UniTask              Req_RemoveGroup();
-        UniTask<ItemModel[]> Req_ClearStage(DungeonInfo dungeonInfo, Stage stage);
+        UniTask<ItemModel[]> Req_ClearStage(DungeonInfo dungeonInfo, Stage stage, long characterUid);
     }
 }

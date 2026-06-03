@@ -24,8 +24,9 @@ MonoBehaviour:
       data:
         <UID>k__BackingField: 3
         <ID>k__BackingField: CharacterExpReward
-        <Name>k__BackingField: "\uCE90\uB9AD\uD130_\uACBD\uD5D8\uCE58_\uBCF4\uC0C1"
-        type: 1
+        <Name>k__BackingField: "\uCE90\uB9AD\uD130_\uB808\uBCA8_\uACBD\uD5D8\uCE58_\uBCF4\uC0C1"
+        type: 2
+        expLevelType: 0
         itemRewards:
         - itemUid: 4
           count: 20
@@ -39,6 +40,7 @@ MonoBehaviour:
         <ID>k__BackingField: StartItems
         <Name>k__BackingField: "\uC2DC\uC791\uC544\uC774\uD15C"
         type: 0
+        expLevelType: 0
         itemRewards:
         - itemUid: 1
           count: 1
@@ -57,6 +59,7 @@ MonoBehaviour:
         <ID>k__BackingField: NoellReward
         <Name>k__BackingField: "\uCE90\uB9AD\uD130_\uB178\uC5D8_\uBCF4\uC0C1"
         type: 1
+        expLevelType: 0
         itemRewards:
         - itemUid: 3
           count: 1

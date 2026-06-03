@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using MessagePack;
 using Newtonsoft.Json;
+using Script.GameInfo.Character;
 using Script.GameInfo.Enum;
+using Script.GameInfo.Info.Enum;
 using Script.GameInfo.Item;
 using Script.GameInfo.Table;
 
@@ -17,14 +19,17 @@ namespace Script.GameData.Model {
         // 아이템 정보의 uid
         [Key(2)] public int infoUid;
 
-        [Key(3)] public double count;
-        [Key(4)] public int    level;
-        [Key(5)] public int    grade;
-        [Key(6)] public int    tier;
-        [Key(7)] public double exp;
+        [Key(3)] public double   count;
+        [Key(4)] public int      level;
+        [Key(5)] public int      grade;
+        [Key(6)] public int      tier;
+        [Key(7)] public double[] exp = new double[(int)LevelType.Max];
 
         [IgnoreMember, JsonIgnore]
         public ItemInfo ItemInfo => GameInfoManager.Instance.Get<ItemInfo>(infoUid);
+
+        [IgnoreMember, JsonIgnore]
+        public CharacterInfo CharacterInfo => GameInfoManager.Instance.Get<CharacterInfo>(ItemInfo?.characterInfoUid ?? 0);
 
         public bool SameItem(ItemModel other) {
             var itemInfo = ItemInfo;

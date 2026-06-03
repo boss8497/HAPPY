@@ -40,7 +40,9 @@ namespace Script.DataBase.Interface {
 
         UniTask<ItemModel[]> GetInventory(long groupUid);
         UniTask              SaveItemTable();
-        UniTask<ItemModel>   LevelUpItem(ItemModel item, LevelType levelType);
-        UniTask RemoveGroupItems(long groupUid);
+        UniTask<ItemModel>   GetItem(long          groupUid, long      itemUid);
+        UniTask<ItemModel>   CharacterExpUp(long   groupUid, long      itemUid, int expItemInfoUid, double count, LevelType levelType);
+        UniTask<ItemModel>   LevelUpItem(ItemModel item,     LevelType levelType);
+        UniTask              RemoveGroupItems(long groupUid);
     }
 }

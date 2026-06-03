@@ -1,7 +1,8 @@
 ﻿namespace Script.GameInfo.Info.Enum {
     public enum LevelType {
-        Level,
-        Grade,
+        Level = 0,
+        Grade = 1,
         Tier,
+        Max,
     }
 }

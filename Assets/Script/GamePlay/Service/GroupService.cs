@@ -63,9 +63,10 @@ namespace Script.GamePlay.Service {
         }
 
         public async UniTask EnterDungeon(DungeonInfo dungeonInfo, Stage stage) {
-            var result = await _client.Req_EnterDungeon(dungeonInfo, stage);
+            var result = await _client.Req_EnterDungeon(dungeonInfo, stage, 0);
             if (result) {
-                _enterDungeon = new(dungeonInfo, stage);
+                _characterItem = null;
+                _enterDungeon  = new(dungeonInfo, stage);
                 await _sceneLoader.LoadScene(stage.scenePath);
             }
         }
@@ -76,7 +77,7 @@ namespace Script.GamePlay.Service {
                 return;
             }
 
-            var result = await _client.Req_EnterDungeon(dungeonInfo, stage);
+            var result = await _client.Req_EnterDungeon(dungeonInfo, stage, character.ItemUid.CurrentValue);
             if (result) {
                 _characterItem = character;
                 _enterDungeon  = new(dungeonInfo, stage);
@@ -134,7 +135,7 @@ namespace Script.GamePlay.Service {
         }
 
         public async UniTask ClearedDungeon(DungeonInfo dungeonInfo, Stage stage) {
-            var items = await _client.Req_ClearStage(dungeonInfo, stage);
+            var items = await _client.Req_ClearStage(dungeonInfo, stage, _characterItem?.ItemUid?.CurrentValue ?? 0);
             await _itemService.UpdateItems(items);
         }
     }

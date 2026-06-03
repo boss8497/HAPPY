@@ -2,23 +2,28 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using Expression;
 using Script.DataBase.Enum;
 using Script.GameData.Model;
 using Script.GameInfo;
 using Script.GameInfo.Dungeon;
+using Script.GameInfo.Enum;
 using Script.GameInfo.Info.Enum;
+using Script.GameInfo.Item;
 using Script.GameInfo.Table;
 using Script.Utility.Runtime;
+using Sirenix.Utilities;
 
 namespace Script.Client {
     /// <summary>
     /// 실제로 Server와 통신하는것 처럼 코딩 하자.
     /// </summary>
     public partial class GameClient : IClient {
-        private readonly string    _groupPath = $"{nameof(GroupModel)}.json";
-        
+        private readonly string _groupPath = $"{nameof(GroupModel)}.json";
+
         private GroupModel _groupModel;
-        
+        private long       _playCharacterUid;
+
         public async UniTask<GroupModel> Req_Group() {
             GroupModel CreateGroup() {
                 var groupModel = new GroupModel();
@@ -35,6 +40,7 @@ namespace Script.Client {
                         category   = (int)dungeonInfo.category,
                     });
                 }
+
                 groupModel.dungeonProgresses = dungeonProgress.ToArray();
                 ListPool.Return(dungeonProgress);
 
@@ -43,25 +49,26 @@ namespace Script.Client {
                 foreach (var startItem in startItems.itemRewards) {
                     _dataBase.AddItem(groupModel.uid, startItem);
                 }
-                
+
                 return groupModel;
             }
-            
+
             async UniTask<GroupModel> Load() {
                 return await _dataBase.LoadAsync<GroupModel>(_groupPath, DataType.Json);
             }
+
             await UniTask.WaitUntil(() => _dataBase.Initialized);
 
             //첫 접속 확인
             if (_dataBase.Exists(_groupPath)) {
-                _groupModel =  await Load();
+                _groupModel = await Load();
                 return _groupModel;
             }
 
             _groupModel = CreateGroup();
             await Req_SaveGroup(_groupModel);
             await _dataBase.SaveItemTable();
-            
+
             return _groupModel;
         }
 
@@ -73,11 +80,16 @@ namespace Script.Client {
             return await _dataBase.GetInventory(groupUid);
         }
 
+        public async UniTask<ItemModel> Req_GetItem(long groupUid, long itemUid) {
+            return await _dataBase.GetItem(groupUid, itemUid);
+        }
+
         public async UniTask<ItemModel> Req_ItemLevelUp(ItemModel model, LevelType type) {
             return await _dataBase.LevelUpItem(model, type);
         }
 
-        public UniTask<bool> Req_EnterDungeon(DungeonInfo dungeonInfo, Stage stage) {
+        public UniTask<bool> Req_EnterDungeon(DungeonInfo dungeonInfo, Stage stage, long characterUid) {
+            _playCharacterUid = characterUid;
             return UniTask.FromResult(true);
         }
 
@@ -85,7 +97,7 @@ namespace Script.Client {
             async UniTask<GroupModel> Load() {
                 return await _dataBase.LoadAsync<GroupModel>(_groupPath, DataType.Json);
             }
-            
+
             if (_dataBase.Exists(_groupPath)) {
                 var group = await Load();
                 await _dataBase.RemoveGroupItems(group.uid);
@@ -93,10 +105,10 @@ namespace Script.Client {
             }
         }
 
-        public async UniTask<ItemModel[]> Req_ClearStage(DungeonInfo dungeonInfo, Stage stage) {
-            var  rewards         = Array.Empty<ItemModel>();
-             var dungeonCategory = dungeonInfo.category;
-            var  dungeonProgress = GetDungeon(dungeonCategory);
+        public async UniTask<ItemModel[]> Req_ClearStage(DungeonInfo dungeonInfo, Stage stage, long characterUid) {
+            var rewards         = ListPool.Get<ItemModel>();
+            var dungeonCategory = dungeonInfo.category;
+            var dungeonProgress = GetDungeon(dungeonCategory);
 
             if (dungeonProgress == null) {
                 throw new Exception($"Not found Category: {(Category)dungeonInfo.category}");
@@ -107,7 +119,10 @@ namespace Script.Client {
 
             // 이 전 스테이지 클리어 했기 대문에 저장할게 없음
             // clearedIndex = -1 이라면 아마 이전 던전의 Stage일 가능성이 있음. 아니면 해킹 및 버그로 다음 던전 사용이기 때문에 return
-            if (clearedIndex < 0 || clearedIndex < stageIndex) return rewards;
+            if (clearedIndex < 0 || clearedIndex < stageIndex) {
+                ListPool.Return(rewards);
+                return Array.Empty<ItemModel>();
+            }
 
             if (dungeonProgress.cleared == false && clearedIndex < stageIndex) {
                 throw new Exception($"이 전 스테이지를 클리어하지 않고 먼저 스테이지를 클리어할 수 없습니다.");
@@ -144,11 +159,67 @@ namespace Script.Client {
                 _groupModel.dungeonProgresses[index].cleared   = false;
             }
 
-            rewards = await Req_AddRewards(_groupModel.uid, stage.rewards);
+            rewards.AddRange(await Req_AddRewards(_groupModel.uid, stage.rewards));
+            var characterItem = await Req_GetItem(_groupModel.uid, _playCharacterUid);
+            if (_playCharacterUid != 0 && (stage.exps?.Length ?? 0) > 0) {
+                foreach (var expUid in stage.exps) {
+                    var rewardInfo = GameInfoManager.Instance.Get<RewardInfo>(expUid);
+                    foreach (var reward in rewardInfo.itemRewards) {
+                        var itemInfo = GameInfoManager.Instance.Get<ItemInfo>(reward.itemUid);
+                        if (itemInfo.type != ItemType.CharacterExp) {
+                            continue;
+                        }
+
+                        characterItem = await _dataBase.CharacterExpUp(_groupModel.uid, _playCharacterUid, itemInfo.UID, reward.count, rewardInfo.expLevelType);
+                    }
+                }
+                rewards.Add(characterItem);
+            }
+
             await Req_SaveGroup(_groupModel);
             await _dataBase.SaveItemTable();
-            
-            return rewards;
+
+            var result = rewards.ToArray();
+            ListPool.Return(rewards);
+            return result;
+        }
+
+        private async UniTask Req_CharacterExpUp(long groupUid, long itemUid, int expItemInfoUid, double count, LevelType levelType) {
+            var characterItem = await _dataBase.GetItem(groupUid, itemUid);
+            if (characterItem == null) {
+                throw new Exception($"Not found Character Item: {itemUid}");
+            }
+
+            var characterItemInfo = characterItem.ItemInfo;
+            if (characterItemInfo == null) {
+                throw new Exception($"Not found Character ItemInfo: {itemUid}");
+            }
+
+            if (characterItemInfo.expUids.Length <= 0) {
+                throw new Exception($"Character ItemInfo doesn't have expUids: {itemUid}");
+            }
+
+            var expInfoUid = characterItemInfo.expUids.FirstOrDefault(r => {
+                var info = GameInfoManager.Instance.Get<ExpInfo>(r);
+                return info.levelType == levelType && info.itemUid == expItemInfoUid;
+            });
+
+            if (expInfoUid <= 0) {
+                throw new Exception($"Character ItemInfo doesn't have expUids: {itemUid}");
+            }
+
+            var       expInfo = GameInfoManager.Instance.Get<ExpInfo>(expInfoUid);
+            using var _       = CreateValueContext(characterItem);
+
+            var currentExp = characterItem.exp[(int)levelType];
+            var limitExp   = expInfo.Calc();
+
+            if (currentExp + count < limitExp) {
+                // 경험치만 추가    
+            }
+            else {
+                // 레벨업 필요
+            }
         }
 
         private UniTask<ItemModel[]> Req_AddRewards(long groupModelUid, int[] stageRewards) {
@@ -159,6 +230,23 @@ namespace Script.Client {
         public DungeonProgress GetDungeon(Category dungeonCategory) {
             var category = (int)dungeonCategory;
             return _groupModel.dungeonProgresses?.FirstOrDefault(r => r.category == category);
+        }
+
+
+        //
+
+        private ValueContext CreateValueContext(
+            ItemModel item,
+            int       levelOffset = 0,
+            int       gradeOffset = 0,
+            int       tierOffset  = 0
+        ) {
+            return new(
+                new ValueProvider()
+                    .Add("level", (item?.level ?? 1) + levelOffset)
+                    .Add("grade", (item?.grade ?? 0) + gradeOffset)
+                    .Add("tier", (item?.tier ?? 0) + tierOffset)
+            );
         }
     }
 }
