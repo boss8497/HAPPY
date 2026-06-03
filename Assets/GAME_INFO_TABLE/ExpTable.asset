@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfb4a9c6345faca43adbc06df30913fe, type: 3}
+  m_Name: ExpTable
+  m_EditorClassIdentifier: Script.Table::Script.GameInfo.Table.ExpTable
+  ExpInfos:
+  - rid: 2741528963545301094
+  references:
+    version: 2
+    RefIds:
+    - rid: 2741528963545301094
+      type: {class: ExpInfo, ns: Script.GameInfo, asm: Script.GameInfo}
+      data:
+        <UID>k__BackingField: 1
+        <ID>k__BackingField: Character_Level_Exp
+        <Name>k__BackingField: "\uCE90\uB9AD\uD130_\uB808\uBCA8_\uACBD\uD5D8\uCE58"
+        levelType: 0
+        itemUid: 4
+        expression:
+          _code:
+          - Op: 0
+            Const: 10
+            Key: 0
+            Func: 0
+            Arity: 0
+          - Op: 1
+            Const: 0
+            Key: 0
+            Func: 0
+            Arity: 0
+          - Op: 0
+            Const: 10
+            Key: 0
+            Func: 0
+            Arity: 0
+          - Op: 4
+            Const: 0
+            Key: 0
+            Func: 0
+            Arity: 0
+          - Op: 2
+            Const: 0
+            Key: 0
+            Func: 0
+            Arity: 0
+          _maxStack: 3

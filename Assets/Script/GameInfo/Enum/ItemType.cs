@@ -4,5 +4,6 @@
         Group,
         Character,
         Obstacle,
+        Exp,
     }
 }

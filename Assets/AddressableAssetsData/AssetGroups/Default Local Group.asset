@@ -135,6 +135,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bebd04adfeaae76408c03e0aca9a207b
+    m_Address: ExpTable
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c0732edb48491b047b33612a669244cd
     m_Address: RunningMenu
     m_ReadOnly: 0

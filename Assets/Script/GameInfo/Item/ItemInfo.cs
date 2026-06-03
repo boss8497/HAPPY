@@ -16,5 +16,8 @@ namespace Script.GameInfo.Item {
         
         [ShowIf("@type == Script.GameInfo.Enum.ItemType.Character || type == Script.GameInfo.Enum.ItemType.Obstacle"), Character]
         public int characterInfoUid;
+
+        [Exp]
+        public int[] expUids;
     }
 }

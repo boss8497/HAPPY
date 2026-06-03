@@ -7,6 +7,7 @@ namespace Script.GameInfo.Table {
             "BuffTable",
             "CharacterTable",
             "DungeonTable",
+            "ExpTable",
             "ItemTable",
             "PhaseTable",
             "RewardTable",
