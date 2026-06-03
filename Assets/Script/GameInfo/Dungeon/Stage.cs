@@ -25,6 +25,9 @@ namespace Script.GameInfo.Dungeon {
         
         [Reward]
         public int[] rewards =  Array.Empty<int>();
+        
+        [Reward]
+        public int[] exps =  Array.Empty<int>();
 
 
         public static bool operator ==(Stage left, Stage right) {

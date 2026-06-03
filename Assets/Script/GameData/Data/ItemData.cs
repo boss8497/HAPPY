@@ -20,6 +20,7 @@ namespace Script.GameData.Data {
         public ReadOnlyReactiveProperty<int>           Level         { get; private set; }
         public ReadOnlyReactiveProperty<int>           Grade         { get; private set; }
         public ReadOnlyReactiveProperty<int>           Tier          { get; private set; }
+        public ReadOnlyReactiveProperty<double>        Exp           { get; private set; }
         public ReadOnlyReactiveProperty<ItemInfo>      ItemInfo      { get; private set; }
         public ReadOnlyReactiveProperty<CharacterInfo> CharacterInfo { get; private set; }
 
@@ -63,6 +64,11 @@ namespace Script.GameData.Data {
                         .DistinctUntilChanged()
                         .ToReadOnlyReactiveProperty()
                         .AddTo(ref _disposableBag);
+            
+            Exp = Model.Select(i => i.exp)
+                       .DistinctUntilChanged()
+                       .ToReadOnlyReactiveProperty()
+                       .AddTo(ref _disposableBag);
 
             ItemInfo = ItemInfoUid.Select(i => GameInfoManager.Instance.Get<ItemInfo>(i))
                                   .DistinctUntilChanged()

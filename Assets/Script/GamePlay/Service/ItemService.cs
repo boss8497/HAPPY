@@ -125,6 +125,9 @@ namespace Script.GamePlay.Service {
             }
         }
 
+        /// <summary>
+        /// 이거 고쳐야됨
+        /// </summary>
         public async UniTask ItemLevelUp(ItemData item, LevelType type) {
             var itemData = GetItem(item.ItemUid.CurrentValue);
             if (itemData == null) {

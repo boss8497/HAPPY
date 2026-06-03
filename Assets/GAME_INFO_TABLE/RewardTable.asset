@@ -15,9 +15,23 @@ MonoBehaviour:
   RewardInfos:
   - rid: 4223259904432144484
   - rid: 4223260050439798968
+  - rid: 2741528963545301098
   references:
     version: 2
     RefIds:
+    - rid: 2741528963545301098
+      type: {class: RewardInfo, ns: Script.GameInfo, asm: Script.GameInfo}
+      data:
+        <UID>k__BackingField: 3
+        <ID>k__BackingField: CharacterExpReward
+        <Name>k__BackingField: "\uCE90\uB9AD\uD130_\uACBD\uD5D8\uCE58_\uBCF4\uC0C1"
+        type: 1
+        itemRewards:
+        - itemUid: 4
+          count: 20
+          level: 1
+          grade: 0
+          tier: 0
     - rid: 4223259904432144484
       type: {class: RewardInfo, ns: Script.GameInfo, asm: Script.GameInfo}
       data:

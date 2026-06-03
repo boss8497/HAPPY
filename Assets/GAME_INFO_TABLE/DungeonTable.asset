@@ -38,6 +38,7 @@ MonoBehaviour:
           phaseInfos: 01000000
           scenePath: df3b36a662d48904294f72eb79029e88
           rewards: 
+          exps: 03000000
         - guid:
             v0: 937873603
             v1: 1241770501
@@ -49,6 +50,7 @@ MonoBehaviour:
           phaseInfos: 01000000
           scenePath: df3b36a662d48904294f72eb79029e88
           rewards: 02000000
+          exps: 
         - guid:
             v0: 3447561144
             v1: 1298301570
@@ -60,6 +62,7 @@ MonoBehaviour:
           phaseInfos: 01000000
           scenePath: df3b36a662d48904294f72eb79029e88
           rewards: 
+          exps: 
         - guid:
             v0: 1982846878
             v1: 1113500117
@@ -71,6 +74,7 @@ MonoBehaviour:
           phaseInfos: 01000000
           scenePath: df3b36a662d48904294f72eb79029e88
           rewards: 
+          exps: 
     - rid: 4223259646659919970
       type: {class: DungeonInfo, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
       data:
@@ -90,4 +94,5 @@ MonoBehaviour:
           description: 
           phaseInfos: 
           scenePath: c67ee9c5192c4914582a56bceab39eac
-          rewards: 00000000
+          rewards: 
+          exps: 

@@ -21,6 +21,7 @@ namespace Script.GameData.Model {
         [Key(4)] public int    level;
         [Key(5)] public int    grade;
         [Key(6)] public int    tier;
+        [Key(7)] public double exp;
 
         [IgnoreMember, JsonIgnore]
         public ItemInfo ItemInfo => GameInfoManager.Instance.Get<ItemInfo>(infoUid);
@@ -32,11 +33,11 @@ namespace Script.GameData.Model {
                 && (itemInfo.flag.HasFlag(ItemFlag.IgnoreGradeEqual) || grade == other.grade)
                 && (itemInfo.flag.HasFlag(ItemFlag.IgnoreTierEqual) || tier == other.tier);
         }
-        
+
         public bool SameItem(int otherLevel, int otherGrade, int otherTier) {
             var itemInfo = ItemInfo;
 
-            return  (itemInfo.flag.HasFlag(ItemFlag.IgnoreLevelEqual) || level == otherLevel)
+            return (itemInfo.flag.HasFlag(ItemFlag.IgnoreLevelEqual) || level == otherLevel)
                 && (itemInfo.flag.HasFlag(ItemFlag.IgnoreGradeEqual) || grade == otherGrade)
                 && (itemInfo.flag.HasFlag(ItemFlag.IgnoreTierEqual) || tier == otherTier);
         }
