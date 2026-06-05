@@ -66,6 +66,8 @@ namespace Script.GUI.Screen {
         public LocalizeText jumpTextFormat;
         public TMP_Text     levelExpText;
         public LocalizeText levelExpTextFormat;
+        public TMP_Text     levelText;
+        public LocalizeText levelTextFormat;
 
 
         private List<CharacterElement> _characterElements;
@@ -148,6 +150,9 @@ namespace Script.GUI.Screen {
                 if (levelExpText != null) {
                     levelExpText.SetText(levelExpTextFormat.GetText(0, 0));
                 }
+                if (levelText != null) {
+                    levelText.SetText(levelTextFormat.GetText(0));
+                }
             }
             else {
                 var characterItem = _itemService.GetItem(characterItemInfo.UID);
@@ -165,6 +170,10 @@ namespace Script.GUI.Screen {
                 
                 if (levelExpText != null) {
                     levelExpText.SetText(levelExpTextFormat.GetText(characterItem.Value.LevelExp, characterItem.Value.LevelExpMax));
+                }
+
+                if (levelText != null) {
+                    levelText.SetText(levelTextFormat.GetText(characterItem.Value.Level));
                 }
             }
         }

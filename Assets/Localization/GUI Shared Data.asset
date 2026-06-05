@@ -39,6 +39,10 @@ MonoBehaviour:
     m_Key: LevelExpText
     m_Metadata:
       m_Items: []
+  - m_Id: 4779018209923072
+    m_Key: LevelText
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
