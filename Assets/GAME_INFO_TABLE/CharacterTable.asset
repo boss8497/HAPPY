@@ -110,7 +110,7 @@ MonoBehaviour:
     type: 0
     animationEvents: []
     behaviourId: 1
-    statusUids: 0100000002000000
+    statusUids: 0d0000000e000000
     buffUids: 
     prefab: 85334c42989dab14abb41fdb0bc61a47
     skeletonDataAsset: 66419e413984c364ebecbb3783b45806
