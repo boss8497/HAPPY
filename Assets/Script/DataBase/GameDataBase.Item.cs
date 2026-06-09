@@ -70,6 +70,10 @@ namespace Script.DataBase {
                     itemModels[itemModel.infoUid] = new List<ItemModel>() { itemModel };
                 }
             }
+            else {
+                var items = new List<ItemModel> { itemModel };
+                _itemModelByGroupUid.Add(itemModel.groupUid, new Dictionary<int, List<ItemModel>>() { { itemModel.infoUid, items } });
+            }
         }
 
         private ItemModel AddItemTableCount(
@@ -234,7 +238,12 @@ namespace Script.DataBase {
 
         public UniTask RemoveGroupItems(long groupUid) {
             _itemModelByGroupUid.Remove(groupUid);
-            _itemModelTable.items.RemoveAll(r => r.groupUid == groupUid);
+            _itemModelTable.items = _itemModelTable.items.Where(r => r.groupUid != groupUid).ToList();
+            _itemModelByUid.Where(r => r.Value.groupUid == groupUid)
+                          .Select(r => r.Key)
+                          .ToList()
+                          .ForEach(k => _itemModelByUid.Remove(k));
+            
             return UniTask.CompletedTask;
         }
         
