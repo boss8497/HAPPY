@@ -63,6 +63,7 @@ namespace Script.Scene {
         }
 
         private async UniTask InitializeGameSetting() {
+            _gameSetting.InitializeGameSetting();
             await UniTask.WaitUntil(() => _gameSetting?.Initialized ?? false);
         }
 

@@ -12,10 +12,13 @@ namespace Script.GameSetting {
 
         public GameSettingData GameSettingData { get; private set; }
         public bool            Initialized     { get; private set; }
-
+        
         public void Initialize() {
+        }
+        
+        public void InitializeGameSetting() {
             LoadGameSettingData();
-            InitializeGameSetting();
+            InitializeFrameRate();
             Initialized = true;
         }
 
@@ -30,7 +33,7 @@ namespace Script.GameSetting {
             Addressables.Release(handle);
         }
 
-        private void InitializeGameSetting() {
+        private void InitializeFrameRate() {
             Application.targetFrameRate = GameSettingData.frameRate;
             QualitySettings.vSyncCount  = GameSettingData.vSyncCount;
         }

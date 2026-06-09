@@ -4,5 +4,6 @@ namespace Script.GameSetting.Interface {
     public interface IGameSetting {
         GameSettingData GameSettingData { get; }
         bool            Initialized     { get; }
+        void            InitializeGameSetting();
     }
 }
