@@ -2,8 +2,8 @@
 
 namespace Script.GUI.Screen {
     public partial class ScreenManager {
-        public GameObject PoolPop(string key, Transform parent = null, bool active = true) {
-            return _uiPooling.Pop(key, parent, active);
+        public GameObject PoolPop(string key, Transform parent = null, bool active = true, bool worldPositionStays = true) {
+            return _uiPooling.Pop(key, parent, active, worldPositionStays);
         }
 
         public bool PoolPush(GameObject obj) {

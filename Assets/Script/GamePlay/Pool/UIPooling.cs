@@ -32,14 +32,14 @@ namespace Script.GamePlay.Pool {
             UnityEngine.Object.DontDestroyOnLoad(root);
         }
 
-        public GameObject Pop(string key, Transform parent = null, bool active = true) {
+        public GameObject Pop(string key, Transform parent = null, bool active = true, bool worldPositionStays = true) {
             if (_objectPools.TryGetValue(key, out var pool) == false) {
                 pool = CreatePool(key);
             }
 
             var obj = pool.Pop();
             obj.SetActiveSafe(active);
-            obj.transform.SetParent(parent);
+            obj.transform.SetParent(parent, worldPositionStays);
             return obj;
         }
 
@@ -48,7 +48,6 @@ namespace Script.GamePlay.Pool {
             _objectPools.Add(key, pool);
             return pool;
         }
-
         public bool Push(GameObject obj) {
             obj.SetActiveSafe(false);
 

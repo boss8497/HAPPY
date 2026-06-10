@@ -6,7 +6,7 @@ namespace Script.GamePlay.Pool {
         Transform       Root     { get; }
         IObjectResolver Resolver { get; }
 
-        GameObject Pop(string      key, Transform parent = null, bool active = true);
+        GameObject Pop(string      key, Transform parent = null, bool active = true, bool worldPositionStays = true);
         bool       Push(GameObject obj);
 
         bool Exists(string key);

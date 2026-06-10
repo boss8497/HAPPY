@@ -22,7 +22,7 @@ namespace Script.GUI.Screen.Interface {
         UniTask CloseAsync(IScreen              screen, bool force = false);
         UniTask ResourceClear();
 
-        GameObject PoolPop(string      key, Transform parent = null, bool active = true);
+        GameObject PoolPop(string      key, Transform parent = null, bool active = true, bool worldPositionStays = true);
         bool       PoolPush(GameObject obj);
 
         UniTask OpenErrorMessage(ErrorMessage errorMessage, CancellationToken ct = default, object[] arguments = null);

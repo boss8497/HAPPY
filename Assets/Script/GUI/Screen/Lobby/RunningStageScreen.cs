@@ -79,7 +79,7 @@ namespace Script.GUI.Screen {
             _stage           = _dungeonInfo.stages.FirstOrDefault(r => r.guid.Value == _dungeonProgress.stageGuid);
 
             foreach (var stage in _dungeonInfo.stages) {
-                var obj                = PoolPop(this.stageElement.AssetGUID, stageContentRoot);
+                var obj                = PoolPop(this.stageElement.AssetGUID, stageContentRoot, true, false);
                 var stageElementScript = obj.GetComponent<StageElement>();
                 if (stageElementScript != null) {
                     stageElementScript.InitializeReactive();
@@ -105,7 +105,7 @@ namespace Script.GUI.Screen {
 
             _characterElements = ListPool.Get<CharacterElement>();
             foreach (var character in GameInfoManager.Instance.GetCollection<CharacterInfo>().Where(r => r.type == CharacterType.Character)) {
-                var obj = PoolPop(this.characterElement.AssetGUID, characterContentRoot);
+                var obj = PoolPop(this.characterElement.AssetGUID, characterContentRoot, true, false);
                 if (obj == null) continue;
                 var characterElementScript = obj.GetComponent<CharacterElement>();
                 if (characterElementScript != null) {

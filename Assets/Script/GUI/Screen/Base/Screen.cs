@@ -135,8 +135,8 @@ namespace Script.GUI.Screen {
         
         #region Pooling
 
-        public GameObject PoolPop(string path, Transform parent = null, bool active = true) {
-            var obj = _screenManager.PoolPop(path, parent, active);
+        public GameObject PoolPop(string path, Transform parent = null, bool active = true, bool worldPositionStays = true) {
+            var obj = _screenManager.PoolPop(path, parent, active, worldPositionStays);
             _pools.Add(obj);
             return obj;
         }
