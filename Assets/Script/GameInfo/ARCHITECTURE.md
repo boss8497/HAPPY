@@ -13,7 +13,9 @@ Unity 전용 코드에 의존하지 않도록 작성하여 서버와 공용으�
 
 1. `InfoBase`를 상속한다 (`Assets/Script/GameInfo/Base/InfoBase.cs`)
 2. 테이블 자동 생성이 필요하면 클래스에 `[AutoEditorTable(true)]` Attribute를 붙인다
-3. Unity 전용 API(MonoBehaviour 등)는 사용하지 않는다
+3. **이 폴더의 .cs 파일은 Unity와 Server가 공용으로 사용하는 dll이므로, Unity 전용 패키지를 절대 추가하면 안 된다**
+   - 금지: `VContainer`, `UniTask`, `UniRx`, `Addressables`, `DOTween` 등 Unity 전용 패키지
+   - 허용: `UnityEngine.SerializeField` 등 기본 UnityEngine, `System.*`, `Newtonsoft.Json`
 
 ```csharp
 [System.Serializable]
