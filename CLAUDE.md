@@ -203,6 +203,62 @@
   - `Editor/`: `LocalizeUtility`(StringTable CRUD, Inspector 바인딩 — 에디터 전용)
   - 상세 내용: `Assets/Script/Utility/ARCHITECTURE.md`
 
+  ## 작업 레시피
+
+  ### 새 기획 데이터(Info) 추가
+  1. `Assets/Script/GameInfo/Xxx/XxxInfo.cs` 생성
+     - `InfoBase` 상속, `[System.Serializable]` 필수
+     - 클래스명 = 파일명, `xxInfo` 접미사 필수
+     - Unity 전용 패키지 사용 금지 (서버 공용)
+  2. 테이블 자동 생성이 필요하면 클래스에 `[AutoEditorTable(true)]` 추가
+  3. Unity 메뉴 → `Generator > GameInfo > 테이블 자동 생성` 실행
+  4. 생성된 `XxxTable.asset`을 `Assets/GAME_INFO_TABLE/`에 배치
+
+  ### 새 Inspector Attribute 추가
+  1. `Assets/Script/GameInfo/Attribute/XxxAttribute.cs` — Attribute 클래스 선언
+  2. `Assets/Script/Editor/Attribute/XxxDrawer.cs` — Odin PropertyDrawer 구현
+
+  ### 새 Screen(UI) 추가
+  1. `Assets/Script/GUI/` 하위에 Screen 클래스 작성 (`Screen` 베이스 상속)
+  2. `ScreenData`에 Addressable AssetReference 등록
+  3. 코드에서 참조 시 `[ScreenKey]` 어트리뷰트로 Inspector 드롭다운 사용
+  4. 열기: `await _screenManager.OpenAsync(screenKey)`
+  5. DontClose가 필요하면 `ScreenOption.DontClose` 설정
+
+  ### 새 FSM Node 추가 (캐릭터 행동 상태)
+  1. 기획 데이터: `Assets/Script/GameInfo/Character/Node/XxxNode.cs` — `NodeBase` 상속
+  2. Client 구현: `Assets/Script/GamePlay/Character/Node/ClientXxxNode.cs` — `ClientNodeBase` 상속
+     - `Enter()`, `Update()`, `End()` 오버라이드
+     - `ClassPool` 재사용 대상이므로 `OnReturn()`에서 상태 초기화
+
+  ### 새 FSM Transition 추가 (상태 전환 조건)
+  1. 기획 데이터: `Assets/Script/GameInfo/Character/Transition/XxxTransition.cs` — `TransitionBase` 상속
+  2. Client 구현: `Assets/Script/GamePlay/Character/Transition/ClientXxxTransition.cs` — `ClientTransitionBase` 상속
+     - `OnTrigger()` 오버라이드 — 전환 조건 반환
+     - `Priority` 설정 (높을수록 먼저 평가)
+
+  ### 새 Stage Action 추가 (스테이지 이벤트)
+  1. 기획 데이터: `Assets/Script/GameInfo/Dungeon/Action/XxxAction.cs` — `ActionBase` 상속
+  2. Client 구현: `Assets/Script/GamePlay/Stage/Action/ClientXxxAction.cs` — `ClientActionBase` 상속
+     - `ExecuteAsync()` 오버라이드
+  3. Unity 메뉴 → `Generator > ActionFactory 재생성` 실행 (CodeGen 자동 갱신)
+
+  ### 새 Stage Trigger 추가 (스테이지 종료 조건)
+  1. 기획 데이터: `Assets/Script/GameInfo/Dungeon/Trigger/XxxTrigger.cs` — `TriggerBase` 상속
+  2. Client 구현: `Assets/Script/GamePlay/Stage/Trigger/ClientXxxTrigger.cs` — `ClientTriggerBase` 상속
+     - `OnTrigger()` 오버라이드
+  3. Unity 메뉴 → `Generator > TriggerFactory 재생성` 실행 (CodeGen 자동 갱신)
+
+  ### 새 IClient 요청 메서드 추가
+  1. `Assets/Script/Client/Interface/IClient.cs`에 메서드 선언 추가
+  2. `Assets/Script/Client/GameClient.Client.cs`에 로컬 DB 기반 구현 추가
+  3. 서버 연동 시 이 구현체만 교체
+
+  ### 새 LifetimeScope 서비스 등록
+  - 어느 Scope에 등록할지 결정 (App / Client / Group / Stage)
+  - 해당 `XxxLifetimeScope.cs`의 `Configure()`에 `builder.Register<Impl>().As<IInterface>().WithLifetime...` 추가
+  - EntryPoint 필요 시 `RegisterEntryPoint<T>()` 사용
+
   ## Rules
   - 커밋 메시지는 한국어로 작성
   - PR 없이 main 브랜치에 직접 push 금지
