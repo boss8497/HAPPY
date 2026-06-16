@@ -31,6 +31,31 @@
   - FSM Node: `ClientXxxNode`, FSM Transition: `ClientXxxTransition`
   - Action/Trigger: `ClientXxxAction`, `ClientXxxTrigger`
 
+  ### GameData — 런타임 데이터 레이어
+  - 위치: `Assets/Script/GameData/`
+  - `Model/`: DB 저장 및 서버 전송용 불변 구조체 — MessagePack `[Key(n)]` 어트리뷰트 필수
+  - `Data/`: Model을 R3 `ReactiveProperty`로 감싼 반응형 래퍼 — `IData<T>` 구현
+  - Model을 직접 사용하지 않고 Data를 통해 접근한다 (Service 계층에서 소비)
+  - 상세 내용: `Assets/Script/GameData/ARCHITECTURE.md`
+
+  ### DataBase — Client 측 저장소
+  - 위치: `Assets/Script/DataBase/`
+  - Server가 없는 동안 Client에서 직접 저장/로드 담당 (Server 완성 시 교체 전제)
+  - 현재 **JSON으로 저장** (디버깅 편의), 서버 패킷 전송 시 **MessagePack** 사용 예정
+  - `IDataBase` 인터페이스 — Load/Save + 아이템 CRUD (uid 자동 발급, 스택 합산, 레벨업)
+  - `FileStorage`: `Application.persistentDataPath` 기준 비동기 파일 I/O
+  - 상세 내용: `Assets/Script/DataBase/ARCHITECTURE.md`
+
+  **전체 데이터 흐름**
+  ```
+  FileStorage (JSON/MessagePack)
+      → GameDataBase (CRUD)
+      → GameData/Model (불변 구조체)
+      → GameData/Data  (R3 반응형 래퍼)
+      → GamePlay/Service (비즈니스 로직)
+      → GamePlay UI / Logic
+  ```
+
   ### Inspector Attribute
   - 선언: `Assets/Script/GameInfo/Attribute/` — Attribute 클래스만 정의
   - 구현: `Assets/Script/Editor/Attribute/` — PropertyDrawer 구현
