@@ -67,6 +67,87 @@
   - 에셋 저장 위치: `Assets/GAME_INFO_TABLE/`
   - 상세 내용: `Assets/GAME_INFO_TABLE/README.md`
 
+  ### GUI — Screen 관리 시스템
+  - 위치: `Assets/Script/GUI/`
+  - `AppLifetimeScope`에서 Addressable로 프리팹 Instantiate → 게임 실행 직후부터 앱 전체 생존
+  - 상세 내용: `Assets/Script/GUI/ARCHITECTURE.md`
+
+  **핵심 설계**
+  - **LinkedList 기반 Stack**: "특정 UI 뒤에 열기", "특정 UI만 닫기" 요청에 유연하게 대응하기 위해 Stack 대신 LinkedList 채택 (Stack 동작 지향)
+  - **DontClose Screen**: 리스트 앞쪽에 고정 배치. `force: true`가 아니면 닫히지 않음 (HUD, Navigation 등)
+  - **Layer 시스템**: `HUD(0) → None(1) → Popup(2) → Overlay(3) → Loading(4) → SafeArea(5)` 순서로 렌더링
+  - **SafeArea**: Screen 열리는 동안 최상위 레이어로 입력 차단
+  - **Queue 처리**: 다중 Open/Close 요청을 순서대로 처리. `OpenAsync()` await 시 화면이 완전히 열릴 때까지 대기 보장
+  - **캐싱**: 한 번 열린 Screen은 Close 후에도 `_loadedScreens`에 유지 → 재오픈 시 로딩 없음
+  - **씬 이동 시**: `CloseAllAsync(force:true)` → `ResourceClear()` 로 전체 Destroy
+
+  **ViewModel**: ListView Element 데이터 바인딩용. `SelectElement` + `Selector` 패턴으로 선택 상태 중앙 관리. R3 ReactiveProperty로 데이터 → UI 자동 갱신
+
+  **ScreenKey**: `[ScreenKey]` 어트리뷰트 — Inspector 드롭다운으로 Screen 선택 (문자열 오타 방지)
+
+  ### LifetimeScope — VContainer DI 계층 구조
+  - 위치: `Assets/Script/LifetimeScope/`
+  - VContainer 기반 DI. Scope를 4단계 계층으로 나눠 필요한 시점에 생성/파괴
+  - 상세 내용: `Assets/Script/LifetimeScope/ARCHITECTURE.md`
+
+  **Scope 계층 (`ScopeType` enum 순서 = 계층 순서)**
+  ```
+  App (StartUp 씬 GameObject) → Client (동적 생성) → Group (동적 생성) → Stage (GameScene GameObject)
+  ```
+  - `App`, `Client`, `Group`: ScopeFactory.CreateScope()로 동적 생성
+  - `Stage`만 예외 — GameScene 씬 안에 GameObject 컴포넌트로 직접 배치
+    - 이유: `mainCamera`, `CinemachineCamera` 등 씬 GameObject를 Inspector에서 직접 참조해야 함
+  - `ScopeLocator`: Dictionary 기반 Scope 중앙 관리. SetScope() 호출 시 하위 Scope 전체 자동 Dispose
+
+  **씬 실행 순서 및 Scope 생성 주체**
+  ```
+  StartUp (AppScope) → Title (ClientScope 생성) → Lobby (GroupScope 생성) → GameScene (StageScope 자동)
+  ```
+  - StartUpLogic: Addressable → GameSetting 초기화 후 ClientScope 생성 → Title 씬 전환
+  - TitleHUD: "Start" 클릭 → GroupScope 생성 → Lobby 씬 전환
+  - GameScene: 씬 로드 시 StageLifetimeScope 자동 초기화, 씬 언로드 시 OnDestroy()로 해제
+  - 씬별 로직: `Assets/Script/Scene/` (상세: `README.md`)
+
+  **IClient**: 서버 통신 인터페이스. 현재 `GameClient`가 로컬 DB로 동작 (Server 구현 시 교체 예정)
+  - `Assets/Script/Client/`
+
+  **SceneLoader**: Addressable 기반 Additive 로드 → Active 씬 전환 → 이전 씬 UnloadAsync
+  - `Assets/Script/SceneLoader/`
+
+  ### Guid — SerializeGuid
+  - 위치: `Assets/Script/Guid/`
+  - Unity는 `System.Guid` 직렬화를 미지원 → Guid 16바이트를 `uint` 4개로 분할해 래핑한 구조체
+  - `ISerializationCallbackReceiver`로 직렬화 전/후 자동 변환, `_cacheValid`로 Guid 객체 캐시
+  - `Guid`와 암묵적 변환(implicit) 가능 — 기존 `Guid` 타입과 혼용 가능
+  - 주요 사용처: FSM `NodeBase.guid`, `TransitionBase.nextNodeGuid` (노드 간 GUID 참조)
+  - Editor Drawer: Inspector에서 읽기 전용 표시 + Reset/New 버튼 (`SerializeGuidDrawer.cs`)
+  - 상세 내용: `Assets/Script/Guid/README.md`
+
+  ### Expression — 수식 연산 라이브러리
+  - 위치: `Assets/Script/Expression/`
+  - `(level + 1) * 10`, `Pow(tier, 2)` 등의 수식을 계산하는 독립 라이브러리
+  - **Unity 비의존** — 순수 C# 구현, 추후 별도 dll 프로젝트로 분리 예정
+  - **이 폴더 하위에 Unity 전용 패키지 추가 금지** (예외: `Editor/` 폴더 내 파일)
+  - 상세 내용: `Assets/Script/Expression/ARCHITECTURE.md`
+
+  **핵심 설계: 사전 컴파일 + 런타임 실행**
+  - 컴파일: 수식 문자열 → Shunting-yard 알고리즘 → RPN 바이트코드(`ExpressionValue[]`)
+  - 런타임: RPN 바이트코드를 스택 VM으로 실행 (`stackalloc` 사용, 힙 할당 없음)
+  - 바이트코드는 MessagePack으로 직렬화 저장 (원본 문자열 저장 안 함)
+
+  **Context Pattern (변수 주입)**
+  - `ValueStringKey`: 변수명(`level`, `grade`, `tier`) → int 키 사전 매핑
+  - `ValueProvider`: 변수명-값 저장
+  - `ValueContext`: `using` 블록으로 스코프 관리 (AsyncLocal 기반, 중첩 가능)
+
+  ```csharp
+  using (new ValueContext(new ValueProvider().Add("level", 10).Add("grade", 5))) {
+      double result = expression.Calc();
+  }
+  ```
+
+  **지원:** 연산자 `+`, `-`, `*`, `/`, 단항 `-` / 함수 `Pow`, `Log`, `Min`, `Max`
+
   ## Rules
   - 커밋 메시지는 한국어로 작성
   - PR 없이 main 브랜치에 직접 push 금지
