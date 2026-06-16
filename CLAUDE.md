@@ -148,6 +148,61 @@
 
   **지원:** 연산자 `+`, `-`, `*`, `/`, 단항 `-` / 함수 `Pow`, `Log`, `Min`, `Max`
 
+  ### Addressable — Addressable Assets 관리
+  - 위치: `Assets/Script/Addressable/`
+  - Unity Addressable 시스템 래퍼. 초기화, 카탈로그 업데이트, 다운로드, 인터넷 연결 확인 담당
+  - 앱 시작 시 가장 먼저 초기화 (`StartUpLogic`에서 호출)
+  - 인터넷 확인: `Application.internetReachability` → `connectivitycheck.gstatic.com/generate_204` 실제 요청
+  - 상세 내용: `Assets/Script/Addressable/README.md`
+
+  ### Client — 서버 통신
+  - 위치: `Assets/Script/Client/`
+  - `IClient` 인터페이스 + `GameClient` 구현체 (Partial Class: 초기화 / 통신 로직 분리)
+  - 현재 Server 없음 → `GameClient`가 로컬 DB로 동작. Server 완성 시 구현체만 교체
+  - `Req_ClearStage`: 검증 → 보상 계산 → 던전 진행도 업데이트 → DB 저장 → 보상 반환
+  - 상세 내용: `Assets/Script/Client/README.md`
+
+  ### Editor — 에디터 전용 도구
+  - 위치: `Assets/Script/Editor/`
+  - 런타임 미포함. Attribute PropertyDrawer, 커스텀 에디터 창, 메뉴 도구 모음
+  - `Attribute/`: GameInfo Attribute의 Odin PropertyDrawer 구현 (`XxxAttribute` → `XxxDrawer`)
+  - `NavigationMenu`: `Tools > 데이터 리로드` — GameInfoManager 재로드
+  - `ErrorMessageEditorWindow`: `Tools > ErrorMessage` — 에러 메시지 로케일별 텍스트 관리
+  - 상세 내용: `Assets/Script/Editor/README.md`
+
+  ### GameSetting — 게임 설정
+  - 위치: `Assets/Script/GameSetting/`
+  - 프레임레이트(`targetFrameRate`), V-Sync(`vSyncCount`) 설정을 Addressable 에셋에서 로드해 적용
+  - 로드 실패 시 Exception — 설정 없이 게임이 진행되지 않도록 의도된 설계
+  - 상세 내용: `Assets/Script/GameSetting/README.md`
+
+  ### GameTimer — 전역 타이머
+  - 위치: `Assets/Script/GameTimer/`
+  - 앱 전역 시간 값 제공 (`Elapsed`, `DeltaTime`, `FixedElapsed`, `FixedTime`)
+  - `Pause()` / `Resume()` — DeltaTime을 0으로 만들어 누적 중단 (일시정지 구현용)
+  - UniTask 비동기 루프 2개 독립 실행 (Update / FixedUpdate 기준)
+  - 상세 내용: `Assets/Script/GameTimer/README.md`
+
+  ### Localize — 다국어 텍스트
+  - 위치: `Assets/Script/Localize/`
+  - Unity Localization 패키지 래퍼. 키 형식: `"TableName/EntryName"`
+  - `GetErrorMessage(ErrorMessage)` — 열거형 기반 에러 메시지 타입 안전 조회
+  - 현재 한국어(`"ko"`) 고정, 향후 시스템 언어 자동 감지 예정
+  - `LocalizeText`: Inspector `[SerializeField]` 직렬화용 래퍼. 동기/비동기 조회 + 로케일 변경 이벤트 구독
+  - 상세 내용: `Assets/Script/Localize/README.md`
+
+  ### SceneLoader — 씬 전환
+  - 위치: `Assets/Script/SceneLoader/`
+  - Addressable Additive 로드 방식: UI 닫기 → 리소스 정리 → 새 씬 로드 → Active 설정 → 이전 씬 언로드
+  - 상세 내용: `Assets/Script/SceneLoader/README.md`
+
+  ### Utility — 공통 유틸리티
+  - 위치: `Assets/Script/Utility/`
+  - `Public/`: `ArrayUtility`(배열 확장), `ListPool`(List 풀링)
+  - `Runtime/`: `ClassPool`(클래스 인스턴스 풀링, `IClassPool` OnRent/OnReturn 훅), `TransformUtility`(축별 Transform 설정), `ECSUtility`(NativeList 탐색/제거), `ExtensionUtility`(GameObject/Button 편의), `SpineUtility`(Spine 애니메이션 재생)
+  - `Editor/`: `LocalizeUtility`(StringTable CRUD, Inspector 바인딩 — 에디터 전용)
+  - 상세 내용: `Assets/Script/Utility/ARCHITECTURE.md`
+
   ## Rules
   - 커밋 메시지는 한국어로 작성
   - PR 없이 main 브랜치에 직접 push 금지
