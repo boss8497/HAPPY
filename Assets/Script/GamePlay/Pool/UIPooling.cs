@@ -38,6 +38,7 @@ namespace Script.GamePlay.Pool {
             }
 
             var obj = pool.Pop();
+            obj.transform.localScale =  pool.BaseScale;
             obj.SetActiveSafe(active);
             obj.transform.SetParent(parent, worldPositionStays);
             return obj;

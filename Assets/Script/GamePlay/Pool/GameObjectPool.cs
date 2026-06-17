@@ -14,9 +14,11 @@ namespace Script.GamePlay.Pool {
         private readonly Stack<GameObject> _stack;
 
         private GameObject _instance;
+        private Vector3    _baseScale;
         private bool       _isDisposed;
 
-        public string Key => _key;
+        public string  Key       => _key;
+        public Vector3 BaseScale => _baseScale;
 
 
         public GameObjectPool(IStagePooling manager, string key, int count = 1) {
@@ -33,7 +35,8 @@ namespace Script.GamePlay.Pool {
 
             _instance = _manager.Resolver.Instantiate(handle.Result, _manager.Root);
             _instance.gameObject.SetActive(false);
-            
+            _baseScale = _instance.transform.localScale;
+
             Addressables.Release(handle);
         }
 
@@ -44,8 +47,9 @@ namespace Script.GamePlay.Pool {
                 if (obj.TryGetComponent<IPoolMember>(out var member) == false) {
                     member = _instance.AddComponent<PoolMember>();
                 }
+
                 member.Set(this);
-                obj.transform.position =  Vector3.zero;
+                obj.transform.position = Vector3.zero;
                 _stack.Push(obj);
             }
         }
@@ -73,7 +77,7 @@ namespace Script.GamePlay.Pool {
             foreach (var item in _stack) {
                 UnityEngine.Object.Destroy(item);
             }
-            
+
             _stack.Clear();
             ListPool.ReturnCollection(_stack);
 
