@@ -7,6 +7,7 @@ Unity Editor에서만 동작하는 커스텀 도구 모음. 런타임에는 포�
 | 폴더/파일 | 역할 |
 |---|---|
 | `Attribute/` | GameInfo Attribute의 PropertyDrawer 구현 (각 `XxxAttribute` → `XxxDrawer`) |
+| `MapEditor/` | 맵 배치 에디터 (`Tools > Map Editor`) — 타일·오브젝트·HeightPoint 시각 편집 |
 | `ValueDrawer/SerializeGuidDrawer.cs` | `SerializeGuid` Inspector 커스텀 드로어 |
 | `NavigationMenu.cs` | 에디터 상단 메뉴 도구 |
 | `ErrorMessageEditorWindow.cs` | 에러 메시지 로컬라이즈 관리 창 |
