@@ -58,6 +58,7 @@ namespace Script.GamePlay.Stage {
         public void Initialize(DungeonInfo dungeonInfo, GameInfo.Dungeon.Stage stage) {
             InitializeCamera();
             InitializePool();
+            InitializeMapGround();
             InitializeReactiveProperty(dungeonInfo, stage);
             InitializeTrigger();
             InitializeAction();
@@ -198,6 +199,7 @@ namespace Script.GamePlay.Stage {
             ReleaseTrigger();
             ReleaseReactive();
             ReleasePool();
+            ReleaseMapGround();
         }
 
         public void Dispose() {

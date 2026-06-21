@@ -74,6 +74,10 @@ namespace Script.GamePlay.Background {
             CaptureRelativeOffset(targetPos);
         }
 
+        public void ShiftY(float delta) {
+            _fixedY += delta;
+        }
+
         public void Tick(Vector3 targetPos, float cameraLeftX) {
             if (_initialized == false)
                 return;

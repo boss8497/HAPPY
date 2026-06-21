@@ -54,6 +54,9 @@ namespace Script.GamePlay.Stage {
         void AddRemoveEnemy(ICharacter enemy);
         void AddItemScore(float         score);
 
+        float GroundY { get; }
+        void  SetGroundY(float groundY);
+
         void ResetState();
         void AddState(StageState    state);
         void RemoveState(StageState state);

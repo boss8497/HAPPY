@@ -1,4 +1,4 @@
-﻿using Script.GamePlay.ECS.Component;
+using Script.GamePlay.ECS.Component;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -18,8 +18,14 @@ namespace Script.GamePlay.ECS.System {
         [BurstCompile]
         public void OnUpdate(ref SystemState state) {
             var dt = SystemAPI.Time.DeltaTime;
+
+            var groundY = SystemAPI.HasSingleton<MapGroundData>()
+                ? SystemAPI.GetSingleton<MapGroundData>().GroundY
+                : 0f;
+
             state.Dependency = new JumpingUpdateJob {
-                Dt = dt,
+                Dt      = dt,
+                GroundY = groundY,
             }.ScheduleParallel(state.Dependency);
         }
 
@@ -27,13 +33,19 @@ namespace Script.GamePlay.ECS.System {
         [BurstCompile]
         public partial struct JumpingUpdateJob : IJobEntity {
             public float Dt;
+            public float GroundY;
 
             private void Execute(
                 ref LocalTransform              transform,
                 ref JumpingData                 jumping,
                 ref JumpInputData               input,
+                in  UnitData                    unit,
                 EnabledRefRW<UnitJumpingEnable> jumpingEnable
             ) {
+                // 플레이어는 항상 현재 맵 GroundY를 착지 기준으로 사용
+                if (unit.IsPlayer != 0)
+                    jumping.GroundY = GroundY;
+
                 if (input.Held != 0 && jumping.CurrentJumpTime < jumping.MaxJumpTime) {
                     jumping.CurrentJumpTime += Dt;
 
@@ -61,8 +73,7 @@ namespace Script.GamePlay.ECS.System {
                 if (position.y <= jumping.GroundY && jumping.Timer > 0f) {
                     position.y = jumping.GroundY;
                     transform.Position = position;
-                    
-                    
+
                     input.Held             = 0;
                     input.ReleaseRequested = 0;
                     jumpingEnable.ValueRW  = false;

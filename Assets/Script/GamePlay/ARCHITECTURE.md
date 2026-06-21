@@ -59,18 +59,18 @@ Unit (MonoBehaviour) → UnitManager.RegisterUnit() → ECS Entity
 | `Character/Node/` | FSM 노드 구현 (`ClientXxxNode.cs`) |
 | `Character/Transition/` | FSM 전환 조건 구현 (`ClientXxxTransition.cs`) |
 | `Character/Behaviour/` | FSM 마스터 컨트롤러 (`CharacterBehaviour.cs`) |
-| `Stage/` | 스테이지 전체 관리 (`StageManager`, partial) |
+| `Stage/` | 스테이지 전체 관리 (`StageManager`, partial) (상세: `Stage/ARCHITECTURE.md`) |
 | `Stage/Action/` | 스테이지 이벤트 액션 (`ClientXxxAction.cs` + Factory) |
 | `Stage/Trigger/` | 스테이지 종료 조건 (`ClientXxxTrigger.cs` + Factory) |
 | `Stage/Editor/` | ActionFactory/TriggerFactory CodeGenerator (Editor 전용) |
-| `ECS/` | Unity ECS 월드, 컴포넌트, 시스템 |
+| `ECS/` | Unity ECS 월드, 컴포넌트, 시스템 (상세: `ECS/ARCHITECTURE.md`) |
 | `Unit/` | ECS 엔티티 ↔ GameObject 연결 (`UnitManager`) |
 | `Pool/` | GameObject/컴포넌트 풀링 |
 | `Buff/` | 버프/디버프 시스템 |
 | `Service/` | 게임 데이터 접근 (Item, Group 등) |
 | `Input/` | 플레이어 입력 (`PlayerControls`, New Input System) |
 | `Camera/` | 카메라 제어 (Cinemachine) |
-| `BackGround/` | 시차 스크롤 배경 |
+| `BackGround/` | 시차 스크롤 배경 (상세: `BackGround/README.md`) |
 | `Stat/` | 런타임 스테이터스 (`Status.cs`) |
 
 ## 네이밍 패턴
