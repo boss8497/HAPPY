@@ -4,7 +4,9 @@ using System.Linq;
 using Script.GameInfo.Character;
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using CharacterInfo = Script.GameInfo.Character.CharacterInfo;
 
 namespace Script.Editor.MapEditor {
@@ -63,7 +65,14 @@ namespace Script.Editor.MapEditor {
 
             if (CurrentMapAction != null) {
                 foreach (var t in CurrentMapAction.tiles)
-                    WorkingTiles.Add(new MapTileData { position = t.position, prefabKey = t.prefabKey });
+                    WorkingTiles.Add(new MapTileData {
+                        position = t.position,
+                        prefabKey = t.prefabKey,
+                        width    = t.width,
+                        centerX  = t.centerX,
+                        startX   = t.startX,
+                        endX     = t.endX,
+                    });
 
                 foreach (var h in CurrentMapAction.heightPoints)
                     WorkingHeightPoints.Add(new HeightPoint { x = h.x, groundY = h.groundY, interpolation = h.interpolation });
@@ -79,6 +88,9 @@ namespace Script.Editor.MapEditor {
 
         public static void ApplyToMapAction() {
             if (CurrentMapAction != null) {
+                foreach (var tile in WorkingTiles)
+                    ComputeTileBounds(tile);
+
                 CurrentMapAction.tiles        = WorkingTiles.ToArray();
                 CurrentMapAction.heightPoints = WorkingHeightPoints.ToArray();
             }
@@ -86,6 +98,65 @@ namespace Script.Editor.MapEditor {
                 CurrentEnemySpawnAction.spawnData = WorkingObjects
                     .Select(o => new SpawnData { uid = o.uid, position = o.position })
                     .ToArray();
+            }
+        }
+
+        // Save 시 prefab을 임시 인스턴스화해 Tilemap.cellBounds 기준으로 너비/범위 계산
+        private static void ComputeTileBounds(MapTileData tile) {
+            if (string.IsNullOrEmpty(tile.prefabKey)) {
+                tile.width   = 0f;
+                tile.centerX = tile.position.x;
+                tile.startX  = tile.position.x;
+                tile.endX    = tile.position.x;
+                return;
+            }
+
+            var assetPath = AssetDatabase.GUIDToAssetPath(tile.prefabKey);
+            var prefab    = string.IsNullOrEmpty(assetPath)
+                          ? null
+                          : AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+            if (prefab == null) {
+                tile.width   = 0f;
+                tile.centerX = tile.position.x;
+                tile.startX  = tile.position.x;
+                tile.endX    = tile.position.x;
+                return;
+            }
+
+            // 임시 인스턴스화 (HideAndDontSave → 씬에 저장 안 됨)
+            var go = Object.Instantiate(prefab, tile.position, Quaternion.identity);
+            go.hideFlags = HideFlags.HideAndDontSave;
+
+            try {
+                float width   = 0f;
+                float centerX = tile.position.x;
+
+                // SpriteRenderer 우선
+                var sr = go.GetComponentInChildren<SpriteRenderer>(true);
+                if (sr != null && sr.sprite != null) {
+                    width   = sr.bounds.size.x;
+                    centerX = sr.bounds.center.x;
+                } else {
+                    // Tilemap: cellBounds.size × cellSize = 실제 너비, cellBounds.center → world
+                    var tilemap = go.GetComponentInChildren<Tilemap>(true);
+                    if (tilemap != null && tilemap.cellBounds.size.x > 0) {
+                        var cellSizeX   = tilemap.cellSize.x;
+                        var scale       = Mathf.Abs(tilemap.transform.lossyScale.x);
+                        width = tilemap.cellBounds.size.x * cellSizeX * scale;
+
+                        // cellBounds.center(cell 좌표) → local → world
+                        var localCenterX = tilemap.cellBounds.center.x * cellSizeX;
+                        centerX = tilemap.transform.TransformPoint(new Vector3(localCenterX, 0f, 0f)).x;
+                    }
+                }
+
+                tile.width   = width;
+                tile.centerX = centerX;
+                tile.startX  = centerX - width * 0.5f;
+                tile.endX    = centerX + width * 0.5f;
+            }
+            finally {
+                Object.DestroyImmediate(go);
             }
         }
 

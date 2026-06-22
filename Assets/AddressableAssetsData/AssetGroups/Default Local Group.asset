@@ -85,6 +85,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68b93f225a140b64ab72cfd52a418e32
+    m_Address: Stage1_Tile_1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 699f7a6dff736a2489802c5f5c8238e4
     m_Address: CharacterTable
     m_ReadOnly: 0

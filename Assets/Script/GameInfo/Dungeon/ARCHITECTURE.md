@@ -51,32 +51,40 @@ PhaseInfo.triggers[] 배열에 등록되며 매 Update마다 평가된다.
 ## Map — 맵 타일 & 바닥 높이 시스템
 
 ### MapTileData
-시각적 배경 타일 한 장의 위치와 프리팹 키를 보관한다.
+시각적 배경 타일 한 장의 데이터를 보관한다.  
+**너비/범위는 MapEditor Save 시 계산되어 필드에 저장**되며, 런타임은 이 값을 직접 읽는다.
 
 ```csharp
 public class MapTileData {
-    public Vector3 position;  // 타일 중앙 월드 좌표
+    public Vector3 position;  // 타일 루트 월드 좌표 (MapEditor에서 직접 배치)
     public string  prefabKey; // Addressable 키 ([AssetPath(typeof(GameObject))])
+
+    // MapEditor Save 시 Tilemap.cellBounds 기준으로 계산
+    public float width;   // 타일 너비 (월드 단위)
+    public float centerX; // 시각적 중앙 X (cellBounds.center 기준)
+    public float startX;  // 왼쪽 끝 X
+    public float endX;    // 오른쪽 끝 X
 }
 ```
 
 > **주의**: 타일 자체에 groundY·충돌 정보는 없다 — 순수 시각 데이터.
 
-### 타일 너비 측정 (MeasureTileWidth)
+### 타일 너비/범위 계산 (MapEditor Save 시)
 
-`ClientMapSpawnAction`이 프리팹에서 너비를 측정할 때 두 가지 방식을 순서대로 시도한다.
+MapEditor에서 **"Save to PhaseInfo"** 할 때 `MapEditorState.ComputeTileBounds()`가 프리팹을 임시 인스턴스화해 측정하고 기획 데이터에 저장한다.
 
 | 우선순위 | 컴포넌트 | 측정 방식 |
 |---|---|---|
-| 1 | `SpriteRenderer` | `sprite.bounds.size.x × lossyScale.x` |
-| 2 | `Tilemap` | `localBounds.size.x × lossyScale.x` |
+| 1 | `SpriteRenderer` | `sr.bounds.size.x` / `sr.bounds.center.x` (world space 직접) |
+| 2 | `Tilemap` | `cellBounds.size.x × cellSize.x × lossyScale` / `cellBounds.center → TransformPoint` |
 
 **Tilemap 프리팹 구조** (Grid > TileMap):
 ```
 GameObject <Grid>           ← 루트
   └─ GameObject <Tilemap, TilemapRenderer>
 ```
-`Tilemap.localBounds`는 배치된 타일 전체의 로컬 공간 경계를 반환하므로, 셀 수 × 셀 크기를 별도 계산하지 않아도 된다.
+`Tilemap.cellBounds.center`가 타일 콘텐츠의 실제 중앙(cell 좌표)이며, `cellBounds.size.x × cellSize.x`가 실제 너비다.  
+`GameObject.transform.position`은 그리드 원점이므로 중앙과 다를 수 있다.
 
 ### HeightPoint — 바닥 Y 커브
 

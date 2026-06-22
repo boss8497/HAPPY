@@ -35,7 +35,7 @@ MapEditor 편집 흐름:
 
 - **Load**: `MapSpawnAction` / `EnemySpawnAction` 데이터를 Working 리스트로 복사
 - **편집**: 씬 핸들 드래그, 리스트 직접 수정
-- **Save**: Working 리스트 → 해당 Action에 기록 → `EditorUtility.SetDirty` → `AssetDatabase.SaveAssets`
+- **Save**: Working 리스트 전체에 `ComputeTileBounds()` 실행 (프리팹 임시 인스턴스화 → `Tilemap.cellBounds` 기준 너비/centerX/startX/endX 계산) → 해당 Action에 기록 → `EditorUtility.SetDirty` → `AssetDatabase.SaveAssets`
 
 ## Tile Palette
 

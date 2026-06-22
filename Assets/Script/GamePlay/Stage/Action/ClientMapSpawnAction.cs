@@ -3,7 +3,6 @@ using Cysharp.Threading.Tasks;
 using Script.GameInfo.Dungeon;
 using Script.GamePlay.Camera;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 namespace Script.GamePlay.Stage {
     public class ClientMapSpawnAction : ClientActionBase {
@@ -27,16 +26,15 @@ namespace Script.GamePlay.Stage {
 
         private readonly struct ProcessedTile {
             public readonly MapTileData Data;
-            public readonly float       Width; // prefab SpriteRenderer 또는 Tilemap에서 측정
 
-            // position은 타일 중앙 — 스폰/디스폰 범위는 중앙 ± 반너비
-            public float CenterX => Data.position.x;
-            public float StartX  => Data.position.x - Width * 0.5f;
-            public float EndX    => Data.position.x + Width * 0.5f;
+            // MapEditor Save 시 계산된 값을 기획 데이터에서 직접 사용
+            public float Width   => Data.width;
+            public float CenterX => Data.centerX;
+            public float StartX  => Data.startX;
+            public float EndX    => Data.endX;
 
-            public ProcessedTile(MapTileData data, float width) {
-                Data  = data;
-                Width = width;
+            public ProcessedTile(MapTileData data) {
+                Data = data;
             }
         }
 
@@ -172,7 +170,7 @@ namespace Script.GamePlay.Stage {
         }
 
         // ─────────────────────────────────────────────────────────
-        // 타일 목록 전처리: X 정렬 + prefab SpriteRenderer로 너비 측정
+        // 타일 목록 전처리: X 정렬 (너비/범위는 MapEditor Save 시 기획 데이터에 저장됨)
         // ─────────────────────────────────────────────────────────
 
         private List<ProcessedTile> BuildProcessedTiles() {
@@ -183,35 +181,10 @@ namespace Script.GamePlay.Stage {
             sorted.Sort((a, b) => a.position.x.CompareTo(b.position.x));
 
             var result = new List<ProcessedTile>(sorted.Count);
-            foreach (var tileData in sorted) {
-                var width = MeasureTileWidth(tileData.prefabKey);
-                result.Add(new ProcessedTile(tileData, width));
-            }
+            foreach (var tileData in sorted)
+                result.Add(new ProcessedTile(tileData));
 
             return result;
-        }
-
-        // prefab의 SpriteRenderer 또는 Tilemap 크기 × 월드 스케일로 타일 너비 측정
-        // 우선순위: SpriteRenderer → Tilemap (Grid > TileMap 구조)
-        private float MeasureTileWidth(string prefabKey) {
-            if (string.IsNullOrEmpty(prefabKey)) return 0f;
-
-            var obj = _stageManager.StagePooling.Pop(prefabKey, active: false);
-            if (obj == null) return 0f;
-
-            var width    = 0f;
-            var renderer = obj.GetComponentInChildren<SpriteRenderer>(includeInactive: true);
-            if (renderer != null && renderer.sprite != null)
-                width = renderer.sprite.bounds.size.x * Mathf.Abs(renderer.transform.lossyScale.x);
-
-            if (width <= 0f) {
-                var tilemap = obj.GetComponentInChildren<Tilemap>(includeInactive: true);
-                if (tilemap != null)
-                    width = tilemap.localBounds.size.x * Mathf.Abs(tilemap.transform.lossyScale.x);
-            }
-
-            _stageManager.StagePooling.Push(obj);
-            return width;
         }
     }
 }
