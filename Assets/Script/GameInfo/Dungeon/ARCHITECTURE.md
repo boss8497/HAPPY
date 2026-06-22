@@ -62,6 +62,22 @@ public class MapTileData {
 
 > **주의**: 타일 자체에 groundY·충돌 정보는 없다 — 순수 시각 데이터.
 
+### 타일 너비 측정 (MeasureTileWidth)
+
+`ClientMapSpawnAction`이 프리팹에서 너비를 측정할 때 두 가지 방식을 순서대로 시도한다.
+
+| 우선순위 | 컴포넌트 | 측정 방식 |
+|---|---|---|
+| 1 | `SpriteRenderer` | `sprite.bounds.size.x × lossyScale.x` |
+| 2 | `Tilemap` | `localBounds.size.x × lossyScale.x` |
+
+**Tilemap 프리팹 구조** (Grid > TileMap):
+```
+GameObject <Grid>           ← 루트
+  └─ GameObject <Tilemap, TilemapRenderer>
+```
+`Tilemap.localBounds`는 배치된 타일 전체의 로컬 공간 경계를 반환하므로, 셀 수 × 셀 크기를 별도 계산하지 않아도 된다.
+
 ### HeightPoint — 바닥 Y 커브
 
 플레이어 X 위치에 따라 바닥 높이를 연속적으로 정의하는 제어점.  
