@@ -130,24 +130,19 @@ namespace Script.Editor.MapEditor {
             try {
                 float width   = 0f;
                 float centerX = tile.position.x;
-
-                // SpriteRenderer 우선
-                var sr = go.GetComponentInChildren<SpriteRenderer>(true);
-                if (sr != null && sr.sprite != null) {
+                
+                // TitleMap 우선
+                var tilemap = go.GetComponentInChildren<Tilemap>(true);
+                if (tilemap != null && tilemap.cellBounds.size.x > 0) {
+                    if (tilemap != null && tilemap.cellBounds.size.x > 0) {
+                        var scale       = Mathf.Abs(tilemap.transform.lossyScale.x);
+                        width   = tilemap.cellBounds.size.x * scale;
+                        centerX = tilemap.transform.position.x + tilemap.cellBounds.center.x;
+                    }
+                } else {
+                    var sr = go.GetComponentInChildren<SpriteRenderer>(true);
                     width   = sr.bounds.size.x;
                     centerX = sr.bounds.center.x;
-                } else {
-                    // Tilemap: cellBounds.size × cellSize = 실제 너비, cellBounds.center → world
-                    var tilemap = go.GetComponentInChildren<Tilemap>(true);
-                    if (tilemap != null && tilemap.cellBounds.size.x > 0) {
-                        var cellSizeX   = tilemap.cellSize.x;
-                        var scale       = Mathf.Abs(tilemap.transform.lossyScale.x);
-                        width = tilemap.cellBounds.size.x * cellSizeX * scale;
-
-                        // cellBounds.center(cell 좌표) → local → world
-                        var localCenterX = tilemap.cellBounds.center.x * cellSizeX;
-                        centerX = tilemap.transform.TransformPoint(new Vector3(localCenterX, 0f, 0f)).x;
-                    }
                 }
 
                 tile.width   = width;

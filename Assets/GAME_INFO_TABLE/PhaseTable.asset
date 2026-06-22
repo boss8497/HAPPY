@@ -28,6 +28,7 @@ MonoBehaviour:
         actions:
         - rid: 2451557340872441960
         - rid: 4223259598952071168
+        - rid: 2741529368605229057
     - rid: 2451557340872441960
       type: {class: PlayerSpawnAction, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
       data:
@@ -42,6 +43,41 @@ MonoBehaviour:
       type: {class: PlayerDieTrigger, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
       data:
         type: 0
+    - rid: 2741529368605229057
+      type: {class: MapSpawnAction, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 971346338
+          v1: 1077598105
+          v2: 3846456244
+          v3: 3970876329
+        timing: 1
+        tiles:
+        - position: {x: 0, y: -1, z: 0}
+          prefabKey: 68b93f225a140b64ab72cfd52a418e32
+          width: 118
+          centerX: 47
+          startX: -12
+          endX: 106
+        heightPoints:
+        - x: 0
+          groundY: 0
+          interpolation: 0
+        - x: 8.952159
+          groundY: 0
+          interpolation: 0
+        - x: 12.834594
+          groundY: 2
+          interpolation: 0
+        - x: 23.998964
+          groundY: 2
+          interpolation: 0
+        - x: 28.102957
+          groundY: 0
+          interpolation: 0
+        - x: 104.93093
+          groundY: 0
+          interpolation: 0
     - rid: 4223259598952071168
       type: {class: EnemySpawnAction, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
       data:
@@ -55,14 +91,14 @@ MonoBehaviour:
         - uid: 2
           position: {x: 5, y: 0, z: 0}
         - uid: 2
-          position: {x: 10, y: 0, z: 0}
+          position: {x: 15.322916, y: 2, z: 0}
         - uid: 7
-          position: {x: 20, y: 0, z: 0}
+          position: {x: 20, y: 2, z: 0}
         - uid: 2
-          position: {x: 25, y: 0, z: 0}
+          position: {x: 28.738867, y: 0, z: 0}
         - uid: 4
-          position: {x: 30, y: 0, z: 0}
+          position: {x: 32.202675, y: 0, z: 0}
         - uid: 5
-          position: {x: 35, y: 0, z: 0}
+          position: {x: 39.634148, y: 0, z: 0}
         - uid: 6
           position: {x: 100, y: 0, z: 0}
