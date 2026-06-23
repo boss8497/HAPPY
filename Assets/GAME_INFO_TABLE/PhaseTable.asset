@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Script.Table::Script.GameInfo.Table.PhaseTable
   PhaseInfos:
   - rid: 2451557340872441959
+  - rid: 2741529401221447826
   references:
     version: 2
     RefIds:
@@ -22,7 +23,7 @@ MonoBehaviour:
       data:
         <UID>k__BackingField: 1
         <ID>k__BackingField: Moutain_Phase_1
-        <Name>k__BackingField: 
+        <Name>k__BackingField: "\uC0B0_1"
         triggers:
         - rid: 2476689730211151970
         actions:
@@ -77,6 +78,109 @@ MonoBehaviour:
           interpolation: 0
         - x: 104.93093
           groundY: 0
+          interpolation: 0
+    - rid: 2741529401221447826
+      type: {class: PhaseInfo, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
+      data:
+        <UID>k__BackingField: 2
+        <ID>k__BackingField: Moutain_Phase_1
+        <Name>k__BackingField: "\uC0B0_2"
+        triggers:
+        - rid: 2741529401221447827
+        actions:
+        - rid: 2741529401221447828
+        - rid: 2741529401221447829
+        - rid: 2741529401221447830
+    - rid: 2741529401221447827
+      type: {class: PlayerDieTrigger, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
+      data:
+        type: 0
+    - rid: 2741529401221447828
+      type: {class: PlayerSpawnAction, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 3102834426
+          v1: 1209446986
+          v2: 2889210293
+          v3: 2871723398
+        timing: 0
+        position: {x: 0, y: 0, z: 0}
+    - rid: 2741529401221447829
+      type: {class: EnemySpawnAction, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 2741578429
+          v1: 1110840457
+          v2: 581200561
+          v3: 3703256381
+        timing: 1
+        spawnData:
+        - uid: 2
+          position: {x: 5, y: 0, z: 0}
+        - uid: 2
+          position: {x: 15.322916, y: 2, z: 0}
+        - uid: 7
+          position: {x: 20, y: 2, z: 0}
+        - uid: 2
+          position: {x: 28.738867, y: 0, z: 0}
+        - uid: 4
+          position: {x: 32.202675, y: 0, z: 0}
+        - uid: 5
+          position: {x: 36.907722, y: 0, z: 0}
+        - uid: 6
+          position: {x: 100, y: 3, z: 0}
+    - rid: 2741529401221447830
+      type: {class: MapSpawnAction, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
+      data:
+        guid:
+          v0: 971346338
+          v1: 1077598105
+          v2: 3846456244
+          v3: 3970876329
+        timing: 1
+        tiles:
+        - position: {x: 0, y: -1, z: 0}
+          prefabKey: 2b3307f8e4d83dc449c08dd3106c30fb
+          width: 138
+          centerX: 57
+          startX: -12
+          endX: 126
+        heightPoints:
+        - x: 0
+          groundY: 0
+          interpolation: 0
+        - x: 10
+          groundY: 0
+          interpolation: 0
+        - x: 13.925571
+          groundY: 2
+          interpolation: 0
+        - x: 25.036753
+          groundY: 2
+          interpolation: 0
+        - x: 28.98804
+          groundY: 0
+          interpolation: 0
+        - x: 36.974064
+          groundY: 0
+          interpolation: 0
+        - x: 48.92557
+          groundY: 6
+          interpolation: 0
+        - x: 54.012997
+          groundY: 6
+          interpolation: 0
+        - x: 64.013
+          groundY: 11
+          interpolation: 0
+        - x: 79.00229
+          groundY: 11
+          interpolation: 0
+        - x: 95
+          groundY: 3
+          interpolation: 0
+        - x: 103.0701
+          groundY: 3
           interpolation: 0
     - rid: 4223259598952071168
       type: {class: EnemySpawnAction, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
