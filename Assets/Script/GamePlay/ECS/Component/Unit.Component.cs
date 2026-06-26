@@ -19,6 +19,8 @@ namespace Script.GamePlay.ECS.Component {
 
     public struct UnitSystemControlEnable : IComponentData, IEnableableComponent { }
 
+    public struct UnitFallingEnable : IComponentData, IEnableableComponent { }
+
     public struct UnitData : IComponentData {
         public Entity                     Entity;
         public long                       Uid;
@@ -82,6 +84,19 @@ namespace Script.GamePlay.ECS.Component {
     public struct JumpInputData : IComponentData {
         public byte Held;
         public byte ReleaseRequested;
+    }
+
+    /// <summary>
+    /// ECS 낙하 런타임 데이터.
+    /// Gravity / FallGravity 는 엔티티 초기화 시 ConfigurationInfo 값으로 고정.
+    /// FallVelocity 는 GravitySystem 이 매 프레임 갱신.
+    /// FallDetectionThreshold 는 SnapPlayerToGroundJob 과 FallDetectionSystem 에서 공유.
+    /// </summary>
+    public struct FallingData : IComponentData {
+        public float FallVelocity;
+        public float Gravity;
+        public float FallGravity;
+        public float FallDetectionThreshold;
     }
 
     /// <summary>

@@ -51,7 +51,9 @@ namespace Script.GamePlay.ECS.World {
             // 시스템들
             systems.Add(TypeManager.GetSystemTypeIndex<GameTimerSystem>());
             systems.Add(TypeManager.GetSystemTypeIndex<RunningSystem>());
+            systems.Add(TypeManager.GetSystemTypeIndex<FallDetectionSystem>());
             systems.Add(TypeManager.GetSystemTypeIndex<JumpingSystem>());
+            systems.Add(TypeManager.GetSystemTypeIndex<GravitySystem>());
             systems.Add(TypeManager.GetSystemTypeIndex<JumpingResultSystem>());
             systems.Add(TypeManager.GetSystemTypeIndex<CollisionSystem>());
             systems.Add(TypeManager.GetSystemTypeIndex<CollisionResultSystem>());

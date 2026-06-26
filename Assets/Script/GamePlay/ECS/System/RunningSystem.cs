@@ -64,18 +64,22 @@ namespace Script.GamePlay.ECS.System {
             }
         }
 
-        // GroundY 변경 시 점프 중이 아닌 플레이어만 Y 즉시 스냅
+        // GroundY 변경 시 점프/낙하 중이 아닌 플레이어만 Y 스냅.
+        // 큰 낙차(FallDetectionThreshold 초과)는 스냅 생략 → FallDetectionSystem + GravitySystem 이 처리.
         [WithDisabled(typeof(UnitJumpingEnable))]
+        [WithDisabled(typeof(UnitFallingEnable))]
         [WithDisabled(typeof(UnitDieEnable))]
         [BurstCompile]
         private partial struct SnapPlayerToGroundJob : IJobEntity {
             public float GroundY;
 
-            private void Execute(ref LocalTransform transform, in UnitData unit) {
+            private void Execute(ref LocalTransform transform, in UnitData unit, in FallingData falling) {
                 if (unit.IsPlayer == 0) return;
                 var pos = transform.Position;
-                pos.y              = GroundY;
-                transform.Position = pos;
+                if (GroundY >= pos.y || pos.y - GroundY <= falling.FallDetectionThreshold) {
+                    pos.y              = GroundY;
+                    transform.Position = pos;
+                }
             }
         }
     }

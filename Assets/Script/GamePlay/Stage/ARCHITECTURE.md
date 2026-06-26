@@ -116,10 +116,18 @@ ClientMapSpawnAction.ExecuteAsync()
   → StageManager.SetGroundY()
   → MapGroundData.GroundY 갱신
 
-ECS RunningSystem   → SnapPlayerToGroundJob (지면 플레이어 Y 스냅)
-ECS JumpingSystem   → jumping.GroundY 갱신 + 착지 판정
-ParallaxLooper      → ShiftY(delta) (배경 Y 이동)
+ECS RunningSystem        → SnapPlayerToGroundJob (낙차 ≤ threshold 만 스냅)
+ECS FallDetectionSystem  → 낙차 > threshold 시 UnitFallingEnable 활성화
+ECS JumpingSystem        → jumping.GroundY 갱신 + 착지 판정
+ECS GravitySystem        → UnitFallingEnable 활성 플레이어 낙하 물리 처리
+ParallaxLooper           → ShiftY(delta) (배경 Y 이동)
 ```
+
+**낙사(Fall Death) 설계:**
+- HeightPoint에서 낙사 구간을 매우 낮은 Y(예: `-20`)로 설정하면 플레이어가 자연스럽게 떨어짐
+- 낙사 판정은 ECS가 아닌 **Obstacle 충돌**로 처리
+  - 낙사 구간 바닥에 `CharacterType.Obstacle` + 높은 `Collision` 데미지 배치 → 기존 충돌 시스템이 사망 처리
+- `ConfigurationInfo.fallDetectionThreshold`: 낙사 감지 임계값 (권장 0.5 ~ 1.0)
 
 ---
 

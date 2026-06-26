@@ -81,15 +81,15 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 0.9936203, b: 0.21568626, a: 1}
+  m_Sprite: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!1 &5139501756586726974
 GameObject:
@@ -101,9 +101,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8661233990398657061}
   - component: {fileID: 874184510752302450}
-  - component: {fileID: 3156079116447162431}
   m_Layer: 0
-  m_Name: UNIT_BOX
+  m_Name: UNIT_INSTANT_KILL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -137,35 +136,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a32985908460c7543a6c2562a6bfdedd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Script.GamePlay.Character::Script.GamePlay.Character.Character
-  characterInfoUid: 2
+  characterInfoUid: 9
   _characterBehaviour:
     rid: -2
-  _dieAnimation: {fileID: 3156079116447162431}
+  _dieAnimation: {fileID: 0}
   hitBox:
-    rid: 2741529492224475237
+    rid: 2741529492224475236
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 2741529492224475237
+    - rid: 2741529492224475236
       type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
         type: 2
-        offset: {x: 0, y: 0.5, z: 0}
-        size: {x: 1, y: 1, z: 1}
+        offset: {x: 0, y: 0, z: 0}
+        size: {x: 4, y: 2, z: 0}
         radius: 0
---- !u!114 &3156079116447162431
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5139501756586726974}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c4fadb7214a4b91b1c1dca53ddd3399, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Script.GamePlay.Character.Animation::Script.GamePlay.Character.BoxDieAnimation
-  spriteRenderer: {fileID: 7759802540843688672}
-  duration: 0.5

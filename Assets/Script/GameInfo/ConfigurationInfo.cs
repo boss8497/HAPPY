@@ -15,6 +15,8 @@ namespace Script.GameInfo.Info {
         public float minJumpTime;
         public float maxJumpTime;
 
+        public float fallDetectionThreshold;
+
         [Dungeon]
         public int lobby;
 
@@ -35,8 +37,9 @@ namespace Script.GameInfo.Info {
             return new() {
                 gravity          = gravity,
                 fallGravity      = fallGravity,
-                minJumpTime      = minJumpTime,
-                maxJumpTime      = maxJumpTime,
+                minJumpTime              = minJumpTime,
+                maxJumpTime              = maxJumpTime,
+                fallDetectionThreshold   = fallDetectionThreshold,
                 UID              = UID,
                 Components       = Components.ToArray(),
                 ID               = ID,

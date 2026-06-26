@@ -81,6 +81,15 @@ namespace Script.GamePlay.Character {
             if (entityManager.HasComponent<JumpingData>(entity) == false) {
                 entityManager.AddComponentData(entity, new JumpingData());
             }
+
+            if (entityManager.HasComponent<UnitFallingEnable>(entity) == false) {
+                entityManager.AddComponentData<UnitFallingEnable>(entity, new());
+            }
+            SetEnabledTag<UnitFallingEnable>(false);
+
+            if (entityManager.HasComponent<FallingData>(entity) == false) {
+                entityManager.AddComponentData(entity, new FallingData());
+            }
         }
 
         private void SetEnabledTag<T>(bool enable) where T : IComponentData, IEnableableComponent {

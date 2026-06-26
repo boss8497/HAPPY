@@ -37,6 +37,7 @@ Unity DOTS(ECS + Burst + Jobs)를 사용해 이동·점프·충돌을 처리한�
 | `UnitCollisionResult` | IBufferElementData | 이번 프레임 충돌 결과 버퍼 |
 | `UnitCollisionDelay` | IBufferElementData | 충돌 쿨다운 (OtherUid·ExpireTime) |
 | `MapGroundData` | Singleton IComponentData | 스테이지 전역 바닥 Y 값 |
+| `FallingData` | IComponentData | 낙하 물리 상태 (FallVelocity·Gravity·FallGravity·FallDetectionThreshold) |
 | `EGameTimer` | Singleton IComponentData | 게임 경과 시간 |
 | `CameraData` | Singleton IComponentData | 카메라 참조 |
 
@@ -46,6 +47,7 @@ Unity DOTS(ECS + Burst + Jobs)를 사용해 이동·점프·충돌을 처리한�
 |---|---|
 | `UnitRunningEnable` | RunningSystem이 이 유닛을 처리 |
 | `UnitJumpingEnable` | 현재 점프 중 |
+| `UnitFallingEnable` | 현재 낙하 중 (점프 아님) — GravitySystem이 처리 |
 | `UnitCollisionEnable` | 충돌 감지 대상 |
 | `UnitCollisionResultEnable` | 이번 프레임 충돌 결과 있음 |
 | `UnitDieEnable` | 사망 상태 (대부분 시스템에서 제외) |
@@ -60,9 +62,13 @@ Unity DOTS(ECS + Burst + Jobs)를 사용해 이동·점프·충돌을 처리한�
 ```
 GameTimerSystem
     ↓
-RunningSystem          ← X/Z 이동 + GroundY 변경 시 Player Y 스냅
+RunningSystem          ← X/Z 이동 + GroundY 변경 시 Player Y 스냅 (큰 낙차 제외)
+    ↓
+FallDetectionSystem    ← 지면 이탈 감지 → UnitFallingEnable 활성화
     ↓
 JumpingSystem          ← 점프 물리 + Player 착지 Y 처리
+    ↓
+GravitySystem          ← 낙하 물리 + Player 착지 Y 처리 (UnitFallingEnable 활성 엔티티)
     ↓
 JumpingResultSystem    ← 착지 완료 시 Character FSM에 알림
     ↓
@@ -75,13 +81,26 @@ StageSyncSystem        ← ECS → GameObject Transform 동기화
 
 ### RunningSystem
 - **매 프레임**: `RunningJob` — `RunningData.Direction * Speed * dt` 로 X/Z 이동
-- **GroundY 변경 감지 시에만**: `SnapPlayerToGroundJob` — 지면에 있는(`UnitJumpingEnable` 비활성) 플레이어 Y를 즉시 스냅
-- `MapGroundData` 싱글턴이 없으면 스냅 로직 스킵
+- **GroundY 변경 감지 시에만**: `SnapPlayerToGroundJob` — 지면에 있는 플레이어 Y를 스냅
+  - `UnitJumpingEnable`, `UnitFallingEnable`, `UnitDieEnable` 비활성 엔티티만 처리
+  - 낙차 ≤ `FallingData.FallDetectionThreshold` 이면 스냅 (완만한 경사)
+  - 낙차 > threshold 이면 스냅 생략 → `FallDetectionSystem`이 낙하 처리
+
+### FallDetectionSystem
+- `UnitJumpingEnable`, `UnitFallingEnable`, `UnitDieEnable`, `UnitSystemControlEnable` 모두 비활성인 플레이어 대상
+- `position.y > GroundY + FallingData.FallDetectionThreshold` 조건 시 `UnitFallingEnable` 활성화
+- `FallVelocity = 0`으로 초기화 (낙하 속도 초기화)
 
 ### JumpingSystem
 - 매 프레임 `MapGroundData.GroundY`를 읽어 플레이어(`IsPlayer != 0`)의 `JumpingData.GroundY`를 갱신
 - 점프 물리: 상승 구간은 `Gravity * 0.5`, 하강 구간은 `Gravity * FallGravity`
 - `position.y <= jumping.GroundY` 도달 시 착지 — `UnitJumpingEnable` 비활성화
+
+### GravitySystem
+- `UnitFallingEnable` 활성 엔티티(= 낙하 중) 전용
+- 매 프레임 `FallVelocity -= Gravity * FallGravity * dt` 적용 후 Y 이동
+- `position.y <= GroundY` 도달 시 착지 — Y 스냅, `FallVelocity = 0`, `UnitFallingEnable` 비활성화
+- 낙사 판정은 ECS가 아닌 **Obstacle 충돌**로 처리 (바닥 낙사 위치에 고데미지 Obstacle 배치)
 
 ### CollisionSystem
 - `IJobFor` 병렬 — 모든 유닛 쌍을 동시에 검사

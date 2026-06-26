@@ -20,6 +20,7 @@ MonoBehaviour:
     fallGravity: 1.5
     minJumpTime: 0.15
     maxJumpTime: 0.3
+    fallDetectionThreshold: 1
     lobby: 1
     startItems: 1
     startUpScenePath: 3030a0516981d8143b9a4593cef2096d

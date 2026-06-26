@@ -26,6 +26,7 @@ namespace Script.GamePlay.Character {
         private void InitializeAction() {
             _config = GameInfoManager.Instance.Config;
             UpdateStatus();
+            InitializeFallingData();
         }
 
         #region Collision
@@ -211,6 +212,17 @@ namespace Script.GamePlay.Character {
             });
         }
         #endregion
+
+        private void InitializeFallingData() {
+            if (_unitManager == null || _unitManager.TryGetEntity(this, out var entity) == false) return;
+            var entityManager = _stageEntityWorld.EntityManager;
+            if (entityManager.HasComponent<FallingData>(entity) == false) return;
+            entityManager.SetComponentData(entity, new FallingData {
+                Gravity                = _config.gravity,
+                FallGravity            = _config.fallGravity,
+                FallDetectionThreshold = _config.fallDetectionThreshold,
+            });
+        }
 
         private void ReleaseAction() {
             RemoveState(CharacterState.Running);

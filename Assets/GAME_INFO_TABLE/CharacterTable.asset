@@ -111,11 +111,24 @@ MonoBehaviour:
     animationEvents: []
     behaviourId: 1
     statusUids: 0d0000000e000000
-    buffUids: 
+    buffUids: 00000000
     prefab: 85334c42989dab14abb41fdb0bc61a47
     skeletonDataAsset: 66419e413984c364ebecbb3783b45806
     hitbox:
       rid: 4223259779756720129
+    hitboxes: []
+  - <UID>k__BackingField: 9
+    <ID>k__BackingField: UNIT_INSTANT_KILL
+    <Name>k__BackingField: "\uC989\uC0AC"
+    type: 1
+    animationEvents: []
+    behaviourId: 2
+    statusUids: 0f00000010000000
+    buffUids: 
+    prefab: e997718544d0b74438ecc62561178c5f
+    skeletonDataAsset: 
+    hitbox:
+      rid: 2741529482868817920
     hitboxes: []
   references:
     version: 2
@@ -154,6 +167,13 @@ MonoBehaviour:
         type: 2
         offset: {x: 0, y: 0.5, z: 0}
         size: {x: 1, y: 1, z: 1}
+        radius: 0
+    - rid: 2741529482868817920
+      type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
+      data:
+        type: 2
+        offset: {x: 0, y: 0, z: 0}
+        size: {x: 4, y: 2, z: 0}
         radius: 0
     - rid: 4223259507235749998
       type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
