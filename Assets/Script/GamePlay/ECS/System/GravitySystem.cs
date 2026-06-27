@@ -11,6 +11,7 @@ namespace Script.GamePlay.ECS.System {
     public partial struct GravitySystem : ISystem {
         [BurstCompile]
         public void OnCreate(ref SystemState state) {
+            state.RequireForUpdate<MapGroundData>();
             state.RequireForUpdate<FallingData>();
         }
 
@@ -24,7 +25,7 @@ namespace Script.GamePlay.ECS.System {
             }.ScheduleParallel(state.Dependency);
         }
 
-        [WithDisabled(typeof(UnitSystemControlEnable))]
+        [WithDisabled(typeof(UnitSystemControlEnable), typeof(UnitJumpingEnable))]
         [BurstCompile]
         public partial struct GravityJob : IJobEntity {
             public float Dt;
@@ -45,6 +46,7 @@ namespace Script.GamePlay.ECS.System {
                 if (pos.y <= groundY) {
                     pos.y                 = groundY;
                     falling.FallVelocity  = 0f;
+                    falling.IsLethalFall  = 0;
                     fallingEnable.ValueRW = false;
                 }
 

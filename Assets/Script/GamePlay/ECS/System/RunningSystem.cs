@@ -15,9 +15,11 @@ namespace Script.GamePlay.ECS.System {
 
         [BurstCompile]
         public void OnCreate(ref SystemState state) {
+            state.RequireForUpdate<MapGroundData>();
+            
             _query = SystemAPI.QueryBuilder()
                               .WithAllRW<LocalTransform>()
-                              .WithAll<RunningData, UnitRunningEnable>()
+                              .WithAll<RunningData, UnitData, FallingData, UnitRunningEnable>()
                               .WithDisabled<UnitDieEnable, UnitSystemControlEnable>()
                               .Build();
 
@@ -39,7 +41,6 @@ namespace Script.GamePlay.ECS.System {
 
             var groundY = SystemAPI.GetSingleton<MapGroundData>().GroundY;
 
-            // GroundY가 바뀐 경우에만 플레이어 스냅 처리
             if (_groundYValid && math.abs(_lastGroundY - groundY) < 0.0001f) return;
 
             _lastGroundY  = groundY;
@@ -54,18 +55,23 @@ namespace Script.GamePlay.ECS.System {
         private partial struct RunningJob : IJobEntity {
             public float DeltaTime;
 
-            private void Execute(ref LocalTransform transform, in RunningData running) {
+            private void Execute(
+                ref LocalTransform transform,
+                in  RunningData    running,
+                in  UnitData       unit,
+                in  FallingData    falling
+            ) {
+                // 낙사 구간(IsLethalFall=1)에서는 플레이어 X 이동 차단
+                if (unit.IsPlayer != 0 && falling.IsLethalFall != 0) return;
+
                 var dir = running.Direction;
-
-                if (math.lengthsq(dir) <= 0.000001f)
-                    return;
-
+                if (math.lengthsq(dir) <= 0.000001f) return;
                 transform.Position += dir * running.Speed * DeltaTime;
             }
         }
 
-        // GroundY 변경 시 점프/낙하 중이 아닌 플레이어만 Y 스냅.
-        // 큰 낙차(FallDetectionThreshold 초과)는 스냅 생략 → FallDetectionSystem + GravitySystem 이 처리.
+        // GroundY 변경 시 지면 위에 있는 플레이어를 위로 스냅(오르막 경사).
+        // 내리막 경사는 FallDetectionSystem + GravitySystem이 자연스럽게 처리.
         [WithDisabled(typeof(UnitJumpingEnable))]
         [WithDisabled(typeof(UnitFallingEnable))]
         [WithDisabled(typeof(UnitDieEnable))]
@@ -73,10 +79,10 @@ namespace Script.GamePlay.ECS.System {
         private partial struct SnapPlayerToGroundJob : IJobEntity {
             public float GroundY;
 
-            private void Execute(ref LocalTransform transform, in UnitData unit, in FallingData falling) {
+            private void Execute(ref LocalTransform transform, in UnitData unit) {
                 if (unit.IsPlayer == 0) return;
                 var pos = transform.Position;
-                if (GroundY >= pos.y || pos.y - GroundY <= falling.FallDetectionThreshold) {
+                if (GroundY >= pos.y) {
                     pos.y              = GroundY;
                     transform.Position = pos;
                 }

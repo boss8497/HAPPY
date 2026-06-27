@@ -5,8 +5,9 @@ using Unity.Transforms;
 
 namespace Script.GamePlay.ECS.System {
     /// <summary>
-    /// 점프 중이 아닌 플레이어가 GroundY 보다 FallDetectionThreshold 이상 높은 위치에 있으면
-    /// UnitFallingEnable 을 활성화해 GravitySystem 이 낙하 물리를 처리하도록 한다.
+    /// 점프 중이 아닌 플레이어가 GroundY보다 높은 위치에 있으면
+    /// UnitFallingEnable을 활성화해 GravitySystem이 낙하 물리를 처리하도록 한다.
+    /// 낙차가 FallDetectionThreshold를 초과하면 IsLethalFall=1로 설정해 X 이동도 차단한다.
     /// </summary>
     [DisableAutoCreation]
     [BurstCompile]
@@ -16,6 +17,7 @@ namespace Script.GamePlay.ECS.System {
     public partial struct FallDetectionSystem : ISystem {
         [BurstCompile]
         public void OnCreate(ref SystemState state) {
+            state.RequireForUpdate<MapGroundData>();
             state.RequireForUpdate<FallingData>();
         }
 
@@ -42,10 +44,12 @@ namespace Script.GamePlay.ECS.System {
             ) {
                 if (unit.IsPlayer == 0) return;
 
-                if (transform.Position.y > GroundY + falling.FallDetectionThreshold) {
-                    falling.FallVelocity  = 0f;
-                    fallingEnable.ValueRW = true;
-                }
+                var diff = transform.Position.y - GroundY;
+                if (diff <= 0f) return;
+
+                falling.IsLethalFall  = diff > falling.FallDetectionThreshold ? (byte)1 : (byte)0;
+                falling.FallVelocity  = 0f;
+                fallingEnable.ValueRW = true;
             }
         }
     }

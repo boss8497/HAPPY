@@ -88,15 +88,17 @@ namespace Script.GamePlay.ECS.Component {
 
     /// <summary>
     /// ECS 낙하 런타임 데이터.
-    /// Gravity / FallGravity 는 엔티티 초기화 시 ConfigurationInfo 값으로 고정.
-    /// FallVelocity 는 GravitySystem 이 매 프레임 갱신.
-    /// FallDetectionThreshold 는 SnapPlayerToGroundJob 과 FallDetectionSystem 에서 공유.
+    /// Gravity / FallGravity / FallDetectionThreshold 는 ConfigurationInfo에서 초기화.
+    /// FallDetectionThreshold: 낙차가 이 값을 초과하면 IsLethalFall=1 → X 이동 차단.
+    /// IsLethalFall: FallDetectionSystem에서 설정, GravitySystem 착지 시 해제.
     /// </summary>
     public struct FallingData : IComponentData {
         public float FallVelocity;
         public float Gravity;
         public float FallGravity;
         public float FallDetectionThreshold;
+        // 낙차가 FallDetectionThreshold 초과 시 1 — RunningSystem이 X 이동을 차단
+        public byte  IsLethalFall;
     }
 
     /// <summary>
