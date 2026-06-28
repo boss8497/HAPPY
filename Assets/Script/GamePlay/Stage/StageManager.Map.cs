@@ -13,28 +13,34 @@ namespace Script.GamePlay.Stage {
 
             if (_mapGroundEntity == Entity.Null || !em.Exists(_mapGroundEntity)) {
                 _mapGroundEntity = em.CreateEntity();
-                em.AddComponentData(_mapGroundEntity, new MapGroundData { GroundY = 0f });
+                em.AddComponentData(_mapGroundEntity, new MapGroundData { GroundY = 0f, FallDeathY = 0f, FallDeathEnabled = 0 });
             }
             else {
-                em.SetComponentData(_mapGroundEntity, new MapGroundData { GroundY = 0f });
+                em.SetComponentData(_mapGroundEntity, new MapGroundData { GroundY = 0f, FallDeathY = 0f, FallDeathEnabled = 0 });
             }
 
             GroundY = 0f;
         }
 
-        public void SetGroundY(float groundY) {
-            if (Mathf.Approximately(GroundY, groundY)) return;
-
+        public void SetMapGroundData(float groundY, float fallDeathY, bool hasFallDeathY) {
             GroundY = groundY;
 
             var em = _entityWorld.EntityManager;
             if (_mapGroundEntity == Entity.Null || !em.Exists(_mapGroundEntity)) {
                 _mapGroundEntity = em.CreateEntity();
-                em.AddComponentData(_mapGroundEntity, new MapGroundData { GroundY = groundY });
+                em.AddComponentData(_mapGroundEntity, new MapGroundData {
+                    GroundY          = groundY,
+                    FallDeathY       = fallDeathY,
+                    FallDeathEnabled = hasFallDeathY ? (byte)1 : (byte)0,
+                });
                 return;
             }
 
-            em.SetComponentData(_mapGroundEntity, new MapGroundData { GroundY = groundY });
+            em.SetComponentData(_mapGroundEntity, new MapGroundData {
+                GroundY          = groundY,
+                FallDeathY       = fallDeathY,
+                FallDeathEnabled = hasFallDeathY ? (byte)1 : (byte)0,
+            });
         }
 
         private void ReleaseMapGround() {

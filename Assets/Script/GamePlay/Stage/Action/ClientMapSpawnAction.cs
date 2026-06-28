@@ -122,7 +122,7 @@ namespace Script.GamePlay.Stage {
         }
 
         // ─────────────────────────────────────────────────────────
-        // HeightPoint 커브 기반 바닥 Y 계산 → StageManager에 전달
+        // HeightPoint 커브 기반 바닥 Y + 구간 fallDeathY 계산 → StageManager에 전달
         // ─────────────────────────────────────────────────────────
 
         private void UpdateCurrentGroundY() {
@@ -130,36 +130,34 @@ namespace Script.GamePlay.Stage {
             if (players == null || players.Count == 0) return;
 
             var playerX = players[0].Transform.position.x;
-            _stageManager.SetGroundY(ComputeGroundY(playerX));
+            var (groundY, fallDeathY, hasFallDeathY) = ComputeMapGroundData(playerX);
+            _stageManager.SetMapGroundData(groundY, fallDeathY, hasFallDeathY);
         }
 
-        // HeightPoint 배열에서 playerX에 해당하는 바닥 Y를 보간하여 반환
+        // HeightPoint 배열에서 playerX에 해당하는 바닥 Y와 구간 fallDeathY를 반환
         //
         //  P0(x=0, y=0) → P1(x=50, y=0)  → P2(x=100, y=10)
-        //   playerX=25  : 0 (P0-P1 구간, y 동일)
-        //   playerX=75  : Lerp(0, 10, 0.5) = 5
-        private float ComputeGroundY(float playerX) {
+        //   playerX=25  : groundY=0 (P0-P1 구간, y 동일), P0.hasFallDeathY 여부
+        //   playerX=75  : groundY=Lerp(0,10,0.5)=5, P1.hasFallDeathY 여부
+        private (float groundY, float fallDeathY, bool hasFallDeathY) ComputeMapGroundData(float playerX) {
             var points = _mapSpawnAction?.heightPoints;
-            if (points == null || points.Length == 0) return 0f;
+            if (points == null || points.Length == 0) return (0f, 0f, false);
 
-            // 첫 포인트 이전 구간: 첫 포인트 Y 유지
-            if (playerX <= points[0].x) return points[0].groundY;
+            if (playerX <= points[0].x) return (points[0].groundY, 0f, false);
+            if (playerX >= points[^1].x) return (points[^1].groundY, 0f, false);
 
-            // 마지막 포인트 이후 구간: 마지막 포인트 Y 유지
-            if (playerX >= points[points.Length - 1].x) return points[points.Length - 1].groundY;
-
-            // Point i → Point i+1 구간 탐색 후 보간
             for (var i = 0; i < points.Length - 1; i++) {
                 var p0 = points[i];
                 var p1 = points[i + 1];
 
                 if (playerX < p0.x || playerX > p1.x) continue;
 
-                var t = (playerX - p0.x) / (p1.x - p0.x);
-                return Interpolate(p0.groundY, p1.groundY, t, p0.interpolation);
+                var t       = (playerX - p0.x) / (p1.x - p0.x);
+                var groundY = Interpolate(p0.groundY, p1.groundY, t, p0.interpolation);
+                return (groundY, p0.fallDeathY, p0.hasFallDeathY);
             }
 
-            return points[points.Length - 1].groundY;
+            return (points[^1].groundY, 0f, false);
         }
 
         private static float Interpolate(float from, float to, float t, HeightInterpolation interpolation) {

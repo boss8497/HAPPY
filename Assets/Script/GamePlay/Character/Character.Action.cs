@@ -218,9 +218,8 @@ namespace Script.GamePlay.Character {
             var entityManager = _stageEntityWorld.EntityManager;
             if (entityManager.HasComponent<FallingData>(entity) == false) return;
             entityManager.SetComponentData(entity, new FallingData {
-                Gravity                = _config.gravity,
-                FallGravity            = _config.fallGravity,
-                FallDetectionThreshold = _config.fallDetectionThreshold,
+                Gravity     = _config.gravity,
+                FallGravity = _config.fallGravity,
             });
         }
 

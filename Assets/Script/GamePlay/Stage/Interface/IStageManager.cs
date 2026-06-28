@@ -55,7 +55,9 @@ namespace Script.GamePlay.Stage {
         void AddItemScore(float         score);
 
         float GroundY { get; }
-        void  SetGroundY(float groundY);
+        // groundY: 현재 플레이어 X 위치의 바닥 Y
+        // fallDeathY: 현재 구간의 X 차단 Y (hasFallDeathY=false면 무시)
+        void  SetMapGroundData(float groundY, float fallDeathY, bool hasFallDeathY);
 
         void ResetState();
         void AddState(StageState    state);

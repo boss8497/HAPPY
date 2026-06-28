@@ -613,7 +613,8 @@ namespace Script.Editor.MapEditor {
                 SirenixEditorGUI.BeginBox();
 
                 EditorGUILayout.BeginHorizontal();
-                var label = $"P{i}  x={hp.x:F1}  groundY={hp.groundY:F1}  [{hp.interpolation}]";
+                var fallInfo = hp.hasFallDeathY ? $"  ⚠ fallDeathY={hp.fallDeathY:F1}" : string.Empty;
+                var label    = $"P{i}  x={hp.x:F1}  groundY={hp.groundY:F1}  [{hp.interpolation}]{fallInfo}";
                 if (GUILayout.Button(label, EditorStyles.label, GUILayout.ExpandWidth(true))) {
                     MapEditorState.SelectedHeightIndex = i;
                     MapEditorState.SelectedTileIndex   = -1;
@@ -635,13 +636,19 @@ namespace Script.Editor.MapEditor {
 
                 if (isSelected) {
                     EditorGUI.BeginChangeCheck();
-                    var newX     = EditorGUILayout.FloatField("X", hp.x);
-                    var newY     = EditorGUILayout.FloatField("Ground Y", hp.groundY);
-                    var newInterp = (HeightInterpolation)EditorGUILayout.EnumPopup("Interpolation", hp.interpolation);
+                    var newX          = EditorGUILayout.FloatField("X", hp.x);
+                    var newY          = EditorGUILayout.FloatField("Ground Y", hp.groundY);
+                    var newInterp     = (HeightInterpolation)EditorGUILayout.EnumPopup("Interpolation", hp.interpolation);
+                    var newHasFallDY  = EditorGUILayout.Toggle("Fall Death Zone", hp.hasFallDeathY);
+                    var newFallDeathY = hp.hasFallDeathY
+                        ? EditorGUILayout.FloatField("  Fall Death Y", hp.fallDeathY)
+                        : hp.fallDeathY;
                     if (EditorGUI.EndChangeCheck()) {
                         hp.x             = newX;
                         hp.groundY       = newY;
                         hp.interpolation = newInterp;
+                        hp.hasFallDeathY = newHasFallDY;
+                        hp.fallDeathY    = newFallDeathY;
                         points[i]        = hp;
                         MapEditorState.WorkingHeightPoints.Sort((a, b) => a.x.CompareTo(b.x));
                         MapEditorState.SelectedHeightIndex =

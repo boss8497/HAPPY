@@ -65,21 +65,33 @@ MonoBehaviour:
         - x: 0
           groundY: 0
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 8.952159
           groundY: 0
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 12.834594
           groundY: 2
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 23.998964
           groundY: 2
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 28.102957
           groundY: 0
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 104.93093
           groundY: 0
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
     - rid: 2741529401221447826
       type: {class: PhaseInfo, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
       data:
@@ -150,69 +162,113 @@ MonoBehaviour:
         - x: 0
           groundY: 0
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 10
           groundY: 0
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 13.925571
           groundY: 2
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 25.036753
           groundY: 2
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 28.98804
           groundY: 0
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 36.974064
           groundY: 0
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 48.92557
           groundY: 6
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 54.012997
           groundY: 6
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 64.013
           groundY: 11
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 79.00229
           groundY: 11
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 95
           groundY: 3
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 125.91322
           groundY: 3
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 139.91339
           groundY: 10
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 147
           groundY: 10
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 153
           groundY: 7
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 163
           groundY: 7
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 166.88666
           groundY: 8.9982815
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 173
           groundY: 9
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 183
           groundY: 4
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 195
           groundY: 4
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 200.94841
           groundY: 1.0223634
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 206.98228
           groundY: 1.0031351
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
     - rid: 2741529482976034816
       type: {class: PhaseInfo, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
       data:
@@ -285,57 +341,93 @@ MonoBehaviour:
         - x: 0
           groundY: 0
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 10
           groundY: 0
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 13.925571
           groundY: 2
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 25.036753
           groundY: 2
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 28.98804
           groundY: 0
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 36.974064
           groundY: 0
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 48.92557
           groundY: 6
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 54.012997
           groundY: 6
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 64.013
           groundY: 11
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 79.00229
           groundY: 11
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 95
           groundY: 3
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 125.91322
           groundY: 3
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 144
           groundY: -6
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 202
           groundY: -6
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 202
           groundY: -12.019548
           interpolation: 0
+          hasFallDeathY: 1
+          fallDeathY: -7
         - x: 204
           groundY: -12
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 204.02501
           groundY: -6
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
         - x: 216
           groundY: -6
           interpolation: 0
+          hasFallDeathY: 0
+          fallDeathY: 0
     - rid: 4223259598952071168
       type: {class: EnemySpawnAction, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
       data:

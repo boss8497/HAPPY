@@ -16,10 +16,10 @@ namespace Script.GamePlay.ECS.System {
         [BurstCompile]
         public void OnCreate(ref SystemState state) {
             state.RequireForUpdate<MapGroundData>();
-            
+
             _query = SystemAPI.QueryBuilder()
                               .WithAllRW<LocalTransform>()
-                              .WithAll<RunningData, UnitData, FallingData, UnitRunningEnable>()
+                              .WithAll<RunningData, UnitData, UnitRunningEnable>()
                               .WithDisabled<UnitDieEnable, UnitSystemControlEnable>()
                               .Build();
 
@@ -28,19 +28,15 @@ namespace Script.GamePlay.ECS.System {
 
         [BurstCompile]
         public void OnUpdate(ref SystemState state) {
-            var fixedTime = SystemAPI.Time.DeltaTime;
+            var mapData = SystemAPI.GetSingleton<MapGroundData>();
 
             state.Dependency = new RunningJob {
-                DeltaTime = fixedTime
+                DeltaTime        = SystemAPI.Time.DeltaTime,
+                FallDeathY       = mapData.FallDeathY,
+                FallDeathEnabled = mapData.FallDeathEnabled,
             }.ScheduleParallel(_query, state.Dependency);
 
-            if (!SystemAPI.HasSingleton<MapGroundData>()) {
-                _groundYValid = false;
-                return;
-            }
-
-            var groundY = SystemAPI.GetSingleton<MapGroundData>().GroundY;
-
+            var groundY = mapData.GroundY;
             if (_groundYValid && math.abs(_lastGroundY - groundY) < 0.0001f) return;
 
             _lastGroundY  = groundY;
@@ -54,15 +50,16 @@ namespace Script.GamePlay.ECS.System {
         [BurstCompile]
         private partial struct RunningJob : IJobEntity {
             public float DeltaTime;
+            public float FallDeathY;
+            public byte  FallDeathEnabled;
 
             private void Execute(
                 ref LocalTransform transform,
                 in  RunningData    running,
-                in  UnitData       unit,
-                in  FallingData    falling
+                in  UnitData       unit
             ) {
-                // 낙사 구간(IsLethalFall=1)에서는 플레이어 X 이동 차단
-                if (unit.IsPlayer != 0 && falling.IsLethalFall != 0) return;
+                // 낙사 구간에서 캐릭터가 FallDeathY 이하로 내려가면 X 이동 차단
+                if (unit.IsPlayer != 0 && FallDeathEnabled != 0 && transform.Position.y <= FallDeathY) return;
 
                 var dir = running.Direction;
                 if (math.lengthsq(dir) <= 0.000001f) return;

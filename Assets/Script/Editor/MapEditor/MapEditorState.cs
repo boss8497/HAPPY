@@ -75,7 +75,13 @@ namespace Script.Editor.MapEditor {
                     });
 
                 foreach (var h in CurrentMapAction.heightPoints)
-                    WorkingHeightPoints.Add(new HeightPoint { x = h.x, groundY = h.groundY, interpolation = h.interpolation });
+                    WorkingHeightPoints.Add(new HeightPoint {
+                        x             = h.x,
+                        groundY       = h.groundY,
+                        interpolation = h.interpolation,
+                        hasFallDeathY = h.hasFallDeathY,
+                        fallDeathY    = h.fallDeathY,
+                    });
             }
 
             if (CurrentEnemySpawnAction?.spawnData != null) {

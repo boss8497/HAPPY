@@ -46,7 +46,6 @@ namespace Script.GamePlay.ECS.System {
                 if (pos.y <= groundY) {
                     pos.y                 = groundY;
                     falling.FallVelocity  = 0f;
-                    falling.IsLethalFall  = 0;
                     fallingEnable.ValueRW = false;
                 }
 

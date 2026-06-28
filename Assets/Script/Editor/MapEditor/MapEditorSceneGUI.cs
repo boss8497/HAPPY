@@ -33,10 +33,37 @@ namespace Script.Editor.MapEditor {
             // 프리팹 프리뷰 동기화 (구조 변경 시 재빌드, 아니면 위치만 갱신)
             MapEditorPreview.Sync();
 
+            DrawFallDeathLine();
             DrawHeightPointCurve();
             DrawTileHandles();
             DrawObjectHandles();
             HandleInput(sceneView);
+        }
+
+        // ── 낙사 Y 라인 (구간별) ─────────────────────────────────────────
+
+        private static void DrawFallDeathLine() {
+            var points = MapEditorState.WorkingHeightPoints;
+            if (points == null || points.Count < 2) return;
+
+            var labelStyle = new GUIStyle(EditorStyles.miniLabel) {
+                normal = { textColor = new Color(1f, 0.3f, 0.3f) }
+            };
+
+            for (var i = 0; i < points.Count - 1; i++) {
+                var p0 = points[i];
+                if (!p0.hasFallDeathY) continue;
+
+                var x0    = p0.x;
+                var x1    = points[i + 1].x;
+                var y     = p0.fallDeathY;
+                var left  = new Vector3(x0, y, 0f);
+                var right = new Vector3(x1, y, 0f);
+
+                Handles.color = new Color(1f, 0.15f, 0.15f, 0.9f);
+                Handles.DrawLine(left, right, 2f);
+                Handles.Label(right + Vector3.up * 0.3f, $"fallDeathY={y:F1}", labelStyle);
+            }
         }
 
         // ── HeightPoint 커브 (Gizmos 유지) ───────────────────────────────

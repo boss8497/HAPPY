@@ -7,7 +7,7 @@ namespace Script.GamePlay.ECS.System {
     /// <summary>
     /// 점프 중이 아닌 플레이어가 GroundY보다 높은 위치에 있으면
     /// UnitFallingEnable을 활성화해 GravitySystem이 낙하 물리를 처리하도록 한다.
-    /// 낙차가 FallDetectionThreshold를 초과하면 IsLethalFall=1로 설정해 X 이동도 차단한다.
+    /// X 이동 차단은 RunningSystem이 MapGroundData.FallDeathY를 직접 참조해 판단한다.
     /// </summary>
     [DisableAutoCreation]
     [BurstCompile]
@@ -47,7 +47,6 @@ namespace Script.GamePlay.ECS.System {
                 var diff = transform.Position.y - GroundY;
                 if (diff <= 0f) return;
 
-                falling.IsLethalFall  = diff > falling.FallDetectionThreshold ? (byte)1 : (byte)0;
                 falling.FallVelocity  = 0f;
                 fallingEnable.ValueRW = true;
             }
