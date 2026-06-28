@@ -468,17 +468,17 @@ MonoBehaviour:
         - uid: 6
           position: {x: 51.05824, y: 0, z: 0}
         - uid: 9
-          position: {x: 13.002146, y: -1.9366524, z: -4.2824907}
+          position: {x: 13.002146, y: -4.788612, z: -4.2824907}
         - uid: 9
-          position: {x: 17.516006, y: -1.9549947, z: -1.1029148}
+          position: {x: 17.516006, y: -4.8865924, z: -1.1029148}
         - uid: 9
-          position: {x: 22.60128, y: -2.0483036, z: -1.1029148}
+          position: {x: 22.60128, y: -4.9763417, z: -1.1029148}
         - uid: 9
-          position: {x: 27.639898, y: -2.1182847, z: -1.1029148}
+          position: {x: 27.639898, y: -5.0112524, z: -1.1029148}
         - uid: 9
-          position: {x: 35.057865, y: -1.6750737, z: -1.1029148}
+          position: {x: 35.057865, y: -4.9848022, z: -1.1029148}
         - uid: 9
-          position: {x: 40.618427, y: -1.9097428, z: -0.5965338}
+          position: {x: 40.618427, y: -4.815675, z: -0.5965338}
     - rid: 2741529536478052356
       type: {class: MapSpawnAction, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
       data:

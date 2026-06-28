@@ -1,14 +1,14 @@
 # BackGround — 시차 스크롤 배경 시스템
 
-카메라(또는 플레이어) 이동에 맞춰 배경 레이어를 시차(Parallax) 이동시키고,  
-타일을 무한 루프 배치하는 시스템.
+카메라 이동에 맞춰 배경 레이어를 시차(Parallax) 이동시키고,  
+타일을 무한 루프 배치하는 시스템. SkyBox 역할 전담.
 
 ## 클래스 구성
 
 | 클래스 | 역할 |
 |---|---|
-| `ParallaxLooper` | 전체 레이어 관리, 매 프레임 Tick 호출, GroundY 변경 감지 |
-| `ParallaxLayer` | 단일 레이어의 Parallax 이동 + 타일 루프 배치 |
+| `ParallaxLooper` | 전체 레이어 관리, 매 LateUpdate Tick 호출 |
+| `ParallaxLayer` | 단일 레이어의 Parallax 이동 (X/Y) + 타일 루프 배치 |
 
 ---
 
@@ -18,15 +18,14 @@ VContainer `[Inject]`로 `IStageManager`, `ICameraControls`를 주입받는다.
 
 **초기화 (`Awake → Initialize async`)**
 1. `MainCamera`가 준비될 때까지 대기
-2. 모든 `ParallaxLayer.Initialize(targetPos)` 호출
-3. `_lastGroundY = stageManager.GroundY` 로 초기값 캡처
+2. `_target = _camera.transform` 으로 카메라를 추적 대상으로 설정
+3. 모든 `ParallaxLayer.Initialize(targetPos)` 호출
 
-**매 프레임 (`Update`)**
+**매 프레임 (`LateUpdate`)**
 1. `SystemControl` 활성 시 정지 (스테이지 시스템 제어 중)
-2. `stageManager.GroundY` 폴링 — 이전 값과 다르면 `delta` 계산 후 모든 레이어에 `ShiftY(delta)` 호출
-3. 각 레이어 `Tick(targetPos, cameraLeftX)` 호출
+2. 각 레이어 `Tick(targetPos, cameraLeftX)` 호출
 
-> 현재 `_target`은 카메라 Transform. 플레이어 Transform으로 교체 가능 (주석 참고).
+> Camera가 Character를 이미 추적하므로 Camera Transform 기준으로 X/Y 모두 처리한다.
 
 ---
 
@@ -36,10 +35,11 @@ VContainer `[Inject]`로 `IStageManager`, `ICameraControls`를 주입받는다.
 
 | 필드 | 설명 |
 |---|---|
-| `_parallaxFactor` | 카메라 이동 대비 레이어 이동 비율 (0 = 고정, 1 = 1:1, >1 = 빠르게) |
-| `_fixedY` | 레이어의 고정 Y 좌표 (GroundY 변경 시 `ShiftY`로 이동) |
+| `_parallaxFactor` | 카메라 X 이동 대비 레이어 이동 비율 (0 = 고정, 1 = 1:1, >1 = 빠르게) |
+| `_parallaxFactorY` | 카메라 Y 이동 대비 레이어 이동 비율 (기본 1.0) |
+| `_relativeOffset` | `Initialize` 시 캡처한 Target X 기준 상대 오프셋 |
+| `_relativeOffsetY` | `Initialize` 시 캡처한 Target Y 기준 상대 오프셋 |
 | `_fixedZ` | 레이어의 고정 Z 좌표 |
-| `_relativeOffset` | `Initialize` 시 캡처한 Target 기준 상대 오프셋 |
 | `_loop` | 타일 루프 여부 |
 | `_cycleWidth` | 타일 한 사이클의 총 너비 |
 
@@ -49,10 +49,24 @@ VContainer `[Inject]`로 `IStageManager`, `ICameraControls`를 주입받는다.
 |---|---|
 | `Initialize(targetPos)` | 타일 정렬·캐시·오프셋 캡처 후 초기화 |
 | `Rebind(targetPos)` | 씬 전환 없이 Target이 바뀔 때 오프셋 재캡처 |
-| `Tick(targetPos, cameraLeftX)` | Parallax 이동 + 타일 루프 배치 (매 프레임 호출) |
-| `ShiftY(delta)` | `_fixedY += delta` — GroundY 변경 시 배경 Y 이동 |
+| `Tick(targetPos, cameraLeftX)` | Parallax 이동 + 타일 루프 배치 (매 LateUpdate 호출) |
 | `AlignTiles()` | 타일을 순서대로 좌→우 배치 (Context Menu / 초기화 시) |
 | `CollectChildSprites()` | 자식 SpriteRenderer를 자동으로 Tile 목록에 등록 |
+
+### Y 이동 방식
+
+X와 동일한 상대 오프셋 방식으로 계산한다.
+
+```
+초기화 시:
+  _relativeOffsetY = pos.y - targetPos.y * _parallaxFactorY
+
+매 프레임:
+  pos.y = _relativeOffsetY + targetPos.y * _parallaxFactorY
+```
+
+`_parallaxFactorY = 1.0` 이면 카메라 Y를 1:1로 따라가며 화면 내 상대 위치가 고정된다.  
+`0.0`에 가까울수록 Y축은 거의 고정 (하늘 원경 등).
 
 ### 타일 루프 알고리즘
 
@@ -65,31 +79,15 @@ VContainer `[Inject]`로 `IStageManager`, `ICameraControls`를 주입받는다.
 
 ---
 
-## GroundY 연동
-
-`ParallaxLooper.Update`가 `stageManager.GroundY`를 매 프레임 폴링한다.  
-변경 감지 시 `delta = newGroundY - _lastGroundY` 를 계산해 모든 레이어에 전달.
-
-```
-StageManager.SetGroundY(5f)
-  → ParallaxLooper._lastGroundY = 0 → groundY = 5 → delta = +5
-  → layer1.ShiftY(+5)   layer2.ShiftY(+5)   layer3.ShiftY(+5)
-  → 각 레이어 _fixedY += 5  (상대적 Y 차이 유지)
-```
-
-스테이지 리셋 시 `SetGroundY(0f)`가 호출되면 음수 delta로 자동 원위치된다.
-
----
-
 ## Inspector 설정 예시
 
 ```
 ParallaxLooper (GameObject)
-  ├─ Layers[0]: ParallaxLayer (sky)       parallaxFactor=0.1
-  ├─ Layers[1]: ParallaxLayer (mountain)  parallaxFactor=0.3
-  └─ Layers[2]: ParallaxLayer (ground)    parallaxFactor=0.8, loop=true
+  ├─ Layers[0]: ParallaxLayer (sky)       parallaxFactor=0.1  parallaxFactorY=0.1
+  ├─ Layers[1]: ParallaxLayer (mountain)  parallaxFactor=0.3  parallaxFactorY=0.3
+  └─ Layers[2]: ParallaxLayer (cloud)     parallaxFactor=0.6  parallaxFactorY=0.0, loop=true
 ```
 
-- `parallaxFactor`가 낮을수록 멀리 있는 느낌 (느리게 이동)
+- `parallaxFactor` / `parallaxFactorY`가 낮을수록 멀리 있는 느낌 (느리게 이동)
 - `loop=true`인 레이어는 `_tiles`에 반복할 스프라이트를 등록
 - `_startXOffset`: 레이어 초기 X 오프셋 (뒤쪽 배경 시작 위치 조정용)

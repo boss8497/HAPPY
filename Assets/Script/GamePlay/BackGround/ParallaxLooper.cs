@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Script.GamePlay.Camera;
 using Script.GamePlay.Stage;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using VContainer;
 
@@ -20,8 +19,6 @@ namespace Script.GamePlay.Background {
         private IStageManager   _stageManager;
         private ICameraControls _cameraControls;
 
-        private float _lastGroundY;
-
         [Inject]
         public void Constructor(
             IStageManager   stageManager,
@@ -35,21 +32,9 @@ namespace Script.GamePlay.Background {
             Initialize().Forget();
         }
 
-        private void Update() {
+        private void LateUpdate() {
             if (_initialized == false || (_stageManager?.SystemControl?.CurrentValue ?? true))
                 return;
-
-            var groundY = _stageManager?.GroundY ?? 0f;
-            if (!Mathf.Approximately(_lastGroundY, groundY)) {
-                var delta    = groundY - _lastGroundY;
-                _lastGroundY = groundY;
-
-                if (_layers != null) {
-                    foreach (var layer in _layers) {
-                        layer?.ShiftY(delta);
-                    }
-                }
-            }
 
             var targetPos   = _target.position;
             var cameraLeftX = GetCameraLeftX();
@@ -90,7 +75,6 @@ namespace Script.GamePlay.Background {
                 }
             }
 
-            _lastGroundY = _stageManager?.GroundY ?? 0f;
             _initialized = true;
         }
 

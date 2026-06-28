@@ -22,6 +22,9 @@ namespace Script.GamePlay.Background {
         [SerializeField, Range(0f, 1.5f)]
         private float _parallaxFactor = 1f;
 
+        [SerializeField, Range(0f, 1.5f)]
+        private float _parallaxFactorY = 1f;
+
         [SerializeField]
         private float _startXOffset = 0f;
 
@@ -41,7 +44,7 @@ namespace Script.GamePlay.Background {
 
         // Target 기준 상대 오프셋
         private Vector3 _relativeOffset;
-        private float   _fixedY;
+        private float   _relativeOffsetY;
         private float   _fixedZ;
 
         // Canonical layout (한 사이클 기준 정답 배치)
@@ -72,10 +75,6 @@ namespace Script.GamePlay.Background {
 
         public void Rebind(Vector3 targetPos) {
             CaptureRelativeOffset(targetPos);
-        }
-
-        public void ShiftY(float delta) {
-            _fixedY += delta;
         }
 
         public void Tick(Vector3 targetPos, float cameraLeftX) {
@@ -120,14 +119,9 @@ namespace Script.GamePlay.Background {
         private void CaptureRelativeOffset(Vector3 targetPos) {
             var pos = transform.position;
 
-            _fixedY = pos.y;
-            _fixedZ = pos.z;
-
-            _relativeOffset = new(
-                pos.x - (targetPos.x * _parallaxFactor),
-                _fixedY,
-                _fixedZ
-            );
+            _fixedZ          = pos.z;
+            _relativeOffset  = new(pos.x - (targetPos.x * _parallaxFactor), 0f, _fixedZ);
+            _relativeOffsetY = pos.y - (targetPos.y * _parallaxFactorY);
         }
 
         private float GetCurrentRootX(Vector3 targetPos) {
@@ -137,7 +131,7 @@ namespace Script.GamePlay.Background {
         private void UpdateParallax(Vector3 targetPos) {
             var pos = transform.position;
             pos.x              = GetCurrentRootX(targetPos);
-            pos.y              = _fixedY;
+            pos.y              = _relativeOffsetY + (targetPos.y * _parallaxFactorY);
             pos.z              = _fixedZ;
             transform.position = pos;
         }
