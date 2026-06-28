@@ -36,7 +36,7 @@ Unity DOTS(ECS + Burst + Jobs)를 사용해 이동·점프·충돌을 처리한�
 | `HitBoxData` | IComponentData | 충돌 박스 형태(Rect/Circle/Invisible)·Offset·Size·Radius |
 | `UnitCollisionResult` | IBufferElementData | 이번 프레임 충돌 결과 버퍼 |
 | `UnitCollisionDelay` | IBufferElementData | 충돌 쿨다운 (OtherUid·ExpireTime) |
-| `MapGroundData` | Singleton IComponentData | 스테이지 전역 바닥 Y 값 |
+| `MapGroundData` | Singleton IComponentData | 스테이지 전역 바닥 Y (`GroundY`) + 낙사 구간 정보 (`FallDeathY`, `FallDeathEnabled`) |
 | `FallingData` | IComponentData | 낙하 물리 상태 (FallVelocity·Gravity·FallGravity·FallDetectionThreshold) |
 | `EGameTimer` | Singleton IComponentData | 게임 경과 시간 |
 | `CameraData` | Singleton IComponentData | 카메라 참조 |
@@ -92,7 +92,8 @@ StageSyncSystem        ← ECS → GameObject Transform 동기화
 - `FallVelocity = 0`으로 초기화 (낙하 속도 초기화)
 
 ### JumpingSystem
-- 매 프레임 `MapGroundData.GroundY`를 읽어 플레이어(`IsPlayer != 0`)의 `JumpingData.GroundY`를 갱신
+- 매 프레임 `MapGroundData`(`GroundY`, `FallDeathY`, `FallDeathEnabled`)를 읽어 Job에 전달
+- **낙사 구간 점프 시작 차단**: `FallDeathEnabled=1 && IsPlayer=1 && pos.y <= FallDeathY && jumping.Timer == 0f` → `UnitJumpingEnable=false` (이미 진행 중인 점프는 Timer > 0이므로 유지)
 - 점프 물리: 상승 구간은 `Gravity * 0.5`, 하강 구간은 `Gravity * FallGravity`
 - `position.y <= jumping.GroundY` 도달 시 착지 — `UnitJumpingEnable` 비활성화
 
