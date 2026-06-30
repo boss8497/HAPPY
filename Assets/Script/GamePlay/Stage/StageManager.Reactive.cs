@@ -2,6 +2,7 @@
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
 using Script.GameInfo.Character;
+using UnityEngine;
 
 namespace Script.GamePlay.Stage {
     public partial class StageManager {
@@ -119,7 +120,10 @@ namespace Script.GamePlay.Stage {
                      .AddTo(ref _reactiveDisposableBag);
 
             RunningScore.CombineLatest(ItemScore, (runningScore, itemScore) => (runningScore, itemScore))
-                        .Subscribe(score => { Score.OnNext(score.runningScore + score.itemScore); })
+                        .Subscribe(score => {
+                            //Score.OnNext(score.runningScore + score.itemScore);
+                            Score.OnNext(score.runningScore * 0.1f + score.itemScore);
+                        })
                         .AddTo(ref _reactiveDisposableBag);
 
 

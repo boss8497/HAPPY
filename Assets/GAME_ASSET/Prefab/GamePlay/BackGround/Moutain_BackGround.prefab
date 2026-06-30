@@ -139,8 +139,8 @@ MonoBehaviour:
   _parallaxFactor: 1
   _parallaxFactorY: 1
   _startXOffset: 0
-  _yDeadZone: 1.5
-  _ySmoothTime: 0.8
+  _yDeadZone: 1.7
+  _ySmoothTime: 0.3
   _loop: 0
   _recycleOffset: 0
   _cameraLeftOffset: 0
@@ -652,8 +652,8 @@ MonoBehaviour:
   _parallaxFactor: 0.1
   _parallaxFactorY: 1
   _startXOffset: 0
-  _yDeadZone: 1.5
-  _ySmoothTime: 0.8
+  _yDeadZone: 1.7
+  _ySmoothTime: 0.3
   _loop: 1
   _recycleOffset: 0
   _cameraLeftOffset: 0
@@ -714,8 +714,8 @@ MonoBehaviour:
   _parallaxFactor: 0.3
   _parallaxFactorY: 1
   _startXOffset: 0
-  _yDeadZone: 1.5
-  _ySmoothTime: 1.5
+  _yDeadZone: 1.7
+  _ySmoothTime: 0.3
   _loop: 1
   _recycleOffset: 0
   _cameraLeftOffset: 0
@@ -776,8 +776,8 @@ MonoBehaviour:
   _parallaxFactor: 0.2
   _parallaxFactorY: 1
   _startXOffset: 0
-  _yDeadZone: 1.5
-  _ySmoothTime: 1.5
+  _yDeadZone: 1.7
+  _ySmoothTime: 0.3
   _loop: 1
   _recycleOffset: 0
   _cameraLeftOffset: 0

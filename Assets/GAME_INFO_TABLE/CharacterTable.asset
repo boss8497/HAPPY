@@ -179,7 +179,7 @@ MonoBehaviour:
       type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
         type: 2
-        offset: {x: 0, y: 10, z: 0}
+        offset: {x: 0.5, y: 10, z: 0}
         size: {x: 1, y: 20, z: 0}
         radius: 0
     - rid: 4223259530382016637
