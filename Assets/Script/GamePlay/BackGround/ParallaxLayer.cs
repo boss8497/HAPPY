@@ -28,6 +28,13 @@ namespace Script.GamePlay.Background {
         [SerializeField]
         private float _startXOffset = 0f;
 
+        [Header("Y Smoothing")]
+        [SerializeField]
+        private float _yDeadZone = 1.0f;
+
+        [SerializeField, Range(0.05f, 2f)]
+        private float _ySmoothTime = 0.4f;
+
         [Header("Loop")]
         [SerializeField]
         private bool _loop = true;
@@ -47,6 +54,10 @@ namespace Script.GamePlay.Background {
         private float   _relativeOffsetY;
         private float   _fixedZ;
 
+        // Y축 스무딩
+        private float _smoothedY;
+        private float _yVelocity;
+
         // Canonical layout (한 사이클 기준 정답 배치)
         private float[] _baseCenters;
         private float[] _baseRights;
@@ -62,6 +73,8 @@ namespace Script.GamePlay.Background {
 
             CacheLayout();
             CaptureRelativeOffset(targetPos);
+            _smoothedY = _relativeOffsetY + (targetPos.y * _parallaxFactorY);
+            _yVelocity = 0f;
 
             if (_loop) {
                 // 초기 1회 강제 배치
@@ -75,6 +88,8 @@ namespace Script.GamePlay.Background {
 
         public void Rebind(Vector3 targetPos) {
             CaptureRelativeOffset(targetPos);
+            _smoothedY = _relativeOffsetY + (targetPos.y * _parallaxFactorY);
+            _yVelocity = 0f;
         }
 
         public void Tick(Vector3 targetPos, float cameraLeftX) {
@@ -130,8 +145,16 @@ namespace Script.GamePlay.Background {
 
         private void UpdateParallax(Vector3 targetPos) {
             var pos = transform.position;
-            pos.x              = GetCurrentRootX(targetPos);
-            pos.y              = _relativeOffsetY + (targetPos.y * _parallaxFactorY);
+            pos.x = GetCurrentRootX(targetPos);
+
+            var targetY = _relativeOffsetY + (targetPos.y * _parallaxFactorY);
+            var delta   = targetY - _smoothedY;
+            var followY = Mathf.Abs(delta) > _yDeadZone
+                ? targetY - Mathf.Sign(delta) * _yDeadZone
+                : _smoothedY;
+            _smoothedY = Mathf.SmoothDamp(_smoothedY, followY, ref _yVelocity, _ySmoothTime);
+
+            pos.y              = _smoothedY;
             pos.z              = _fixedZ;
             transform.position = pos;
         }

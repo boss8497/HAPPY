@@ -37,6 +37,8 @@ VContainer `[Inject]`로 `IStageManager`, `ICameraControls`를 주입받는다.
 |---|---|
 | `_parallaxFactor` | 카메라 X 이동 대비 레이어 이동 비율 (0 = 고정, 1 = 1:1, >1 = 빠르게) |
 | `_parallaxFactorY` | 카메라 Y 이동 대비 레이어 이동 비율 (기본 1.0) |
+| `_yDeadZone` | Y 데드존 크기 — 이 범위 안의 Y 변화는 배경이 반응하지 않음 (기본 1.0) |
+| `_ySmoothTime` | 데드존 초과 시 따라가는 SmoothDamp 감쇠 시간 (기본 0.4) |
 | `_relativeOffset` | `Initialize` 시 캡처한 Target X 기준 상대 오프셋 |
 | `_relativeOffsetY` | `Initialize` 시 캡처한 Target Y 기준 상대 오프셋 |
 | `_fixedZ` | 레이어의 고정 Z 좌표 |
@@ -53,20 +55,39 @@ VContainer `[Inject]`로 `IStageManager`, `ICameraControls`를 주입받는다.
 | `AlignTiles()` | 타일을 순서대로 좌→우 배치 (Context Menu / 초기화 시) |
 | `CollectChildSprites()` | 자식 SpriteRenderer를 자동으로 Tile 목록에 등록 |
 
-### Y 이동 방식
+### Y 이동 방식 — Dead Zone + SmoothDamp
 
-X와 동일한 상대 오프셋 방식으로 계산한다.
+점프 등 단기 Y 변화로 인한 배경 출렁임을 방지하기 위해 Dead Zone + SmoothDamp 방식을 사용한다.
 
 ```
 초기화 시:
   _relativeOffsetY = pos.y - targetPos.y * _parallaxFactorY
+  _smoothedY       = _relativeOffsetY + targetPos.y * _parallaxFactorY
 
 매 프레임:
-  pos.y = _relativeOffsetY + targetPos.y * _parallaxFactorY
+  targetY = _relativeOffsetY + targetPos.y * _parallaxFactorY
+  delta   = targetY - _smoothedY
+
+  if |delta| <= _yDeadZone:
+      followY = _smoothedY          // 데드존 내 → 배경 고정
+  else:
+      followY = targetY - sign(delta) * _yDeadZone   // 데드존 경계를 목표로
+
+  _smoothedY = SmoothDamp(_smoothedY, followY, _ySmoothTime)
+  pos.y = _smoothedY
 ```
 
-`_parallaxFactorY = 1.0` 이면 카메라 Y를 1:1로 따라가며 화면 내 상대 위치가 고정된다.  
+`_parallaxFactorY = 1.0` 이면 카메라 Y를 기준으로 parallax 계산.  
 `0.0`에 가까울수록 Y축은 거의 고정 (하늘 원경 등).
+
+### Y Smoothing 튜닝 가이드
+
+| 증상 | 조치 |
+|---|---|
+| 점프할 때 배경이 여전히 움직인다 | `_yDeadZone` 값을 키운다 (캐릭터 점프 높이의 절반 이상) |
+| 지형 변화를 배경이 너무 늦게 따라온다 | `_ySmoothTime` 값을 낮춘다 |
+| 배경이 목표 위치에 도달하지 못하고 계속 지연된다 | `_ySmoothTime` 값을 낮춘다 |
+| 레이어별로 다른 반응을 주고 싶다 | 원경은 `_yDeadZone` 크게, 근경은 작게 설정 |
 
 ### 타일 루프 알고리즘
 
