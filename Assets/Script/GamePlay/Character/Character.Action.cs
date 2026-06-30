@@ -102,7 +102,7 @@ namespace Script.GamePlay.Character {
             if (Status.Spd <= 0) {
                 return;
             }
-            
+
             if (_unitManager == null)
                 return;
 
@@ -114,9 +114,14 @@ namespace Script.GamePlay.Character {
                 throw new Exception($"Entity {entity} does not have RunningData component");
             }
 
+            // 버프 Speed 보너스에 fade factor 적용
+            // _buffSpdBonus: 버프가 기여하는 순수 Spd 값 (Status.Spd에 이미 포함된 양)
+            // _buffSpdFade : 0=시작 1=최대. (1-factor) 만큼 감산해 점진적으로 반영
+            var effectiveSpd = Status.Spd - _buffSpdBonus * (1f - _buffSpdFade);
+
             entityManager.SetComponentData(entity, new RunningData {
-                Direction = Vector3.right, // 오른쪽으로 고정 나중에 왼쪽으로 달려오는 캐릭터를 만들기 위해 CharacterInfo에 데이터 셋팅하면 좋을듯!
-                Speed     = (float)Status.Spd,
+                Direction = Vector3.right,
+                Speed     = (float)effectiveSpd,
             });
         }
         

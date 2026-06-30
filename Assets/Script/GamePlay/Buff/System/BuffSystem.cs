@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Info;
+using Script.GameInfo.Info.Enum;
 using Script.GameInfo.Info.Stat;
 using Script.GameInfo.Table;
 using Script.GameTimer;
@@ -64,6 +65,10 @@ namespace Script.Buff {
 
                 ListPool.Return(removeBuffs);
 
+                if (_umBuffs.Count > 0) {
+                    NotifySpeedFade(elapsed);
+                }
+
                 var isCancel = await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken: ct).SuppressCancellationThrow();
                 if (isCancel) {
                     break;
@@ -85,27 +90,29 @@ namespace Script.Buff {
             _owner.AddStatus(statInfos);
             statInfos.Clear();
             ListPool.Return(statInfos);
+
+            // AddStatus 이후 즉시 fade 상태 적용 (새 버프 startTime 기준 factor ≈ 0)
+            NotifySpeedFade(_gameTimer.Elapsed);
         }
 
         private void AddBuff(BuffInfo buffInfo) {
             if (buffInfo == null) return;
-            var buff   = ClassPool.Get<Buff>();
-            var newUid = NewUid();
+            var buff      = ClassPool.Get<Buff>();
+            var newUid    = NewUid();
+            var startTime = _gameTimer.Elapsed;
             buff.Initialize(buffInfo, newUid);
 
-            if (_buffs == null) {
-                _buffs = ListPool.Get<Buff>();
-            }
-
-            if (_umBuffs == null) {
-                _umBuffs = ListPool.Get<UmBuff>();
-            }
+            _buffs ??= ListPool.Get<Buff>();
+            _umBuffs ??= ListPool.Get<UmBuff>();
 
             _buffs.Add(buff);
-            _umBuffs.Add(new() {
-                             buffUid = newUid,
-                             endTime = buffInfo.time + _gameTimer.Elapsed
-                         });
+            _umBuffs.Add(new UmBuff {
+                buffUid         = newUid,
+                startTime       = startTime,
+                endTime         = startTime + buffInfo.time,
+                fadeInDuration  = buffInfo.fadeInTime,
+                fadeOutDuration = buffInfo.fadeOutTime,
+            });
 
             if (_cts == null) {
                 _cts = new();
@@ -119,8 +126,12 @@ namespace Script.Buff {
 
             _buffs.Remove(buff);
             _umBuffs.RemoveSwapBack(r => r.buffUid == uid);
-            _owner.RemoveStatus(buff.StatusInfos);
 
+            // RemoveStatus 이전에 남은 버프 기준으로 fade 업데이트
+            // (RemoveStatus 내부에서 UpdateRunningStatus가 호출될 때 올바른 bonus 값 사용)
+            NotifySpeedFade(_gameTimer.Elapsed);
+
+            _owner.RemoveStatus(buff.StatusInfos);
             ClassPool.Release(buff);
 
             if (_umBuffs.Count <= 0) {
@@ -128,6 +139,57 @@ namespace Script.Buff {
                 _cts.Dispose();
                 _cts = null;
             }
+        }
+
+        // 현재 버프들의 Spd 기여분과 fade factor를 계산해 owner에게 전달
+        private void NotifySpeedFade(float elapsed) {
+            if (_umBuffs == null || _umBuffs.Count == 0) {
+                _owner.OnBuffSpeedFade(0f, 1f);
+                return;
+            }
+
+            float totalSpdBonus    = 0f;
+            float effectiveSpdBonus = 0f;
+
+            foreach (var umBuff in _umBuffs) {
+                var buff    = umBuff;
+                var buffObj = _buffs.Find(b => b.Uid == buff.buffUid);
+                if (buffObj == null) continue;
+
+                float spdBonus = CalcSpdBonus(buffObj.StatusInfos);
+                if (spdBonus <= 0f) continue;
+
+                float factor = CalcFadeFactor(in umBuff, elapsed);
+                totalSpdBonus     += spdBonus;
+                effectiveSpdBonus += spdBonus * factor;
+            }
+
+            float overallFactor = totalSpdBonus > 0f ? effectiveSpdBonus / totalSpdBonus : 1f;
+            _owner.OnBuffSpeedFade(totalSpdBonus, overallFactor);
+        }
+
+        private static float CalcSpdBonus(StatusInfo[] statusInfos) {
+            float total = 0f;
+            foreach (var info in statusInfos) {
+                foreach (var stat in info.status) {
+                    if (stat.type == StatType.Spd && !stat.isPercent)
+                        total += (float)stat.Calc();
+                }
+            }
+            return total;
+        }
+
+        private static float CalcFadeFactor(in UmBuff umBuff, float elapsed) {
+            float timePassed = elapsed - umBuff.startTime;
+            float timeLeft   = umBuff.endTime - elapsed;
+
+            if (umBuff.fadeInDuration > 0f && timePassed < umBuff.fadeInDuration)
+                return Mathf.Clamp01(timePassed / umBuff.fadeInDuration);
+
+            if (umBuff.fadeOutDuration > 0f && timeLeft < umBuff.fadeOutDuration)
+                return Mathf.Clamp01(timeLeft / umBuff.fadeOutDuration);
+
+            return 1f;
         }
 
         private long NewUid() {
@@ -156,7 +218,7 @@ namespace Script.Buff {
             }
 
             if (_umBuffs != null) {
-                _buffs.Clear();
+                _umBuffs.Clear();
                 ListPool.Return(_umBuffs);
             }
 

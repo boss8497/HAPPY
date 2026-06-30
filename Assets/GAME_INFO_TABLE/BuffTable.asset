@@ -25,4 +25,6 @@ MonoBehaviour:
         <Name>k__BackingField: "\uAC00\uC18D"
         statusUid: 090000000a000000
         time: 3
+        fadeInTime: 0.5
+        fadeOutTime: 0.5
         icon: 

@@ -8,10 +8,15 @@ using UnityEngine;
 namespace Script.GamePlay.Character {
     public partial class Character : IBuffOwner {
         private BuffSystem _buffSystem;
-        
+
+        // BuffSystem에서 전달받은 버프 Speed 보너스와 현재 fade 진행도
+        private float _buffSpdBonus = 0f;
+        private float _buffSpdFade  = 1f;
 
         private void InitializeBuff() {
-            _buffSystem = ClassPool.Get<BuffSystem>();
+            _buffSystem   = ClassPool.Get<BuffSystem>();
+            _buffSpdBonus = 0f;
+            _buffSpdFade  = 1f;
             _buffSystem.Initialize(this, GameTimer);
         }
 
@@ -19,7 +24,9 @@ namespace Script.GamePlay.Character {
             if (_buffSystem != null) {
                 ClassPool.Release(_buffSystem);
             }
-            _buffSystem = null;
+            _buffSystem   = null;
+            _buffSpdBonus = 0f;
+            _buffSpdFade  = 1f;
         }
 
         private void ApplyBuff(int[] buffUids) {
@@ -38,6 +45,13 @@ namespace Script.GamePlay.Character {
                 _status.Remove(statusInfo);
             }
             UpdateStatus();
+        }
+
+        // BuffSystem에서 매 프레임 호출 — ECS 속도를 점진적으로 보정
+        public void OnBuffSpeedFade(float totalSpdBonus, float fadeFactor) {
+            _buffSpdBonus = totalSpdBonus;
+            _buffSpdFade  = fadeFactor;
+            UpdateRunningStatus();
         }
     }
 }
