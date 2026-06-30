@@ -58,10 +58,10 @@ MonoBehaviour:
         tiles:
         - position: {x: 0, y: -1, z: 0}
           prefabKey: 68b93f225a140b64ab72cfd52a418e32
-          width: 118
-          centerX: 47
+          width: 186
+          centerX: 81
           startX: -12
-          endX: 106
+          endX: 174
         heightPoints:
         - x: 0
           groundY: 0
@@ -88,7 +88,7 @@ MonoBehaviour:
           interpolation: 0
           hasFallDeathY: 0
           fallDeathY: 0
-        - x: 104.93093
+        - x: 168.89421
           groundY: 0
           interpolation: 0
           hasFallDeathY: 0
@@ -649,4 +649,4 @@ MonoBehaviour:
         - uid: 5
           position: {x: 39.634148, y: 0, z: 0}
         - uid: 6
-          position: {x: 100, y: 0, z: 0}
+          position: {x: 160.7009, y: 0, z: 0}
