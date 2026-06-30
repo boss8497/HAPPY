@@ -102,6 +102,7 @@ namespace Script.Editor.MapEditor {
             }
             if (CurrentEnemySpawnAction != null) {
                 CurrentEnemySpawnAction.spawnData = WorkingObjects
+                    .OrderBy(o => o.position.x)
                     .Select(o => new SpawnData { uid = o.uid, position = o.position })
                     .ToArray();
             }

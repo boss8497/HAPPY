@@ -56,12 +56,12 @@ MonoBehaviour:
           v3: 3970876329
         timing: 1
         tiles:
-        - position: {x: 0, y: -1, z: 0}
+        - position: {x: -1, y: -1, z: 0}
           prefabKey: 68b93f225a140b64ab72cfd52a418e32
           width: 186
-          centerX: 81
-          startX: -12
-          endX: 174
+          centerX: 80
+          startX: -13
+          endX: 173
         heightPoints:
         - x: 0
           groundY: 0
@@ -636,17 +636,45 @@ MonoBehaviour:
           v3: 3703256381
         timing: 1
         spawnData:
+        - uid: 3
+          position: {x: 2.6806822, y: 0, z: 1.043006}
         - uid: 2
           position: {x: 5, y: 0, z: 0}
+        - uid: 3
+          position: {x: 5.1460295, y: 1.3779964, z: 2.7354841}
+        - uid: 3
+          position: {x: 13.271299, y: 2, z: 2.7354841}
         - uid: 2
           position: {x: 15.322916, y: 2, z: 0}
+        - uid: 3
+          position: {x: 17.245, y: 2, z: 0.4943714}
         - uid: 7
           position: {x: 20, y: 2, z: 0}
+        - uid: 3
+          position: {x: 23.79319, y: 2, z: 0.4943714}
         - uid: 2
           position: {x: 28.738867, y: 0, z: 0}
         - uid: 4
           position: {x: 32.202675, y: 0, z: 0}
         - uid: 5
           position: {x: 39.634148, y: 0, z: 0}
+        - uid: 3
+          position: {x: 43.33041, y: 0, z: 0.4943714}
+        - uid: 3
+          position: {x: 46.41664, y: 0, z: 0.4943714}
+        - uid: 3
+          position: {x: 49.839394, y: 0, z: 0.4943714}
+        - uid: 3
+          position: {x: 52.99608, y: 1.5312653, z: -0.8686762}
+        - uid: 3
+          position: {x: 56.334236, y: 0, z: -0.8686762}
+        - uid: 3
+          position: {x: 59.427383, y: 2.7612677, z: -0.8686762}
+        - uid: 3
+          position: {x: 61.081154, y: 1.7200079, z: -0.8686762}
+        - uid: 3
+          position: {x: 62.92337, y: 0, z: -0.8686762}
+        - uid: 3
+          position: {x: 68.81152, y: 0, z: 0}
         - uid: 6
           position: {x: 160.7009, y: 0, z: 0}
