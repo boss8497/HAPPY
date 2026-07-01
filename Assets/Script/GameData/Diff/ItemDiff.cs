@@ -58,7 +58,7 @@ namespace Script.GameData.Diff {
             grade    = data.Grade.CurrentValue;
             tier     = data.Tier.CurrentValue;
             exp      = data.Exp.CurrentValue;    // IItemData에는 exp 배열이 없으므로 기본값으로 설정
-            expMax   = data.ExpMax.CurrentValue; // IItemData에는 expMax 배열이 없으므로 기본값으로 설정
+            expMax   = data.ExpMax.CurrentValue.ToArray(); // IItemData에는 expMax 배열이 없으므로 기본값으로 설정
         }
 
         public void Set(ItemModel model) {
@@ -92,7 +92,7 @@ namespace Script.GameData.Diff {
             grade    = data.Grade.CurrentValue;
             tier     = data.Tier.CurrentValue;
             exp      = data.Exp.CurrentValue;    // IItemData에는 exp 배열이 없으므로 기본값으로 설정
-            expMax   = data.ExpMax.CurrentValue; // IItemData에는 expMax 배열이 없으므로 기본값으로 설정
+            expMax   = data.ExpMax.CurrentValue.ToArray(); // IItemData에는 expMax 배열이 없으므로 기본값으로 설정
         }
 
         /// <summary>
