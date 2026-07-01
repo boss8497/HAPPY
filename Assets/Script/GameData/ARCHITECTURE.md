@@ -8,6 +8,7 @@ Server ↔ Client 간 데이터 전달 모델과, 그것을 Client에서 사용�
 |---|---|
 | `Model/` | DB에 저장하거나 서버에 전송할 불변 데이터 모델 (MessagePack 직렬화) |
 | `Data/` | Model을 R3 ReactiveProperty로 감싸 Client에서 반응형으로 사용하는 클래스 |
+| `Diff/` | 서버 요청 전/후 값을 비교(diff)하기 위한 값 타입 스냅샷 |
 
 ---
 
@@ -65,6 +66,23 @@ ItemModel 갱신
                                     → Status 자동 계산 (level/grade/tier 기반)
     → exp[] 변경   → LevelExpMax 갱신
 ```
+
+---
+
+## Diff — 요청 전/후 값 비교
+
+- `ItemModel` / `IItemData`의 값 타입 필드(uid, level, grade, tier, count, exp[], expMax[])만 복사해두는 `struct ItemDiff`
+- 서버 요청 직전/직후 각각 `new ItemDiff(...)`로 스냅샷을 뜬 뒤, `operator -` (`after - before`)로 `ItemDiffResult`(변경량)를 계산한다
+
+```csharp
+var before = new ItemDiff(item);                 // 요청 전 스냅샷
+var model  = await _client.Req_ItemLevelUp(item.Model.CurrentValue, type);
+item.Update(model);
+var after  = new ItemDiff(model);                 // 요청 후 스냅샷
+var result = after - before;                      // LevelChanged, GradeChanged, ExpChanged 등
+```
+
+**주의**: `exp` / `expMax`는 `double[]` 참조를 그대로 복사한다(`exp = model.exp;`). `ItemModel.exp`가 이후 같은 배열 참조를 in-place로 mutate하는 경로(`GameDataBase.LevelUpItem` 등)를 타면 이미 만들어둔 "before" 스냅샷의 배열 내용도 함께 바뀌어버려 diff가 깨질 수 있다. `uid/level/grade/tier/count`는 값 타입이라 안전하지만, 배열 필드는 스냅샷 시점에 `(double[])model.exp.Clone()`처럼 별도 복제가 필요하다.
 
 ---
 
