@@ -18,6 +18,8 @@ namespace Script.GameData.Data {
     public class ItemData : IItemData, IDisposable {
         public ReactiveProperty<ItemModel> Model { get; private set; } = new();
 
+
+        public ReadOnlyReactiveProperty<long>          GroupUid      { get; private set; }
         public ReadOnlyReactiveProperty<long>          ItemUid       { get; private set; }
         public ReadOnlyReactiveProperty<int>           ItemInfoUid   { get; private set; }
         public ReadOnlyReactiveProperty<int>           Level         { get; private set; }
@@ -28,6 +30,9 @@ namespace Script.GameData.Data {
         public ReadOnlyReactiveProperty<double>        LevelExpMax   { get; private set; }
         public ReadOnlyReactiveProperty<ItemInfo>      ItemInfo      { get; private set; }
         public ReadOnlyReactiveProperty<CharacterInfo> CharacterInfo { get; private set; }
+        public ReadOnlyReactiveProperty<double[]>      Exp           { get; private set; }
+        public ReadOnlyReactiveProperty<double[]>      ExpMax        { get; private set; }
+        public ReadOnlyReactiveProperty<double>        Count         { get; private set; }
 
 
         private Status _status;
@@ -44,6 +49,11 @@ namespace Script.GameData.Data {
             }
 
             _status = ClassPool.Get<Status>();
+
+            GroupUid = Model.Select(i => i.groupUid)
+                            .DistinctUntilChanged()
+                            .ToReadOnlyReactiveProperty()
+                            .AddTo(ref _disposableBag);
 
             ItemUid = Model.Select(i => i.uid)
                            .DistinctUntilChanged()
@@ -105,6 +115,25 @@ namespace Script.GameData.Data {
                                     .DistinctUntilChanged()
                                     .ToReadOnlyReactiveProperty()
                                     .AddTo(ref _disposableBag);
+
+            Exp = Model.Select(i => i.exp)
+                       .DistinctUntilChanged()
+                       .ToReadOnlyReactiveProperty()
+                       .AddTo(ref _disposableBag);
+
+            
+            ExpMax = ExpInfos.Select(i => {
+                                      using var _ = CreateValueContext();
+                                      return i.Select(s => s.Calc()).ToArray();
+                                  })
+                                  .DistinctUntilChanged()
+                                  .ToReadOnlyReactiveProperty()
+                                  .AddTo(ref _disposableBag);
+            
+            Count = Model.Select(i => i.count)
+                         .DistinctUntilChanged()
+                         .ToReadOnlyReactiveProperty()
+                         .AddTo(ref _disposableBag);
 
             CharacterInfo.CombineLatest(Level, Grade, Tier, (characterInfo, level, grade, tier) => (characterInfo, level, grade, tier))
                          .Subscribe(data => {
