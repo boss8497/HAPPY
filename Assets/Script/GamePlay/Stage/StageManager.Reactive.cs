@@ -1,9 +1,11 @@
 ﻿using System.Linq;
+using Cysharp.Threading.Tasks;
 using R3;
 using Script.GameData.Diff;
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
 using Script.GameInfo.Character;
+using Script.GamePlay.Character;
 using UnityEngine;
 
 namespace Script.GamePlay.Stage {
@@ -102,6 +104,13 @@ namespace Script.GamePlay.Stage {
                          else {
                              var mainCharacterItem = Players.FirstOrDefault();
                              var itemDiff = mainCharacterItem?.GetItemDiff() ?? new ItemDiff();
+
+                             async void WaitAnimation(float endTime) {
+                                 await UniTask.WaitForSeconds(endTime, cancellationToken: ct);
+                                 SetPlayerAnimation(AnimationName.IDLE, true);
+                             }
+                             var endTime = SetPlayerAnimation(AnimationName.VICTORY, false);
+                             WaitAnimation(endTime);
                              
                              var updateItems = await Group.ClearedDungeon(DungeonInfo.CurrentValue, Stage.CurrentValue);
                              await _screenManager.OpenAsync(updateItems - itemDiff, _clearScreenKey, ct);

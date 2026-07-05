@@ -52,7 +52,21 @@ namespace Script.GamePlay.Stage {
             await Begin();
             await Start();
 
+            //TODO: 애매한 딜레이 말고 확실한 시작 시점으로 변경 필요
+            SetPlayerAnimation(AnimationName.IDLE);
+            await UniTask.WaitForSeconds(1.5f);
             RemoveState(StageState.SystemControl);
+        }
+
+        private float SetPlayerAnimation(AnimationName aniName, bool loop = true) {
+            var endTime = 0f;
+            foreach (var player in _players) {
+                var end = player.SetAnimation(aniName.ToString(), loop);
+                if (endTime < end)
+                    endTime = end;
+            }
+
+            return endTime;
         }
 
         public void Initialize(DungeonInfo dungeonInfo, GameInfo.Dungeon.Stage stage) {

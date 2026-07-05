@@ -39,6 +39,8 @@ namespace Script.GamePlay.Character {
         void    Release();
         UniTask StartAsync();
 
+        float SetAnimation(string animationName, bool loop = false, bool hasExit = false);
+        
         void SetState(CharacterState    state);
         void AddState(CharacterState    state, bool notify = true);
         void RemoveState(CharacterState state, bool notify = true);

@@ -6,5 +6,6 @@
         STAND,
         DIE,
         DAMAGE,
+        VICTORY,
     }
 }
