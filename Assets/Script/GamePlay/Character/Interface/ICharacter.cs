@@ -2,6 +2,8 @@
 using R3;
 using Script.GameInfo.Character;
 using Script.Buff;
+using Script.GameData.Data;
+using Script.GameData.Diff;
 using Script.GamePlay.Input;
 using Script.GamePlay.Service.Interface;
 using Script.GameTimer;
@@ -11,17 +13,18 @@ using VContainer;
 namespace Script.GamePlay.Character {
     public interface ICharacter {
         IGameTimer GameTimer { get; }
-        
-        
-        ReactiveProperty<CharacterState> State          { get; }
-        ReactiveProperty<double>         Health         { get; }
-        ReactiveProperty<double>         MaxHealth      { get; }
-        ReadOnlyReactiveProperty<bool>   Initialized    { get; }
-        ReadOnlyReactiveProperty<bool>   Jumping        { get; }
-        ReadOnlyReactiveProperty<bool>   Running        { get; }
-        ReadOnlyReactiveProperty<bool>   Die            { get; }
-        ReadOnlyReactiveProperty<bool>   SystemControl  { get; }
-        ReadOnlyReactiveProperty<bool>   CollisionState { get; }
+
+
+        ReactiveProperty<CharacterState>   State          { get; }
+        ReadOnlyReactiveProperty<ItemData> Item           { get; }
+        ReactiveProperty<double>           Health         { get; }
+        ReactiveProperty<double>           MaxHealth      { get; }
+        ReadOnlyReactiveProperty<bool>     Initialized    { get; }
+        ReadOnlyReactiveProperty<bool>     Jumping        { get; }
+        ReadOnlyReactiveProperty<bool>     Running        { get; }
+        ReadOnlyReactiveProperty<bool>     Die            { get; }
+        ReadOnlyReactiveProperty<bool>     SystemControl  { get; }
+        ReadOnlyReactiveProperty<bool>     CollisionState { get; }
 
 
         IPlayerControls PlayerControls { get; }
@@ -40,6 +43,7 @@ namespace Script.GamePlay.Character {
         void AddState(CharacterState    state, bool notify = true);
         void RemoveState(CharacterState state, bool notify = true);
 
-        float GetCollisionDelayTime();
+        float    GetCollisionDelayTime();
+        ItemDiff GetItemDiff();
     }
 }

@@ -1,4 +1,6 @@
-﻿using R3;
+﻿using System.Linq;
+using R3;
+using Script.GameData.Diff;
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Table;
 using Script.GameInfo.Character;
@@ -98,8 +100,11 @@ namespace Script.GamePlay.Stage {
                              AddState(StageState.NextPhase);
                          }
                          else {
-                             await Group.ClearedDungeon(DungeonInfo.CurrentValue, Stage.CurrentValue);
-                             await _screenManager.OpenAsync(_clearScreenKey, ct);
+                             var mainCharacterItem = Players.FirstOrDefault();
+                             var itemDiff = mainCharacterItem?.GetItemDiff() ?? new ItemDiff();
+                             
+                             var updateItems = await Group.ClearedDungeon(DungeonInfo.CurrentValue, Stage.CurrentValue);
+                             await _screenManager.OpenAsync(updateItems - itemDiff, _clearScreenKey, ct);
                          }
                      }
                  })

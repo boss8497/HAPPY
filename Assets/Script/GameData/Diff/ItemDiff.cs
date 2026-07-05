@@ -7,6 +7,7 @@ using Script.GameInfo;
 using Script.GameInfo.Info.Enum;
 using Script.GameInfo.Item;
 using Script.GameInfo.Table;
+using Script.GUI.ScreenData.Interface;
 
 namespace Script.GameData.Diff {
     [System.Serializable]
@@ -27,7 +28,14 @@ namespace Script.GameData.Diff {
         public double[] exp;
         public double[] expMax;
 
+        public bool Valid => uid > 0 && infoUid > 0;
+        
         public ItemDiff(ItemModel model) : this() {
+            if (model == null) {
+                Reset();
+                return;
+            }
+            
             uid      = model.uid;
             groupUid = model.groupUid;
             infoUid  = model.infoUid;
@@ -49,7 +57,11 @@ namespace Script.GameData.Diff {
             }
         }
 
-        public ItemDiff(IItemData data) {
+        public ItemDiff(IItemData data) : this() {
+            if (data == null) {
+                Reset();
+                return;
+            }
             uid      = data.ItemUid.CurrentValue;
             groupUid = data.GroupUid.CurrentValue;
             infoUid  = data.ItemInfoUid.CurrentValue;
@@ -59,6 +71,18 @@ namespace Script.GameData.Diff {
             tier     = data.Tier.CurrentValue;
             exp      = data.Exp.CurrentValue;    // IItemData에는 exp 배열이 없으므로 기본값으로 설정
             expMax   = data.ExpMax.CurrentValue.ToArray(); // IItemData에는 expMax 배열이 없으므로 기본값으로 설정
+        }
+
+        private void Reset() {
+            uid      = 0;
+            groupUid = 0;
+            infoUid  = 0;
+            count    = 0;
+            level    = 0;
+            grade    = 0;
+            tier     = 0;
+            exp      = Array.Empty<double>();
+            expMax   = Array.Empty<double>();
         }
 
         public void Set(ItemModel model) {
@@ -101,11 +125,11 @@ namespace Script.GameData.Diff {
         /// <param name="other"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        private bool Diff(ItemDiff other, out ItemDiffResult result) {
-            result = new();
+        private ItemDiffResult Diff(ItemDiff other) {
+            var result = new ItemDiffResult();
             if (uid != other.uid || groupUid != other.groupUid || infoUid != other.infoUid) {
                 result.Result = false;
-                return false;
+                return result;
             }
 
             result.Result       = true;
@@ -118,12 +142,21 @@ namespace Script.GameData.Diff {
                 result.ExpChanged[i] = exp[i] - other.exp[i];
             }
 
-            return true;
+            return result;
+        }
+        
+
+        public static ItemDiffResult operator -(ItemModel[] models, ItemDiff b) {
+            var sameItem = models.FirstOrDefault(r => r.uid == b.uid);
+            if (sameItem != null) {
+                var a = new ItemDiff(sameItem);
+                return a.Diff(b);
+            }
+            return new();
         }
 
         public static ItemDiffResult operator -(ItemDiff a, ItemDiff b) {
-            a.Diff(b, out var result);
-            return result;
+            return a.Diff(b);
         }
 
 
@@ -141,7 +174,7 @@ namespace Script.GameData.Diff {
         }
     }
 
-    public struct ItemDiffResult {
+    public class ItemDiffResult : IScreenOption {
         public double   CountChanged;
         public double   LevelChanged;
         public double   GradeChanged;

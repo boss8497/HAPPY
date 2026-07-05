@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Script.GameData.Diff;
 using Script.GameInfo.Character;
 using Script.GamePlay.Pool;
 using Script.Utility.Runtime;
@@ -49,7 +50,11 @@ namespace Script.GamePlay.Character {
 
             return UniTask.CompletedTask;
         }
-        
+
+        public ItemDiff GetItemDiff() {
+            return new ItemDiff(Item?.CurrentValue);
+        }
+
         // PoolMember Interface
         public void Set(IGameObjectPool gameObjectPool) {
             _gameObjectPool = gameObjectPool;
