@@ -50,10 +50,12 @@ namespace Script.GameData.Diff {
                 expMax = Array.Empty<double>();
             }
             else {
-                using var _ = CreateValueContext(model.level, model.grade, model.tier);
-                expMax = itemInfo.expUids.Select(s => GameInfoManager.Instance.Get<ExpInfo>(s))
-                                 .Select(s => s.Calc())
-                                 .ToArray();
+                using var _        = CreateValueContext(model.level, model.grade, model.tier);
+                expMax = new double[(int)LevelType.Max];
+
+                foreach (var expInfo in itemInfo.expUids.Select(s => GameInfoManager.Instance.Get<ExpInfo>(s))) {
+                    expMax[(int)expInfo.levelType] = expInfo.Calc();
+                }
             }
         }
 
@@ -132,15 +134,15 @@ namespace Script.GameData.Diff {
                 return result;
             }
 
-            result.Result       = true;
-            result.CountChanged = count - other.count;
-            result.LevelChanged = level - other.level;
-            result.GradeChanged = grade - other.grade;
-            result.TierChanged  = tier - other.tier;
-            result.ExpChanged   = new double[(int)LevelType.Max];
-            for (int i = 0; i < exp.Length; i++) {
-                result.ExpChanged[i] = exp[i] - other.exp[i];
-            }
+            result.Result         = true;
+            result.CountChanged   = count - other.count;
+            result.LevelChanged   = level - other.level;
+            result.GradeChanged   = grade - other.grade;
+            result.TierChanged    = tier - other.tier;
+            result.PreviousExp    = exp;
+            result.PreviousMaxExp = expMax;
+            result.BeforeExp      = other.exp;
+            result.BeforeMaxExp   = other.expMax;
 
             return result;
         }
@@ -179,7 +181,13 @@ namespace Script.GameData.Diff {
         public double   LevelChanged;
         public double   GradeChanged;
         public double   TierChanged;
-        public double[] ExpChanged;
+        
+        
+        public double[] PreviousExp;
+        public double[] PreviousMaxExp;
+        
+        public double[] BeforeExp;
+        public double[] BeforeMaxExp;
 
         public bool Result;
     }

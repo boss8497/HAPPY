@@ -124,7 +124,11 @@ namespace Script.GameData.Data {
             
             ExpMax = ExpInfos.Select(i => {
                                       using var _ = CreateValueContext();
-                                      return i.Select(s => s.Calc()).ToArray();
+                                      var result = new double[(int)LevelType.Max];
+                                      foreach (var expInfo in i) {
+                                          result[(int)expInfo.levelType] = expInfo.Calc();
+                                      }
+                                      return result;
                                   })
                                   .DistinctUntilChanged()
                                   .ToReadOnlyReactiveProperty()
