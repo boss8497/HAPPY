@@ -46,6 +46,6 @@ namespace Script.GamePlay.Character {
         void RemoveState(CharacterState state, bool notify = true);
 
         float    GetCollisionDelayTime();
-        ItemDiff GetItemDiff();
+        ItemValue GetItemDiff();
     }
 }

@@ -51,8 +51,8 @@ namespace Script.GamePlay.Character {
             return UniTask.CompletedTask;
         }
 
-        public ItemDiff GetItemDiff() {
-            return new ItemDiff(Item?.CurrentValue);
+        public ItemValue GetItemDiff() {
+            return new ItemValue(Item?.CurrentValue);
         }
 
         // PoolMember Interface

@@ -103,7 +103,7 @@ namespace Script.GamePlay.Stage {
                          }
                          else {
                              var mainCharacterItem = Players.FirstOrDefault();
-                             var itemDiff = mainCharacterItem?.GetItemDiff() ?? new ItemDiff();
+                             var itemDiff = mainCharacterItem?.GetItemDiff() ?? new ItemValue();
 
                              async void WaitAnimation(float endTime) {
                                  await UniTask.WaitForSeconds(endTime, cancellationToken: ct);

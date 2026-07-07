@@ -11,8 +11,11 @@ using Script.GameInfo.Table;
 using Script.GUI.ScreenData.Interface;
 
 namespace Script.GameData.Diff {
+    /// <summary>
+    /// 아이템의 기본 정보를 값으로 들고 있는 Class
+    /// </summary>
     [System.Serializable]
-    public struct ItemDiff {
+    public struct ItemValue {
         // DB에 사용하는 uid
         public long uid;
 
@@ -31,7 +34,7 @@ namespace Script.GameData.Diff {
 
         public bool Valid => uid > 0 && infoUid > 0;
 
-        public ItemDiff(ItemModel model) : this() {
+        public ItemValue(ItemModel model) : this() {
             if (model == null) {
                 Reset();
                 return;
@@ -60,7 +63,7 @@ namespace Script.GameData.Diff {
             }
         }
 
-        public ItemDiff(IItemData data) : this() {
+        public ItemValue(IItemData data) : this() {
             if (data == null) {
                 Reset();
                 return;
@@ -129,7 +132,7 @@ namespace Script.GameData.Diff {
         /// <param name="other"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        private DiffResult Diff(ItemDiff other) {
+        private DiffResult Diff(ItemValue other) {
             var result = new DiffResult();
             if (uid != other.uid || groupUid != other.groupUid || infoUid != other.infoUid) {
                 result.Result = false;
@@ -153,17 +156,17 @@ namespace Script.GameData.Diff {
         }
 
 
-        public static DiffResult operator -(ItemModel[] models, ItemDiff b) {
+        public static DiffResult operator -(ItemModel[] models, ItemValue b) {
             var sameItem = models.FirstOrDefault(r => r.uid == b.uid);
             if (sameItem != null) {
-                var a = new ItemDiff(sameItem);
+                var a = new ItemValue(sameItem);
                 return a.Diff(b);
             }
 
             return new();
         }
 
-        public static DiffResult operator -(ItemDiff a, ItemDiff b) {
+        public static DiffResult operator -(ItemValue a, ItemValue b) {
             return a.Diff(b);
         }
 
