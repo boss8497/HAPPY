@@ -1,10 +1,13 @@
 ﻿using Cysharp.Threading.Tasks;
+using Script.GameData.Diff;
 using Script.GameInfo.Table;
 using Script.GamePlay.Scene;
 using Script.GamePlay.Stage;
 using Script.GameSetting.Interface;
 using Script.GUI.ScreenData.Interface;
+using Script.GUI.ViewModel;
 using Script.Utility.Runtime;
+using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 
@@ -14,6 +17,9 @@ namespace Script.GUI.Screen {
         /// Inspector
         /// </summary>
         public Button lobbyBtn;
+        
+        [SerializeField]
+        private DiffResultViewModel diffResultViewModel;
 
 
         // Private
@@ -44,6 +50,9 @@ namespace Script.GUI.Screen {
         }
 
         public override UniTask OpenInternal(IScreenOption data) {
+            if (diffResultViewModel != null && data is DiffResult diffResult) {
+                diffResultViewModel.DiffResult.OnNext(diffResult);
+            }
             return UniTask.CompletedTask;
         }
 
