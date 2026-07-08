@@ -29,7 +29,7 @@ MonoBehaviour:
         expLevelType: 0
         itemRewards:
         - itemUid: 4
-          count: 20
+          count: 60
           level: 1
           grade: 0
           tier: 0

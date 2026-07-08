@@ -3,6 +3,7 @@ using R3;
 using Script.GameData.Data;
 using Script.GameData.Diff;
 using Script.GameInfo.Enum;
+using Script.GameInfo.Info.Enum;
 using Script.GameInfo.Item;
 using Script.GameInfo.Table;
 using Script.GamePlay.Service.Interface;
@@ -92,7 +93,7 @@ namespace Script.GUI.ViewModel {
             // CharacterLevelExp
             DiffResult.CombineLatest(CharacterInfo, ItemData, (diff, characterInfo, itemData) => (diff, characterInfo, itemData))
                       .Subscribe(data => {
-                          if (data.characterInfo == null || data.itemData == null) {
+                          if (data.diff == null || data.characterInfo == null || data.itemData == null) {
                               if (characterNameLevel != null) {
                                   characterNameLevel.SetText(string.Empty);
                               }
@@ -112,7 +113,7 @@ namespace Script.GUI.ViewModel {
                           if (characterExp != null) {
                               // TextFormat: Current Exp, +Exp, MaxExp
                               characterExp.SetText(characterExpLocalizeText.GetText(data.itemData.LevelExp.CurrentValue,
-                                                                                    0,
+                                                                                    data.diff.GetDiffExp(LevelType.Level),
                                                                                     data.itemData.LevelExpMax.CurrentValue));
                           }
                       })

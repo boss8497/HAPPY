@@ -47,16 +47,12 @@ namespace Script.GameData.Diff {
             level    = model.level;
             grade    = model.grade;
             tier     = model.tier;
-            exp      = model.exp;
+            exp      = model.exp.ToArray();
+            expMax   = new double[(int)LevelType.Max];
 
             var itemInfo = GameInfoManager.Instance.Get<ItemInfo>(infoUid);
-            if (itemInfo == null) {
-                expMax = Array.Empty<double>();
-            }
-            else {
+            if (itemInfo != null) {
                 using var _ = CreateValueContext(model.level, model.grade, model.tier);
-                expMax = new double[(int)LevelType.Max];
-
                 foreach (var expInfo in itemInfo.expUids.Select(s => GameInfoManager.Instance.Get<ExpInfo>(s))) {
                     expMax[(int)expInfo.levelType] = expInfo.Calc();
                 }
@@ -76,7 +72,7 @@ namespace Script.GameData.Diff {
             level    = data.Level.CurrentValue;
             grade    = data.Grade.CurrentValue;
             tier     = data.Tier.CurrentValue;
-            exp      = data.Exp.CurrentValue;              // IItemData에는 exp 배열이 없으므로 기본값으로 설정
+            exp      = data.Exp.CurrentValue.ToArray();    // IItemData에는 exp 배열이 없으므로 기본값으로 설정
             expMax   = data.ExpMax.CurrentValue.ToArray(); // IItemData에는 expMax 배열이 없으므로 기본값으로 설정
         }
 
@@ -100,17 +96,16 @@ namespace Script.GameData.Diff {
             level    = model.level;
             grade    = model.grade;
             tier     = model.tier;
-            exp      = model.exp;
+
+            exp    = model.exp.ToArray();
+            expMax = new double[(int)LevelType.Max];
 
             var itemInfo = GameInfoManager.Instance.Get<ItemInfo>(infoUid);
-            if (itemInfo == null) {
-                expMax = Array.Empty<double>();
-            }
-            else {
+            if (itemInfo != null) {
                 using var _ = CreateValueContext(model.level, model.grade, model.tier);
-                expMax = itemInfo.expUids.Select(s => GameInfoManager.Instance.Get<ExpInfo>(s))
-                                 .Select(s => s.Calc())
-                                 .ToArray();
+                foreach (var expInfo in itemInfo.expUids.Select(s => GameInfoManager.Instance.Get<ExpInfo>(s))) {
+                    expMax[(int)expInfo.levelType] = expInfo.Calc();
+                }
             }
         }
 
@@ -122,7 +117,8 @@ namespace Script.GameData.Diff {
             level    = data.Level.CurrentValue;
             grade    = data.Grade.CurrentValue;
             tier     = data.Tier.CurrentValue;
-            exp      = data.Exp.CurrentValue;              // IItemData에는 exp 배열이 없으므로 기본값으로 설정
+            
+            exp      = data.Exp.CurrentValue.ToArray();    // IItemData에는 exp 배열이 없으므로 기본값으로 설정
             expMax   = data.ExpMax.CurrentValue.ToArray(); // IItemData에는 expMax 배열이 없으므로 기본값으로 설정
         }
 
@@ -132,7 +128,7 @@ namespace Script.GameData.Diff {
         /// <param name="other"></param>=
         /// <returns></returns>
         private ItemDiff Diff(ItemValue other) {
-            return new (this, other);
+            return new(this, other);
         }
 
 
@@ -142,6 +138,7 @@ namespace Script.GameData.Diff {
                 var other = new ItemValue(sameItem);
                 return itemValue.Diff(other);
             }
+
             return itemValue.Diff(default);
         }
 

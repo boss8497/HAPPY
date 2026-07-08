@@ -1,4 +1,5 @@
-﻿using Script.GUI.ScreenData.Interface;
+﻿using Script.GameInfo.Info.Enum;
+using Script.GUI.ScreenData.Interface;
 
 namespace Script.GameData.Diff {
     public class ItemDiff : IScreenOption {
@@ -7,16 +8,16 @@ namespace Script.GameData.Diff {
 
         public long ItemUid     => _previous.uid;
         public int  ItemInfoUid => _previous.infoUid;
-        
-        public bool IsChangedCount => DiffCount > 0;
-        public bool IsChangedLevel => DiffLevel > 0;
-        public bool IsChangedGrade => DiffGrade > 0;
-        public bool IsChangedTier => DiffTier > 0;
-        
-        public double DiffCount => _previous.count - _before.count;
-        public double DiffLevel => _previous.level - _before.level;
-        public double DiffGrade => _previous.grade - _before.grade;
-        public double DiffTier  => _previous.tier - _before.tier;
+
+        public bool IsChangedCount => Valid && DiffCount > 0;
+        public bool IsChangedLevel => Valid && DiffLevel > 0;
+        public bool IsChangedGrade => Valid && DiffGrade > 0;
+        public bool IsChangedTier  => Valid && DiffTier > 0;
+
+        public double DiffCount => _before.count - _previous.count;
+        public double DiffLevel => _before.level - _previous.level;
+        public double DiffGrade => _before.grade - _previous.grade;
+        public double DiffTier  => _before.tier - _previous.tier;
 
 
         public double[] PreviousExp    => _previous.exp;
@@ -25,19 +26,38 @@ namespace Script.GameData.Diff {
         public double[] BeforeExp    => _before.exp;
         public double[] BeforeMaxExp => _before.expMax;
 
-        public bool Valid => _previous.Valid && _before.Valid &&
-                             _previous.uid == _before.uid && _previous.groupUid == _before.groupUid && _previous.infoUid == _before.infoUid;
+        public bool Valid { get; private set; }
 
         public ItemDiff() { }
 
         public ItemDiff(ItemValue previous, ItemValue before) {
             _previous = previous;
             _before   = before;
+            Valid = _previous.Valid && _before.Valid && _previous.uid == _before.uid && _previous.groupUid == _before.groupUid && _previous.infoUid == _before.infoUid;
         }
 
         public void Set(ItemValue previous, ItemValue before) {
             _previous = previous;
             _before   = before;
+            Valid = _previous.Valid && _before.Valid && _previous.uid == _before.uid && _previous.groupUid == _before.groupUid && _previous.infoUid == _before.infoUid;
+        }
+        
+        public double GetDiffExp(LevelType levelType) {
+            if (!Valid) {
+                return 0;
+            }
+
+            var index = (int)levelType;
+            if (index < 0 || index >= _previous.exp.Length || index >= _before.exp.Length) {
+                return 0;
+            }
+
+            if (IsChangedLevel) {
+                var previousExp = _previous.expMax[index] - _previous.exp[index];
+                return previousExp + _before.exp[index];
+            }
+
+            return _before.exp[index] - _previous.exp[index];
         }
     }
 }
