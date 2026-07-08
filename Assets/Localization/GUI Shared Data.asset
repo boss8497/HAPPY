@@ -43,6 +43,14 @@ MonoBehaviour:
     m_Key: LevelText
     m_Metadata:
       m_Items: []
+  - m_Id: 16572902640558080
+    m_Key: ClearCharacterLevelName
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16573118437498880
+    m_Key: ClearExp
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

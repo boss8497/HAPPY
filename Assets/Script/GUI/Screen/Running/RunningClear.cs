@@ -49,11 +49,11 @@ namespace Script.GUI.Screen {
             lobbyBtn.ClickAddListener(EnterLobby, false);
         }
 
-        public override UniTask OpenInternal(IScreenOption data) {
-            if (diffResultViewModel != null && data is DiffResult diffResult) {
+        public override async UniTask OpenInternal(IScreenOption data) {
+            if (diffResultViewModel != null && data is ItemDiff diffResult) {
+                await UniTask.WaitUntil(() => diffResultViewModel.IsInitialize);
                 diffResultViewModel.DiffResult.OnNext(diffResult);
             }
-            return UniTask.CompletedTask;
         }
 
         public override UniTask CloseInternal() {

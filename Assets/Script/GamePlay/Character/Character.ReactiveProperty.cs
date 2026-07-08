@@ -59,14 +59,19 @@ namespace Script.GamePlay.Character {
                 Item = ItemInfo.CombineLatest(_itemService.SubscribeItemInfoUidUpdate(characterItemInfo.UID), (info, infoSubscribe) => (info, infoSubscribe))
                                .Select(data => {
                                    if (data.info == null) return Observable.Return<ItemData>(null);
-                                   return _itemService.GetItem(data.info.UID).AsObservable();
+                                   var item = _itemService.GetItem(data.info.UID);
+                                   return item == null ? Observable.Return<ItemData>(null) : item.AsObservable();
                                })
                                .Switch()
                                .ToReadOnlyReactiveProperty()
                                .AddTo(ref _reactiveDisposableBag);   
             }
             else {
-                Item = ItemInfo.Select(i => i == null ? Observable.Return<ItemData>(null) : _itemService.GetItem(i.UID))
+                Item = ItemInfo.Select(i => {
+                                   if (i == null) return Observable.Return<ItemData>(null);
+                                   var item = _itemService.GetItem(i.UID);
+                                   return item == null ? Observable.Return<ItemData>(null) : item.AsObservable();
+                               })
                                .Switch()
                                .DistinctUntilChanged()
                                .ToReadOnlyReactiveProperty()

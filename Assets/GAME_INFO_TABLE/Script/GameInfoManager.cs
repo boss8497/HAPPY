@@ -95,10 +95,15 @@ namespace Script.GameInfo.Table {
         }
 
         public T Get<T>(int uid) where T : InfoBase {
+            if (uid <= 0) {
+                return null;
+            }
+            
             var type = typeof(T);
             if (_cacheTablesByType.TryGetValue(type, out var cacheTable)) {
                 return cacheTable.Get<T>(uid);
             }
+            
             return null;
         }
         

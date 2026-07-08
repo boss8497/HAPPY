@@ -36,7 +36,7 @@ namespace Script.GameData.Diff {
 
         public ItemValue(ItemModel model) : this() {
             if (model == null) {
-                Reset();
+                Release();
                 return;
             }
 
@@ -65,7 +65,7 @@ namespace Script.GameData.Diff {
 
         public ItemValue(IItemData data) : this() {
             if (data == null) {
-                Reset();
+                Release();
                 return;
             }
 
@@ -80,7 +80,7 @@ namespace Script.GameData.Diff {
             expMax   = data.ExpMax.CurrentValue.ToArray(); // IItemData에는 expMax 배열이 없으므로 기본값으로 설정
         }
 
-        private void Reset() {
+        public void Release() {
             uid      = 0;
             groupUid = 0;
             infoUid  = 0;
@@ -129,44 +129,23 @@ namespace Script.GameData.Diff {
         /// <summary>
         /// Current - Other
         /// </summary>
-        /// <param name="other"></param>
-        /// <param name="result"></param>
+        /// <param name="other"></param>=
         /// <returns></returns>
-        private DiffResult Diff(ItemValue other) {
-            var result = new DiffResult();
-            if (uid != other.uid || groupUid != other.groupUid || infoUid != other.infoUid) {
-                result.Result = false;
-                return result;
-            }
-
-            result.ItemUid     = uid;
-            result.ItemInfoUid = infoUid;
-
-            result.Result         = true;
-            result.CountChanged   = count - other.count;
-            result.LevelChanged   = level - other.level;
-            result.GradeChanged   = grade - other.grade;
-            result.TierChanged    = tier - other.tier;
-            result.PreviousExp    = exp;
-            result.PreviousMaxExp = expMax;
-            result.BeforeExp      = other.exp;
-            result.BeforeMaxExp   = other.expMax;
-
-            return result;
+        private ItemDiff Diff(ItemValue other) {
+            return new (this, other);
         }
 
 
-        public static DiffResult operator -(ItemModel[] models, ItemValue b) {
-            var sameItem = models.FirstOrDefault(r => r.uid == b.uid);
+        public static ItemDiff operator -(ItemValue itemValue, ItemModel[] models) {
+            var sameItem = models.FirstOrDefault(r => r.uid == itemValue.uid);
             if (sameItem != null) {
-                var a = new ItemValue(sameItem);
-                return a.Diff(b);
+                var other = new ItemValue(sameItem);
+                return itemValue.Diff(other);
             }
-
-            return new();
+            return itemValue.Diff(default);
         }
 
-        public static DiffResult operator -(ItemValue a, ItemValue b) {
+        public static ItemDiff operator -(ItemValue a, ItemValue b) {
             return a.Diff(b);
         }
 
@@ -183,28 +162,5 @@ namespace Script.GameData.Diff {
                     .Add("tier", tier)
             );
         }
-    }
-
-    public class DiffResult : IScreenOption {
-        public long ItemUid;
-        public int  ItemInfoUid;
-
-        public double CountChanged;
-        public double LevelChanged;
-        public double GradeChanged;
-        public double TierChanged;
-
-
-        public double[] PreviousExp;
-        public double[] PreviousMaxExp;
-
-        public double[] BeforeExp;
-        public double[] BeforeMaxExp;
-
-        public bool Result;
-    }
-
-    public class DiffResultList : IScreenOption {
-        public List<DiffResult> Results;
     }
 }

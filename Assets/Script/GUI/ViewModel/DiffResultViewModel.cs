@@ -6,6 +6,7 @@ using Script.GameInfo.Enum;
 using Script.GameInfo.Item;
 using Script.GameInfo.Table;
 using Script.GamePlay.Service.Interface;
+using Script.Localize.Text;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -40,20 +41,23 @@ namespace Script.GUI.ViewModel {
         #region CharacterLevelExp
 
         [SerializeField, ShowIf("@option == DiffResultOption.CharacterLevelExp")]
-        private TMP_Text characterName;
+        private TMP_Text characterNameLevel;
 
         [SerializeField, ShowIf("@option == DiffResultOption.CharacterLevelExp")]
-        private TMP_Text characterLevel;
+        private LocalizeText characterNameLevelLocalizeText;
 
         [SerializeField, ShowIf("@option == DiffResultOption.CharacterLevelExp")]
         private TMP_Text characterExp;
+
+        [SerializeField, ShowIf("@option == DiffResultOption.CharacterLevelExp")]
+        private LocalizeText characterExpLocalizeText;
 
         #endregion
 
         [SerializeField]
         private DiffResultOption option;
 
-        public ReactiveProperty<DiffResult> DiffResult { get; set; } = new();
+        public ReactiveProperty<ItemDiff> DiffResult { get; set; } = new();
 
 
         public ReadOnlyReactiveProperty<ItemData>      ItemData      { get; set; }
@@ -65,7 +69,11 @@ namespace Script.GUI.ViewModel {
 
 
         protected override void Initialize() {
-            ItemData = DiffResult.Select(i => i == null ? Observable.Return<ItemData>(null) : _itemService.GetItem(i.ItemUid))
+            ItemData = DiffResult.Select(i => {
+                                     if (i == null) return Observable.Return<ItemData>(null);
+                                     var item = _itemService.GetItem(i.ItemUid);
+                                     return item == null ? Observable.Return<ItemData>(null) : item.AsObservable();
+                                 })
                                  .Switch()
                                  .ToReadOnlyReactiveProperty()
                                  .AddTo(ref _disposableBag);
@@ -84,39 +92,33 @@ namespace Script.GUI.ViewModel {
             // CharacterLevelExp
             DiffResult.CombineLatest(CharacterInfo, ItemData, (diff, characterInfo, itemData) => (diff, characterInfo, itemData))
                       .Subscribe(data => {
-                          if (data.diff == null || data.characterInfo == null) {
-                              if (characterName != null) {
-                                  characterName.SetText(string.Empty);
-                              }
-
-                              if (characterLevel != null) {
-                                  characterLevel.SetText(string.Empty);
+                          if (data.characterInfo == null || data.itemData == null) {
+                              if (characterNameLevel != null) {
+                                  characterNameLevel.SetText(string.Empty);
                               }
 
                               if (characterExp != null) {
                                   characterExp.SetText(string.Empty);
                               }
-                              
+
                               return;
                           }
 
-                          if (characterName != null) {
-                              characterName.SetText(data.itemData.ItemInfo.CurrentValue.Name);
-                          }
-
-                          if (characterLevel != null) {
-                              characterLevel.SetText($"{data.itemData.Level.CurrentValue}");
+                          if (characterNameLevel != null) {
+                              // TextFormat: Level, Name
+                              characterNameLevel.SetText(characterNameLevelLocalizeText.GetText(data.itemData.Level.CurrentValue, data.itemData.ItemInfo.CurrentValue.Name));
                           }
 
                           if (characterExp != null) {
-                              characterExp.SetText($"{data.itemData.Exp.CurrentValue}");
+                              // TextFormat: Current Exp, +Exp, MaxExp
+                              characterExp.SetText(characterExpLocalizeText.GetText(data.itemData.LevelExp.CurrentValue,
+                                                                                    0,
+                                                                                    data.itemData.LevelExpMax.CurrentValue));
                           }
                       })
                       .AddTo(ref _disposableBag);
         }
 
-        public override void Dispose() {
-            throw new NotImplementedException();
-        }
+        public override void Dispose() { }
     }
 }

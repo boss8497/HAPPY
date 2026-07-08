@@ -113,7 +113,7 @@ namespace Script.GamePlay.Stage {
                              WaitAnimation(endTime);
                              
                              var updateItems = await Group.ClearedDungeon(DungeonInfo.CurrentValue, Stage.CurrentValue);
-                             await _screenManager.OpenAsync(updateItems - itemDiff, _clearScreenKey, ct);
+                             await _screenManager.OpenAsync(itemDiff - updateItems, _clearScreenKey, ct);
                          }
                      }
                  })
