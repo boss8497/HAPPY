@@ -37,8 +37,10 @@ Load/Save
   Exists(path), DeleteAsync(path)
 
 아이템 CRUD
-  AddItem(groupUid, itemInfoUid, ...)  — 스택 가능 아이템이면 개수 합산, 아니면 신규 생성
-  AddRewards(groupUid, ItemReward[])   — 보상 배열 일괄 추가
+  AddItem(groupUid, itemInfoUid, ...)      — 스택 가능 아이템이면 개수 합산, 아니면 신규 생성
+  AddRewards(groupUid, int[] rewardInfoUids) — RewardInfo uid 배열 → 내부 itemRewards 전개해 일괄 지급
+  StageRewards(groupUid, dungeonUid, stageGuid, characterUid) — 스테이지 보상 + 캐릭터 경험치(자동 레벨업)
+                                            를 한 번에 처리하고 ItemSyncModel로 반환 (IClient.Req_ClearStage가 호출)
   GetInventory(groupUid)               — 그룹의 전체 인벤토리 반환
   GetItem(groupUid, itemInfoUid)       — 특정 아이템 조회
   CharacterExpUp(uid, exp[], LevelType) — 경험치 누적 + 자동 레벨업 반복

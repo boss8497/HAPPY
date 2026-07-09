@@ -138,7 +138,7 @@ Server 완성 시 `GameClient`만 실제 통신 구현체로 교체하면 된다
 IClient.Req_Group()              → DB에서 GroupModel 로드 (없으면 신규 생성)
 IClient.Req_Inventory(groupUid)  → DB에서 아이템 목록 조회
 IClient.Req_EnterDungeon(...)    → 로컬: 항상 true 반환
-IClient.Req_ClearStage(...)      → 던전 진행도 업데이트 + 보상 아이템 반환
+IClient.Req_ClearStage(...)      → 던전 진행도 업데이트 + ItemSyncModel(보상/경험치 갱신 아이템) 반환
 IClient.Req_ItemLevelUp(...)     → DB 아이템 강화 처리
 IClient.Req_RemoveGroup()        → 그룹 + 아이템 전체 삭제
 ```

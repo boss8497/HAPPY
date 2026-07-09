@@ -34,6 +34,12 @@ public class ItemModel {
 |---|---|
 | `GroupModel` | 유저(그룹) 상태 — uid, 던전 진행도(dungeonProgresses) |
 | `ItemModel` | 아이템 인스턴스 — uid, infoUid, groupUid, level, grade, tier, exp[] |
+| `ItemSyncModel` | 서버 → 클라이언트 보상/아이템 변경 응답 묶음 — `rewardInfoUids`(지급 사유, 연출/로그용), `updateItems`(최종 상태 스냅샷, 이걸로 로컬 상태 갱신) |
+
+**ItemSyncModel 사용처**: `GameDataBase.StageRewards`가 생성 → `IClient.Req_ClearStage` 반환 →
+`GroupService.ClearedDungeon`에서 `updateItems`를 `IItemService.UpdateItems(...)`로 즉시 반영.
+서버가 보상/경험치를 한 번에 계산해 내려주는 방식이므로, Client는 `rewardInfoUids`만 보고
+수량을 직접 재계산하면 안 되고 `updateItems`의 최종 값을 그대로 신뢰해야 한다.
 
 ---
 
