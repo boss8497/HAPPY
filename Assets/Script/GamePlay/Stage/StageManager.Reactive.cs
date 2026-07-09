@@ -112,8 +112,8 @@ namespace Script.GamePlay.Stage {
                              var endTime = SetPlayerAnimation(AnimationName.VICTORY, false);
                              WaitAnimation(endTime);
                              
-                             var updateItems = await Group.ClearedDungeon(DungeonInfo.CurrentValue, Stage.CurrentValue);
-                             await _screenManager.OpenAsync(itemDiff - updateItems, _clearScreenKey, ct);
+                             var itemSync = await Group.ClearedDungeon(DungeonInfo.CurrentValue, Stage.CurrentValue);
+                             await _screenManager.OpenAsync(itemDiff - itemSync.updateItems, _clearScreenKey, ct);
                          }
                      }
                  })

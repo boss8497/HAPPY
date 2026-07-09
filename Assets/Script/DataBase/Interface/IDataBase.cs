@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using Script.DataBase.Enum;
 using Script.GameData.Model;
 using Script.GameInfo.Info.Enum;
@@ -36,6 +37,13 @@ namespace Script.DataBase.Interface {
         ItemModel[] AddRewards(
             long  groupUid,
             int[] rewardInfoUids
+        );
+
+        UniTask<ItemSyncModel> StageRewards(
+            long groupModelUid,
+            int  dungeonUid,
+            Guid stageGuid,
+            long characterUid
         );
 
         UniTask<ItemModel[]> GetInventory(long groupUid);

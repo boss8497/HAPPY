@@ -7,6 +7,7 @@ namespace Script.GameInfo.Dungeon {
     public class Stage : IEquatable<Stage> {
         public SerializeGuid guid = SerializeGuid.NewGuid();
         public string        GuidString => guid.ToString();
+        public Guid          SystemGuid => guid.Value;
 
         public string id;
 
@@ -22,12 +23,12 @@ namespace Script.GameInfo.Dungeon {
 
         [AssetPath(typeof(Scene))]
         public string scenePath = string.Empty;
-        
+
         [Reward]
-        public int[] rewards =  Array.Empty<int>();
-        
+        public int[] rewards = Array.Empty<int>();
+
         [Reward]
-        public int[] exps =  Array.Empty<int>();
+        public int[] exps = Array.Empty<int>();
 
 
         public static bool operator ==(Stage left, Stage right) {

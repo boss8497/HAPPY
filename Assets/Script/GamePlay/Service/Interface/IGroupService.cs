@@ -13,7 +13,7 @@ namespace Script.GamePlay.Service.Interface {
         DungeonProgress           GetDungeon(Category        dungeonCategory);
         bool                      IsCleared(DungeonInfo      dungeonInfo, Stage stage);
         bool                      CanEnterStage(DungeonInfo  dungeonInfo, Stage stage);
-        UniTask<ItemModel[]>      ClearedDungeon(DungeonInfo dungeonInfo, Stage stage);
+        UniTask<ItemSyncModel>    ClearedDungeon(DungeonInfo dungeonInfo, Stage stage);
         UniTask                   EnterDungeon(DungeonInfo   dungeonInfo, Stage stage);
         UniTask                   EnterDungeon(DungeonInfo   dungeonInfo, Stage stage, ItemData character);
         Tuple<DungeonInfo, Stage> GetEnterDungeon();

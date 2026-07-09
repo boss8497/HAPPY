@@ -105,8 +105,7 @@ namespace Script.Client {
             }
         }
 
-        public async UniTask<ItemModel[]> Req_ClearStage(DungeonInfo dungeonInfo, Stage stage, long characterUid) {
-            var rewards         = ListPool.Get<ItemModel>();
+        public async UniTask<ItemSyncModel> Req_ClearStage(DungeonInfo dungeonInfo, Stage stage, long characterUid) {
             var dungeonCategory = dungeonInfo.category;
             var dungeonProgress = GetDungeon(dungeonCategory);
 
@@ -120,8 +119,7 @@ namespace Script.Client {
             // 이 전 스테이지 클리어 했기 대문에 저장할게 없음
             // clearedIndex = -1 이라면 아마 이전 던전의 Stage일 가능성이 있음. 아니면 해킹 및 버그로 다음 던전 사용이기 때문에 return
             if (clearedIndex < 0 || clearedIndex < stageIndex) {
-                ListPool.Return(rewards);
-                return Array.Empty<ItemModel>();
+                throw new Exception($"clearedIndex = -1 이라면 아마 이전 던전의 Stage일 가능성이 있음. 아니면 해킹 및 버그로 다음 던전 사용이기 때문에 return");
             }
 
             if (dungeonProgress.cleared == false && clearedIndex < stageIndex) {
@@ -159,29 +157,12 @@ namespace Script.Client {
                 _groupModel.dungeonProgresses[index].cleared   = false;
             }
 
-            rewards.AddRange(await Req_AddRewards(_groupModel.uid, stage.rewards));
-            var characterItem = await Req_GetItem(_groupModel.uid, _playCharacterUid);
-            if (_playCharacterUid != 0 && (stage.exps?.Length ?? 0) > 0) {
-                foreach (var expUid in stage.exps) {
-                    var rewardInfo = GameInfoManager.Instance.Get<RewardInfo>(expUid);
-                    foreach (var reward in rewardInfo.itemRewards) {
-                        var itemInfo = GameInfoManager.Instance.Get<ItemInfo>(reward.itemUid);
-                        if (itemInfo.type != ItemType.CharacterExp) {
-                            continue;
-                        }
-
-                        characterItem = await _dataBase.CharacterExpUp(_groupModel.uid, _playCharacterUid, itemInfo.UID, reward.count, rewardInfo.expLevelType);
-                    }
-                }
-                rewards.Add(characterItem);
-            }
-
+            var serverItemSync = await Req_StageRewards(_groupModel.uid, dungeonInfo.UID, stage.guid.Value, _playCharacterUid);
+            
             await Req_SaveGroup(_groupModel);
             await _dataBase.SaveItemTable();
 
-            var result = rewards.ToArray();
-            ListPool.Return(rewards);
-            return result;
+            return serverItemSync;
         }
 
         private async UniTask Req_CharacterExpUp(long groupUid, long itemUid, int expItemInfoUid, double count, LevelType levelType) {
@@ -226,6 +207,9 @@ namespace Script.Client {
             return UniTask.FromResult(_dataBase.AddRewards(groupModelUid, stageRewards));
         }
 
+        private async UniTask<ItemSyncModel> Req_StageRewards(long groupModelUid, int dungeonUid, Guid stageGuid, long characterUid) {
+            return await _dataBase.StageRewards(groupModelUid, dungeonUid, stageGuid, characterUid);
+        }
 
         public DungeonProgress GetDungeon(Category dungeonCategory) {
             var category = (int)dungeonCategory;

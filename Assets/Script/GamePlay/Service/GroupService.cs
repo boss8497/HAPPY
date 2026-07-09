@@ -134,10 +134,10 @@ namespace Script.GamePlay.Service {
             return stageIndex <= clearedIndex;
         }
 
-        public async UniTask<ItemModel[]> ClearedDungeon(DungeonInfo dungeonInfo, Stage stage) {
-            var items = await _client.Req_ClearStage(dungeonInfo, stage, _characterItem?.ItemUid?.CurrentValue ?? 0);
-            await _itemService.UpdateItems(items);
-            return items;
+        public async UniTask<ItemSyncModel> ClearedDungeon(DungeonInfo dungeonInfo, Stage stage) {
+            var itemSync = await _client.Req_ClearStage(dungeonInfo, stage, _characterItem?.ItemUid?.CurrentValue ?? 0);
+            await _itemService.UpdateItems(itemSync.updateItems);
+            return itemSync;
         }
     }
 }

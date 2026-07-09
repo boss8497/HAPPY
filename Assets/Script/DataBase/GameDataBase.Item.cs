@@ -6,10 +6,12 @@ using Expression;
 using Script.DataBase.Enum;
 using Script.GameData.Model;
 using Script.GameInfo;
+using Script.GameInfo.Dungeon;
 using Script.GameInfo.Enum;
 using Script.GameInfo.Info.Enum;
 using Script.GameInfo.Item;
 using Script.GameInfo.Table;
+using Script.Utility.Runtime;
 
 namespace Script.DataBase {
     public partial class GameDataBase {
@@ -142,6 +144,53 @@ namespace Script.DataBase {
             return items.ToArray();
         }
 
+        public async UniTask<ItemSyncModel> StageRewards(long groupModelUid, int dungeonUid, Guid stageGuid, long characterUid) {
+            var dungeonInfo = GameInfoManager.Instance.Get<DungeonInfo>(dungeonUid);
+            if (dungeonInfo == null) {
+                throw new Exception($"Not found Dungeon Info: {dungeonUid}");
+            }
+
+            var stage = dungeonInfo.stages.FirstOrDefault(s => s.SystemGuid == stageGuid);
+            if (stage == null) {
+                throw new Exception($"Not found Stage: {stageGuid}");
+            }
+
+
+            var itemSyncModel = new ItemSyncModel();
+            var updateItems   = ListPool.Get<ItemModel>();
+            var rewardUids    = ListPool.Get<int>();
+            
+            updateItems.AddRange(AddRewards(groupModelUid, stage.rewards));
+            rewardUids.AddRange(stage.rewards);
+
+            if (characterUid > 0) {
+                foreach (var expUid in stage.exps) {
+                    var rewardInfo = GameInfoManager.Instance.Get<RewardInfo>(expUid);
+                    foreach (var reward in rewardInfo.itemRewards) {
+                        var itemInfo = GameInfoManager.Instance.Get<ItemInfo>(reward.itemUid);
+                        if (itemInfo.type != ItemType.CharacterExp) {
+                            continue;
+                        }
+                        
+                        var updateCharacter = await CharacterExpUp(groupModelUid, characterUid, itemInfo.UID, reward.count, rewardInfo.expLevelType);
+                        if (updateItems.Exists(r => r.uid == updateCharacter.uid) == false) {
+                            updateItems.Add(updateCharacter);
+                        }
+                    }
+                }
+                
+                rewardUids.AddRange(stage.exps);
+            }
+
+            itemSyncModel.updateItems    = updateItems.ToArray();
+            itemSyncModel.rewardInfoUids = rewardUids.ToArray();
+            
+            ListPool.Return(updateItems);
+            ListPool.Return(rewardUids);
+            
+            return itemSyncModel;
+        }
+
         public bool HasItem(long groupUid, int itemInfoUid) {
             if (_itemModelByGroupUid.TryGetValue(groupUid, out var itemModels)) {
                 return itemModels.ContainsKey(itemInfoUid);
@@ -160,6 +209,7 @@ namespace Script.DataBase {
             if (characterItem == null) {
                 throw new Exception($"Not found Character Item: {itemUid}");
             }
+
             var characterItemInfo = characterItem.ItemInfo;
             if (characterItemInfo == null) {
                 throw new Exception($"Not found Character ItemInfo: {itemUid}");
@@ -177,22 +227,22 @@ namespace Script.DataBase {
             if (expInfoUid <= 0) {
                 throw new Exception($"Character ItemInfo doesn't have expUids: {itemUid}");
             }
-            
+
             var expInfo        = GameInfoManager.Instance.Get<ExpInfo>(expInfoUid);
             var levelTypeIndex = (int)levelType;
-            
+
             while (true) {
-                using var _       = CreateValueContext(characterItem);
+                using var _ = CreateValueContext(characterItem);
 
                 var currentExp = characterItem.exp[levelTypeIndex];
                 var limitExp   = expInfo.Calc();
-            
+
                 if (currentExp + count < limitExp) {
                     // 경험치만 추가    
                     characterItem = await AddExp(characterItem, count, levelType);
                     break;
                 }
-                
+
                 // 레벨업 필요
                 characterItem =  await LevelUpItem(characterItem, levelType);
                 count         -= (limitExp - currentExp);
@@ -231,6 +281,7 @@ namespace Script.DataBase {
                     item.tier += 1;
                     break;
             }
+
             item.exp[(int)levelType] = 0;
             await SaveItemTable();
             return item;
@@ -240,17 +291,16 @@ namespace Script.DataBase {
             _itemModelByGroupUid.Remove(groupUid);
             _itemModelTable.items = _itemModelTable.items.Where(r => r.groupUid != groupUid).ToList();
             _itemModelByUid.Where(r => r.Value.groupUid == groupUid)
-                          .Select(r => r.Key)
-                          .ToList()
-                          .ForEach(k => _itemModelByUid.Remove(k));
-            
+                           .Select(r => r.Key)
+                           .ToList()
+                           .ForEach(k => _itemModelByUid.Remove(k));
+
             return UniTask.CompletedTask;
         }
-        
-        
-        
+
+
         //
-        
+
         private ValueContext CreateValueContext(
             ItemModel item,
             int       levelOffset = 0,
