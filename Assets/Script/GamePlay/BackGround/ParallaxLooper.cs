@@ -33,7 +33,7 @@ namespace Script.GamePlay.Background {
         }
 
         private void LateUpdate() {
-            if (_initialized == false || (_stageManager?.SystemControl?.CurrentValue ?? true))
+            if (_initialized == false)
                 return;
 
             var targetPos   = _target.position;
