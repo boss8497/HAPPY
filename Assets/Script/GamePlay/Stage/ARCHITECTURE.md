@@ -20,13 +20,19 @@
 ## 생명주기
 
 ```
-Initialize()
-  → InitializeCamera()
-  → InitializePool()
-  → InitializeMapGround()   ← MapGroundData 싱글턴 생성 (GroundY = 0)
-  → InitializeReactiveProperty()
-  → InitializeTrigger()
-  → InitializeAction()      ← PhaseInfo.actions → ClientXxxAction 생성·Initialize
+InitializeAsync()
+  → ScreenManager.ShowStageTransitionAsync()  ← 화면 캡처해 덮기 (스폰/T포즈 과정 은닉)
+  → Initialize()
+      → InitializeCamera()
+      → InitializePool()
+      → InitializeMapGround()   ← MapGroundData 싱글턴 생성 (GroundY = 0)
+      → InitializeReactiveProperty()
+      → InitializeTrigger()
+      → InitializeAction()      ← PhaseInfo.actions → ClientXxxAction 생성·Initialize
+  → Begin() → Start()
+  → SetPlayerAnimation(IDLE)
+  → ScreenManager.HideStageTransitionAsync()  ← Fade Out으로 공개
+  → RemoveState(SystemControl)
 
 Begin()
   → ExecuteAction(EventTiming.Begin)
@@ -43,11 +49,16 @@ End()
   → ExecuteAction(EventTiming.End)
 
 ReStart()
+  → ScreenManager.ShowStageTransitionAsync()  ← 티어다운 전 마지막 정상 프레임을 얼려 덮기
   → StopLoop → 캐릭터·액션·트리거 해제 → InitializeAsync() 재호출
 
 Release() / Dispose()
   → StopLoop → 캐릭터·트리거 해제 → Pool 해제 → ReleaseMapGround()
 ```
+
+**SystemControl 상태와 StageTransition:** `AddState(StageState.SystemControl)`이 걸려 있는 동안(스폰~애니메이션 안정화 구간)에는
+ECS `StageSyncSystem`이 해당 유닛을 동기화·InsideMap 판정 대상에서 제외한다 (`Assets/Script/GamePlay/ECS/ARCHITECTURE.md` 참고).
+StageTransition 오버레이가 화면을 가리는 구간과 겹치도록 설계되어 있다.
 
 ---
 

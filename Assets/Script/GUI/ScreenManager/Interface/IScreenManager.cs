@@ -22,6 +22,16 @@ namespace Script.GUI.Screen.Interface {
         UniTask CloseAsync(IScreen              screen, bool force = false);
         UniTask ResourceClear();
 
+        /// <summary>
+        /// 현재 화면을 캡처해 StageTransition Layer로 덮는다. 이미 덮여 있으면 재캡처 없이 즉시 반환한다.
+        /// </summary>
+        UniTask ShowStageTransitionAsync();
+
+        /// <summary>
+        /// StageTransition Layer로 덮어둔 화면을 Fade Out으로 걷어낸다. 덮여 있지 않으면 아무 것도 하지 않는다.
+        /// </summary>
+        UniTask HideStageTransitionAsync();
+
         GameObject PoolPop(string      key, Transform parent = null, bool active = true, bool worldPositionStays = true);
         bool       PoolPush(GameObject obj);
 

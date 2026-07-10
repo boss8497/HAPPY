@@ -64,6 +64,10 @@ namespace Script.GUI.Screen {
                 rect.offsetMin = Vector2.zero;
                 rect.offsetMax = Vector2.zero;
 
+                if (layerType == ScreenLayerType.StageTransition) {
+                    SetupStageTransitionLayer(obj);
+                }
+
                 var layer = new ScreenLayer(this, rect);
                 _layers[i] = layer;
             }

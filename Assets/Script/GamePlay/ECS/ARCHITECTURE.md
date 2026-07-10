@@ -108,6 +108,13 @@ StageSyncSystem        ← ECS → GameObject Transform 동기화
 - 지원 형태: Rect vs Rect (SAT), Circle vs Circle, Rect vs Circle
 - 충돌 시 `UnitCollisionResult` 버퍼에 추가 + `UnitCollisionDelay` 쿨다운 등록
 
+### StageSyncSystem
+- `UnitSystemControlEnable`, `UnitDieEnable` 모두 비활성인 유닛만 대상 (`WithDisabled`)
+  - StageManager가 `SystemControl` 상태(스테이지 시작/재시작 시 스폰·T포즈 구간, [[stage-transition-screenshot]] 참고)인 동안에는
+    ECS Transform → GameObject 동기화 및 InsideMap/OutsideMap 판정을 건너뛴다
+- ECS `LocalTransform` → `UnitData.GameObject` Transform(position/rotation) 동기화
+- 카메라 좌우 경계 기준 `InsideMap`/`OutsideMap` `CharacterState` 전이 (Enemy 전용, `IsPlayer <= 0`)
+
 ---
 
 ## 새 시스템 추가 방법

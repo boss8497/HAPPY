@@ -37,7 +37,8 @@ Canvas 아래에 Layer별 RectTransform을 생성해 렌더링 순서를 제어�
 | `Popup` | 2 | 팝업 창 |
 | `Overlay` | 3 | 오버레이 |
 | `Loading` | 4 | 로딩 화면 |
-| `SafeArea` | 5 | 입력 차단 레이어 (최상위) |
+| `StageTransition` | 5 | 스테이지 시작/재시작 시 화면을 얼려 덮는 전환 오버레이 |
+| `SafeArea` | 6 | 입력 차단 레이어 (최상위) |
 
 각 Layer는 앵커 (0,0)~(1,1), 오프셋 0으로 전체 영역을 차지한다.
 
@@ -63,6 +64,37 @@ public bool DontClose => option.HasFlag(ScreenOption.DontClose);
 
 Screen이 열리는 동안 사용자 입력을 차단한다.  
 `SafeArea` Layer(가장 높은 레이어)에 투명 Screen을 열어 하위 레이어의 GraphicRaycaster를 막는다.
+
+---
+
+## StageTransition (스테이지 전환 오버레이)
+
+스테이지 시작/재시작 시 맵/구조물 스폰, 캐릭터 T포즈 등 준비 과정이 화면에 노출되지 않도록  
+현재 화면을 캡처해 덮어씌우는 전용 Layer. Screen 프리팹이 아니라 `StageTransition` Layer 오브젝트에  
+`RawImage` + `CanvasGroup`을 직접 `AddComponent`해서 구성한다 (`ScreenManager.StageTransition.cs`).
+
+**흐름:**
+```
+ShowStageTransitionAsync()
+  → WaitForEndOfFrame (렌더링 완료 대기)
+  → ScreenCapture.CaptureScreenshotAsTexture() → RawImage.texture
+  → CanvasGroup.alpha = 1, blocksRaycasts = true
+
+... 스폰/초기화 진행 (화면은 캡처된 스냅샷으로 가려짐) ...
+
+HideStageTransitionAsync()
+  → CanvasGroup.alpha를 fadeDuration 동안 1 → 0 (Fade Out)
+  → 캡처해둔 Texture2D Destroy
+```
+
+**호출 지점:** `StageManager.InitializeAsync()` (시작), `StageManager.ReStart()` (재시작 전) — `Assets/Script/GamePlay/Stage/StageManager.cs`
+
+**주의 — `ScreenCapture.CaptureScreenshotAsTexture()` 호출 타이밍:**  
+이 API는 해당 프레임의 GPU 렌더링이 실제로 끝난 뒤(Unity 공식 예제 기준 `WaitForEndOfFrame` 이후)에 호출해야  
+유효한 픽셀을 반환한다. 렌더링 완료 전에 호출하면 빈/무효 텍스처가 캡처되어 RawImage에 아무것도 안 보인다.  
+`ShowStageTransitionAsync()`는 캡처 직전 `await UniTask.WaitForEndOfFrame(this)`로 이를 보장한다.
+
+**재캡처 방지:** `_stageTransitionSnapshot`이 이미 있으면(직전 Fade Out 도중 다시 Show가 호출된 경우) 재캡처하지 않고 그대로 재사용한다.
 
 ---
 
@@ -123,6 +155,10 @@ UniTask CloseAsync(IScreen screen, bool force = false);
 
 // 리소스
 UniTask ResourceClear();                                 // 씬 이동 시 호출
+
+// 스테이지 전환 오버레이
+UniTask ShowStageTransitionAsync();                      // 현재 화면 캡처 후 덮기
+UniTask HideStageTransitionAsync();                       // Fade Out 후 걷어내기
 
 // UI 풀링 (Pool 기반 동적 UI)
 GameObject PoolPop(string key, Transform parent = null, bool active = true, bool worldPositionStays = true);
@@ -206,6 +242,7 @@ CharacterInfo
 | `Interface/IScreen.cs` | Screen 인터페이스 |
 | `Layer/ScreenLayer.cs` | Layer별 Open/Close 처리 |
 | `Layer/ScreenLayerType.cs` | Layer enum (HUD~SafeArea) |
+| `ScreenManager.StageTransition.cs` | StageTransition Layer 캡처/Fade 제어 (partial class) |
 | `ViewModel/Base/SelectElement.cs` | 리스트 아이템 베이스 |
 | `ViewModel/Base/Selector.cs` | 선택 상태 중앙 관리 |
 | `ViewModel/CharacterElement.cs` | 캐릭터 리스트 아이템 |

@@ -38,6 +38,10 @@ namespace Script.GamePlay.Stage {
         }
 
         public async UniTask InitializeAsync() {
+            // 맵/구조물 스폰, 캐릭터 T포즈 등 준비 과정을 가리기 위해 화면을 얼려둔다.
+            // ReStart()에서 이미 얼려둔 경우 재캡처 없이 즉시 반환된다.
+            await _screenManager.ShowStageTransitionAsync();
+
             ResetState();
             _screenManager.OpenAsync(_hudScreenKey).Forget();
 
@@ -54,6 +58,12 @@ namespace Script.GamePlay.Stage {
 
             //TODO: 애매한 딜레이 말고 확실한 시작 시점으로 변경 필요
             SetPlayerAnimation(AnimationName.IDLE);
+            
+            await UniTask.WaitForSeconds(0.5f);
+            // 스폰 준비가 끝났으므로 얼려둔 화면을 Fade Out 하여 공개한다.
+            await _screenManager.HideStageTransitionAsync();
+            
+            
             await UniTask.WaitForSeconds(1.5f);
             RemoveState(StageState.SystemControl);
         }
@@ -187,6 +197,9 @@ namespace Script.GamePlay.Stage {
         }
 
         public async UniTask ReStart() {
+            // 티어다운으로 T포즈/스폰 과정이 보이기 전에, 지금 화면(마지막 정상 프레임)을 얼려서 덮어둔다.
+            await _screenManager.ShowStageTransitionAsync();
+
             await _screenManager.CloseAllAsync(true);
             StopLoop();
 

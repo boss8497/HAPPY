@@ -19,7 +19,7 @@ namespace Script.GamePlay.ECS.System {
             foreach (var (transformRef, unitData, hitBoxData)
                      in SystemAPI.Query<RefRO<LocalTransform>, RefRW<UnitData>, RefRO<HitBoxData>>()
                                  .WithAll<UnitEntityTag>()
-                                 .WithDisabled<UnitDieEnable>()) {
+                                 .WithDisabled<UnitSystemControlEnable, UnitDieEnable>()) {
                 
                 var transform          = transformRef.ValueRO;
                 var originalGameObject = unitData.ValueRW.GameObject.Value;
