@@ -30,9 +30,10 @@ namespace Script.GamePlay.Stat {
         public double Def       => _calcValue[(int)StatType.Def];
         public double Spd       => _calcValue[(int)StatType.Spd];
         public double Jump      => _calcValue[(int)StatType.Jump];
-        public double Collision => _calcValue[(int)StatType.Collision];
-        public double Score     => _calcValue[(int)StatType.Score];
-        public double Heart     => _calcValue[(int)StatType.Heart];
+        public double Collision   => _calcValue[(int)StatType.Collision];
+        public double Score       => _calcValue[(int)StatType.Score];
+        public double Heart       => _calcValue[(int)StatType.Heart];
+        public double CameraShake => _calcValue[(int)StatType.CameraShake];
 
 
         public void Add(StatusInfo statusInfo) {

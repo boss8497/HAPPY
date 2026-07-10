@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 1230937725846235769}
   - component: {fileID: 6511851026027796913}
   - component: {fileID: 8994143522487239392}
+  - component: {fileID: 4629230327909097519}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -129,6 +130,23 @@ MonoBehaviour:
     RotationDamping: {x: 0, y: 0, z: 0}
     QuaternionDamping: 1
   FollowOffset: {x: 4, y: 3.2, z: -8}
+--- !u!114 &4629230327909097519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5022587732593021665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineBasicMultiChannelPerlin
+  NoiseProfile: {fileID: 11400000, guid: 20a705aea2d80e0478fb89b6f43d8530, type: 2}
+  PivotOffset: {x: 0, y: 0, z: 0}
+  AmplitudeGain: 0
+  FrequencyGain: 1
+  m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &6573730161368704455
 GameObject:
   m_ObjectHideFlags: 0
@@ -233,6 +251,9 @@ MonoBehaviour:
   mainCamera: {fileID: 0}
   targetGroup: {fileID: 8862706046978958260}
   vCamera: {fileID: 6511851026027796913}
+  cameraShakeMaxAmplitude: 5
+  cameraShakeDuration: 0.9
+  cameraShakeRecoveryDuration: 0.3
   failScreenKey: RunningFail
   hudScreenKey: RunningHUD
   clearScreenKey: RunningClear

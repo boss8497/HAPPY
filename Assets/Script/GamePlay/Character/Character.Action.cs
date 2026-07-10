@@ -77,9 +77,20 @@ namespace Script.GamePlay.Character {
         private void ApplyCollision(Character otherCharacter) {
             var collisionDamage = otherCharacter.Status.Collision;
             Debug.LogError($"충돌했다고해!!! me: {CharacterInfo.Name}, {UID} other: {otherCharacter.CharacterInfo.Name}, {otherCharacter.UID} damage: {collisionDamage}");
-            if (collisionDamage <= 0d) return;
-            
-            ApplyHealth(-collisionDamage);
+            if (collisionDamage > 0d) {
+                ApplyHealth(-collisionDamage);
+                ApplyCameraShake(otherCharacter);
+            }
+        }
+
+        // CameraShake는 Player가 충돌했을 때만 전달한다 (카메라는 Player 시점 기준).
+        private void ApplyCameraShake(Character otherCharacter) {
+            if (IsPlayer == false) return;
+
+            var cameraShake = otherCharacter.Status.CameraShake;
+            if (cameraShake <= 0d) return;
+
+            _stageManager.CameraControls.Shake((float)cameraShake);
         }
         
         public void ApplyDamage() {

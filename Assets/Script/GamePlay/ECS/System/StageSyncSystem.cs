@@ -9,6 +9,10 @@ namespace Script.GamePlay.ECS.System {
     public partial class StageSyncSystem : SystemBase {
         private float _offsetRate = 3.0f;
         
+        protected override void OnCreate() {
+            RequireForUpdate<CameraData>();
+        }
+        
         protected override void OnUpdate() {
             var cameraData      = SystemAPI.GetSingletonRW<CameraData>();
             var camera          = cameraData.ValueRO.Camera.Value;

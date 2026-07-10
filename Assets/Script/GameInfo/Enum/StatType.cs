@@ -10,6 +10,7 @@
                    // 상대방의 Collision Stat이 나에게 데미지를 줌 Atk과 다름. Atk는 발사체나 직접 공격에 사용할 예정
         Score,     // 점수
         Heart,     // HP 채워주는 아이템이 있을 수 있어서 일단 만들어 둠
+        CameraShake, // Collision 시 전달할 Camera Shake Amplitude. 0이면 Shake 전달 안함
         Max,
     }
 }
