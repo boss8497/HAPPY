@@ -7,6 +7,7 @@ using Script.GameInfo.Info;
 using Script.GameInfo.Info.Enum;
 using Script.GameInfo.Info.Stat;
 using Script.GameInfo.Table;
+using Script.GamePlay.Camera;
 using Script.GameTimer;
 using Script.Utility.Runtime;
 using Unity.Collections;
@@ -23,8 +24,9 @@ namespace Script.Buff {
         private readonly Queue<long> _returnIndex = new();
         private          long        _uidIndexer;
 
-        private IBuffOwner _owner;
-        private IGameTimer _gameTimer;
+        private IBuffOwner      _owner;
+        private IGameTimer      _gameTimer;
+        private ICameraControls _cameraControls;
 
         private List<Buff>   _buffs;
         private List<UmBuff> _umBuffs;
@@ -34,15 +36,19 @@ namespace Script.Buff {
         public bool IsInitialize { get; private set; } = false;
 
 
-        public void Initialize(IBuffOwner owner, IGameTimer gameTimer) {
+        /// <param name="cameraControls">
+        /// Speed 버프 fade에 맞춰 카메라 연출(Zoom/Offset)을 같이 재생할 대상. Player 소유 BuffSystem에만 전달한다 (null이면 카메라 연출 없음).
+        /// </param>
+        public void Initialize(IBuffOwner owner, IGameTimer gameTimer, ICameraControls cameraControls = null) {
             // 글쌔 16개 이상 버프를 가지고 있을까..? 디버프도 생각해야되긴 한데 일단은 16
             // 너무 적은 숫자라서 Burst로 이득을볼 수 있을까? 흐음
             //_umBuffs     = new (16, Allocator.Persistent);
-            _owner       = owner;
-            _gameTimer   = gameTimer;
-            _buffs       = ListPool.Get<Buff>();
-            _umBuffs     = ListPool.Get<UmBuff>();
-            IsInitialize = true;
+            _owner          = owner;
+            _gameTimer      = gameTimer;
+            _cameraControls = cameraControls;
+            _buffs          = ListPool.Get<Buff>();
+            _umBuffs        = ListPool.Get<UmBuff>();
+            IsInitialize    = true;
         }
 
         private async UniTask Update(CancellationToken ct) {
@@ -141,10 +147,11 @@ namespace Script.Buff {
             }
         }
 
-        // 현재 버프들의 Spd 기여분과 fade factor를 계산해 owner에게 전달
+        // 현재 버프들의 Spd 기여분과 fade factor를 계산해 owner와 카메라에 전달
         private void NotifySpeedFade(float elapsed) {
             if (_umBuffs == null || _umBuffs.Count == 0) {
                 _owner.OnBuffSpeedFade(0f, 1f);
+                _cameraControls?.SetSpeedBoostFade(0f);
                 return;
             }
 
@@ -164,8 +171,10 @@ namespace Script.Buff {
                 effectiveSpdBonus += spdBonus * factor;
             }
 
+            // totalSpdBonus가 0이면(Spd 버프가 하나도 없으면) factor는 의미가 없으므로 카메라는 평상시(0)로 취급한다.
             float overallFactor = totalSpdBonus > 0f ? effectiveSpdBonus / totalSpdBonus : 1f;
             _owner.OnBuffSpeedFade(totalSpdBonus, overallFactor);
+            _cameraControls?.SetSpeedBoostFade(totalSpdBonus > 0f ? overallFactor : 0f);
         }
 
         private static float CalcSpdBonus(StatusInfo[] statusInfos) {
@@ -222,10 +231,14 @@ namespace Script.Buff {
                 ListPool.Return(_umBuffs);
             }
 
-            _umBuffs   = null;
-            _owner     = null;
-            _gameTimer = null;
-            _buffs     = null;
+            // 부스터 도중 owner가 해제되는 경우(ReStart 등) 카메라 연출이 확대된 채로 남지 않도록 원상 복구한다.
+            _cameraControls?.SetSpeedBoostFade(0f);
+
+            _umBuffs        = null;
+            _owner          = null;
+            _gameTimer      = null;
+            _cameraControls = null;
+            _buffs          = null;
         }
 
         public void Dispose() {

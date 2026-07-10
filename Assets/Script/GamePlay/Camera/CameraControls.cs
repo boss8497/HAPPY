@@ -7,10 +7,17 @@ using UnityEngine;
 namespace Script.GamePlay.Camera {
     public class CameraControls : ICameraControls, IDisposable {
         private readonly Transform                          _transform;
+        private readonly CinemachineCamera                  _vCamera;
         private readonly CinemachineBasicMultiChannelPerlin _noise;
+        private readonly CinemachineFollow                  _follow;
         private readonly float                              _shakeMaxAmplitude;
         private readonly float                              _shakeDuration;
         private readonly float                              _shakeRecoveryDuration;
+
+        private readonly float _baseOrthographicSize;
+        private readonly float _baseFollowOffsetX;
+        private readonly float _boostZoomAmount;
+        private readonly float _boostOffsetXAmount;
 
         public UnityEngine.Camera MainCamera { get; }
 
@@ -26,19 +33,33 @@ namespace Script.GamePlay.Camera {
             CinemachineCamera  vCamera,
             float              cameraShakeMaxAmplitude,
             float              cameraShakeDuration,
-            float              cameraShakeRecoveryDuration
+            float              cameraShakeRecoveryDuration,
+            float              cameraBoostZoomAmount,
+            float              cameraBoostOffsetXAmount
         ) {
             MainCamera = mainCamera;
             _transform = MainCamera.transform;
+            _vCamera   = vCamera;
 
             _shakeMaxAmplitude     = cameraShakeMaxAmplitude;
             _shakeDuration         = cameraShakeDuration;
             _shakeRecoveryDuration = cameraShakeRecoveryDuration;
 
+            _boostZoomAmount    = cameraBoostZoomAmount;
+            _boostOffsetXAmount = cameraBoostOffsetXAmount;
+
             _noise = vCamera == null ? null : vCamera.GetComponent<CinemachineBasicMultiChannelPerlin>();
             if (_noise == null) {
                 Debug.LogError($"{nameof(CinemachineBasicMultiChannelPerlin)} 컴포넌트가 vCamera에 없습니다. Camera Shake가 동작하지 않습니다.");
             }
+
+            _follow = vCamera == null ? null : vCamera.GetComponent<CinemachineFollow>();
+            if (_follow == null) {
+                Debug.LogError($"{nameof(CinemachineFollow)} 컴포넌트가 vCamera에 없습니다. Speed Boost 카메라 연출이 동작하지 않습니다.");
+            }
+
+            _baseOrthographicSize = vCamera != null ? vCamera.Lens.OrthographicSize : 0f;
+            _baseFollowOffsetX    = _follow != null ? _follow.FollowOffset.x : 0f;
         }
 
         public void Shake(float amplitude) {
@@ -76,6 +97,22 @@ namespace Script.GamePlay.Camera {
 
             _currentAmplitude    = 0f;
             _noise.AmplitudeGain = 0f;
+        }
+
+        public void SetSpeedBoostFade(float fadeFactor) {
+            fadeFactor = Mathf.Clamp01(fadeFactor);
+
+            if (_vCamera != null) {
+                var lens = _vCamera.Lens;
+                lens.OrthographicSize = _baseOrthographicSize + _boostZoomAmount * fadeFactor;
+                _vCamera.Lens         = lens;
+            }
+
+            if (_follow != null) {
+                var offset = _follow.FollowOffset;
+                offset.x             = _baseFollowOffsetX + _boostOffsetXAmount * fadeFactor;
+                _follow.FollowOffset = offset;
+            }
         }
 
         public void Dispose() {

@@ -32,6 +32,12 @@ namespace Script.LifetimeScope {
         [SerializeField]
         private float cameraShakeRecoveryDuration = 0.3f;
 
+        [SerializeField]
+        private float cameraBoostZoomAmount = 2.0f;
+
+        [SerializeField]
+        private float cameraBoostOffsetXAmount = 2.0f;
+
         [SerializeField, ScreenKey]
         private string failScreenKey;
         [SerializeField, ScreenKey]
@@ -66,7 +72,9 @@ namespace Script.LifetimeScope {
                    .WithParameter(nameof(vCamera), vCamera)
                    .WithParameter(nameof(cameraShakeMaxAmplitude), cameraShakeMaxAmplitude)
                    .WithParameter(nameof(cameraShakeDuration), cameraShakeDuration)
-                   .WithParameter(nameof(cameraShakeRecoveryDuration), cameraShakeRecoveryDuration);
+                   .WithParameter(nameof(cameraShakeRecoveryDuration), cameraShakeRecoveryDuration)
+                   .WithParameter(nameof(cameraBoostZoomAmount), cameraBoostZoomAmount)
+                   .WithParameter(nameof(cameraBoostOffsetXAmount), cameraBoostOffsetXAmount);
 
             // 유저 조작 감지 Class이기 때문에 StageScope에 있는게 맞다.
             // 안의 PlayerControlMap을 Parent Scope를 로드하는게 좋아 보임

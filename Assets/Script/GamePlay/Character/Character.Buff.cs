@@ -17,7 +17,8 @@ namespace Script.GamePlay.Character {
             _buffSystem   = ClassPool.Get<BuffSystem>();
             _buffSpdBonus = 0f;
             _buffSpdFade  = 1f;
-            _buffSystem.Initialize(this, GameTimer);
+            // Speed 버프 fade에 맞춘 카메라 연출은 Player 소유 BuffSystem에만 전달한다 (BuffSystem.NotifySpeedFade 참고).
+            _buffSystem.Initialize(this, GameTimer, IsPlayer ? _stageManager.CameraControls : null);
         }
 
         private void ReleaseBuff() {

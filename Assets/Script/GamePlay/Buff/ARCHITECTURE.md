@@ -3,7 +3,8 @@
 ## 역할
 
 캐릭터에 시간 제한 버프를 적용하고 관리하는 시스템.  
-`GameInfo/BuffInfo`의 기획 데이터를 읽어 Status에 반영하며, **점진적 속도 변화(fade in/out)** 를 지원한다.
+`GameInfo/BuffInfo`의 기획 데이터를 읽어 Status에 반영하며, **점진적 속도 변화(fade in/out)** 를 지원한다.  
+Player 소유 BuffSystem은 같은 fade 진행도로 **카메라 연출(Zoom/Offset)** 도 함께 재생한다 (`Assets/Script/GamePlay/Camera/ARCHITECTURE.md` 참고).
 
 ---
 
@@ -118,6 +119,23 @@ ECS Speed = Status.Spd - buffSpdBonus * (1 - fadeFactor)
 - 버프가 하나도 없으면 Update 루프(CTS)를 정지해 불필요한 프레임 소비를 막는다.
 - 여러 버프가 동시에 있을 때 fade factor는 Spd 보너스 가중 평균으로 계산한다.
 - `IBuffOwner.OnBuffSpeedFade()`는 **같은 프레임 안에서 여러 번 호출**될 수 있다 (AddBuffs → NotifySpeedFade → RemoveBuff 순서). 마지막 호출이 최종값.
+
+---
+
+## 카메라 연출 연동 (Speed Boost)
+
+Speed 버프의 fade 진행도와 정확히 같은 타이밍으로 카메라 Zoom(OrthographicSize)과 CinemachineFollow X Offset을 함께 재생한다.
+Character가 아니라 **`BuffSystem.NotifySpeedFade()`가 직접** `ICameraControls.SetSpeedBoostFade(factor)`를 호출한다 —
+Spd 보너스/fade factor를 이미 여기서 계산하고 있어서 카메라 연출 로직도 같은 자리에 두는 게 자연스럽기 때문
+([[camera-speed-boost]] 메모리 참고, `Character.Buff.cs`를 경유하던 이전 버전에서 이쪽으로 옮김).
+
+```csharp
+public void Initialize(IBuffOwner owner, IGameTimer gameTimer, ICameraControls cameraControls = null)
+```
+
+- `cameraControls`는 **Player 소유 BuffSystem에만** 전달한다 (`Character.InitializeBuff()`에서 `IsPlayer ? _stageManager.CameraControls : null`). Enemy BuffSystem은 null이라 카메라를 건드리지 않는다.
+- `NotifySpeedFade()` 안에서 `totalSpdBonus > 0`일 때만 `overallFactor`를 전달하고, Spd 버프가 없으면(=totalSpdBonus 0) 카메라 fade는 0으로 취급한다 — 버프가 막 제거된 직후 `(bonus=0, factor=1)`이 오는 케이스에서 카메라가 갑자기 최대로 튀는 걸 방지.
+- `Release()`(ClassPool 반납) 시에도 `SetSpeedBoostFade(0f)`를 호출해, 부스트 도중 owner가 해제되는 경우(ReStart 등) 카메라가 확대된 채로 남지 않게 한다.
 
 ---
 

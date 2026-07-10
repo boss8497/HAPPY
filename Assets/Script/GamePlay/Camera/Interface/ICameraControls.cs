@@ -10,5 +10,11 @@
         /// amplitude가 0 이하면 아무 동작도 하지 않는다.
         /// </summary>
         void Shake(float amplitude);
+
+        /// <summary>
+        /// 스피드 부스터 Buff의 fade 진행도(0=평상시, 1=최대)에 맞춰 카메라 시야(OrthographicSize)와
+        /// CinemachineFollow X Offset을 함께 보간한다. Buff의 fadeIn/fadeOut과 동일한 타이밍으로 호출되는 것을 전제로 한다.
+        /// </summary>
+        void SetSpeedBoostFade(float fadeFactor);
     }
 }
