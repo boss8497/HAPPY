@@ -34,6 +34,24 @@ namespace Script.GameData.Diff {
 
         public bool Valid => uid > 0 && infoUid > 0;
 
+        private ItemInfo _itemInfo;
+
+        public ItemInfo ItemInfo {
+            get {
+                _itemInfo ??= GameInfoManager.Instance.Get<ItemInfo>(infoUid);
+                return _itemInfo;
+            }
+        }
+
+        private ExpInfo[] _expInfos;
+
+        public ExpInfo[] ExpInfos {
+            get {
+                _expInfos ??= ItemInfo == null ? Array.Empty<ExpInfo>() : ItemInfo.expUids.Select(s => GameInfoManager.Instance.Get<ExpInfo>(s)).ToArray();
+                return _expInfos;
+            }
+        }
+
         public ItemValue(ItemModel model) : this() {
             if (model == null) {
                 Release();
@@ -50,10 +68,9 @@ namespace Script.GameData.Diff {
             exp      = model.exp.ToArray();
             expMax   = new double[(int)LevelType.Max];
 
-            var itemInfo = GameInfoManager.Instance.Get<ItemInfo>(infoUid);
-            if (itemInfo != null) {
+            if (ItemInfo != null) {
                 using var _ = CreateValueContext(model.level, model.grade, model.tier);
-                foreach (var expInfo in itemInfo.expUids.Select(s => GameInfoManager.Instance.Get<ExpInfo>(s))) {
+                foreach (var expInfo in ExpInfos) {
                     expMax[(int)expInfo.levelType] = expInfo.Calc();
                 }
             }
@@ -77,15 +94,17 @@ namespace Script.GameData.Diff {
         }
 
         public void Release() {
-            uid      = 0;
-            groupUid = 0;
-            infoUid  = 0;
-            count    = 0;
-            level    = 0;
-            grade    = 0;
-            tier     = 0;
-            exp      = Array.Empty<double>();
-            expMax   = Array.Empty<double>();
+            uid       = 0;
+            groupUid  = 0;
+            infoUid   = 0;
+            count     = 0;
+            level     = 0;
+            grade     = 0;
+            tier      = 0;
+            exp       = Array.Empty<double>();
+            expMax    = Array.Empty<double>();
+            _itemInfo = null;
+            _expInfos = null;
         }
 
         public void Set(ItemModel model) {
@@ -100,10 +119,9 @@ namespace Script.GameData.Diff {
             exp    = model.exp.ToArray();
             expMax = new double[(int)LevelType.Max];
 
-            var itemInfo = GameInfoManager.Instance.Get<ItemInfo>(infoUid);
-            if (itemInfo != null) {
+            if (ItemInfo != null) {
                 using var _ = CreateValueContext(model.level, model.grade, model.tier);
-                foreach (var expInfo in itemInfo.expUids.Select(s => GameInfoManager.Instance.Get<ExpInfo>(s))) {
+                foreach (var expInfo in ExpInfos) {
                     expMax[(int)expInfo.levelType] = expInfo.Calc();
                 }
             }
@@ -117,9 +135,9 @@ namespace Script.GameData.Diff {
             level    = data.Level.CurrentValue;
             grade    = data.Grade.CurrentValue;
             tier     = data.Tier.CurrentValue;
-            
-            exp      = data.Exp.CurrentValue.ToArray();    // IItemData에는 exp 배열이 없으므로 기본값으로 설정
-            expMax   = data.ExpMax.CurrentValue.ToArray(); // IItemData에는 expMax 배열이 없으므로 기본값으로 설정
+
+            exp    = data.Exp.CurrentValue.ToArray();    // IItemData에는 exp 배열이 없으므로 기본값으로 설정
+            expMax = data.ExpMax.CurrentValue.ToArray(); // IItemData에는 expMax 배열이 없으므로 기본값으로 설정
         }
 
         /// <summary>
@@ -146,17 +164,33 @@ namespace Script.GameData.Diff {
             return a.Diff(b);
         }
 
+        public int GetLevel(LevelType levelType)
+            => levelType switch {
+                LevelType.Level => level,
+                LevelType.Grade => grade,
+                LevelType.Tier  => tier,
+                _               => throw new ArgumentOutOfRangeException(nameof(levelType), $"Not expected level type value: {levelType}"),
+            };
+
+        public double GetLevelMaxExp(int levelValue, LevelType levelType) {
+            var expInfo = ExpInfos.FirstOrDefault(r => r.levelType == levelType);
+            if (expInfo == null) return 0;
+            
+            using var _ = CreateValueContext(levelValue, grade, tier);
+            return expInfo.Calc();
+        }
+
 
         private ValueContext CreateValueContext(
-            int level,
-            int grade,
-            int tier
+            int levelValue,
+            int gradeValue,
+            int tierValue
         ) {
             return new(
                 new ValueProvider()
-                    .Add("level", level)
-                    .Add("grade", grade)
-                    .Add("tier", tier)
+                    .Add("level", levelValue)
+                    .Add("grade", gradeValue)
+                    .Add("tier", tierValue)
             );
         }
     }

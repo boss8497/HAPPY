@@ -336,6 +336,16 @@ MonoBehaviour:
       m_FallbackState: 0
       m_WaitForCompletion: 0
       m_LocalVariables: []
+  characterNameLevelUpLocalizeText:
+    _localizedString:
+      m_TableReference:
+        m_TableCollectionName: GUID:b324019ed3b36c240b053c5ebeefa3b9
+      m_TableEntryReference:
+        m_KeyId: 17770900833804288
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
   characterExp: {fileID: 609252974800631954}
   characterExpLocalizeText:
     _localizedString:

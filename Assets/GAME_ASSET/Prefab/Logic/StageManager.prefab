@@ -254,6 +254,8 @@ MonoBehaviour:
   cameraShakeMaxAmplitude: 5
   cameraShakeDuration: 0.9
   cameraShakeRecoveryDuration: 0.3
+  cameraBoostZoomAmount: 1.5
+  cameraBoostOffsetXAmount: 1.5
   failScreenKey: RunningFail
   hudScreenKey: RunningHUD
   clearScreenKey: RunningClear

@@ -48,6 +48,9 @@ namespace Script.GUI.ViewModel {
         private LocalizeText characterNameLevelLocalizeText;
 
         [SerializeField, ShowIf("@option == DiffResultOption.CharacterLevelExp")]
+        private LocalizeText characterNameLevelUpLocalizeText;
+
+        [SerializeField, ShowIf("@option == DiffResultOption.CharacterLevelExp")]
         private TMP_Text characterExp;
 
         [SerializeField, ShowIf("@option == DiffResultOption.CharacterLevelExp")]
@@ -106,8 +109,16 @@ namespace Script.GUI.ViewModel {
                           }
 
                           if (characterNameLevel != null) {
-                              // TextFormat: Level, Name
-                              characterNameLevel.SetText(characterNameLevelLocalizeText.GetText(data.itemData.Level.CurrentValue, data.itemData.ItemInfo.CurrentValue.Name));
+                              if (data.diff.IsChangedLevel) {
+                                  // TextFormat: Level, DiffLevel, Name
+                                  characterNameLevel.SetText(characterNameLevelUpLocalizeText.GetText(data.itemData.Level.CurrentValue,
+                                                                                                      data.diff.DiffLevel,
+                                                                                                      data.itemData.ItemInfo.CurrentValue.Name));
+                              }
+                              else {
+                                  // TextFormat: Level, Name
+                                  characterNameLevel.SetText(characterNameLevelLocalizeText.GetText(data.itemData.Level.CurrentValue, data.itemData.ItemInfo.CurrentValue.Name));
+                              }
                           }
 
                           if (characterExp != null) {

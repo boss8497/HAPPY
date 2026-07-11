@@ -50,6 +50,10 @@ MonoBehaviour:
     m_Localized: 'Exp: {0}(+{1})/{2}'
     m_Metadata:
       m_Items: []
+  - m_Id: 17770900833804288
+    m_Localized: Lv.{0}(+{1}) {2}
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

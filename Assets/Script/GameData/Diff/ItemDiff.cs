@@ -33,31 +33,49 @@ namespace Script.GameData.Diff {
         public ItemDiff(ItemValue previous, ItemValue before) {
             _previous = previous;
             _before   = before;
-            Valid = _previous.Valid && _before.Valid && _previous.uid == _before.uid && _previous.groupUid == _before.groupUid && _previous.infoUid == _before.infoUid;
+            Valid     = _previous.Valid && _before.Valid && _previous.uid == _before.uid && _previous.groupUid == _before.groupUid && _previous.infoUid == _before.infoUid;
         }
 
         public void Set(ItemValue previous, ItemValue before) {
             _previous = previous;
             _before   = before;
-            Valid = _previous.Valid && _before.Valid && _previous.uid == _before.uid && _previous.groupUid == _before.groupUid && _previous.infoUid == _before.infoUid;
+            Valid     = _previous.Valid && _before.Valid && _previous.uid == _before.uid && _previous.groupUid == _before.groupUid && _previous.infoUid == _before.infoUid;
         }
-        
+
         public double GetDiffExp(LevelType levelType) {
             if (!Valid) {
                 return 0;
             }
 
-            var index = (int)levelType;
-            if (index < 0 || index >= _previous.exp.Length || index >= _before.exp.Length) {
+            var levelTypeIndex = (int)levelType;
+            if (levelTypeIndex < 0 || levelTypeIndex >= _previous.exp.Length || levelTypeIndex >= _before.exp.Length) {
                 return 0;
             }
 
+            var sumExp = 0d;
             if (IsChangedLevel) {
-                var previousExp = _previous.expMax[index] - _previous.exp[index];
-                return previousExp + _before.exp[index];
+                var startIndex = _previous.GetLevel(levelType);
+                var endIndex   = _before.GetLevel(levelType);
+
+                for (int i = startIndex; i < endIndex; i++) {
+                    var levelMaxExp = _previous.GetLevelMaxExp(i, levelType);
+
+                    if (levelMaxExp > 0 && startIndex == _previous.level) {
+                        sumExp = levelMaxExp - _previous.exp[levelTypeIndex];
+                        continue;
+                    }
+
+                    sumExp += levelMaxExp;
+                }
+
+                sumExp += _before.exp[levelTypeIndex];
+            }
+            else {
+                sumExp = _before.exp[levelTypeIndex] - _previous.exp[levelTypeIndex];
             }
 
-            return _before.exp[index] - _previous.exp[index];
+
+            return sumExp;
         }
     }
 }

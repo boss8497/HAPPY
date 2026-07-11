@@ -51,6 +51,10 @@ MonoBehaviour:
     m_Key: ClearExp
     m_Metadata:
       m_Items: []
+  - m_Id: 17770900833804288
+    m_Key: ClearCharacterLevelUpName
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
