@@ -69,3 +69,10 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 1
+  - id: Loading
+    screen:
+      m_AssetGUID: c9f75c122076f6b4386aa64a54973ab5
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1

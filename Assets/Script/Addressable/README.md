@@ -31,14 +31,20 @@ Unity Addressable Assets 시스템을 래핑해 초기화, 카탈로그 업데�
 
 ### 앱 라벨 로드
 - `LoadAppLabelsAsync()` — `"AppLifetimeScope"` 라벨의 에셋 일괄 로드
+- `AppLifetimeScope` 라벨이 속한 그룹은 **Local**(빌드에 포함) 이므로 다운로드 시 인터넷 연결이 필요 없다.
+  인터넷 확인 없이도 로컬 카탈로그+로컬 번들에서 바로 로드된다.
 
 ## 초기화 순서 (StartUpLogic)
 
 ```
-1. HasInternetConnectionAsync()  — 인터넷 확인
-2. UpdateCatalogsAsync()         — 카탈로그 업데이트
-3. LoadAppLabelsAsync()          — 앱 에셋 로드
+1. Addressables.InitializeAsync() 완료 대기 (IsInitialized)
+2. LoadAppLabelsAsync()          — 앱 에셋 로드 (Local 그룹, 인터넷 불필요)
 ```
+
+`HasInternetConnectionAsync()` / `UpdateCatalogsAsync()`는 시작 시퀀스에서 더 이상 호출되지 않는다.
+(에러 팝업 프리팹 등 앱 필수 UI가 Remote 라벨에 걸려 있어 "인터넷 없음" 팝업 자체를 못 띄우는
+순환 문제가 있었음 — 필수 에셋을 Local 그룹으로 옮기는 방식으로 해결) 필요 시 원격 콘텐츠
+업데이트 체크 용도로 별도 호출 가능.
 
 ## 연관 경로
 

@@ -36,8 +36,8 @@ Canvas 아래에 Layer별 RectTransform을 생성해 렌더링 순서를 제어�
 | `None` | 1 | 기본 레이어 |
 | `Popup` | 2 | 팝업 창 |
 | `Overlay` | 3 | 오버레이 |
-| `Loading` | 4 | 로딩 화면 |
-| `StageTransition` | 5 | 스테이지 시작/재시작 시 화면을 얼려 덮는 전환 오버레이 |
+| `StageTransition` | 4 | 스테이지 시작/재시작 시 화면을 얼려 덮는 전환 오버레이 |
+| `Loading` | 5 | 로딩 화면 |
 | `SafeArea` | 6 | 입력 차단 레이어 (최상위) |
 
 각 Layer는 앵커 (0,0)~(1,1), 오프셋 0으로 전체 영역을 차지한다.

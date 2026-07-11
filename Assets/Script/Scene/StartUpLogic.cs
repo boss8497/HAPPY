@@ -48,12 +48,12 @@ namespace Script.Scene {
             await _sceneLoader.LoadScene(GameInfoManager.Instance.Config.titleScenePath);
         }
 
+        /// <summary>
+        /// LoadAppLabelsAsync()은 Local 이기 때문에 따로 Internet Check가 필요 없음
+        /// </summary>
+        /// <exception cref="Exception"></exception>
         private async UniTask InitializeAddressable() {
             await UniTask.WaitUntil(() => _addressable?.IsInitialized ?? false);
-            var result = await _addressable.HasInternetConnectionAsync();
-            if (result == false) {
-                throw new Exception("No internet connection.");
-            }
             await _addressable.LoadAppLabelsAsync();
         }
 

@@ -75,7 +75,7 @@
   **핵심 설계**
   - **LinkedList 기반 Stack**: "특정 UI 뒤에 열기", "특정 UI만 닫기" 요청에 유연하게 대응하기 위해 Stack 대신 LinkedList 채택 (Stack 동작 지향)
   - **DontClose Screen**: 리스트 앞쪽에 고정 배치. `force: true`가 아니면 닫히지 않음 (HUD, Navigation 등)
-  - **Layer 시스템**: `HUD(0) → None(1) → Popup(2) → Overlay(3) → Loading(4) → SafeArea(5)` 순서로 렌더링
+  - **Layer 시스템**: `HUD(0) → None(1) → Popup(2) → Overlay(3) → StageTransition(4) → Loading(5) → SafeArea(6)` 순서로 렌더링
   - **SafeArea**: Screen 열리는 동안 최상위 레이어로 입력 차단
   - **Queue 처리**: 다중 Open/Close 요청을 순서대로 처리. `OpenAsync()` await 시 화면이 완전히 열릴 때까지 대기 보장
   - **캐싱**: 한 번 열린 Screen은 Close 후에도 `_loadedScreens`에 유지 → 재오픈 시 로딩 없음

@@ -40,12 +40,12 @@ namespace Script.Addressable {
             IsInitialized = true;
         }
 
+        /// <summary>
+        /// AppLabels Group은 Local 이기 때문에 따로 Internet Check가 필요 없음
+        /// </summary>
+        /// <param name="ct"></param>
+        /// <exception cref="Exception"></exception>
         public async UniTask LoadAppLabelsAsync(CancellationToken ct = default) {
-            var result = await HasInternetConnectionAsync(3, ct);
-            if (result == false) {
-                throw new Exception("Addressable LoadAppLabels failed.");
-            }
-
             await DownloadDependenciesAsync(_appLabels, null, ct);
         }
 
