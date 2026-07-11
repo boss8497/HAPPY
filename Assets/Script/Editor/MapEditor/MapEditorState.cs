@@ -103,7 +103,7 @@ namespace Script.Editor.MapEditor {
             if (CurrentEnemySpawnAction != null) {
                 CurrentEnemySpawnAction.spawnData = WorkingObjects
                     .OrderBy(o => o.position.x)
-                    .Select(o => new SpawnData { uid = o.uid, position = o.position })
+                    .Select(o => new SpawnData { uid = o.uid, position = new Vector3(o.position.x, o.position.y, 0f) })
                     .ToArray();
             }
         }

@@ -131,16 +131,88 @@ MonoBehaviour:
         spawnData:
         - uid: 2
           position: {x: 5, y: 0, z: 0}
+        - uid: 3
+          position: {x: 9, y: 0, z: 0}
+        - uid: 3
+          position: {x: 13.865878, y: 2, z: 0}
         - uid: 2
           position: {x: 15.322916, y: 2, z: 0}
+        - uid: 3
+          position: {x: 16.930893, y: 2, z: 0}
         - uid: 7
           position: {x: 20, y: 2, z: 0}
+        - uid: 3
+          position: {x: 23.220724, y: 2, z: 0}
+        - uid: 3
+          position: {x: 26.333065, y: 1.4648728, z: 0}
         - uid: 2
           position: {x: 28.738867, y: 0, z: 0}
         - uid: 4
           position: {x: 32.202675, y: 0, z: 0}
         - uid: 5
           position: {x: 36.907722, y: 0, z: 0}
+        - uid: 3
+          position: {x: 40.00144, y: 1.7994845, z: 0}
+        - uid: 3
+          position: {x: 44.05758, y: 3.8556342, z: 0}
+        - uid: 3
+          position: {x: 48.525852, y: 5.8615446, z: 0}
+        - uid: 3
+          position: {x: 53.558685, y: 6, z: 0}
+        - uid: 3
+          position: {x: 59.049698, y: 8.836964, z: 0}
+        - uid: 3
+          position: {x: 62.554493, y: 10.457459, z: 0}
+        - uid: 3
+          position: {x: 66.72399, y: 11, z: 0}
+        - uid: 3
+          position: {x: 71.04778, y: 13.5, z: 0}
+        - uid: 3
+          position: {x: 86.84826, y: 7.617584, z: 0}
+        - uid: 3
+          position: {x: 90.3934, y: 5.895531, z: 0}
+        - uid: 3
+          position: {x: 93.661095, y: 3.9943333, z: 0}
+        - uid: 3
+          position: {x: 99.60235, y: 3.5190315, z: 0}
+        - uid: 3
+          position: {x: 103.99888, y: 3.60815, z: 0}
+        - uid: 3
+          position: {x: 107.028915, y: 5.6875877, z: 0}
+        - uid: 5
+          position: {x: 116.23786, y: 3, z: 0}
+        - uid: 3
+          position: {x: 122.60885, y: 3, z: 0}
+        - uid: 3
+          position: {x: 129.45747, y: 5.7668266, z: 0}
+        - uid: 3
+          position: {x: 134.99527, y: 9.024335, z: 0}
+        - uid: 2
+          position: {x: 140.87642, y: 10, z: 0}
+        - uid: 3
+          position: {x: 146.0165, y: 12.688125, z: 0}
+        - uid: 2
+          position: {x: 153.53032, y: 7, z: 0}
+        - uid: 3
+          position: {x: 157.63496, y: 7.0103693, z: 0}
+        - uid: 3
+          position: {x: 164.14998, y: 7.8908596, z: 0}
+        - uid: 3
+          position: {x: 167.33772, y: 10.486143, z: 0}
+        - uid: 2
+          position: {x: 167.35458, y: 9, z: 0}
+        - uid: 3
+          position: {x: 172.27985, y: 9, z: 0}
+        - uid: 3
+          position: {x: 175.9405, y: 7.57261, z: 0}
+        - uid: 3
+          position: {x: 179.3839, y: 5.7863317, z: 0}
+        - uid: 7
+          position: {x: 183.7958, y: 4, z: 0}
+        - uid: 3
+          position: {x: 188.65422, y: 4, z: 0}
+        - uid: 2
+          position: {x: 194.55165, y: 4, z: 0}
         - uid: 6
           position: {x: 205.74243, y: 1, z: 0}
     - rid: 2741529401221447830
@@ -659,22 +731,36 @@ MonoBehaviour:
         - uid: 5
           position: {x: 39.634148, y: 0, z: 0}
         - uid: 3
-          position: {x: 43.33041, y: 0, z: 0}
+          position: {x: 44, y: 0, z: 0}
         - uid: 3
-          position: {x: 46.41664, y: 0, z: 0}
+          position: {x: 48, y: 0, z: 0}
         - uid: 3
-          position: {x: 49.839394, y: 0, z: 0}
+          position: {x: 52, y: 0, z: 0}
         - uid: 3
-          position: {x: 52.99608, y: 1.5312653, z: 0}
+          position: {x: 56, y: 0, z: 0}
         - uid: 3
-          position: {x: 56.334236, y: 0, z: 0}
+          position: {x: 60, y: 0, z: 0}
         - uid: 3
-          position: {x: 59.427383, y: 2.7612677, z: 0}
+          position: {x: 64, y: 0, z: 0}
         - uid: 3
-          position: {x: 61.081154, y: 1.7200079, z: 0}
+          position: {x: 68, y: 0, z: 0}
         - uid: 3
-          position: {x: 62.92337, y: 0, z: 0}
+          position: {x: 72, y: 0, z: 0}
         - uid: 3
-          position: {x: 68.81152, y: 0, z: 0}
+          position: {x: 76, y: 0, z: 0}
+        - uid: 3
+          position: {x: 80, y: 3, z: 0}
+        - uid: 3
+          position: {x: 92, y: 0, z: 0}
+        - uid: 3
+          position: {x: 96, y: 0, z: 0}
+        - uid: 3
+          position: {x: 100, y: 0, z: 0}
+        - uid: 3
+          position: {x: 104, y: 3, z: 0}
+        - uid: 3
+          position: {x: 116, y: 0, z: 0}
+        - uid: 3
+          position: {x: 120, y: 0, z: 0}
         - uid: 6
-          position: {x: 160.7009, y: 0, z: 0}
+          position: {x: 130.97134, y: 0, z: 0}

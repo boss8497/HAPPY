@@ -133,7 +133,7 @@ MonoBehaviour:
       expression:
         _code:
         - Op: 0
-          Const: 2
+          Const: 1.5
           Key: 0
           Func: 0
           Arity: 0
@@ -473,7 +473,7 @@ MonoBehaviour:
       expression:
         _code:
         - Op: 0
-          Const: 3
+          Const: 2
           Key: 0
           Func: 0
           Arity: 0

@@ -587,9 +587,11 @@ namespace Script.Editor.MapEditor {
             GUILayout.Space(4f);
             UnityEngine.GUI.enabled = MapEditorState.SelectedObjectUid != 0;
             if (GUILayout.Button("+ Object 추가 (현재 선택 오브젝트)", GUILayout.Height(26f))) {
+                var spawnPos = GetSceneCenter();
+                spawnPos.z = 0f;
                 objects.Add(new MapEditorState.WorkingObjectData {
                     uid      = MapEditorState.SelectedObjectUid,
-                    position = GetSceneCenter(),
+                    position = spawnPos,
                 });
                 MapEditorState.SelectedObjectIndex = objects.Count - 1;
                 MapEditorState.IsDirty             = true;
