@@ -32,6 +32,7 @@ InitializeAsync()
   → Begin() → Start()
   → SetPlayerAnimation(IDLE)
   → ScreenManager.HideStageTransitionAsync()  ← Fade Out으로 공개
+  → ShowCountDownAsync()  ← "2"→"1"→"Go" CountDown Screen을 순서대로 Open/Close (StageLifetimeScope의 countDownKey)
   → RemoveState(SystemControl)
 
 Begin()

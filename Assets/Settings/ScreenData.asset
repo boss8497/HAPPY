@@ -76,3 +76,10 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 1
+  - id: CountDown
+    screen:
+      m_AssetGUID: e3ca4b333dfed2e46b9cef7642244546
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1

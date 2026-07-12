@@ -19,6 +19,7 @@ namespace Script.GamePlay.Stage {
         private readonly string _failScreenKey;
         private readonly string _hudScreenKey;
         private readonly string _clearScreenKey;
+        private readonly string _countDownKey;
 
         public IGroupService   Group          { get; private set; }
         public IObjectResolver Resolver       { get; private set; }
@@ -38,7 +39,8 @@ namespace Script.GamePlay.Stage {
             CinemachineCamera      vCamera,
             string                 failScreenKey,
             string                 hudScreenKey,
-            string                 clearScreenKey
+            string                 clearScreenKey,
+            string                 countDownKey
         ) {
             Group           = group;
             Resolver        = resolver;
@@ -49,6 +51,7 @@ namespace Script.GamePlay.Stage {
             _failScreenKey  = failScreenKey;
             _hudScreenKey   = hudScreenKey;
             _clearScreenKey = clearScreenKey;
+            _countDownKey   = countDownKey;
             _gameTimer      = gameTimer;
             CameraControls  = cameraControls;
             _vCamera        = vCamera;

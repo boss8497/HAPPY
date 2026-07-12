@@ -44,6 +44,8 @@ namespace Script.LifetimeScope {
         private string hudScreenKey;
         [SerializeField, ScreenKey]
         private string clearScreenKey;
+        [SerializeField, ScreenKey]
+        private string countDownKey;
 
         protected override void Configure(IContainerBuilder builder) {
             name = nameof(StageLifetimeScope);
@@ -62,6 +64,7 @@ namespace Script.LifetimeScope {
                    .WithParameter(nameof(failScreenKey), failScreenKey)
                    .WithParameter(nameof(hudScreenKey), hudScreenKey)
                    .WithParameter(nameof(clearScreenKey), clearScreenKey)
+                   .WithParameter(nameof(countDownKey), countDownKey)
                    ;
             
             builder.RegisterEntryPoint<StagePooling>(Lifetime.Singleton)

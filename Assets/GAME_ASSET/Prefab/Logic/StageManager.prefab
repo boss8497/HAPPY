@@ -259,3 +259,4 @@ MonoBehaviour:
   failScreenKey: RunningFail
   hudScreenKey: RunningHUD
   clearScreenKey: RunningClear
+  countDownKey: CountDown

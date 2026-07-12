@@ -9,6 +9,7 @@ using Script.GameInfo.Dungeon;
 using Script.GameInfo.Enum;
 using Script.GamePlay.Character;
 using Script.GamePlay.ECS.Component;
+using Script.GUI.ScreenData;
 using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
@@ -64,8 +65,22 @@ namespace Script.GamePlay.Stage {
             await _screenManager.HideStageTransitionAsync();
             
             
-            await UniTask.WaitForSeconds(1.5f);
-            RemoveState(StageState.SystemControl);
+            await ShowCountDownAsync();
+        }
+
+        private static readonly string[] CountDownSteps = { "2", "1", "Go" };
+
+        private async UniTask ShowCountDownAsync() {
+            var lastIndex = CountDownSteps.Length - 1;
+            for (int i = 0; i < CountDownSteps.Length; i++) {
+                var endTime = _gameTimer.Elapsed + 1.0f;
+                await _screenManager.OpenAsync(new CountDownOption { Text = CountDownSteps[i] }, _countDownKey);
+                if (lastIndex == i) {
+                    RemoveState(StageState.SystemControl);
+                }
+                await UniTask.WaitUntil(() => _gameTimer.Elapsed >= endTime);
+                await _screenManager.CloseAsync(_countDownKey.AsMemory());
+            }
         }
 
         private float SetPlayerAnimation(AnimationName aniName, bool loop = true) {
