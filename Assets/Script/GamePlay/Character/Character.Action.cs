@@ -44,6 +44,10 @@ namespace Script.GamePlay.Character {
             
             switch (otherCharacter.CharacterInfo.type) {
                 case CharacterType.Heart:
+                    // 이미 최대 Hp
+                    if (Math.Abs(MaxHealth.CurrentValue - Health.CurrentValue) < double.Epsilon) {
+                        break;
+                    }
                     ApplyHeart(otherCharacter);
                     break;
                 
