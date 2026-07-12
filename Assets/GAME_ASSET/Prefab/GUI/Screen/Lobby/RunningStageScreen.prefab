@@ -1006,7 +1006,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 23.25
+  m_fontSize: 32
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1123,7 +1123,7 @@ MonoBehaviour:
     m_EditorAssetChanged: 1
   characterContentRoot: {fileID: 2033236860702272077}
   characterErrorMessage: 0
-  nameText: {fileID: 8252282950063491592}
+  nameText: {fileID: 1801130070366906866}
   healthText: {fileID: 1165306702329724817}
   healthTextFormat:
     _localizedString:
