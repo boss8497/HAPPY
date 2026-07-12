@@ -33,6 +33,8 @@ namespace Script.GamePlay.Stage {
         private int _systemControlStack = 0;
 
         private CancellationTokenSource _updateCts;
+        private CancellationTokenSource _countDownCts;
+        private UniTask                 _countDownTask = UniTask.CompletedTask;
 
         public void Initialize() {
             InitializeAsync().Forget();
@@ -70,17 +72,43 @@ namespace Script.GamePlay.Stage {
 
         private static readonly string[] CountDownSteps = { "2", "1", "Go" };
 
-        private async UniTask ShowCountDownAsync() {
+        // ShowCountDownAsync()가 반환하는 UniTask를 ReStart()가 붙잡아 둘 수 있도록 필드로 보관한다.
+        // CountDown은 자신의 1초 타이머로 스스로 Open/Close 하기 때문에, ReStart()가 CloseAllAsync()로
+        // 화면을 정리하는 시점에 이 루프가 여전히 같은 Screen("CountDown")을 건드리고 있으면
+        // ScreenManager의 닫기 큐에서 서로 얽혀 멈춰버릴 수 있다 (StopCountDown()으로 먼저 취소해야 함).
+        private UniTask ShowCountDownAsync() {
+            StopCountDown();
+            _countDownCts  = new CancellationTokenSource();
+            _countDownTask = RunCountDownAsync(_countDownCts.Token);
+            return _countDownTask;
+        }
+
+        private async UniTask RunCountDownAsync(CancellationToken ct) {
             var lastIndex = CountDownSteps.Length - 1;
             for (int i = 0; i < CountDownSteps.Length; i++) {
+                if (ct.IsCancellationRequested) return;
+
                 var endTime = _gameTimer.Elapsed + 1.0f;
                 await _screenManager.OpenAsync(new CountDownOption { Text = CountDownSteps[i] }, _countDownKey);
+
                 if (lastIndex == i) {
                     RemoveState(StageState.SystemControl);
                 }
-                await UniTask.WaitUntil(() => _gameTimer.Elapsed >= endTime);
+
+                var canceled = await UniTask.WaitUntil(() => _gameTimer.Elapsed >= endTime, cancellationToken: ct)
+                                             .SuppressCancellationThrow();
+                if (canceled) return;
+
                 await _screenManager.CloseAsync(_countDownKey.AsMemory());
             }
+        }
+
+        private void StopCountDown() {
+            if (_countDownCts is { IsCancellationRequested: false }) {
+                _countDownCts.Cancel();
+                _countDownCts.Dispose();
+            }
+            _countDownCts = null;
         }
 
         private float SetPlayerAnimation(AnimationName aniName, bool loop = true) {
@@ -215,6 +243,10 @@ namespace Script.GamePlay.Stage {
             // 티어다운으로 T포즈/스폰 과정이 보이기 전에, 지금 화면(마지막 정상 프레임)을 얼려서 덮어둔다.
             await _screenManager.ShowStageTransitionAsync();
 
+            // CountDown이 자신의 타이머로 계속 Open/Close 하는 중일 수 있으므로,
+            // CloseAllAsync()가 같은 Screen을 건드리기 전에 확실히 멈춘 뒤 진행한다.
+            StopCountDown();
+
             await _screenManager.CloseAllAsync(true);
             StopLoop();
 
@@ -237,6 +269,7 @@ namespace Script.GamePlay.Stage {
 
         public void Release() {
             StopLoop();
+            StopCountDown();
             ReleaseCharacter();
             ReleaseTrigger();
             ReleaseReactive();

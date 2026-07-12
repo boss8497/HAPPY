@@ -59,7 +59,7 @@ MonoBehaviour:
           id: Moutain_3
           name: "\uC0B0_3"
           description: 
-          phaseInfos: 03000000
+          phaseInfos: 04000000
           scenePath: df3b36a662d48904294f72eb79029e88
           rewards: 
           exps: 03000000
@@ -71,7 +71,7 @@ MonoBehaviour:
           id: Moutain_4
           name: "\uC0B0_4"
           description: 
-          phaseInfos: 04000000
+          phaseInfos: 03000000
           scenePath: df3b36a662d48904294f72eb79029e88
           rewards: 
           exps: 03000000

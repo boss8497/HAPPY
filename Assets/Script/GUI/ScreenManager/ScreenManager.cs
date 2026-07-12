@@ -294,12 +294,10 @@ namespace Script.GUI.Screen {
                 return;
             }
 
-            // 이미 닫기 대기열에 있으면 중복 방지
-            if (_closeWaitQueue.Contains(screen.Key)) {
-                Debug.LogWarning($"Screen {screen.Key} is already in the process of closing.");
-                return;
-            }
-
+            // 같은 Key로 중복 요청이 들어와도 큐에 그대로 쌓아서 순서대로 처리한다.
+            // (여기서 "이미 대기 중이면 무시하고 return" 식으로 막으면, 이 return은 await 없이 동기적으로
+            //  끝나버려서 CloseAllAsync() 같은 while 루프가 프레임 양보 없이 계속 재호출 -> 무한 스핀에 빠진다.
+            //  뒤에서 FindScreen()==null 체크로 "대기 중 이미 닫힌 경우"를 안전하게 처리하므로 별도 가드가 필요 없다.)
             _closeWaitQueue.Enqueue(screen.Key);
 
             await UniTask.WaitUntil(() => ClosingScreen == false && _closeWaitQueue.Peek().AsSpan().SequenceEqual(screen.Key.AsSpan()));

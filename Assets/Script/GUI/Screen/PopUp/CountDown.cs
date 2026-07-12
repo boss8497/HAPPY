@@ -41,12 +41,13 @@ namespace Script.GUI.Screen {
             return UniTask.CompletedTask;
         }
 
-        public override async UniTask CloseInternal() {
-            if (_sequence == null) return;
+        public override UniTask CloseInternal() {
+            if (_sequence == null) 
+                return UniTask.CompletedTask;
 
-            // Kill하지 않고 자연스럽게 끝까지(중앙 대기 -> 화면 밖 이동) 재생되도록 대기한다.
-            await _sequence.AsyncWaitForCompletion();
+            _sequence.Kill();
             _sequence = null;
+            return UniTask.CompletedTask;
         }
     }
 }

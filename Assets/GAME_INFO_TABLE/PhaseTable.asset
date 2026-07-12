@@ -380,20 +380,82 @@ MonoBehaviour:
         spawnData:
         - uid: 2
           position: {x: 5, y: 0, z: 0}
+        - uid: 3
+          position: {x: 7.1419225, y: 0, z: 0}
+        - uid: 3
+          position: {x: 9.961677, y: 0, z: 0}
+        - uid: 3
+          position: {x: 13.939966, y: 2, z: 0}
         - uid: 2
           position: {x: 15.322916, y: 2, z: 0}
+        - uid: 3
+          position: {x: 17.519949, y: 2, z: 0}
         - uid: 7
           position: {x: 20, y: 2, z: 0}
+        - uid: 3
+          position: {x: 24.59744, y: 2, z: 0}
         - uid: 2
           position: {x: 28.738867, y: 0, z: 0}
         - uid: 4
           position: {x: 32.202675, y: 0, z: 0}
         - uid: 5
           position: {x: 36.907722, y: 0, z: 0}
-        - uid: 6
-          position: {x: 214.95424, y: -5.4229183, z: 0}
+        - uid: 3
+          position: {x: 39.858692, y: 1.4786553, z: 0}
+        - uid: 3
+          position: {x: 43.175255, y: 3.1678364, z: 0}
+        - uid: 3
+          position: {x: 46.43001, y: 4.8776174, z: 0}
+        - uid: 3
+          position: {x: 51.497555, y: 5.9488077, z: 0}
+        - uid: 2
+          position: {x: 53.26914, y: 6, z: 0}
+        - uid: 3
+          position: {x: 57.78049, y: 7.9057856, z: 0}
+        - uid: 3
+          position: {x: 60.252407, y: 9.2035675, z: 0}
+        - uid: 3
+          position: {x: 64.00157, y: 11, z: 0}
+        - uid: 7
+          position: {x: 69.46049, y: 11, z: 0}
+        - uid: 3
+          position: {x: 74.90748, y: 11, z: 0}
+        - uid: 5
+          position: {x: 78.07038, y: 11, z: 0}
+        - uid: 3
+          position: {x: 82.10872, y: 9.430726, z: 0}
+        - uid: 3
+          position: {x: 86.11822, y: 7.4668884, z: 0}
+        - uid: 3
+          position: {x: 89.85497, y: 5.530326, z: 0}
+        - uid: 3
+          position: {x: 93.78265, y: 3.757416, z: 0}
+        - uid: 7
+          position: {x: 100.3015, y: 3, z: 0}
+        - uid: 3
+          position: {x: 107.062256, y: 3, z: 0}
+        - uid: 3
+          position: {x: 114.24269, y: 3, z: 0}
+        - uid: 3
+          position: {x: 121.766174, y: 3, z: 0}
+        - uid: 2
+          position: {x: 125.45498, y: 3, z: 0}
+        - uid: 3
+          position: {x: 137.04262, y: -2.5077367, z: 0}
+        - uid: 3
+          position: {x: 147.1379, y: -6, z: 0}
+        - uid: 4
+          position: {x: 156.3329, y: -6, z: 0}
+        - uid: 3
+          position: {x: 165.48146, y: -6, z: 0}
+        - uid: 3
+          position: {x: 198.48137, y: -6, z: 0}
         - uid: 9
           position: {x: 202.99127, y: -7.8073626, z: 0}
+        - uid: 3
+          position: {x: 210.29588, y: -6, z: 0}
+        - uid: 6
+          position: {x: 214.95424, y: -5.4229183, z: 0}
     - rid: 2741529482976034820
       type: {class: MapSpawnAction, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
       data:
