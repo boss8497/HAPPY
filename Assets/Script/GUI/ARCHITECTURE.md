@@ -98,6 +98,27 @@ HideStageTransitionAsync()
 
 ---
 
+## Loading (StageTransition 위 로딩 화면)
+
+`ScreenData` id `"Loading"`으로 등록된 일반 Screen(`Screen/Loading/Loading.cs`)이지만,  
+`OpenAsync(key)`/`CloseAsync` 같은 공개 API를 타지 않고 `ScreenManager.Loading.cs`가 직접 관리한다.
+
+**핵심 포인트 — `_loadedScreens`(ResourceClear 대상)에 넣지 않음:**  
+자주 열고 닫히는 화면이라 매번 Addressable 로드/Destroy하면 낭비이므로,  
+`ShowLoadingAsync()`에서 최초 1회만 `LoadScreen()`으로 로드해 `_loadingScreen` 필드에 보관하고  
+이후에는 `_layers[Loading].OpenScreen()/CloseScreen()`만 호출해 SetActive만 토글한다.  
+`_loadedScreens` Dictionary를 거치지 않으므로 씬 이동 시 `ResourceClear()`가 파괴하지 않는다  
+(ScreenManager 자체가 `DontDestroyOnLoad`라 계층에 남아있는 한 계속 생존).
+
+**흐름 (현재는 StageTransition과 연동):**
+```
+ShowStageTransitionAsync() 끝에서 → ShowLoadingAsync()  (StageTransition 위에 노출, Layer 순서로 자동 보장)
+HideStageTransitionAsync() 시작에서 → HideLoadingAsync() (Fade 시작 전 즉시 감춤)
+```
+`_loadingScreenShown` 플래그로 중복 Open/Close 방지 (StageTransition이 Fade 도중 다시 Show될 때 대비).
+
+---
+
 ## 다중 Open/Close 요청 — Queue 처리
 
 동시에 여러 Open/Close 요청이 들어와도 순서를 보장한다.
@@ -243,6 +264,7 @@ CharacterInfo
 | `Layer/ScreenLayer.cs` | Layer별 Open/Close 처리 |
 | `Layer/ScreenLayerType.cs` | Layer enum (HUD~SafeArea) |
 | `ScreenManager.StageTransition.cs` | StageTransition Layer 캡처/Fade 제어 (partial class) |
+| `ScreenManager.Loading.cs` | Loading Screen 상시 보관/토글 (partial class, ResourceClear 미대상) |
 | `ViewModel/Base/SelectElement.cs` | 리스트 아이템 베이스 |
 | `ViewModel/Base/Selector.cs` | 선택 상태 중앙 관리 |
 | `ViewModel/CharacterElement.cs` | 캐릭터 리스트 아이템 |

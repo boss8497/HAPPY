@@ -44,6 +44,8 @@ namespace Script.GUI.Screen {
 
             _stageTransitionCanvasGroup.alpha          = 1f;
             _stageTransitionCanvasGroup.blocksRaycasts = true;
+
+            await ShowLoadingAsync();
         }
 
         /// <summary>
@@ -51,6 +53,8 @@ namespace Script.GUI.Screen {
         /// </summary>
         public async UniTask HideStageTransitionAsync() {
             if (_stageTransitionSnapshot == null) return;
+
+            await HideLoadingAsync();
 
             CancelStageTransitionFade();
             _stageTransitionFadeCts = new CancellationTokenSource();
