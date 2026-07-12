@@ -105,11 +105,15 @@ namespace Script.GamePlay.Stage {
                              var mainCharacterItem = Players.FirstOrDefault();
                              var itemDiff = mainCharacterItem?.GetItemDiff() ?? new ItemValue();
 
-                             var endTime = SetPlayerAnimation(AnimationName.VICTORY, false);
+                             // Forget
+                             async void WaitAnimation(float endTime) {
+                                 var cancel = await UniTask.WaitForSeconds(endTime, cancellationToken: ct).SuppressCancellationThrow();
+                                 if (cancel) return;
+                                 SetPlayerAnimation(AnimationName.IDLE, true);
+                             }
                              
-                             var cancel = await UniTask.WaitForSeconds(endTime, cancellationToken: ct).SuppressCancellationThrow();
-                             if (cancel) return;
-                             SetPlayerAnimation(AnimationName.IDLE, true);
+                             var endTime = SetPlayerAnimation(AnimationName.VICTORY, false);
+                             WaitAnimation(endTime);
                              
                              var itemSync = await Group.ClearedDungeon(DungeonInfo.CurrentValue, Stage.CurrentValue);
                              await _screenManager.OpenAsync(itemDiff - itemSync.updateItems, _clearScreenKey, ct);
