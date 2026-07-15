@@ -1,0 +1,19 @@
+name: Check GameInfo
+
+on:
+  push:
+    paths:
+      - 'Assets/Script/GameInfo/**'
+  pull_request:
+    paths:
+      - 'Assets/Script/GameInfo/**'
+  workflow_dispatch:
+
+jobs:
+  check-gameinfo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: GameInfo 금지 라이브러리 검사
+        run: bash .github/scripts/check-gameinfo.sh
