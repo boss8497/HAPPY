@@ -1,0 +1,27 @@
+{
+    "name": "Script.Audio",
+    "rootNamespace": "",
+    "references": [
+        "UniTask",
+        "VContainer",
+        "MessagePack.Unity",
+        "Unity.Addressables",
+        "Unity.ResourceManager",
+        "Script.Audio.Interface",
+        "Script.DataBase",
+        "Script.GamePlay.Pool",
+        "Script.Utility.Runtime",
+        "Script.LifetimeScope.Locator",
+        "Script.GamePlay.Pool.Interface",
+        "Script.Audio.MonoBehaviour.Interface"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -37,7 +37,13 @@ namespace Script.LifetimeScope {
             
             builder.RegisterEntryPoint<GameSetting.GameSetting>(Lifetime.Singleton)
                    .As<IGameSetting>();
-            
+
+            builder.RegisterEntryPoint<GamePlay.Audio.AudioPooling>(Lifetime.Singleton)
+                   .As<GamePlay.Audio.IAudioPooling>();
+
+            builder.RegisterEntryPoint<GamePlay.Audio.AudioManager>(Lifetime.Singleton)
+                   .As<GamePlay.Audio.Interface.IAudioManager>();
+
             builder.RegisterEntryPoint<ScopeLocator>(Lifetime.Singleton)
                    .As<IScopeLocator>();
 

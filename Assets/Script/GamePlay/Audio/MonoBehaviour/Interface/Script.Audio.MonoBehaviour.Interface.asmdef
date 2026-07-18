@@ -1,0 +1,16 @@
+{
+    "name": "Script.Audio.MonoBehaviour.Interface",
+    "rootNamespace": "",
+    "references": [
+        "GUID:fa801717cc701074b83f625315680f93"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

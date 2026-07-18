@@ -16,8 +16,9 @@ StartUp → Title → Lobby → GameScene(게임플레이 씬들)
 - 흐름:
   1. `IAddressable.InitializeAsync()` — Addressable 초기화
   2. `IGameSetting.InitializeAsync()` — 게임 설정 로드
-  3. `IScopeFactory.CreateScope(ScopeType.Client)` — `ClientLifetimeScope` 생성
-  4. `ISceneLoader.LoadScene("Title")` — Title 씬으로 전환
+  3. `IAudioManager.InitializeAudioManager()` — AudioMixer 로드 + 그룹 볼륨/뮤트 설정 적용
+  4. `IScopeFactory.CreateScope(ScopeType.Client)` — `ClientLifetimeScope` 생성
+  5. `ISceneLoader.LoadScene("Title")` — Title 씬으로 전환
 
 ### TitleLogic.cs / TitleHUD (`Title.unity`)
 - Title 씬 UI 및 로직 처리

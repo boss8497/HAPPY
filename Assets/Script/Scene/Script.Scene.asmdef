@@ -23,7 +23,8 @@
         "GUID:320d9ee2dbd710a43a5c8e405f512b3c",
         "GUID:c5c8f8894fdbae4488f68edcf3e7b9bb",
         "GUID:c09615db8c8cf6140bd016c0c39dbb91",
-        "GUID:1d0c9d2279fb71c4c9aea664f7054a0c"
+        "GUID:1d0c9d2279fb71c4c9aea664f7054a0c",
+        "Script.Audio.Interface"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

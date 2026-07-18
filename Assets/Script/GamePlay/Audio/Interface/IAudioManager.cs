@@ -1,0 +1,63 @@
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+
+namespace Script.GamePlay.Audio.Interface {
+    public interface IAudioManager {
+        bool Initialized { get; }
+
+        /// <summary>
+        /// StartUpLogic에서 명시적으로 호출 — Addressable/DataBase가 준비된 이후 진행되어야 하기 때문에
+        /// IInitializable.Initialize() 자동 실행이 아닌 IGameSetting과 동일한 명시 호출 패턴을 따른다.
+        /// </summary>
+        void InitializeAudioManager();
+
+        /// <summary>
+        /// 오디오 재생. loop=false면 재생이 끝나는 즉시 자동으로 풀에 반환된다(= 단발 재생).
+        /// loop=true면 명시적으로 Stop()을 호출해야 반환된다. BGM은 이 메서드 대신 PlayBGM을 사용한다.
+        /// loop=false && autoRelease=true면 재생 시작 직후 Addressable 핸들을 즉시 Release한다
+        /// (loop=true일 때는 재생 중 캐시를 지우면 안 되므로 autoRelease를 무시한다).
+        /// 그룹 볼륨은 AudioMixer에서 dB로 이미 적용되므로 AudioSource 자체 볼륨은 항상 최대(1)로 재생한다.
+        /// 그룹별 동시 재생 개수 제한(AudioMaxCount)을 넘으면 조용히 무시되고 AudioHandle.Invalid를 반환한다.
+        /// is3D=true면 AudioSource.spatialBlend=1로 재생하며, track이 지정되면 해당 Transform의 자식으로 붙어
+        /// 위치를 계속 따라가고(대상이 재생 도중 Destroy되면 소리도 함께 끊김에 유의), track이 없으면 position에
+        /// 스냅샷으로 배치한다. is3D=false면 position/track은 무시된다.
+        /// </summary>
+        UniTask<AudioHandle> PlayAsync(
+            string             key,
+            AudioGroupType     group        = AudioGroupType.Effect,
+            bool               loop         = false,
+            bool               autoRelease  = true,
+            float              pitch        = 1f,
+            bool               is3D         = false,
+            Vector3?           position     = null,
+            Transform          track        = null,
+            CancellationToken  ct           = default
+        );
+
+        void Stop(AudioHandle handle);
+        void StopAll(AudioGroupType group);
+
+        /// <summary>
+        /// BGM 전용 재생 — 위치 개념이 없고 항상 그룹은 BGM, 항상 loop. 전용 AudioSource 1개로 관리되며
+        /// AudioMaxCount 풀 제한과는 무관하다. 새로 호출하면 이전 BGM은 즉시 정지된다.
+        /// </summary>
+        UniTask PlayBGM(string key, CancellationToken ct = default);
+        void    StopBGM();
+
+        float GetVolume(AudioGroupType group);
+        void  SetVolume(AudioGroupType group, float volume01);
+        bool  GetMute(AudioGroupType   group);
+        void  SetMute(AudioGroupType   group, bool mute);
+
+        /// <summary>
+        /// 캐시된 특정 클립을 해제한다. 재생 중이면 먼저 정지시킨다.
+        /// </summary>
+        void ReleaseClip(string key);
+
+        /// <summary>
+        /// ScreenManager.ResourceClear()와 동일한 패턴 — 캐시된 모든 클립을 일괄 해제.
+        /// </summary>
+        void ReleaseAllClips();
+    }
+}

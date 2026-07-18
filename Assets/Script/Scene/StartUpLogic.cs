@@ -2,6 +2,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using Script.Addressable;
 using Script.GameInfo.Table;
+using Script.GamePlay.Audio.Interface;
 using Script.GamePlay.Scene;
 using Script.GameSetting.Interface;
 using Script.GUI.Screen.Interface;
@@ -16,20 +17,23 @@ namespace Script.Scene {
         private IAddressable   _addressable;
         private IScopeFactory  _scopeFactory;
         private IGameSetting   _gameSetting;
+        private IAudioManager  _audioManager;
         private IScreenManager _screenManager;
         private ISceneLoader   _sceneLoader;
 
-        [Inject] 
+        [Inject]
         public void Constructor(
             IAddressable   addressable,
             IScopeFactory  scopeFactory,
             IGameSetting   gameSetting,
+            IAudioManager  audioManager,
             IScreenManager screenManager,
             ISceneLoader   sceneLoader
         ) {
             _addressable   = addressable;
             _scopeFactory  = scopeFactory;
             _gameSetting   = gameSetting;
+            _audioManager  = audioManager;
             _screenManager = screenManager;
             _sceneLoader   = sceneLoader;
         }
@@ -42,6 +46,7 @@ namespace Script.Scene {
         private async UniTaskVoid Initialize() {
             await InitializeAddressable();
             await InitializeGameSetting();
+            await InitializeAudioManager();
             await InitializeScreenManager();
             await CreateClientScope();
 
@@ -65,6 +70,11 @@ namespace Script.Scene {
         private async UniTask InitializeGameSetting() {
             _gameSetting.InitializeGameSetting();
             await UniTask.WaitUntil(() => _gameSetting?.Initialized ?? false);
+        }
+
+        private async UniTask InitializeAudioManager() {
+            _audioManager.InitializeAudioManager();
+            await UniTask.WaitUntil(() => _audioManager?.Initialized ?? false);
         }
 
         private async UniTask InitializeScreenManager() {

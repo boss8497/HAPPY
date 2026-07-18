@@ -15,6 +15,17 @@ MonoBehaviour:
   m_GroupName: AppLifetimeScope
   m_GUID: 4231d7150af46584d964d56a5dfb292a
   m_SerializeEntries:
+  - m_GUID: 0bf431a10fc50764aa2d34d55873e060
+    m_Address: AudioPlayerPrefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 21ff1ee73cdfe5449a5efd0481b5dee8
+    m_Address: AudioMixer
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AppLifetimeScope
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 763fc67363fe2e64b8033420ee1fb11a
     m_Address: GameSettingAsset
     m_ReadOnly: 0
