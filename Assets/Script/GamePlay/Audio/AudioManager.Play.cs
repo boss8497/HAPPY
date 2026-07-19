@@ -20,6 +20,10 @@ namespace Script.GamePlay.Audio {
         private readonly Dictionary<int, AudioGroupType> _activeGroups       = new();
         private readonly Dictionary<AudioGroupType, int> _activeCountByGroup = new();
 
+        // 그룹별 MaxCount 초과 시 가장 오래 재생 중인 플레이어를 골라내기 위한 대여 순번(작을수록 오래됨).
+        private readonly Dictionary<int, int> _rentOrder = new();
+        private          int                  _rentSequence;
+
         private readonly List<IAudioPlayer> _finishedBuffer = new();
         private readonly List<int>          _deadBuffer     = new();
 
@@ -34,16 +38,83 @@ namespace Script.GamePlay.Audio {
             Transform         track       = null,
             CancellationToken ct          = default
         ) {
+            // 같은 key가 이미 재생 중이면 새로 빌리지 않고 그 인스턴스를 재사용해 처음부터 다시 재생한다.
+            // 새 슬롯을 점유하지 않으므로 IsOverLimit로 막혀 있는 상황이어도 이 재생 요청은 통과시킨다.
+            var existing = FindActiveByClipKey(key);
+            if (existing != null) {
+                return Replay(existing, group, loop, pitch, is3D, position, track);
+            }
+
             var clip = await GetOrLoadClipAsync(key, ct);
 
             // MaxCount 체크는 실제로 풀 슬롯을 점유하기 직전(로드 완료 후)에 한다.
+            // 상한을 넘었으면 거부하는 대신 그룹에서 가장 오래 재생 중인 플레이어를 강제 종료(Dequeue)하고 자리를 내준다.
+            // BGM은 이 풀 자체를 거치지 않으므로(PlayBGM 참고) 대상이 될 수 없다.
             if (IsOverLimit(group)) {
-                return AudioHandle.Invalid;
+                var oldest = FindOldestInGroup(group);
+                if (oldest == null) {
+                    return AudioHandle.Invalid;
+                }
+
+                ReturnPlayer(oldest);
             }
 
             var player = _audioPooling.Pop();
             var handle = player.Rent(group, key, loop);
 
+            ApplyPlaybackSettings(player, clip, group, loop, pitch, is3D, position, track);
+            player.Source.Play();
+
+            RegisterActive(handle, player, group);
+
+            // 요청대로 단발 재생(loop=false) + autoRelease면 재생 시작 직후 Addressable 핸들만 Release한다.
+            // AudioSource는 이미 clip을 참조 중이라 재생 자체는 계속 이어진다(압축 스트리밍 클립은 예외적 위험 있음, ARCHITECTURE.md 참고).
+            // loop=true(BGM 등)는 재생 중 캐시를 지우면 안 되므로 autoRelease를 무시한다.
+            if (loop == false && autoRelease) {
+                ReleaseClipHandle(key);
+            }
+
+            return handle;
+        }
+
+        private AudioHandle Replay(
+            IAudioPlayer   player,
+            AudioGroupType group,
+            bool           loop,
+            float          pitch,
+            bool           is3D,
+            Vector3?       position,
+            Transform      track
+        ) {
+            var previousGroup = player.Group;
+            var handle         = player.Rent(group, player.ClipKey, loop);
+
+            ApplyPlaybackSettings(player, player.Source.clip, group, loop, pitch, is3D, position, track);
+            player.Source.time = 0f;
+            player.Source.Play();
+
+            if (previousGroup != group) {
+                DecrementActiveCount(previousGroup);
+                IncrementActiveCount(group);
+                _activeGroups[handle.InstanceId] = group;
+            }
+
+            // 방금 다시 재생을 시작했으니 대여 순번을 갱신해 곧바로 Dequeue 대상이 되지 않게 한다.
+            _rentOrder[handle.InstanceId] = ++_rentSequence;
+
+            return handle;
+        }
+
+        private void ApplyPlaybackSettings(
+            IAudioPlayer   player,
+            AudioClip      clip,
+            AudioGroupType group,
+            bool           loop,
+            float          pitch,
+            bool           is3D,
+            Vector3?       position,
+            Transform      track
+        ) {
             _mixerGroups.TryGetValue(group, out var mixerGroup);
 
             var source = player.Source;
@@ -61,21 +132,41 @@ namespace Script.GamePlay.Audio {
             else if (is3D && position.HasValue) {
                 player.SetPosition(position.Value);
             }
+        }
 
-            source.Play();
-
+        private void RegisterActive(AudioHandle handle, IAudioPlayer player, AudioGroupType group) {
             _activePlayers[handle.InstanceId] = player;
             _activeGroups[handle.InstanceId]  = group;
+            _rentOrder[handle.InstanceId]     = ++_rentSequence;
             IncrementActiveCount(group);
+        }
 
-            // 요청대로 단발 재생(loop=false) + autoRelease면 재생 시작 직후 Addressable 핸들만 Release한다.
-            // AudioSource는 이미 clip을 참조 중이라 재생 자체는 계속 이어진다(압축 스트리밍 클립은 예외적 위험 있음, ARCHITECTURE.md 참고).
-            // loop=true(BGM 등)는 재생 중 캐시를 지우면 안 되므로 autoRelease를 무시한다.
-            if (loop == false && autoRelease) {
-                ReleaseClipHandle(key);
+        private IAudioPlayer FindActiveByClipKey(string key) {
+            foreach (var player in _activePlayers.Values) {
+                if (player.IsAlive && player.ClipKey == key) {
+                    return player;
+                }
             }
 
-            return handle;
+            return null;
+        }
+
+        private IAudioPlayer FindOldestInGroup(AudioGroupType group) {
+            IAudioPlayer oldest      = null;
+            var          oldestOrder = int.MaxValue;
+
+            foreach (var kv in _activePlayers) {
+                var player = kv.Value;
+                if (player.IsAlive == false || player.Group != group)
+                    continue;
+
+                if (_rentOrder.TryGetValue(kv.Key, out var order) && order < oldestOrder) {
+                    oldestOrder = order;
+                    oldest      = player;
+                }
+            }
+
+            return oldest;
         }
 
         public async UniTask PlayBGM(string key, CancellationToken ct = default) {
@@ -217,6 +308,7 @@ namespace Script.GamePlay.Audio {
                 _activeGroups.Remove(instanceId);
             }
 
+            _rentOrder.Remove(instanceId);
             _activePlayers.Remove(instanceId);
         }
 

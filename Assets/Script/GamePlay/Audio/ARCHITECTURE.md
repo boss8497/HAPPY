@@ -81,12 +81,20 @@ MonitorAsync() 시작      — 매 프레임 재생 종료된(loop=false) 플레
   (풀에 반환할 오브젝트 자체가 사라졌으므로 Push는 하지 않고 카운트만 되돌림 — 해당 풀 슬롯은 사실상 소실됨).
 - **볼륨은 그룹(AudioMixer)에서만 제어**: 그룹 볼륨이 `SetFloat`으로 dB 적용되므로 개별 `AudioSource.volume`은
   항상 `1`(최대)로 고정한다. 개별 인스턴스 볼륨 스케일 파라미터는 두지 않았다 — 필요해지면(예: 거리 감쇠) 그때 추가한다.
-- **AudioMaxCount(그룹별 동시 재생 제한)**: `AudioManager.MaxConcurrent`에 그룹별 상한을 정의한다
-  (기본값: Master 4 / Effect 8 / Voice 3 — BGM은 전용 소스라 대상 아님). 상한을 넘는 `PlayAsync` 요청은
-  조용히 무시되고 `AudioHandle.Invalid`를 반환한다(예외 없음). 체크는 클립 로드가 끝난 뒤, 실제로 풀 슬롯을
-  점유하기 직전에 수행한다 — 이미 캐시된 클립이면 체크가 거의 즉시 이뤄지지만, 처음 로드하는 클립은 로드 완료
-  시점까지 상한 체크가 지연되므로 이론상 동시에 여러 요청이 몰리면 짧은 순간 상한을 넘길 수 있다(엄격한 실시간
-  보장이 필요한 값은 아니라고 판단해 감수함).
+- **같은 key 재생 요청 처리(`FindActiveByClipKey`)**: `PlayAsync` 진입 시 가장 먼저 같은 key가 이미 재생 중인지
+  확인한다. 있으면 새 플레이어를 빌리지 않고 그 인스턴스를 그대로 재사용해 `source.time = 0`으로 처음부터 다시
+  재생한다(그룹/loop/pitch/3D 설정은 이번 호출 값으로 갱신). 새 슬롯을 점유하지 않으므로 그룹이 `AudioMaxCount`에
+  걸려 있어도 이 재생 요청은 항상 통과한다. BGM은 `_activePlayers`에 들어오지 않으므로 이 로직의 대상이 아니다.
+- **AudioMaxCount(그룹별 동시 재생 제한) — 초과 시 Dequeue**: `AudioManager.MaxConcurrent`에 그룹별 상한을 정의한다
+  (기본값: Master 4 / Effect 8 / Voice 3 — BGM은 전용 소스라 대상 아님). 상한을 넘으면(그리고 같은 key 재생 요청이
+  아니면) 요청을 거부하는 대신 `FindOldestInGroup`으로 그 그룹에서 가장 오래 재생 중인 플레이어를 찾아 강제
+  종료(`ReturnPlayer`)하고 새 사운드에게 자리를 내준다 — 대여 순번(`_rentOrder`, 대여할 때마다 증가하는
+  시퀀스 번호)이 가장 작은 것이 대상. `Replay()`로 다시 재생된 플레이어는 순번이 갱신되어 곧바로 다시
+  Dequeue 대상이 되지 않는다. 그룹에 살아있는 플레이어가 하나도 없는 예외적인 경우에만
+  `AudioHandle.Invalid`를 반환한다. 체크는 클립 로드가 끝난 뒤, 실제로 풀 슬롯을 점유하기 직전에 수행한다 —
+  이미 캐시된 클립이면 체크가 거의 즉시 이뤄지지만, 처음 로드하는 클립은 로드 완료 시점까지 상한 체크가
+  지연되므로 이론상 동시에 여러 요청이 몰리면 짧은 순간 상한을 넘길 수 있다(엄격한 실시간 보장이 필요한 값은
+  아니라고 판단해 감수함).
 - **autoRelease 주의사항**: `loop == false && autoRelease`면 `Play()` 호출 직후 Addressable 핸들을 바로 Release한다(요청 사양).
   `loop == true`(BGM 등)는 재생 도중 캐시를 지우면 안 되므로 autoRelease를 무시한다.
   `AudioSource.clip`이 이미 로드된 `AudioClip` 객체를 참조 중이므로 대부분의 경우 재생은 문제없이 이어지지만,

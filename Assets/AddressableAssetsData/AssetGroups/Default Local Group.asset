@@ -140,6 +140,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a9039758fedd47843a5806098677d4a9
+    m_Address: Audio_Coin
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ad6d812305dc0ad4a96bba138bde157e
     m_Address: UNIT_BOX
     m_ReadOnly: 0
@@ -147,6 +152,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b3df74d67e4382940b03c169637ee0da
     m_Address: CharacterElement
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b3e7eb3fa6a6c424f8ff3588e361f624
+    m_Address: Audio_Jump
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

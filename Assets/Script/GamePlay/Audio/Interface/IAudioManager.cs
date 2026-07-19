@@ -18,7 +18,11 @@ namespace Script.GamePlay.Audio.Interface {
         /// loop=false && autoRelease=true면 재생 시작 직후 Addressable 핸들을 즉시 Release한다
         /// (loop=true일 때는 재생 중 캐시를 지우면 안 되므로 autoRelease를 무시한다).
         /// 그룹 볼륨은 AudioMixer에서 dB로 이미 적용되므로 AudioSource 자체 볼륨은 항상 최대(1)로 재생한다.
-        /// 그룹별 동시 재생 개수 제한(AudioMaxCount)을 넘으면 조용히 무시되고 AudioHandle.Invalid를 반환한다.
+        /// 같은 key가 이미 재생 중이면 새로 빌리지 않고 그 인스턴스를 재사용해 처음부터 다시 재생한다
+        /// (새 슬롯을 점유하지 않으므로 그룹이 상한이어도 이 재생 요청은 통과됨).
+        /// 그룹별 동시 재생 개수 제한(AudioMaxCount)을 넘으면, 거부하는 대신 해당 그룹에서 가장 오래
+        /// 재생 중인 플레이어를 강제 종료하고 자리를 내준다(BGM은 이 풀을 거치지 않으므로 대상이 될 수 없음).
+        /// 대상이 하나도 없는 예외적인 경우에만 AudioHandle.Invalid를 반환한다.
         /// is3D=true면 AudioSource.spatialBlend=1로 재생하며, track이 지정되면 해당 Transform의 자식으로 붙어
         /// 위치를 계속 따라가고(대상이 재생 도중 Destroy되면 소리도 함께 끊김에 유의), track이 없으면 position에
         /// 스냅샷으로 배치한다. is3D=false면 position/track은 무시된다.
