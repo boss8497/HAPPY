@@ -8,7 +8,7 @@ Unity 비의존 순수 C# — 서버와 공용으로 사용할 수 있다.
 | 폴더/파일 | 설명 |
 |---|---|
 | `DungeonInfo.cs` | 던전 전체 정보 (Stage 목록 포함) `[AutoEditorTable(true)]` |
-| `Stage.cs` | 스테이지 단위 데이터 (PhaseInfo 참조) |
+| `Stage.cs` | 스테이지 단위 데이터 (PhaseInfo 참조). `bgm`(`AudioData`) 필드로 스테이지별 BGM을 지정 — `StageManager.Reactive.cs`가 `Stage` ReactiveProperty 변경 시 `bgm.key`로 `PlayBGM`을 호출한다(테이블에서 `bgm`을 비워두면 `NullReferenceException` 위험이 있으므로 반드시 채워야 함) |
 | `PhaseInfo.cs` | 페이즈 단위 — `actions[]` + `triggers[]` 보유 `[AutoEditorTable(true)]` |
 | `Action/` | 스테이지 이벤트 액션 기획 데이터 |
 | `Trigger/` | 스테이지 종료 조건 기획 데이터 |

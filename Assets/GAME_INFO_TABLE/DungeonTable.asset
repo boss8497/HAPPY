@@ -39,6 +39,8 @@ MonoBehaviour:
           scenePath: df3b36a662d48904294f72eb79029e88
           rewards: 
           exps: 03000000
+          bgm:
+            rid: 8193467651183083660
         - guid:
             v0: 937873603
             v1: 1241770501
@@ -51,6 +53,8 @@ MonoBehaviour:
           scenePath: df3b36a662d48904294f72eb79029e88
           rewards: 02000000
           exps: 03000000
+          bgm:
+            rid: 8193467651183083661
         - guid:
             v0: 3447561144
             v1: 1298301570
@@ -63,6 +67,8 @@ MonoBehaviour:
           scenePath: df3b36a662d48904294f72eb79029e88
           rewards: 
           exps: 03000000
+          bgm:
+            rid: 8193467651183083662
         - guid:
             v0: 1982846878
             v1: 1113500117
@@ -75,6 +81,8 @@ MonoBehaviour:
           scenePath: df3b36a662d48904294f72eb79029e88
           rewards: 
           exps: 03000000
+          bgm:
+            rid: 8193467651183083663
     - rid: 4223259646659919970
       type: {class: DungeonInfo, ns: Script.GameInfo.Dungeon, asm: Script.GameInfo}
       data:
@@ -96,3 +104,50 @@ MonoBehaviour:
           scenePath: c67ee9c5192c4914582a56bceab39eac
           rewards: 
           exps: 03000000
+          bgm:
+            rid: 8193467651183083659
+    - rid: 8193467651183083659
+      type: {class: AudioData, ns: Script.GameInfo.Info, asm: Script.GameInfo}
+      data:
+        key: 217dfe46a3d019b4586d89da7a4b6034
+        type: 1
+        loop: 1
+        autoRelease: 0
+        pitch: 1
+        is3D: 0
+    - rid: 8193467651183083660
+      type: {class: AudioData, ns: Script.GameInfo.Info, asm: Script.GameInfo}
+      data:
+        key: 217dfe46a3d019b4586d89da7a4b6034
+        type: 1
+        loop: 1
+        autoRelease: 0
+        pitch: 1
+        is3D: 0
+    - rid: 8193467651183083661
+      type: {class: AudioData, ns: Script.GameInfo.Info, asm: Script.GameInfo}
+      data:
+        key: 217dfe46a3d019b4586d89da7a4b6034
+        type: 1
+        loop: 1
+        autoRelease: 0
+        pitch: 1
+        is3D: 0
+    - rid: 8193467651183083662
+      type: {class: AudioData, ns: Script.GameInfo.Info, asm: Script.GameInfo}
+      data:
+        key: 217dfe46a3d019b4586d89da7a4b6034
+        type: 1
+        loop: 1
+        autoRelease: 0
+        pitch: 1
+        is3D: 0
+    - rid: 8193467651183083663
+      type: {class: AudioData, ns: Script.GameInfo.Info, asm: Script.GameInfo}
+      data:
+        key: 217dfe46a3d019b4586d89da7a4b6034
+        type: 1
+        loop: 1
+        autoRelease: 0
+        pitch: 1
+        is3D: 0

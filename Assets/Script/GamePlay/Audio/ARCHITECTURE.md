@@ -5,7 +5,10 @@ Unity `AudioMixer`(Local Addressable, key=`"AudioMixer"`) 기반 오디오 재�
 각 그룹의 Volume이 `MasterVolume`/`BGMVolume`/`EffectVolume`/`VoiceVolume`이라는 이름으로 Exposed Parameter에 노출되어 있어야
 `AudioMixer.SetFloat()`으로 런타임 제어가 가능하다.
 
-AudioListener는 이 모듈에서 다루지 않는다(메인 카메라에 직접 부착).
+AudioListener는 이 모듈에서 다루지 않는다(씬마다 카메라/루트 오브젝트에 직접 부착). 씬 하나에 정확히
+하나만 있어야 하므로(Unity가 2개 이상이면 경고) — `Lobby`/`Title`은 각 씬의 `LifetimeScope` GameObject에,
+GameScene(예: `MoutainScene`)은 자체 카메라에 부착돼 있다. 재사용되는 `StageManager.prefab`(CinemachineCamera)에는
+붙이지 않는다 — GameScene에 이미 자체 `AudioListener`가 있어 붙이면 중복이 되기 때문(과거엔 여기 붙어 있었으나 제거함).
 
 ## ⚠️ 코드 완료 후 필수 수동 작업 — AudioPlayerPrefab
 

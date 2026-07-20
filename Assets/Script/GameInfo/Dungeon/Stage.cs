@@ -1,5 +1,7 @@
 ﻿using System;
 using Script.GameInfo.Attribute;
+using Script.GameInfo.Info;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Script.GameInfo.Dungeon {
@@ -29,6 +31,9 @@ namespace Script.GameInfo.Dungeon {
 
         [Reward]
         public int[] exps = Array.Empty<int>();
+
+        [SerializeReference]
+        public AudioData bgm;
 
 
         public static bool operator ==(Stage left, Stage right) {

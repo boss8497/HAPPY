@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1026811357}
   - component: {fileID: 1026811358}
+  - component: {fileID: 1026811359}
   m_Layer: 0
   m_Name: LifetimeScope
   m_TagString: Untagged
@@ -168,6 +169,14 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects:
   - {fileID: 2903549102842253863}
+--- !u!81 &1026811359
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1026811355}
+  m_Enabled: 1
 --- !u!1001 &2903549102842253862
 PrefabInstance:
   m_ObjectHideFlags: 0

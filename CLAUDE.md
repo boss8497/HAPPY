@@ -183,11 +183,11 @@
   - `Addressable`/`GameSetting`처럼 `StartUpLogic`이 `IAudioManager.InitializeAudioManager()`를 명시적으로 호출 후 `Initialized` 폴링
   - `PlayAsync(key, group, loop, autoRelease, pitch, is3D, position, track)` (또는 `PlayAsync(AudioData, position, track)`) — `loop=false`면 풀에서 `AudioPlayer`(AudioSource 보유)를 빌려 재생 완료 시 자동 반환(`AudioSource.PlayOneShot`은 인스턴스별 Stop이 불가해 미사용). `is3D=true`+`track` 지정 시 대상 Transform에 SetParent로 붙어 위치 추적(대상이 재생 중 Destroy되면 소리도 같이 끊김에 유의). 그룹 볼륨은 AudioMixer에서만 제어하므로 개별 소스 볼륨은 항상 최대(1). 그룹별 `AudioMaxCount` 초과 요청은 거부하지 않고 그룹 내 가장 오래 재생 중인 인스턴스를 강제 종료(Dequeue)해 자리를 내줌
   - `Stop(AudioHandle)` 외에 `Stop(string key)`/`Stop(AudioData)`도 지원 — 핸들 없이 key만 아는 호출부를 위한 편의 오버로드, 같은 key로 재생 중인 모든 인스턴스를 정지
-  - `PlayBGM(key)`/`StopBGM()` — BGM 전용 AudioSource 1개로 별도 관리(위치 없음, 항상 loop, 풀/MaxCount 무관)
+  - `PlayBGM(key)`/`StopBGM()` — BGM 전용 AudioSource 1개로 별도 관리(위치 없음, 항상 loop, 풀/MaxCount 무관). `Dungeon/Stage.bgm`(`AudioData`)로 스테이지별 BGM을 기획 데이터로 지정하면 `StageManager.Reactive.cs`가 `Stage` 변경 시 자동으로 재생/정지(`bgm`을 비워두면 NRE 위험 있음, 테이블에서 항상 채울 것)
   - `AudioPlayer`(MonoBehaviour, `IPoolMember`)를 `AudioPlayerPrefab`으로 Addressable 등록해야 함(Unity Editor에서 수동 생성 필요) — `AudioPooling.cs`가 `UIPooling`/`StagePooling`과 동일한 `GameObjectPool` 기반 풀링 재사용
   - 클립은 `ReleaseClip`/`ReleaseAllClips` 호출 전까지 캐시 유지(`ScreenManager.ResourceClear()`와 동일 정책)
   - `AudioSetting`이 그룹별 볼륨/뮤트를 `IDataBase`로 로컬 저장(Json), 변경 시 즉시 저장
-  - AudioListener는 이 모듈 범위 밖(카메라에 직접 부착)
+  - AudioListener는 이 모듈 범위 밖 — 씬마다 정확히 하나만 있어야 해서(Lobby/Title은 LifetimeScope GameObject, GameScene은 자체 카메라) 재사용되는 StageManager.prefab에는 붙이지 않음(중복 방지)
   - 상세 내용: `Assets/Script/GamePlay/Audio/ARCHITECTURE.md`
 
   ### GameTimer — 전역 타이머

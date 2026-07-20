@@ -142,6 +142,15 @@ namespace Script.GamePlay.Stage {
                             Score.OnNext(score.runningScore * 0.1f + score.itemScore);
                         })
                         .AddTo(ref _reactiveDisposableBag);
+            
+            Stage.Subscribe(i => {
+                if (i == null) {
+                    _audioManager.StopBGM();
+                    return;
+                }
+                _audioManager.PlayBGM(i.bgm.key);
+            })
+            .AddTo(ref _reactiveDisposableBag);
 
 
             RunningScore.OnNext(0);

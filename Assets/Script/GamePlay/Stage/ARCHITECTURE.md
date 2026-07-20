@@ -15,6 +15,8 @@
 | `StageManager.Trigger.cs` | Trigger 목록 관리, 매 프레임 평가 |
 | `StageManager.Map.cs` | MapGroundData ECS 싱글턴 생성·갱신·해제 |
 
+**BGM 연동** (`StageManager.Reactive.cs`): `Stage` ReactiveProperty를 구독해 값이 바뀔 때마다 `IAudioManager.PlayBGM(stage.bgm.key)`를 호출하고, `null`이면 `StopBGM()`. Stage 진행/재시작 때마다 `Stage.OnNext()`가 다시 호출되므로 같은 스테이지를 반복해도 BGM이 자연스럽게 이어진다(내부적으로 이미 재생 중인 key면 `AudioManager`가 재사용). `Lobby`/`Title` 씬은 각자 `LifetimeScope` GameObject에 `AudioListener`를 부착해 BGM을 들을 수 있게 했고, `StageManager.prefab`(CinemachineCamera)에 있던 중복 `AudioListener`는 제거함 — 씬(GameScene)마다 자체 카메라에 `AudioListener`가 이미 있어 두 개가 동시에 활성화되는 걸 막기 위함.
+
 ---
 
 ## 생명주기

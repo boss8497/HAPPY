@@ -1,4 +1,5 @@
-﻿using Script.GamePlay.Camera;
+﻿using Script.GamePlay.Audio.Interface;
+using Script.GamePlay.Camera;
 using Script.GamePlay.ECS.World;
 using Script.GamePlay.Pool;
 using Script.GamePlay.Service.Interface;
@@ -14,6 +15,7 @@ namespace Script.GamePlay.Stage {
         private readonly IStageEntityWorld      _entityWorld;
         private readonly IScreenManager         _screenManager;
         private readonly IGameTimer             _gameTimer;
+        private readonly IAudioManager          _audioManager;
 
 
         private readonly string _failScreenKey;
@@ -37,6 +39,7 @@ namespace Script.GamePlay.Stage {
             IGameTimer             gameTimer,
             ICameraControls        cameraControls,
             CinemachineCamera      vCamera,
+            IAudioManager          audioManager,
             string                 failScreenKey,
             string                 hudScreenKey,
             string                 clearScreenKey,
@@ -55,6 +58,7 @@ namespace Script.GamePlay.Stage {
             _gameTimer      = gameTimer;
             CameraControls  = cameraControls;
             _vCamera        = vCamera;
+            _audioManager    = audioManager;
         }
     }
 }
