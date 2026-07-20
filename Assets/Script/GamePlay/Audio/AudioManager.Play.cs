@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Script.GameInfo.Info;
 using Script.GamePlay.Audio.Interface;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -16,9 +17,9 @@ namespace Script.GamePlay.Audio {
         // InstanceId 기준으로 현재 재생 중인 AudioPlayer를 추적한다.
         // _activeGroups는 player가 Track()으로 인해 파괴됐을 때(player.IsAlive == false)도 그룹 카운트를
         // 안전하게 되돌리기 위한 사이드 테이블이다(IAudioPlayer.IsAlive만으로 판단하고 player의 다른 멤버는 건드리지 않기 위함).
-        private readonly Dictionary<int, IAudioPlayer>   _activePlayers      = new();
-        private readonly Dictionary<int, AudioGroupType> _activeGroups       = new();
-        private readonly Dictionary<AudioGroupType, int> _activeCountByGroup = new();
+        private readonly Dictionary<int, IAudioPlayer> _activePlayers      = new();
+        private readonly Dictionary<int, AudioGroup>   _activeGroups       = new();
+        private readonly Dictionary<AudioGroup, int>   _activeCountByGroup = new();
 
         // 그룹별 MaxCount 초과 시 가장 오래 재생 중인 플레이어를 골라내기 위한 대여 순번(작을수록 오래됨).
         private readonly Dictionary<int, int> _rentOrder = new();
@@ -29,7 +30,7 @@ namespace Script.GamePlay.Audio {
 
         public async UniTask<AudioHandle> PlayAsync(
             string            key,
-            AudioGroupType    group       = AudioGroupType.Effect,
+            AudioGroup        group       = AudioGroup.Effect,
             bool              loop        = false,
             bool              autoRelease = true,
             float             pitch       = 1f,
@@ -77,17 +78,65 @@ namespace Script.GamePlay.Audio {
             return handle;
         }
 
+        public async UniTask<AudioHandle> PlayAsync(
+            AudioData         audioData,
+            Vector3?          position = null,
+            Transform         track    = null,
+            CancellationToken ct       = default
+        ) {
+            if (audioData == null)
+                return AudioHandle.Invalid;
+
+            // 같은 key가 이미 재생 중이면 새로 빌리지 않고 그 인스턴스를 재사용해 처음부터 다시 재생한다.
+            // 새 슬롯을 점유하지 않으므로 IsOverLimit로 막혀 있는 상황이어도 이 재생 요청은 통과시킨다.
+            var existing = FindActiveByClipKey(audioData.key);
+            if (existing != null) {
+                return Replay(existing, audioData.type, audioData.loop, audioData.pitch, audioData.is3D, position, track);
+            }
+
+            var clip = await GetOrLoadClipAsync(audioData.key, ct);
+
+            // MaxCount 체크는 실제로 풀 슬롯을 점유하기 직전(로드 완료 후)에 한다.
+            // 상한을 넘었으면 거부하는 대신 그룹에서 가장 오래 재생 중인 플레이어를 강제 종료(Dequeue)하고 자리를 내준다.
+            // BGM은 이 풀 자체를 거치지 않으므로(PlayBGM 참고) 대상이 될 수 없다.
+            if (IsOverLimit(audioData.type)) {
+                var oldest = FindOldestInGroup(audioData.type);
+                if (oldest == null) {
+                    return AudioHandle.Invalid;
+                }
+
+                ReturnPlayer(oldest);
+            }
+
+            var player = _audioPooling.Pop();
+            var handle = player.Rent(audioData.type, audioData.key, audioData.loop);
+
+            ApplyPlaybackSettings(player, clip, audioData.type, audioData.loop, audioData.pitch, audioData.is3D, position, track);
+            player.Source.Play();
+
+            RegisterActive(handle, player, audioData.type);
+
+            // 요청대로 단발 재생(loop=false) + autoRelease면 재생 시작 직후 Addressable 핸들만 Release한다.
+            // AudioSource는 이미 clip을 참조 중이라 재생 자체는 계속 이어진다(압축 스트리밍 클립은 예외적 위험 있음, ARCHITECTURE.md 참고).
+            // loop=true(BGM 등)는 재생 중 캐시를 지우면 안 되므로 autoRelease를 무시한다.
+            if (audioData.loop == false && audioData.autoRelease) {
+                ReleaseClipHandle(audioData.key);
+            }
+
+            return handle;
+        }
+
         private AudioHandle Replay(
-            IAudioPlayer   player,
-            AudioGroupType group,
-            bool           loop,
-            float          pitch,
-            bool           is3D,
-            Vector3?       position,
-            Transform      track
+            IAudioPlayer player,
+            AudioGroup   group,
+            bool         loop,
+            float        pitch,
+            bool         is3D,
+            Vector3?     position,
+            Transform    track
         ) {
             var previousGroup = player.Group;
-            var handle         = player.Rent(group, player.ClipKey, loop);
+            var handle        = player.Rent(group, player.ClipKey, loop);
 
             ApplyPlaybackSettings(player, player.Source.clip, group, loop, pitch, is3D, position, track);
             player.Source.time = 0f;
@@ -106,14 +155,14 @@ namespace Script.GamePlay.Audio {
         }
 
         private void ApplyPlaybackSettings(
-            IAudioPlayer   player,
-            AudioClip      clip,
-            AudioGroupType group,
-            bool           loop,
-            float          pitch,
-            bool           is3D,
-            Vector3?       position,
-            Transform      track
+            IAudioPlayer player,
+            AudioClip    clip,
+            AudioGroup   group,
+            bool         loop,
+            float        pitch,
+            bool         is3D,
+            Vector3?     position,
+            Transform    track
         ) {
             _mixerGroups.TryGetValue(group, out var mixerGroup);
 
@@ -134,7 +183,7 @@ namespace Script.GamePlay.Audio {
             }
         }
 
-        private void RegisterActive(AudioHandle handle, IAudioPlayer player, AudioGroupType group) {
+        private void RegisterActive(AudioHandle handle, IAudioPlayer player, AudioGroup group) {
             _activePlayers[handle.InstanceId] = player;
             _activeGroups[handle.InstanceId]  = group;
             _rentOrder[handle.InstanceId]     = ++_rentSequence;
@@ -151,7 +200,7 @@ namespace Script.GamePlay.Audio {
             return null;
         }
 
-        private IAudioPlayer FindOldestInGroup(AudioGroupType group) {
+        private IAudioPlayer FindOldestInGroup(AudioGroup group) {
             IAudioPlayer oldest      = null;
             var          oldestOrder = int.MaxValue;
 
@@ -195,7 +244,18 @@ namespace Script.GamePlay.Audio {
             ReturnPlayer(player);
         }
 
-        public void StopAll(AudioGroupType group) {
+        public void Stop(string key) {
+            StopAllByClip(key);
+        }
+
+        public void Stop(AudioData audioData) {
+            if (audioData == null)
+                return;
+
+            StopAllByClip(audioData.key);
+        }
+
+        public void StopAll(AudioGroup group) {
             _finishedBuffer.Clear();
 
             foreach (var player in _activePlayers.Values) {
@@ -271,19 +331,19 @@ namespace Script.GamePlay.Audio {
             return loadHandle.Result;
         }
 
-        private bool IsOverLimit(AudioGroupType group) {
+        private bool IsOverLimit(AudioGroup group) {
             if (MaxConcurrent.TryGetValue(group, out var max) == false)
                 return false;
 
             return _activeCountByGroup.TryGetValue(group, out var count) && count >= max;
         }
 
-        private void IncrementActiveCount(AudioGroupType group) {
+        private void IncrementActiveCount(AudioGroup group) {
             _activeCountByGroup.TryGetValue(group, out var count);
             _activeCountByGroup[group] = count + 1;
         }
 
-        private void DecrementActiveCount(AudioGroupType group) {
+        private void DecrementActiveCount(AudioGroup group) {
             if (_activeCountByGroup.TryGetValue(group, out var count) && count > 0) {
                 _activeCountByGroup[group] = count - 1;
             }

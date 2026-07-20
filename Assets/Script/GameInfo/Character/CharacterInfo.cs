@@ -3,6 +3,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Script.GameInfo.Base;
 using Script.GameInfo.Attribute;
+using Script.GameInfo.Info;
 using Sirenix.OdinInspector;
 using Spine.Unity;
 using UnityEngine;
@@ -49,5 +50,12 @@ namespace Script.GameInfo.Character {
                 return _orderedHitboxes;
             }
         }
+        
+        // 내가 충돌 됐을때 나는 소리
+        [SerializeReference, LabelText("내가 충돌 됐을때 나는 소리")]
+        public AudioData hitAudio;
+
+        [SerializeReference, ShowIf("@type == CharacterType.Character")]
+        public AudioData jumpAudio;
     }
 }

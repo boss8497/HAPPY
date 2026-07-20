@@ -1,5 +1,6 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Script.GameInfo.Info;
 using UnityEngine;
 
 namespace Script.GamePlay.Audio.Interface {
@@ -28,31 +29,50 @@ namespace Script.GamePlay.Audio.Interface {
         /// 스냅샷으로 배치한다. is3D=false면 position/track은 무시된다.
         /// </summary>
         UniTask<AudioHandle> PlayAsync(
-            string             key,
-            AudioGroupType     group        = AudioGroupType.Effect,
-            bool               loop         = false,
-            bool               autoRelease  = true,
-            float              pitch        = 1f,
-            bool               is3D         = false,
-            Vector3?           position     = null,
-            Transform          track        = null,
-            CancellationToken  ct           = default
+            string            key,
+            AudioGroup    group       = AudioGroup.Effect,
+            bool              loop        = false,
+            bool              autoRelease = true,
+            float             pitch       = 1f,
+            bool              is3D        = false,
+            Vector3?          position    = null,
+            Transform         track       = null,
+            CancellationToken ct          = default
         );
 
-        void Stop(AudioHandle handle);
-        void StopAll(AudioGroupType group);
+        UniTask<AudioHandle> PlayAsync(
+            AudioData         audioData,
+            Vector3?          position = null,
+            Transform         track    = null,
+            CancellationToken ct       = default
+        );
+
+        void Stop(AudioHandle       handle);
+
+        /// <summary>
+        /// 같은 key로 재생 중인 모든 인스턴스를 정지한다(핸들 없이 key만 아는 호출부를 위한 편의 메서드).
+        /// </summary>
+        void Stop(string            key);
+
+        /// <summary>
+        /// AudioData.key 기준으로 재생 중인 모든 인스턴스를 정지한다. audioData가 null이면 아무 동작도 하지 않는다.
+        /// </summary>
+        void Stop(AudioData         audioData);
+
+        void StopAll(AudioGroup group);
 
         /// <summary>
         /// BGM 전용 재생 — 위치 개념이 없고 항상 그룹은 BGM, 항상 loop. 전용 AudioSource 1개로 관리되며
         /// AudioMaxCount 풀 제한과는 무관하다. 새로 호출하면 이전 BGM은 즉시 정지된다.
         /// </summary>
         UniTask PlayBGM(string key, CancellationToken ct = default);
-        void    StopBGM();
 
-        float GetVolume(AudioGroupType group);
-        void  SetVolume(AudioGroupType group, float volume01);
-        bool  GetMute(AudioGroupType   group);
-        void  SetMute(AudioGroupType   group, bool mute);
+        void StopBGM();
+
+        float GetVolume(AudioGroup group);
+        void  SetVolume(AudioGroup group, float volume01);
+        bool  GetMute(AudioGroup   group);
+        void  SetMute(AudioGroup   group, bool mute);
 
         /// <summary>
         /// 캐시된 특정 클립을 해제한다. 재생 중이면 먼저 정지시킨다.

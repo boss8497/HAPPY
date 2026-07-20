@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Script.GameInfo.Info;
 using Script.GamePlay.Audio.Interface;
 using UnityEngine;
 
@@ -6,23 +7,23 @@ namespace Script.GamePlay.Audio {
     public partial class AudioManager {
         private const float MinDecibel = -80f;
 
-        public float GetVolume(AudioGroupType group) => _audioSetting.GetVolume(group);
+        public float GetVolume(AudioGroup group) => _audioSetting.GetVolume(group);
 
-        public void SetVolume(AudioGroupType group, float volume01) {
+        public void SetVolume(AudioGroup group, float volume01) {
             _audioSetting.SetVolume(group, volume01);
             ApplyVolume(group);
             _audioSetting.SaveAsync().Forget();
         }
 
-        public bool GetMute(AudioGroupType group) => _audioSetting.GetMute(group);
+        public bool GetMute(AudioGroup group) => _audioSetting.GetMute(group);
 
-        public void SetMute(AudioGroupType group, bool mute) {
+        public void SetMute(AudioGroup group, bool mute) {
             _audioSetting.SetMute(group, mute);
             ApplyVolume(group);
             _audioSetting.SaveAsync().Forget();
         }
 
-        private void ApplyVolume(AudioGroupType group) {
+        private void ApplyVolume(AudioGroup group) {
             if (_mixerGroups.ContainsKey(group) == false)
                 return;
 

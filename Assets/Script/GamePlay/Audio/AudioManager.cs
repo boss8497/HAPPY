@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.DataBase.Interface;
+using Script.GameInfo.Info;
 using Script.GamePlay.Audio.Interface;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -21,10 +22,10 @@ namespace Script.GamePlay.Audio {
         private const string MixerKey = "AudioMixer";
 
         // 그룹별 동시 재생 제한. BGM은 별도 전용 AudioSource로 관리되므로 여기 포함하지 않는다.
-        private static readonly Dictionary<AudioGroupType, int> MaxConcurrent = new() {
-            { AudioGroupType.Master, 4 },
-            { AudioGroupType.Effect, 8 },
-            { AudioGroupType.Voice, 3 },
+        private static readonly Dictionary<AudioGroup, int> MaxConcurrent = new() {
+            { AudioGroup.Master, 4 },
+            { AudioGroup.Effect, 8 },
+            { AudioGroup.Voice, 3 },
         };
 
         private readonly IDataBase     _dataBase;
@@ -33,7 +34,7 @@ namespace Script.GamePlay.Audio {
 
         private          AsyncOperationHandle<AudioMixer>            _mixerHandle;
         private          AudioMixer                                  _mixer;
-        private readonly Dictionary<AudioGroupType, AudioMixerGroup> _mixerGroups = new();
+        private readonly Dictionary<AudioGroup, AudioMixerGroup> _mixerGroups = new();
 
         private AudioSource _bgmSource;
 
@@ -64,10 +65,10 @@ namespace Script.GamePlay.Audio {
             await UniTask.WaitUntil(() => _dataBase.Initialized, cancellationToken: ct);
             await _audioSetting.LoadAsync();
 
-            ApplyVolume(AudioGroupType.Master);
-            ApplyVolume(AudioGroupType.BGM);
-            ApplyVolume(AudioGroupType.Effect);
-            ApplyVolume(AudioGroupType.Voice);
+            ApplyVolume(AudioGroup.Master);
+            ApplyVolume(AudioGroup.BGM);
+            ApplyVolume(AudioGroup.Effect);
+            ApplyVolume(AudioGroup.Voice);
 
             MonitorAsync(ct).Forget();
 
@@ -94,7 +95,7 @@ namespace Script.GamePlay.Audio {
         private void CacheMixerGroups() {
             var groups = _mixer.FindMatchingGroups(string.Empty);
             foreach (var group in groups) {
-                if (Enum.TryParse<AudioGroupType>(group.name, out var type)) {
+                if (Enum.TryParse<AudioGroup>(group.name, out var type)) {
                     _mixerGroups[type] = group;
                 }
             }
@@ -110,7 +111,7 @@ namespace Script.GamePlay.Audio {
             _bgmSource.volume       = 1f;
             _bgmSource.spatialBlend = 0f;
 
-            if (_mixerGroups.TryGetValue(AudioGroupType.BGM, out var bgmGroup)) {
+            if (_mixerGroups.TryGetValue(AudioGroup.BGM, out var bgmGroup)) {
                 _bgmSource.outputAudioMixerGroup = bgmGroup;
             }
         }

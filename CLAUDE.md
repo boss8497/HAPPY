@@ -178,9 +178,11 @@
 
   ### Audio — 오디오 재생/설정
   - 위치: `Assets/Script/GamePlay/Audio/` (AudioManager 등 구현/설정), `Audio/Interface/`(`Script.Audio.Interface`), `Audio/MonoBehaviour/`(AudioPlayer), `Audio/MonoBehaviour/Interface/`(IAudioPlayer) — AudioPooling/IAudioPooling은 UIPooling/StagePooling과 같은 성격이라 `Assets/Script/GamePlay/Pool/`에 위치
-  - Unity `AudioMixer`(Local Addressable, key=`"AudioMixer"`) 기반. 그룹: Master/BGM/Effect/Voice
+  - `AudioData`(재생 파라미터 묶음: key/type/loop/autoRelease/pitch/is3D)와 `AudioGroup`(Master/BGM/Effect/Voice)은 `Assets/Script/GameInfo/Audio/`의 기획 데이터(Unity/Server 공용) — 다른 `xxInfo`(예: `CharacterInfo.hitAudio`/`jumpAudio`)가 필드로 들고 있다가 `PlayAsync(AudioData, ...)`에 그대로 넘겨 재생
+  - Unity `AudioMixer`(Local Addressable, key=`"AudioMixer"`) 기반
   - `Addressable`/`GameSetting`처럼 `StartUpLogic`이 `IAudioManager.InitializeAudioManager()`를 명시적으로 호출 후 `Initialized` 폴링
-  - `PlayAsync(key, group, loop, autoRelease, pitch, is3D, position, track)` — `loop=false`면 풀에서 `AudioPlayer`(AudioSource 보유)를 빌려 재생 완료 시 자동 반환(`AudioSource.PlayOneShot`은 인스턴스별 Stop이 불가해 미사용). `is3D=true`+`track` 지정 시 대상 Transform에 SetParent로 붙어 위치 추적(대상이 재생 중 Destroy되면 소리도 같이 끊김에 유의). 그룹 볼륨은 AudioMixer에서만 제어하므로 개별 소스 볼륨은 항상 최대(1). 그룹별 `AudioMaxCount` 초과 요청은 조용히 무시
+  - `PlayAsync(key, group, loop, autoRelease, pitch, is3D, position, track)` (또는 `PlayAsync(AudioData, position, track)`) — `loop=false`면 풀에서 `AudioPlayer`(AudioSource 보유)를 빌려 재생 완료 시 자동 반환(`AudioSource.PlayOneShot`은 인스턴스별 Stop이 불가해 미사용). `is3D=true`+`track` 지정 시 대상 Transform에 SetParent로 붙어 위치 추적(대상이 재생 중 Destroy되면 소리도 같이 끊김에 유의). 그룹 볼륨은 AudioMixer에서만 제어하므로 개별 소스 볼륨은 항상 최대(1). 그룹별 `AudioMaxCount` 초과 요청은 거부하지 않고 그룹 내 가장 오래 재생 중인 인스턴스를 강제 종료(Dequeue)해 자리를 내줌
+  - `Stop(AudioHandle)` 외에 `Stop(string key)`/`Stop(AudioData)`도 지원 — 핸들 없이 key만 아는 호출부를 위한 편의 오버로드, 같은 key로 재생 중인 모든 인스턴스를 정지
   - `PlayBGM(key)`/`StopBGM()` — BGM 전용 AudioSource 1개로 별도 관리(위치 없음, 항상 loop, 풀/MaxCount 무관)
   - `AudioPlayer`(MonoBehaviour, `IPoolMember`)를 `AudioPlayerPrefab`으로 Addressable 등록해야 함(Unity Editor에서 수동 생성 필요) — `AudioPooling.cs`가 `UIPooling`/`StagePooling`과 동일한 `GameObjectPool` 기반 풀링 재사용
   - 클립은 `ReleaseClip`/`ReleaseAllClips` 호출 전까지 캐시 유지(`ScreenManager.ResourceClear()`와 동일 정책)

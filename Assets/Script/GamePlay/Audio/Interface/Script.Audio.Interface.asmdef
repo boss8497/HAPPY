@@ -2,7 +2,8 @@
     "name": "Script.Audio.Interface",
     "rootNamespace": "",
     "references": [
-        "UniTask"
+        "UniTask",
+        "Script.GameInfo"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -85,6 +85,10 @@ namespace Script.GamePlay.Character {
                 ApplyHealth(-collisionDamage);
                 ApplyCameraShake(otherCharacter);
             }
+
+            if(CharacterInfo.hitAudio != null) {
+                _audioManager.PlayAsync(CharacterInfo.hitAudio, Position, Transform);
+            }
         }
 
         // CameraShake는 Player가 충돌했을 때만 전달한다 (카메라는 Player 시점 기준).

@@ -35,6 +35,7 @@ public class ExampleInfo : InfoBase {
 | `Dungeon/` | 던전/페이즈/액션/트리거 기획 데이터 |
 | `Stat/` | 스탯 관련 기획 데이터 |
 | `Item/` | 아이템 기획 데이터 |
+| `Audio/` | `AudioData`(재생 파라미터 묶음), `AudioGroup`(Master/BGM/Effect/Voice) — 다른 `xxInfo`가 사운드를 필드로 선언할 때 참조 |
 | `Enum/` | 기획 데이터에서 사용하는 Enum |
 | `Component/` | `InfoBase`에 붙이는 컴포넌트 구조 |
 

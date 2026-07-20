@@ -1,4 +1,5 @@
-﻿using Script.GamePlay.ECS.World;
+﻿using Script.GamePlay.Audio.Interface;
+using Script.GamePlay.ECS.World;
 using Script.GamePlay.Input;
 using Script.GamePlay.Service.Interface;
 using Script.GamePlay.Stage;
@@ -17,6 +18,7 @@ namespace Script.GamePlay.Character {
         private IObjectResolver   _resolver;
         private IStageEntityWorld _stageEntityWorld;
         private IItemService      _itemService;
+        private IAudioManager     _audioManager;
 
         [Inject]
         public void Constructor(
@@ -27,7 +29,8 @@ namespace Script.GamePlay.Character {
             IObjectResolver   resolver,
             IStageEntityWorld stageEntityWorld,
             IGameTimer        gameTimer,
-            IItemService      itemService
+            IItemService      itemService,
+            IAudioManager     audioManager
         ) {
             _stageManager     = stageManager;
             _playerControls   = playerControls;
@@ -37,6 +40,7 @@ namespace Script.GamePlay.Character {
             _stageEntityWorld = stageEntityWorld;
             GameTimer         = gameTimer;
             _itemService      = itemService;
+            _audioManager     = audioManager;
         }
 
         public IGameTimer      GameTimer      { get; private set; }

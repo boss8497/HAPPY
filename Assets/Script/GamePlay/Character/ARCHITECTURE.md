@@ -221,7 +221,7 @@ Partial Class로 관심사별 파일 분리:
 | `Character.ReactiveProperty.cs` | `State` ReactiveProperty + Flags 파생 |
 | `Character.State.cs` | `SetState` / `AddState` / `RemoveState` |
 | `Character.GamePlay.cs` | 애니메이션, 이동, ECS 연동 |
-| `Character.Action.cs` | Buff / Action 처리 |
+| `Character.Action.cs` | Buff / Action 처리, 충돌 시 `CharacterInfo.hitAudio` 재생 |
 | `Character.Buff.cs` | Buff 적용/해제 |
 | `Character.Entities.cs` | ECS Entity 초기화 |
 | `Character.Gizmos.cs` | 에디터 Gizmos |
@@ -260,6 +260,10 @@ ReadOnlyReactiveProperty<bool> InSideMap
 
 - Node/Transition에서 `Character.Die.CurrentValue` 등으로 상태를 읽음
 - UI나 ECS 시스템에서 `Subscribe()`로 변화 구독 가능
+- `Jumping` 구독(`Character.ReactiveProperty.cs`)에서 점프 시작 시 `CharacterInfo.jumpAudio`를 `PlayAsync`,
+  점프 종료 시 같은 `AudioData`로 `_audioManager.Stop(CharacterInfo.jumpAudio)` 호출 — 핸들을 들고 있지 않고
+  key 기준으로 정지하는 `IAudioManager.Stop(AudioData)` 오버로드를 쓰는 대표 사례
+  (`Assets/Script/GamePlay/Audio/ARCHITECTURE.md` 참고)
 
 ---
 

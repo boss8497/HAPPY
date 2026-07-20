@@ -1,3 +1,4 @@
+using Script.GameInfo.Info;
 using Script.GamePlay.Audio.Interface;
 using Script.GamePlay.Pool;
 using UnityEngine;
@@ -23,7 +24,7 @@ namespace Script.GamePlay.Audio {
         public bool           Busy       { get; private set; }
         public string         ClipKey    { get; private set; }
         public bool           Loop       { get; private set; }
-        public AudioGroupType Group      { get; private set; }
+        public AudioGroup Group      { get; private set; }
 
         public string Key => _gameObjectPool?.Key;
 
@@ -35,7 +36,7 @@ namespace Script.GamePlay.Audio {
             _gameObjectPool = gameObjectPool;
         }
 
-        public AudioHandle Rent(AudioGroupType group, string clipKey, bool loop) {
+        public AudioHandle Rent(AudioGroup group, string clipKey, bool loop) {
             Busy    = true;
             Group   = group;
             ClipKey = clipKey;

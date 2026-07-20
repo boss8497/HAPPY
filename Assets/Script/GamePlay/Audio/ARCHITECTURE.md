@@ -23,9 +23,12 @@ AudioListener는 이 모듈에서 다루지 않는다(메인 카메라에 직접
 ## 폴더 구조
 
 ```
+Assets/Script/GameInfo/Audio/
+  (root)                 AudioData, AudioGroup — Unity/Server 공용 기획 데이터(Script.GameInfo 어셈블리)
+
 Assets/Script/GamePlay/Audio/
-  Interface/             Script.Audio.Interface.asmdef — IAudioManager, AudioGroupType, AudioHandle
-                          (UniTask 외 Unity 전용 의존성 없음 — 어디서든 참조 가능하도록 최소화)
+  Interface/             Script.Audio.Interface.asmdef — IAudioManager, AudioHandle
+                          (UniTask, Script.GameInfo 외 Unity 전용 의존성 없음 — 어디서든 참조 가능하도록 최소화)
   Data/                   AudioSetting.cs
   Data/Model/             AudioSettingModel.cs
   MonoBehaviour/          Script.Audio.MonoBehaviour.asmdef — AudioPlayer(MonoBehaviour)
@@ -36,6 +39,15 @@ Assets/Script/GamePlay/Pool/
   (root)                  AudioPooling.cs — UIPooling/StagePooling과 같은 위치의 형제 풀 매니저
   Interface/               Script.GamePlay.Pool.Interface.asmdef — IStagePooling, IPoolMember, IAudioPooling 등
 ```
+
+- **`AudioGroup`은 원래 `Script.Audio.Interface`의 `AudioGroupType`(Unity 전용 enum)이었으나, 다른 `xxInfo`가 사운드를
+  참조할 수 있어야 해서 `Assets/Script/GameInfo/Audio/AudioGroup.cs`로 옮기고 이름도 `AudioGroup`으로 정리했다.**
+  `Script.Audio.Interface`/`Script.Audio.MonoBehaviour`/`Script.Audio.MonoBehaviour.Interface`/`Script.Audio` 4개
+  asmdef 모두 `Script.GameInfo`를 참조하도록 갱신됨.
+- **`AudioData`**(`Assets/Script/GameInfo/Audio/AudioData.cs`) — `key`(`[AssetPath]`) + `type`(`AudioGroup`) +
+  `loop`/`autoRelease`/`pitch`/`is3D`를 한 데 묶은 기획 데이터. `CharacterInfo.hitAudio`/`jumpAudio`처럼 다른
+  `xxInfo`가 "이 상황에 이 소리를 이렇게 재생한다"를 필드 하나로 선언할 수 있게 하기 위함
+  (`PlayAsync(AudioData, position, track, ct)` 오버로드로 그대로 재생).
 
 `AudioPooling`/`IAudioPooling`은 Audio 모듈이 아니라 **Pool 모듈**에 있다 — UIPooling/StagePooling과 같은 성격의
 풀 매니저라서(둘 다 `GameObjectPool` 기반) Audio 쪽에 두는 것보다 Pool 모듈의 형제로 두는 게 맞다고 판단해 이동함.
@@ -64,6 +76,15 @@ MonitorAsync() 시작      — 매 프레임 재생 종료된(loop=false) 플레
 
 - `PlayAsync(key, group, loop, autoRelease, pitch, is3D, position, track)` — 플랫 optional 파라미터 스타일
   (`Addressable.DownloadDependenciesAsync`와 동일 관례, 별도 옵션 struct 없음)
+- `PlayAsync(AudioData audioData, position, track, ct)` — `key`/`group`/`loop`/`autoRelease`/`pitch`/`is3D`를
+  기획 데이터(`AudioData`) 하나로 받는 오버로드. 내부 로직은 위 `PlayAsync(key, ...)`와 완전히 동일하고
+  각 필드를 그대로 대입해 호출한다(위치/추적만 호출부에서 별도로 넘김). `CharacterInfo.hitAudio`처럼 다른
+  `xxInfo`가 들고 있는 `AudioData`를 그대로 넘겨 재생할 때 사용.
+- `Stop(AudioHandle)` 외에 `Stop(string key)` / `Stop(AudioData audioData)`도 지원한다. 둘 다 핸들을 들고
+  있지 않은 호출부(예: `AudioData`만 아는 다른 Info/System)를 위한 편의 오버로드로, 내부적으로
+  `StopAllByClip(key)`를 그대로 재사용해 같은 key로 재생 중인 모든 인스턴스를 정지한다
+  (`ReleaseClip(key)`가 이미 이 메서드로 정지 후 캐시를 해제하는 것과 동일한 방식). `Stop(AudioData)`는
+  `audioData == null`이면 아무 동작도 하지 않는다.
 - **BGM은 별도 메서드**: `PlayBGM(key)` / `StopBGM()`. 위치가 필요 없고 항상 그룹=BGM, 항상 loop이므로
   `PlayAsync`와 파라미터 조합을 나누는 대신 아예 메서드를 분리했다. BGM은 풀을 거치지 않는 전용 `AudioSource` 1개로
   관리되며(크로스페이드 없이 새 곡 재생 시 이전 곡은 즉시 정지), `AudioMaxCount` 풀 제한과 무관하다.

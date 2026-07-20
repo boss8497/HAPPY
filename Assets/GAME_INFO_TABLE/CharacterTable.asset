@@ -26,6 +26,10 @@ MonoBehaviour:
     hitbox:
       rid: 2476690126442070119
     hitboxes: []
+    hitAudio:
+      rid: -2
+    jumpAudio:
+      rid: 8193467651183083638
   - <UID>k__BackingField: 2
     <ID>k__BackingField: BOX
     <Name>k__BackingField: "\uBC15\uC2A4"
@@ -39,6 +43,10 @@ MonoBehaviour:
     hitbox:
       rid: 2476690126442070113
     hitboxes: []
+    hitAudio:
+      rid: -2
+    jumpAudio:
+      rid: -2
   - <UID>k__BackingField: 3
     <ID>k__BackingField: COIN
     <Name>k__BackingField: "\uCF54\uC778"
@@ -52,6 +60,10 @@ MonoBehaviour:
     hitbox:
       rid: 2476690126442070121
     hitboxes: []
+    hitAudio:
+      rid: 8193467651183083639
+    jumpAudio:
+      rid: -2
   - <UID>k__BackingField: 4
     <ID>k__BackingField: HEART
     <Name>k__BackingField: "\uD558\uD2B8"
@@ -65,6 +77,10 @@ MonoBehaviour:
     hitbox:
       rid: 2476690126442070123
     hitboxes: []
+    hitAudio:
+      rid: -2
+    jumpAudio:
+      rid: -2
   - <UID>k__BackingField: 5
     <ID>k__BackingField: BOOSTER
     <Name>k__BackingField: "\uBD80\uC2A4\uD130"
@@ -78,6 +94,10 @@ MonoBehaviour:
     hitbox:
       rid: 2476690126442070117
     hitboxes: []
+    hitAudio:
+      rid: -2
+    jumpAudio:
+      rid: -2
   - <UID>k__BackingField: 6
     <ID>k__BackingField: GOAL
     <Name>k__BackingField: "\uACB0\uC2B9\uC120"
@@ -91,6 +111,10 @@ MonoBehaviour:
     hitbox:
       rid: 4223259507235749998
     hitboxes: []
+    hitAudio:
+      rid: -2
+    jumpAudio:
+      rid: -2
   - <UID>k__BackingField: 7
     <ID>k__BackingField: BOX2
     <Name>k__BackingField: "\uBC15\uC2A42"
@@ -104,6 +128,10 @@ MonoBehaviour:
     hitbox:
       rid: 4223259530382016637
     hitboxes: []
+    hitAudio:
+      rid: -2
+    jumpAudio:
+      rid: -2
   - <UID>k__BackingField: 8
     <ID>k__BackingField: NOELLE
     <Name>k__BackingField: "\uB178\uC5D8"
@@ -117,6 +145,10 @@ MonoBehaviour:
     hitbox:
       rid: 4223259779756720129
     hitboxes: []
+    hitAudio:
+      rid: -2
+    jumpAudio:
+      rid: -2
   - <UID>k__BackingField: 9
     <ID>k__BackingField: UNIT_INSTANT_KILL
     <Name>k__BackingField: "\uC989\uC0AC"
@@ -130,9 +162,15 @@ MonoBehaviour:
     hitbox:
       rid: 2741529482868817920
     hitboxes: []
+    hitAudio:
+      rid: -2
+    jumpAudio:
+      rid: -2
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 2476690126442070113
       type: {class: Hitbox, ns: Script.GameInfo.Character, asm: Script.GameInfo}
       data:
@@ -196,3 +234,21 @@ MonoBehaviour:
         offset: {x: 0, y: 1.25, z: 0}
         size: {x: 1, y: 2.5, z: 0}
         radius: 0
+    - rid: 8193467651183083638
+      type: {class: AudioData, ns: Script.GameInfo.Info, asm: Script.GameInfo}
+      data:
+        key: b3e7eb3fa6a6c424f8ff3588e361f624
+        type: 0
+        loop: 0
+        autoRelease: 1
+        pitch: 1
+        is3D: 1
+    - rid: 8193467651183083639
+      type: {class: AudioData, ns: Script.GameInfo.Info, asm: Script.GameInfo}
+      data:
+        key: a9039758fedd47843a5806098677d4a9
+        type: 0
+        loop: 0
+        autoRelease: 1
+        pitch: 1
+        is3D: 1

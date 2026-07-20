@@ -2,6 +2,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using Script.DataBase.Enum;
 using Script.DataBase.Interface;
+using Script.GameInfo.Info;
 using Script.GamePlay.Audio.Interface;
 using Script.GamePlay.Audio.Model;
 
@@ -35,30 +36,30 @@ namespace Script.GamePlay.Audio {
             return _dataBase.SaveAsync(SettingPath, Model, DataType.Json);
         }
 
-        public float GetVolume(AudioGroupType group) {
+        public float GetVolume(AudioGroup group) {
             return group switch {
-                AudioGroupType.Master => Model.masterVolume,
-                AudioGroupType.BGM    => Model.bgmVolume,
-                AudioGroupType.Effect => Model.effectVolume,
-                AudioGroupType.Voice  => Model.voiceVolume,
+                AudioGroup.Master => Model.masterVolume,
+                AudioGroup.BGM    => Model.bgmVolume,
+                AudioGroup.Effect => Model.effectVolume,
+                AudioGroup.Voice  => Model.voiceVolume,
                 _                     => throw new ArgumentOutOfRangeException(nameof(group), group, null),
             };
         }
 
-        public void SetVolume(AudioGroupType group, float volume01) {
+        public void SetVolume(AudioGroup group, float volume01) {
             var clamped = UnityEngine.Mathf.Clamp01(volume01);
 
             switch (group) {
-                case AudioGroupType.Master:
+                case AudioGroup.Master:
                     Model.masterVolume = clamped;
                     break;
-                case AudioGroupType.BGM:
+                case AudioGroup.BGM:
                     Model.bgmVolume = clamped;
                     break;
-                case AudioGroupType.Effect:
+                case AudioGroup.Effect:
                     Model.effectVolume = clamped;
                     break;
-                case AudioGroupType.Voice:
+                case AudioGroup.Voice:
                     Model.voiceVolume = clamped;
                     break;
                 default:
@@ -66,28 +67,28 @@ namespace Script.GamePlay.Audio {
             }
         }
 
-        public bool GetMute(AudioGroupType group) {
+        public bool GetMute(AudioGroup group) {
             return group switch {
-                AudioGroupType.Master => Model.masterMute,
-                AudioGroupType.BGM    => Model.bgmMute,
-                AudioGroupType.Effect => Model.effectMute,
-                AudioGroupType.Voice  => Model.voiceMute,
+                AudioGroup.Master => Model.masterMute,
+                AudioGroup.BGM    => Model.bgmMute,
+                AudioGroup.Effect => Model.effectMute,
+                AudioGroup.Voice  => Model.voiceMute,
                 _                     => throw new ArgumentOutOfRangeException(nameof(group), group, null),
             };
         }
 
-        public void SetMute(AudioGroupType group, bool mute) {
+        public void SetMute(AudioGroup group, bool mute) {
             switch (group) {
-                case AudioGroupType.Master:
+                case AudioGroup.Master:
                     Model.masterMute = mute;
                     break;
-                case AudioGroupType.BGM:
+                case AudioGroup.BGM:
                     Model.bgmMute = mute;
                     break;
-                case AudioGroupType.Effect:
+                case AudioGroup.Effect:
                     Model.effectMute = mute;
                     break;
-                case AudioGroupType.Voice:
+                case AudioGroup.Voice:
                     Model.voiceMute = mute;
                     break;
                 default:

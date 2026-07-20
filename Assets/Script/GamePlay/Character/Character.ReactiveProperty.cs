@@ -187,8 +187,13 @@ namespace Script.GamePlay.Character {
                     Jumping.CombineLatest(Initialized, (jumping, initialized) => (jumping, initialized))
                            .Subscribe(state => {
                                if (state.initialized == false) return;
+                               
                                if (state.jumping) {
+                                   _audioManager.PlayAsync(CharacterInfo.jumpAudio, Position, Transform);
                                    ResetJumpingStatus();
+                               }
+                               else {
+                                   _audioManager.Stop(CharacterInfo.jumpAudio);
                                }
 
                                SetEnabledTag<UnitJumpingEnable>(state.jumping);

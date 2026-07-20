@@ -13,7 +13,8 @@
         "Script.Utility.Runtime",
         "Script.LifetimeScope.Locator",
         "Script.GamePlay.Pool.Interface",
-        "Script.Audio.MonoBehaviour.Interface"
+        "Script.Audio.MonoBehaviour.Interface",
+        "Script.GameInfo"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

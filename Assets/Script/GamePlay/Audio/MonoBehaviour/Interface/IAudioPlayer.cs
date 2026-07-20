@@ -1,4 +1,5 @@
-﻿using Script.GamePlay.Audio.Interface;
+﻿using Script.GameInfo.Info;
+using Script.GamePlay.Audio.Interface;
 using UnityEngine;
 
 namespace Script.GamePlay.Audio {
@@ -17,10 +18,10 @@ namespace Script.GamePlay.Audio {
         bool           Busy       { get; }
         string         ClipKey    { get; }
         bool           Loop       { get; }
-        AudioGroupType Group      { get; }
+        AudioGroup Group      { get; }
         string         Key        { get; }
 
-        AudioHandle Rent(AudioGroupType group, string clipKey, bool loop);
+        AudioHandle Rent(AudioGroup group, string clipKey, bool loop);
         void        ReturnToIdle();
         bool        Matches(AudioHandle handle);
         void        Track(Transform     target);
