@@ -11,6 +11,7 @@ using Script.GameData.Model;
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Enum;
 using Script.GameInfo.Table;
+using Script.GamePlay.Audio.Interface;
 using Script.GamePlay.Scene;
 using Script.GamePlay.Service.Interface;
 using Script.GUI.Screen.Interface;
@@ -24,6 +25,7 @@ namespace Script.GamePlay.Service {
         private readonly IItemService   _itemService;
         private readonly ISceneLoader   _sceneLoader;
         private readonly IScreenManager _screenManager;
+        private readonly IAudioManager  _audioManager;
 
         private GroupData  _groupData;
         public  IGroupData GroupData => _groupData;
@@ -39,12 +41,14 @@ namespace Script.GamePlay.Service {
             IClient        client,
             IItemService   itemService,
             ISceneLoader   sceneLoader,
-            IScreenManager screenManager
+            IScreenManager screenManager,
+            IAudioManager  audioManager
         ) {
             _client        = client;
             _itemService   = itemService;
             _sceneLoader   = sceneLoader;
             _screenManager = screenManager;
+            _audioManager  = audioManager;
         }
 
         public void Initialize() {
@@ -67,7 +71,9 @@ namespace Script.GamePlay.Service {
             if (result) {
                 _characterItem = null;
                 _enterDungeon  = new(dungeonInfo, stage);
+                
                 await _sceneLoader.LoadScene(stage.scenePath);
+                _audioManager.PlayBGM(stage.bgm.key).Forget();
             }
         }
 
@@ -82,6 +88,7 @@ namespace Script.GamePlay.Service {
                 _characterItem = character;
                 _enterDungeon  = new(dungeonInfo, stage);
                 await _sceneLoader.LoadScene(stage.scenePath);
+                _audioManager.PlayBGM(stage.bgm.key).Forget();
             }
         }
 

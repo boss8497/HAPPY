@@ -219,6 +219,11 @@ namespace Script.GamePlay.Audio {
         }
 
         public async UniTask PlayBGM(string key, CancellationToken ct = default) {
+            if (key == null) {
+                StopBGM();
+                return;
+            }
+            
             var clip = await GetOrLoadClipAsync(key, ct);
 
             _bgmSource.Stop();

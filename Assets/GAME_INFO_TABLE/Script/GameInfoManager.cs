@@ -18,8 +18,8 @@ namespace Script.GameInfo.Table {
         
         private readonly Dictionary<string, AsyncOperationHandle<TableBase>> _handles           = new();
 
-        private static IGameInfoManager _instance;
-        public static IGameInfoManager Instance {
+        private static GameInfoManager _instance;
+        public static GameInfoManager Instance {
             get {
                 if (_instance == null) {
                     _instance = new GameInfoManager();

@@ -109,7 +109,7 @@ MonoBehaviour:
     - rid: 8193467651183083659
       type: {class: AudioData, ns: Script.GameInfo.Info, asm: Script.GameInfo}
       data:
-        key: 217dfe46a3d019b4586d89da7a4b6034
+        key: ef66674b790bd9c45b3be0da3954a7cf
         type: 1
         loop: 1
         autoRelease: 0

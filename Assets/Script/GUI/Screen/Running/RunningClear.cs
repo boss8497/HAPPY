@@ -1,7 +1,9 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System.Linq;
+using Cysharp.Threading.Tasks;
 using Script.GameData.Diff;
 using Script.GameInfo.Table;
 using Script.GamePlay.Scene;
+using Script.GamePlay.Service.Interface;
 using Script.GamePlay.Stage;
 using Script.GameSetting.Interface;
 using Script.GUI.ScreenData.Interface;
@@ -17,7 +19,7 @@ namespace Script.GUI.Screen {
         /// Inspector
         /// </summary>
         public Button lobbyBtn;
-        
+
         [SerializeField]
         private DiffResultViewModel diffResultViewModel;
 
@@ -29,16 +31,19 @@ namespace Script.GUI.Screen {
         /// Inject
         /// </summary>
         private IStageManager _stageManager;
-        private ISceneLoader _sceneLoader;
+        private ISceneLoader  _sceneLoader;
+        private IGroupService _groupService;
 
         [Inject]
         public void InjectSelf(
             IStageManager stageManager,
             IGameSetting  gameSetting,
-            ISceneLoader  sceneLoader
+            ISceneLoader  sceneLoader,
+            IGroupService groupService
         ) {
             _stageManager = stageManager;
             _sceneLoader  = sceneLoader;
+            _groupService = groupService;
         }
 
 
@@ -69,7 +74,8 @@ namespace Script.GUI.Screen {
         }
 
         private async UniTask EnterLobbyAsync() {
-            await _sceneLoader.LoadScene(GameInfoManager.Instance.Config.lobbyScenePath);
+            var lobbyDungeonInfo = GameInfoManager.Instance.LobbyDungeonInfo;
+            await _groupService.EnterDungeon(lobbyDungeonInfo, lobbyDungeonInfo.stages.FirstOrDefault());
 
             _enterLobby = false;
         }

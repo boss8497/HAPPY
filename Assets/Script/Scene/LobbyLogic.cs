@@ -27,7 +27,6 @@ namespace Script.Scene {
         }
 
         private async UniTask Initialize() {
-            _audioManager.StopBGM();
             await UniTask.WaitUntil(() => _screenManager?.Initialized ?? false);
             await _screenManager.OpenAsync(hudKey);
         }
