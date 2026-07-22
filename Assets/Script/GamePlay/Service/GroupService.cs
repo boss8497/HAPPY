@@ -73,6 +73,7 @@ namespace Script.GamePlay.Service {
                 _enterDungeon  = new(dungeonInfo, stage);
                 
                 await _sceneLoader.LoadScene(stage.scenePath);
+                _audioManager.StopBGM();
                 _audioManager.PlayBGM(stage.bgm.key).Forget();
             }
         }
@@ -88,6 +89,7 @@ namespace Script.GamePlay.Service {
                 _characterItem = character;
                 _enterDungeon  = new(dungeonInfo, stage);
                 await _sceneLoader.LoadScene(stage.scenePath);
+                _audioManager.StopBGM();
                 _audioManager.PlayBGM(stage.bgm.key).Forget();
             }
         }

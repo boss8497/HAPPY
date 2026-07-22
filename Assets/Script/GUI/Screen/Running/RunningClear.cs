@@ -31,18 +31,15 @@ namespace Script.GUI.Screen {
         /// Inject
         /// </summary>
         private IStageManager _stageManager;
-        private ISceneLoader  _sceneLoader;
         private IGroupService _groupService;
 
         [Inject]
         public void InjectSelf(
             IStageManager stageManager,
             IGameSetting  gameSetting,
-            ISceneLoader  sceneLoader,
             IGroupService groupService
         ) {
             _stageManager = stageManager;
-            _sceneLoader  = sceneLoader;
             _groupService = groupService;
         }
 

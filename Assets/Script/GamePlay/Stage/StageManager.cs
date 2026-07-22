@@ -242,7 +242,9 @@ namespace Script.GamePlay.Stage {
         public async UniTask ReStart() {
             // 티어다운으로 T포즈/스폰 과정이 보이기 전에, 지금 화면(마지막 정상 프레임)을 얼려서 덮어둔다.
             await _screenManager.ShowStageTransitionAsync();
+            await Group.EnterDungeon(DungeonInfo.CurrentValue, Stage.CurrentValue, Players.FirstOrDefault()?.Item?.CurrentValue);
 
+            
             // CountDown이 자신의 타이머로 계속 Open/Close 하는 중일 수 있으므로,
             // CloseAllAsync()가 같은 Screen을 건드리기 전에 확실히 멈춘 뒤 진행한다.
             StopCountDown();
