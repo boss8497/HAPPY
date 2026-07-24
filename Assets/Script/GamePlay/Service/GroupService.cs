@@ -78,7 +78,7 @@ namespace Script.GamePlay.Service {
             }
         }
 
-        public async UniTask EnterDungeon(DungeonInfo dungeonInfo, Stage stage, ItemData character) {
+        public async UniTask EnterDungeon(DungeonInfo dungeonInfo, Stage stage, ItemData character, bool loadScene = true) {
             if (character == null || _itemService.HasItem(character) == false) {
                 await _screenManager.OpenErrorMessage(ErrorMessage.HasNotItemParam, CancellationToken.None);
                 return;
@@ -88,7 +88,9 @@ namespace Script.GamePlay.Service {
             if (result) {
                 _characterItem = character;
                 _enterDungeon  = new(dungeonInfo, stage);
-                await _sceneLoader.LoadScene(stage.scenePath);
+                if (loadScene) {
+                    await _sceneLoader.LoadScene(stage.scenePath);
+                }
                 _audioManager.StopBGM();
                 _audioManager.PlayBGM(stage.bgm.key).Forget();
             }

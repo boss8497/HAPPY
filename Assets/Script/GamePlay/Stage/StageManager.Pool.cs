@@ -16,6 +16,10 @@ namespace Script.GamePlay.Stage {
             ListPool.Return(_players);
             ListPool.Return(_enemies);
             ListPool.Return(_removeEnemies);
+            
+            _players = null;
+            _enemies = null;
+            _removeEnemies = null;
         }
     }
 }

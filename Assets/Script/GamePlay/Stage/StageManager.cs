@@ -179,8 +179,7 @@ namespace Script.GamePlay.Stage {
                                         .SuppressCancellationThrow();
                 if (isCancel) break;
             }
-
-            UpdateRunningScore();
+            
             if (isCancel == false)
                 StopLoop();
         }
@@ -242,7 +241,7 @@ namespace Script.GamePlay.Stage {
         public async UniTask ReStart() {
             // 티어다운으로 T포즈/스폰 과정이 보이기 전에, 지금 화면(마지막 정상 프레임)을 얼려서 덮어둔다.
             await _screenManager.ShowStageTransitionAsync();
-            await Group.EnterDungeon(DungeonInfo.CurrentValue, Stage.CurrentValue, Players.FirstOrDefault()?.Item?.CurrentValue);
+            await Group.EnterDungeon(DungeonInfo.CurrentValue, Stage.CurrentValue, Players.FirstOrDefault()?.Item?.CurrentValue, false);
 
             
             // CountDown이 자신의 타이머로 계속 Open/Close 하는 중일 수 있으므로,

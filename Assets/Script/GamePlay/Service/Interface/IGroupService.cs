@@ -15,7 +15,7 @@ namespace Script.GamePlay.Service.Interface {
         bool                      CanEnterStage(DungeonInfo  dungeonInfo, Stage stage);
         UniTask<ItemSyncModel>    ClearedDungeon(DungeonInfo dungeonInfo, Stage stage);
         UniTask                   EnterDungeon(DungeonInfo   dungeonInfo, Stage stage);
-        UniTask                   EnterDungeon(DungeonInfo   dungeonInfo, Stage stage, ItemData character);
+        UniTask                   EnterDungeon(DungeonInfo   dungeonInfo, Stage stage, ItemData character, bool loadScene = true);
         Tuple<DungeonInfo, Stage> GetEnterDungeon();
         ItemData                  GetCharacterItem();
     }

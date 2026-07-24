@@ -25,15 +25,17 @@ namespace Script.GamePlay.Stage {
         }
 
         private void ResetTrigger() {
+            if (_clientTriggers == null) return;
             foreach (var trigger in _clientTriggers) {
                 trigger.Release();
             }
             _clientTriggers.Clear();
         }
-        
+
         private void ReleaseTrigger() {
             ResetTrigger();
             ListPool.Return(_clientTriggers);
+            _clientTriggers = null;
         }
 
         private ClientTriggerBase OnTriggerCheck() {
@@ -47,7 +49,7 @@ namespace Script.GamePlay.Stage {
                     AddState(StageState.Clear);
                     loopStop = true;
                     break;
-                
+
                 case TriggerType.Fail:
                     AddState(StageState.Fail);
                     loopStop = true;

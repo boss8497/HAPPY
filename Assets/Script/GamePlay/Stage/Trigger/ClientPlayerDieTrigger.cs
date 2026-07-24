@@ -42,6 +42,7 @@ namespace Script.GamePlay.Stage {
         public override void Release() {
             _players.Clear();
             ListPool.Return(_players);
+            _players = null;
         }
     }
 }
