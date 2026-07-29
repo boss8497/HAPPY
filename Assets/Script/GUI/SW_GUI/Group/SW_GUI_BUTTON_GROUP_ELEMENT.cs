@@ -6,7 +6,7 @@ namespace SW.GUI {
     public class SW_GUI_BUTTON_GROUP_ELEMENT : SW_GUI_BUTTON_GROUP_ELEMENT_BASE {
         public override SW_GUI_BUTTON_GROUP_BASE Group { get; set; }
 
-        
+
         public UnityEvent OnSelect;
         public UnityEvent OnDeselect;
 
@@ -20,7 +20,9 @@ namespace SW.GUI {
             OnDeselect?.Invoke();
         }
 
-        
+
+        #region Editor
+
 #if UNITY_EDITOR
         /// <summary>
         /// 인스펙터에서 컴포넌트를 처음 추가할 때 Parent 계층에서 그룹을 찾아 자동 등록.
@@ -45,5 +47,7 @@ namespace SW.GUI {
             group.Register(this);
         }
 #endif
+
+        #endregion
     }
 }

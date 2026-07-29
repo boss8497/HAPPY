@@ -2,9 +2,8 @@ using System;
 using Cysharp.Threading.Tasks;
 using Script.DataBase.Enum;
 using Script.DataBase.Interface;
+using Script.GameData.Model;
 using Script.GameInfo.Info;
-using Script.GamePlay.Audio.Interface;
-using Script.GamePlay.Audio.Model;
 
 namespace Script.GamePlay.Audio {
     /// <summary>

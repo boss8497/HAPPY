@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.DataBase.Interface;
+using Script.GameData.Model;
 using Script.GameInfo.Info;
 using Script.GamePlay.Audio.Interface;
 using UnityEngine;
@@ -40,7 +41,8 @@ namespace Script.GamePlay.Audio {
 
         private CancellationTokenSource _cts;
 
-        public bool Initialized { get; private set; }
+        public bool              Initialized       { get; private set; }
+        public AudioSettingModel AudioSettingModel => _audioSetting?.Model;
 
         public AudioManager(IDataBase dataBase, IAudioPooling audioPooling) {
             _dataBase     = dataBase ?? throw new ArgumentNullException(nameof(dataBase));

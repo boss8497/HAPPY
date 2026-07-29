@@ -1,7 +1,7 @@
 using System;
 using MessagePack;
 
-namespace Script.GamePlay.Audio.Model {
+namespace Script.GameData.Model {
     /// <summary>
     /// 그룹별 볼륨/뮤트 설정. 현재는 Json으로 저장하지만 GroupModel 선례를 따라
     /// 추후 MessagePack 전환을 대비해 Key 어트리뷰트를 붙여둔다.

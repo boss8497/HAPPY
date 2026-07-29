@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Script.GUI.ViewModel;
+using UnityEngine;
 
 namespace SW.GUI.Base {
     public enum ElementOption {
@@ -17,6 +18,7 @@ namespace SW.GUI.Base {
         /// 절대 상속받은 곧에서 건들이지 않는다는 조건
         /// </summary>
         private bool _selected = false;
+
         public bool Selected {
             get => _selected;
             set {
@@ -32,6 +34,7 @@ namespace SW.GUI.Base {
 
         #region Inspector
 
+        public IViewModel    viewModel;
         public ElementOption option = ElementOption.None;
 
         #endregion

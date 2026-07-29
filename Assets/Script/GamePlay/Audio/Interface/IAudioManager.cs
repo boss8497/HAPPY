@@ -1,11 +1,13 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Script.GameData.Model;
 using Script.GameInfo.Info;
 using UnityEngine;
 
 namespace Script.GamePlay.Audio.Interface {
     public interface IAudioManager {
-        bool Initialized { get; }
+        bool              Initialized       { get; }
+        AudioSettingModel AudioSettingModel { get; }
 
         /// <summary>
         /// StartUpLogic에서 명시적으로 호출 — Addressable/DataBase가 준비된 이후 진행되어야 하기 때문에
@@ -30,7 +32,7 @@ namespace Script.GamePlay.Audio.Interface {
         /// </summary>
         UniTask<AudioHandle> PlayAsync(
             string            key,
-            AudioGroup    group       = AudioGroup.Effect,
+            AudioGroup        group       = AudioGroup.Effect,
             bool              loop        = false,
             bool              autoRelease = true,
             float             pitch       = 1f,
@@ -47,17 +49,17 @@ namespace Script.GamePlay.Audio.Interface {
             CancellationToken ct       = default
         );
 
-        void Stop(AudioHandle       handle);
+        void Stop(AudioHandle handle);
 
         /// <summary>
         /// 같은 key로 재생 중인 모든 인스턴스를 정지한다(핸들 없이 key만 아는 호출부를 위한 편의 메서드).
         /// </summary>
-        void Stop(string            key);
+        void Stop(string key);
 
         /// <summary>
         /// AudioData.key 기준으로 재생 중인 모든 인스턴스를 정지한다. audioData가 null이면 아무 동작도 하지 않는다.
         /// </summary>
-        void Stop(AudioData         audioData);
+        void Stop(AudioData audioData);
 
         void StopAll(AudioGroup group);
 

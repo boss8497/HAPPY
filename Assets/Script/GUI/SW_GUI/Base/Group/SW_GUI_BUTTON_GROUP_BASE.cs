@@ -14,6 +14,7 @@ namespace SW.GUI.Base {
 
         [SerializeField]
         protected List<SW_GUI_BUTTON_GROUP_ELEMENT_BASE> _elementsList = new();
+        public List<SW_GUI_BUTTON_GROUP_ELEMENT_BASE> ElementsList => _elementsList;
 
         protected Dictionary<int, SW_GUI_BUTTON_GROUP_ELEMENT_BASE> _elementsDictionary = new();
 
@@ -40,6 +41,7 @@ namespace SW.GUI.Base {
                 if (element.Key == -1) {
                     element.Key = CreateRandomKey();
                 }
+
                 _elementsDictionary[element.Key] = element;
             }
         }

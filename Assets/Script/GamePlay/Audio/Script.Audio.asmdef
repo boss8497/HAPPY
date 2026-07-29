@@ -14,7 +14,8 @@
         "Script.LifetimeScope.Locator",
         "Script.GamePlay.Pool.Interface",
         "Script.Audio.MonoBehaviour.Interface",
-        "Script.GameInfo"
+        "Script.GameInfo",
+        "Script.GameData.Model"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
