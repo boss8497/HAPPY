@@ -83,3 +83,10 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 1
+  - id: Option
+    screen:
+      m_AssetGUID: d0ffd3de876b07141b1fac4c4129933b
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1

@@ -18,6 +18,10 @@ namespace Script.GUI.Screen {
         [SerializeField, ScreenKey]
         private string logLikeScreen;
         
+        [SerializeField, ScreenKey]
+        private string optionScreen;
+        public Button optionScreenBtn;
+        
         [Inject]
         public void InjectSelf(
             IAudioManager  audioManager
@@ -30,6 +34,10 @@ namespace Script.GUI.Screen {
             base.AwakeInternal();
             runningStageScreenBtn.ClickAddListener(() => {
                 ScreenManager.OpenAsync(runningStageScreen);
+            });
+            
+            optionScreenBtn.ClickAddListener(() => {
+                ScreenManager.OpenAsync(optionScreen);
             });
         }
         

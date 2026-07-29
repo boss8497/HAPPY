@@ -13,21 +13,21 @@ namespace SW.GUI.Base {
         private SelectType selectType = SelectType.Single;
 
         [SerializeField]
-        private List<SW_GUI_BUTTON_GROUP_ELEMENT_BASE> _elementsList = new();
+        protected List<SW_GUI_BUTTON_GROUP_ELEMENT_BASE> _elementsList = new();
 
-        private Dictionary<int, SW_GUI_BUTTON_GROUP_ELEMENT_BASE> _elementsDictionary = new();
+        protected Dictionary<int, SW_GUI_BUTTON_GROUP_ELEMENT_BASE> _elementsDictionary = new();
 
 
         [SerializeField]
-        private Transform content;
+        protected Transform content;
 
 
         private void Awake() {
             Initialize();
             InitializeAwake();
         }
-        
-        protected virtual void InitializeAwake() {}
+
+        protected virtual void InitializeAwake() { }
 
         /// <summary>
         /// 한번만 초기화 할것 여러번 호출 금지
@@ -38,7 +38,7 @@ namespace SW.GUI.Base {
                 element.Group = this;
                 if (Exists(element)) continue;
                 if (element.Key == -1) {
-                    element.Key                      = CreateRandomKey();
+                    element.Key = CreateRandomKey();
                 }
                 _elementsDictionary[element.Key] = element;
             }
@@ -91,19 +91,41 @@ namespace SW.GUI.Base {
                         selectedElement.Selected = false;
                     }
 
-                    element.Selected = true;
+                    switch (element.option) {
+                        case ElementOption.None:
+                            if (element.Selected == false) {
+                                element.Selected = true;
+                            }
+
+                            break;
+
+                        case ElementOption.SelectToDeSelect:
+                            element.Selected = !element.Selected;
+                            break;
+                    }
                 }
                     break;
 
                 case SelectType.Multiple: {
-                    element.Selected = !element.Selected;
+                    switch (element.option) {
+                        case ElementOption.None:
+                            if (element.Selected == false) {
+                                element.Selected = true;
+                            }
+
+                            break;
+
+                        case ElementOption.SelectToDeSelect:
+                            element.Selected = !element.Selected;
+                            break;
+                    }
                 }
                     break;
             }
         }
 
-        public void DeSelect(SW_GUI_BUTTON_GROUP_ELEMENT_BASE element) {
-            if (!Exists(element) || element.Selected == false) return;
+        public void DeSelect(SW_GUI_BUTTON_GROUP_ELEMENT_BASE element, bool force = false) {
+            if ((!Exists(element) || element.Selected == false) && force == false) return;
             element.Selected = false;
         }
 
@@ -119,6 +141,7 @@ namespace SW.GUI.Base {
             foreach (var element in _elementsDictionary.Values) {
                 element.Group = null;
             }
+
             _elementsDictionary.Clear();
             _elementsList.Clear();
         }
