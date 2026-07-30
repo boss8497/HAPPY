@@ -1,10 +1,17 @@
 ﻿using R3;
 using Script.GameData.Model;
 using Script.GamePlay.Audio.Interface;
+using UnityEngine.UI;
 using VContainer;
 
 namespace Script.GUI.ViewModel {
     public class AudioOptionViewModel : ViewModel {
+        
+        public Slider masterVolume;
+        public Slider musicVolume;
+        public Slider effectVolume;
+        public Slider voiceVolume;
+        
         private ReactiveProperty<IAudioManager> AudioManager { get; set; } = new();
 
         public ReadOnlyReactiveProperty<AudioSettingModel> AudioSetting        { get; set; }

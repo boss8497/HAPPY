@@ -1,5 +1,4 @@
-﻿using Script.GUI.ViewModel;
-using UnityEngine;
+﻿
 
 namespace SW.GUI.Base {
     public enum ElementOption {
@@ -34,7 +33,6 @@ namespace SW.GUI.Base {
 
         #region Inspector
 
-        public IViewModel    viewModel;
         public ElementOption option = ElementOption.None;
 
         #endregion

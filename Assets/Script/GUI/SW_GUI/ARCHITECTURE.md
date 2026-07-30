@@ -5,6 +5,10 @@ Unity 기본 UI 컴포넌트(Button 등)를 대체하는 커스텀 위젯 베이
 
 ---
 
+## 중요
+1. 독립적입 라이브러리라고 생각하기
+2. 기본 유니티, sdk, Utility 빼고는 어셈블리 참조 금지
+
 ## 왜 기본 Button을 안 쓰는가
 
 Unity 기본 `Button`은 안 쓰는 기능(Transition, Navigation 등)까지 프리팹에 직렬화되어 에셋 크기가 늘어나고,

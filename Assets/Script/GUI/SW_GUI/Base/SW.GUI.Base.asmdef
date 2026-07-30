@@ -2,11 +2,10 @@
     "name": "SW.GUI.Base",
     "rootNamespace": "",
     "references": [
-        "GUID:bb3e16a926f09ce46ae5d5052c9951c4",
         "GUID:f51ebe6a0ceec4240a699833d6309b23",
         "GUID:d82625ecdf1eb2040a9da55eb945bb9c",
         "GUID:8381d25136c024c47bc141aa127149b3",
-        "GUID:4e61b79bed5fe5745b874c5b13824d68"
+        "GUID:8381d25136c024c47bc141aa127149b3"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

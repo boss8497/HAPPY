@@ -54,6 +54,18 @@ MonoBehaviour:
     m_Localized: Lv.{0}(+{1}) {2}
     m_Metadata:
       m_Items: []
+  - m_Id: 24508673699717120
+    m_Localized: "\uB9C8\uC2A4\uD130 \uBCFC\uB968"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24508861243826176
+    m_Localized: "\uC635\uC158"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24508976180338688
+    m_Localized: "\uC0AC\uC6B4\uB4DC"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

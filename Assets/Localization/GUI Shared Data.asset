@@ -55,6 +55,18 @@ MonoBehaviour:
     m_Key: ClearCharacterLevelUpName
     m_Metadata:
       m_Items: []
+  - m_Id: 24508673699717120
+    m_Key: MasterVolume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24508861243826176
+    m_Key: Option
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24508976180338688
+    m_Key: Sound
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
