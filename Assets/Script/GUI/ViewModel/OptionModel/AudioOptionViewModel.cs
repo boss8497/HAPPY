@@ -1,22 +1,37 @@
 ﻿using R3;
 using Script.GameData.Model;
+using Script.GameInfo.Info;
 using Script.GamePlay.Audio.Interface;
+using SW.GUI;
+using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 
 namespace Script.GUI.ViewModel {
     public class AudioOptionViewModel : ViewModel {
-        
-        public Slider masterVolume;
-        public Slider musicVolume;
-        public Slider effectVolume;
-        public Slider voiceVolume;
-        
+        public Slider        masterVolume;
+        public SW_GUI_TOGGLE masterVolumeMute;
+
+        public Slider        bgmVolume;
+        public SW_GUI_TOGGLE bgmVolumeMute;
+
+        public Slider        effectVolume;
+        public SW_GUI_TOGGLE effectVolumeMute;
+
+        public Slider        voiceVolume;
+        public SW_GUI_TOGGLE voiceVolumeMute;
+
         private ReactiveProperty<IAudioManager> AudioManager { get; set; } = new();
 
-        public ReadOnlyReactiveProperty<AudioSettingModel> AudioSetting        { get; set; }
-        public ReadOnlyReactiveProperty<AudioSettingModel> CurrentAudioSetting { get; set; }
-        public ReadOnlyReactiveProperty<bool>              IsChanged           { get; set; }
+        public ReadOnlyReactiveProperty<AudioSettingModel> BackUpAudioSetting { get; set; }
+        public ReadOnlyReactiveProperty<AudioSettingModel> AudioSetting       { get; set; }
+        public ReadOnlyReactiveProperty<bool>              IsChanged          { get; set; }
+
+
+        public ReactiveProperty<bool> UpdateChanged { get; set; }
+
+        public ReactiveProperty<float> MasterVolume     { get; set; }
+        public ReactiveProperty<bool>  MasterVolumeMute { get; set; }
 
         private DisposableBag _disposableBag;
 
@@ -29,28 +44,72 @@ namespace Script.GUI.ViewModel {
 
         public override void InitializeInternal() {
             autoInitializeState = false;
+
+            EventSetting();
             InitializeReactiveProperty();
         }
 
         private void InitializeReactiveProperty() {
-            AudioSetting = AudioManager.Select(i => i?.AudioSettingModel == null ? Observable.Empty<AudioSettingModel>() : Observable.Return(i.AudioSettingModel))
-                                       .Switch()
-                                       .ToReadOnlyReactiveProperty()
-                                       .AddTo(ref _disposableBag);
+            UpdateChanged = new();
 
-            CurrentAudioSetting = AudioManager
-                                  .Select(i => i?.AudioSettingModel == null ? Observable.Empty<AudioSettingModel>() : Observable.Return(i.AudioSettingModel.Clone() as AudioSettingModel))
-                                  .Switch()
-                                  .ToReadOnlyReactiveProperty()
-                                  .AddTo(ref _disposableBag);
+            MasterVolume     = new(-1);
+            MasterVolumeMute = new();
+
+            BackUpAudioSetting = AudioManager.Select(i => i?.AudioSettingModel == null ? Observable.Empty<AudioSettingModel>() : Observable.Return(i.AudioSettingModel.Clone() as AudioSettingModel))
+                                             .Switch()
+                                             .ToReadOnlyReactiveProperty()
+                                             .AddTo(ref _disposableBag);
+
+            AudioSetting = AudioManager
+                           .Select(i => {
+                               if (i?.AudioSettingModel == null) {
+                                   return Observable.Return<AudioSettingModel>(null);
+                               }
+
+                               var setting = i.AudioSettingModel;
+                               if (setting == null) {
+                                   return Observable.Return<AudioSettingModel>(null);
+                               }
+
+                               masterVolume.value = setting.masterVolume;
+                               masterVolumeMute.SetIsOn(setting.masterMute, true);
 
 
-            IsChanged = AudioSetting.CombineLatest(CurrentAudioSetting, (a, b) => {
-                                        if (a == null || b == null) return false;
-                                        return !a.Equals(b);
-                                    })
-                                    .ToReadOnlyReactiveProperty()
-                                    .AddTo(ref _disposableBag);
+                               return Observable.Return(setting);
+                           })
+                           .Switch()
+                           .ToReadOnlyReactiveProperty()
+                           .AddTo(ref _disposableBag);
+
+            IsChanged = UpdateChanged.CombineLatest(BackUpAudioSetting, AudioSetting, (u, a, b) => {
+                                         if (a == null || b == null) return false;
+                                         return !a.Equals(b);
+                                     })
+                                     .ToReadOnlyReactiveProperty()
+                                     .AddTo(ref _disposableBag);
+
+
+            MasterVolume.CombineLatest(AudioSetting, IsInitialized, (volume, setting, init) => (volume, setting, init))
+                        .Subscribe((volume) => {
+                            if (volume.setting == null || volume.init == false || volume.volume < 0) return;
+
+                            if (Mathf.Abs(volume.setting.masterVolume - volume.volume) > float.Epsilon) {
+                                AudioManager.Value.SetVolume(AudioGroup.Master, volume.volume, false);
+                                UpdateChanged.ForceNotify();
+                            }
+                        })
+                        .AddTo(ref _disposableBag);
+
+            MasterVolumeMute.CombineLatest(AudioSetting, (mute, setting) => (mute, setting))
+                            .Subscribe((volume) => {
+                                if (volume.setting == null) return;
+
+                                if (volume.setting.masterMute != volume.mute) {
+                                    AudioManager.Value.SetMute(AudioGroup.Master, volume.mute, false);
+                                    UpdateChanged.ForceNotify();
+                                }
+                            })
+                            .AddTo(ref _disposableBag);
 
 
             AudioManager.Subscribe(audioManager => {
@@ -62,13 +121,25 @@ namespace Script.GUI.ViewModel {
             AudioManager.ForceNotify();
         }
 
+        private void EventSetting() {
+            masterVolume.onValueChanged.RemoveAllListeners();
+            masterVolume.onValueChanged.AddListener((value) => { MasterVolume.OnNext(value); });
+        }
+
         public override void DisableInternal() { }
 
         private void DisableReactiveProperty() {
-            AudioSetting        = null;
-            CurrentAudioSetting = null;
-            IsChanged           = null;
             _disposableBag.Dispose();
+            
+            masterVolume.onValueChanged.RemoveAllListeners();
+
+            BackUpAudioSetting = null;
+            AudioSetting       = null;
+            IsChanged          = null;
+            UpdateChanged      = null;
+
+            MasterVolume     = null;
+            MasterVolumeMute = null;
         }
 
         public override void DisposeInternal() {

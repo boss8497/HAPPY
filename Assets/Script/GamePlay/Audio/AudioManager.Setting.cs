@@ -9,18 +9,22 @@ namespace Script.GamePlay.Audio {
 
         public float GetVolume(AudioGroup group) => _audioSetting.GetVolume(group);
 
-        public void SetVolume(AudioGroup group, float volume01) {
+        public void SetVolume(AudioGroup group, float volume01, bool save = true) {
             _audioSetting.SetVolume(group, volume01);
             ApplyVolume(group);
-            _audioSetting.SaveAsync().Forget();
+            if (save) {
+                _audioSetting.SaveAsync().Forget();
+            }
         }
 
         public bool GetMute(AudioGroup group) => _audioSetting.GetMute(group);
 
-        public void SetMute(AudioGroup group, bool mute) {
+        public void SetMute(AudioGroup group, bool mute, bool save = true) {
             _audioSetting.SetMute(group, mute);
             ApplyVolume(group);
-            _audioSetting.SaveAsync().Forget();
+            if (save) {
+                _audioSetting.SaveAsync().Forget();
+            }
         }
 
         private void ApplyVolume(AudioGroup group) {

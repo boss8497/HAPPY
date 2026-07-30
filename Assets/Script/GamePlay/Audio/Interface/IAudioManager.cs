@@ -72,9 +72,9 @@ namespace Script.GamePlay.Audio.Interface {
         void StopBGM();
 
         float GetVolume(AudioGroup group);
-        void  SetVolume(AudioGroup group, float volume01);
+        void  SetVolume(AudioGroup group, float volume01, bool save = true);
         bool  GetMute(AudioGroup   group);
-        void  SetMute(AudioGroup   group, bool mute);
+        void  SetMute(AudioGroup   group, bool mute, bool save = true);
 
         /// <summary>
         /// 캐시된 특정 클립을 해제한다. 재생 중이면 먼저 정지시킨다.
