@@ -3,8 +3,10 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Enum;
 using Script.GUI.Screen.Enum;
+using Script.GUI.ScreenData;
 using Script.GUI.ScreenData.Interface;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Script.GUI.Screen.Interface {
     public interface IScreenManager {
@@ -36,5 +38,17 @@ namespace Script.GUI.Screen.Interface {
         bool       PoolPush(GameObject obj);
 
         UniTask OpenErrorMessage(ErrorMessage errorMessage, CancellationToken ct = default, object[] arguments = null);
+
+        UniTask OpenMessage(
+            string            title,
+            string            message,
+            object[]          arguments    = null,
+            MessageType       messageType  = MessageType.Ok,
+            UnityAction       okAction     = null,
+            UnityAction       cancelAction = null,
+            UnityAction       yesAction    = null,
+            UnityAction       noAction     = null,
+            CancellationToken ct           = default
+        );
     }
 }

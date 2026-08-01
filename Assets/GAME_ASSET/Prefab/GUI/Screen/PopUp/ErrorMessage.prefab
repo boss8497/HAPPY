@@ -497,8 +497,7 @@ MonoBehaviour:
   key: ErrorMessage
   layerType: 3
   option: 0
-  _backButtons:
-  - {fileID: 9009934160669420333}
+  _backButtons: []
   titleLocalizeText:
     _localizedString:
       m_TableReference:

@@ -77,6 +77,21 @@ namespace Script.GamePlay.Audio {
             Initialized = true;
         }
 
+        public async UniTask ChangeAudioSetting(AudioSettingModel model, CancellationToken ct = default) {
+            if (model == null) {
+                throw new ArgumentNullException(nameof(model));
+            }
+
+            _audioSetting.Model = model;
+
+            ApplyVolume(AudioGroup.Master);
+            ApplyVolume(AudioGroup.BGM);
+            ApplyVolume(AudioGroup.Effect);
+            ApplyVolume(AudioGroup.Voice);
+
+            await _audioSetting.SaveAsync();
+        }
+
         private async UniTask LoadMixerAsync(CancellationToken ct) {
             _mixerHandle = Addressables.LoadAssetAsync<AudioMixer>(MixerKey);
 

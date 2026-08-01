@@ -49,7 +49,8 @@ namespace Script.GamePlay.Audio.Interface {
             CancellationToken ct       = default
         );
 
-        void Stop(AudioHandle handle);
+        UniTask ChangeAudioSetting(AudioSettingModel model, CancellationToken ct = default);
+        void    Stop(AudioHandle                     handle);
 
         /// <summary>
         /// 같은 key로 재생 중인 모든 인스턴스를 정지한다(핸들 없이 key만 아는 호출부를 위한 편의 메서드).

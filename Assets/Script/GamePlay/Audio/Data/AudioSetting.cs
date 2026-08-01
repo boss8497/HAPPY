@@ -15,7 +15,7 @@ namespace Script.GamePlay.Audio {
 
         private readonly IDataBase _dataBase;
 
-        public AudioSettingModel Model { get; private set; }
+        public AudioSettingModel Model { get; set; }
 
         public AudioSetting(IDataBase dataBase) {
             _dataBase = dataBase ?? throw new ArgumentNullException(nameof(dataBase));

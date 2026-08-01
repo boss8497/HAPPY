@@ -849,10 +849,10 @@ MonoBehaviour:
   key: Option
   layerType: 2
   option: 0
-  _backButtons:
-  - {fileID: 9009934160669420333}
+  _backButtons: []
   audioOptionViewModel: {fileID: 1413865258065173914}
-  changedButton: {fileID: 0}
+  backBtn: {fileID: 2130932130614355375}
+  changedButton: {fileID: 1779775036446912578}
 --- !u!1 &1930799477953418025
 GameObject:
   m_ObjectHideFlags: 0
@@ -2760,7 +2760,7 @@ GameObject:
   - component: {fileID: 4761524642771977776}
   - component: {fileID: 7064701037075210057}
   - component: {fileID: 5722976635288770550}
-  - component: {fileID: 9009934160669420333}
+  - component: {fileID: 2130932130614355375}
   m_Layer: 5
   m_Name: BackBtn
   m_TagString: Untagged
@@ -2825,7 +2825,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &9009934160669420333
+--- !u!114 &2130932130614355375
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2834,39 +2834,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 8397490639006624666}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Script: {fileID: 11500000, guid: a4b128f3c659489c858b13183dfbb1b7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
-  m_Navigation:
-    m_Mode: 3
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 0
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 5722976635288770550}
-  m_OnClick:
+  m_EditorClassIdentifier: SW.GUI::SW.GUI.SW_GUI_BUTTON_SIMPLE
+  _interactable: 1
+  useDelay: 0
+  delay: 0.05
+  onClickEvent:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &8529946155298835747

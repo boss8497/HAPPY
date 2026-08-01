@@ -109,7 +109,7 @@ namespace Script.GUI.Screen {
         public async UniTask OpenAsync(string key, CancellationToken ct = default) {
             await OpenAsync(null, key, ct);
         }
-        
+
         public async UniTask OpenAsync(IScreenOption screenOption, string key, CancellationToken ct = default) {
             if (string.IsNullOrEmpty(key)) {
                 Debug.LogError("Screen ID cannot be null or empty");
@@ -258,7 +258,7 @@ namespace Script.GUI.Screen {
         public async UniTask CloseAllAsync(bool force = false) {
             var lastScreen = LastScreen();
             while (lastScreen != null) {
-                await CloseAsync(_firstScreen, force);   
+                await CloseAsync(_firstScreen, force);
                 lastScreen = LastScreen();
             }
         }
@@ -267,7 +267,9 @@ namespace Script.GUI.Screen {
         /// Screen을 하나씩 Back하는 메서드입니다. CloseAsync 보다는 이거를 적극 사용!
         /// </summary>
         public async UniTask Back() {
-            var screen = LastScreen();
+            var screen = BackScreen();
+            screen.AddState(ScreenState.Closing);
+            Debug.Log($"Back Screen {screen.Key}");
             await CloseAsync(screen);
         }
 
@@ -305,10 +307,10 @@ namespace Script.GUI.Screen {
             AddState(ScreenManagerState.ClosingScreen);
 
             try {
-                _closeWaitQueue.Dequeue();
+                var screenKey = _closeWaitQueue.Dequeue();
 
                 // 대기 중 이미 닫혔을 수 있음
-                var current = FindScreen(screen.Key.AsSpan());
+                var current = FindScreen(screenKey.AsSpan());
                 if (current == null)
                     return;
 
@@ -316,6 +318,8 @@ namespace Script.GUI.Screen {
                 if (trigger == false) return;
 
                 var targets = ListPool.Get<IScreen>();
+                
+                // 해당 상황이 안나오게 Close를 직접 호출하지 않는게 중요
                 CollectCloseTargets(current, targets);
 
                 foreach (var target in targets) {
@@ -335,6 +339,9 @@ namespace Script.GUI.Screen {
 
                 targets.Clear();
                 ListPool.Return(targets);
+                
+                current.AddState(ScreenState.Closed);
+                current.RemoveState(ScreenState.Closing);
             }
             finally {
                 RemoveState(ScreenManagerState.ClosingScreen);
@@ -364,6 +371,20 @@ namespace Script.GUI.Screen {
 
                 current = current.Previous;
             }
+        }
+        
+        private IScreen BackScreen() {
+            var lastScreen = _firstScreen;
+            while (lastScreen?.Next != null) {
+                lastScreen = lastScreen?.Next;
+            }
+
+            var backScreen = lastScreen;
+            while (backScreen?.ClosingScreen ?? false) {
+                backScreen = backScreen.Previous;
+            }
+
+            return backScreen;
         }
 
         private IScreen LastScreen() {
@@ -418,6 +439,7 @@ namespace Script.GUI.Screen {
                 await screen.Release();
                 Destroy(screen.GameObject);
             }
+
             _loadedScreens.Clear();
         }
     }

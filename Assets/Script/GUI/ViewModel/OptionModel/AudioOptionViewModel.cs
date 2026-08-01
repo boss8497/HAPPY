@@ -1,4 +1,6 @@
-﻿using R3;
+﻿using System.Threading;
+using Cysharp.Threading.Tasks;
+using R3;
 using Script.GameData.Model;
 using Script.GameInfo.Info;
 using Script.GamePlay.Audio.Interface;
@@ -25,9 +27,9 @@ namespace Script.GUI.ViewModel {
 
         public ReadOnlyReactiveProperty<AudioSettingModel> BackUpAudioSetting { get; set; }
         public ReadOnlyReactiveProperty<AudioSettingModel> AudioSetting       { get; set; }
-        public ReadOnlyReactiveProperty<bool>              IsChanged          { get; set; }
 
 
+        public ReactiveProperty<bool> IsChanged     { get; set; } = new();
         public ReactiveProperty<bool> UpdateChanged { get; set; }
 
         public ReactiveProperty<float> MasterVolume     { get; set; }
@@ -81,12 +83,12 @@ namespace Script.GUI.ViewModel {
                            .ToReadOnlyReactiveProperty()
                            .AddTo(ref _disposableBag);
 
-            IsChanged = UpdateChanged.CombineLatest(BackUpAudioSetting, AudioSetting, (u, a, b) => {
-                                         if (a == null || b == null) return false;
-                                         return !a.Equals(b);
-                                     })
-                                     .ToReadOnlyReactiveProperty()
-                                     .AddTo(ref _disposableBag);
+            UpdateChanged.CombineLatest(BackUpAudioSetting, AudioSetting, (u, a, b) => {
+                             if (a == null || b == null) return false;
+                             return !a.Equals(b);
+                         })
+                         .Subscribe(changed => { IsChanged.OnNext(changed); })
+                         .AddTo(ref _disposableBag);
 
 
             MasterVolume.CombineLatest(AudioSetting, IsInitialized, (volume, setting, init) => (volume, setting, init))
@@ -119,6 +121,7 @@ namespace Script.GUI.ViewModel {
                         })
                         .AddTo(ref _disposableBag);
             AudioManager.ForceNotify();
+            UpdateChanged.ForceNotify();
         }
 
         private void EventSetting() {
@@ -130,12 +133,11 @@ namespace Script.GUI.ViewModel {
 
         private void DisableReactiveProperty() {
             _disposableBag.Dispose();
-            
+
             masterVolume.onValueChanged.RemoveAllListeners();
 
             BackUpAudioSetting = null;
             AudioSetting       = null;
-            IsChanged          = null;
             UpdateChanged      = null;
 
             MasterVolume     = null;
@@ -144,6 +146,11 @@ namespace Script.GUI.ViewModel {
 
         public override void DisposeInternal() {
             _disposableBag.Dispose();
+        }
+
+        public async UniTask ChangeAudioSetting(AudioSettingModel setting, CancellationToken ct = default) {
+            if (setting == null) return;
+            await AudioManager.CurrentValue.ChangeAudioSetting(setting, ct);
         }
     }
 }

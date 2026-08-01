@@ -25,10 +25,18 @@ namespace Script.GUI.Screen {
 
         private List<GameObject> _pools;
 
-        public ScreenLayerType LayerType     => layerType;
-        public string          Key           => key;
-        public RectTransform   RectTransform => transform as RectTransform;
-        public GameObject      GameObject    => gameObject;
+        public ScreenLayerType LayerType => layerType;
+
+        public ScreenState State { get; private set; } = ScreenState.None;
+
+        public bool OpeningScreen => (State & ScreenState.Opening) != 0;
+        public bool OpenedScreen  => (State & ScreenState.Opened) != 0;
+        public bool ClosingScreen => (State & ScreenState.Closing) != 0;
+        public bool ClosedScreen  => (State & ScreenState.Closed) != 0;
+
+        public string        Key           => key;
+        public RectTransform RectTransform => transform as RectTransform;
+        public GameObject    GameObject    => gameObject;
 
 
         private   IScreenManager _screenManager;
@@ -50,6 +58,7 @@ namespace Script.GUI.Screen {
             _pools = ListPool.Get<GameObject>();
             await OpenInternal(data);
         }
+
         /// <summary>
         /// ScreenOpen 시 제일 먼저 호출되는 메서드, 호출 후 Active가 켜진다!!
         /// </summary>
@@ -101,10 +110,11 @@ namespace Script.GUI.Screen {
             foreach (var pool in _pools.ToArray()) {
                 PoolPush(pool);
             }
+
             _pools.Clear();
-             ListPool<GameObject>.Release(_pools);
+            ListPool<GameObject>.Release(_pools);
         }
-        
+
         public abstract UniTask CloseInternal();
 
         /// <summary>
@@ -131,8 +141,22 @@ namespace Script.GUI.Screen {
         public virtual UniTask Release() {
             return UniTask.CompletedTask;
         }
-        
-        
+
+        public void ResetState() {
+            State = ScreenState.None;
+        }
+
+        public void AddState(ScreenState state) {
+            if (State.HasFlag(state)) return;
+            State |= state;
+        }
+
+        public void RemoveState(ScreenState state) {
+            if (State.HasFlag(state) == false) return;
+            State &= ~state;
+        }
+
+
         #region Pooling
 
         public GameObject PoolPop(string path, Transform parent = null, bool active = true, bool worldPositionStays = true) {
@@ -145,6 +169,7 @@ namespace Script.GUI.Screen {
             _pools.Remove(obj);
             _screenManager.PoolPush(obj);
         }
+
         #endregion
 
         #region Inspector
