@@ -214,7 +214,6 @@ namespace Script.GamePlay.Stage {
         private void UpdateRemoveEnemy() {
             if (_removeEnemies.Count <= 0) return;
             foreach (var outSideEnemy in _removeEnemies) {
-                Debug.LogError($"{outSideEnemy.GameObject.name} OutSideMap Remove!!");
                 RemoveEnemy(outSideEnemy);
             }
 
