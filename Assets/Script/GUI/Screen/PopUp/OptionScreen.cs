@@ -1,13 +1,11 @@
 ﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 using R3;
-using Script.GameData.Model;
-using Script.GamePlay.Audio.Interface;
 using Script.GUI.ScreenData;
 using Script.GUI.ScreenData.Interface;
 using Script.GUI.ViewModel;
+using Script.Localize.Text;
 using SW.GUI;
-using VContainer;
 
 namespace Script.GUI.Screen {
     public class OptionScreen : Screen {
@@ -18,22 +16,15 @@ namespace Script.GUI.Screen {
         public SW_GUI_BUTTON_SIMPLE backBtn;
         public SW_GUI_BUTTON        changedButton;
 
+        public LocalizeText titleText;
+        public LocalizeText messageText;
         #endregion
-
-        private IAudioManager _audioManager;
 
         private ReadOnlyReactiveProperty<bool> IsAudioChanged { get; set; }
 
 
         private CancellationTokenSource _changedCts;
         private DisposableBag           _disposableBag;
-
-        [Inject]
-        public void InjectSelf(
-            IAudioManager audioManager
-        ) {
-            _audioManager = audioManager;
-        }
 
         public override UniTask OpenInternal(IScreenOption screenOption) {
             InitializeReactiveProperty();
@@ -67,7 +58,8 @@ namespace Script.GUI.Screen {
         private async UniTask ApplyAudioOption(CancellationToken ct) {
             var end     = false;
             var changed = false;
-            await ScreenManager.OpenMessage("변경", "변경하시겠습니까?", null, MessageType.OkCancel,
+            
+            await ScreenManager.OpenMessage(titleText.GetText(), messageText.GetText(), null, MessageType.OkCancel,
                                             () => {
                                                 changed = true;
                                                 end     = true;
