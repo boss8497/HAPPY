@@ -67,6 +67,14 @@ MonoBehaviour:
     m_Key: Sound
     m_Metadata:
       m_Items: []
+  - m_Id: 26036690347466752
+    m_Key: EffectVolume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 26036910321934336
+    m_Key: VoiceVolume
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
