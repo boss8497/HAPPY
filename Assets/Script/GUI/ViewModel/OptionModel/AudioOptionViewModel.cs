@@ -52,7 +52,10 @@ namespace Script.GUI.ViewModel {
         }
 
         private void InitializeReactiveProperty() {
-            UpdateChanged = new();
+            _disposableBag.Dispose();
+            _disposableBag = new();
+            
+            UpdateChanged  = new();
 
             MasterVolume     = new(-1);
             MasterVolumeMute = new();
@@ -129,7 +132,9 @@ namespace Script.GUI.ViewModel {
             masterVolume.onValueChanged.AddListener((value) => { MasterVolume.OnNext(value); });
         }
 
-        public override void DisableInternal() { }
+        public override void DisableInternal() {
+            DisableReactiveProperty();
+        }
 
         private void DisableReactiveProperty() {
             _disposableBag.Dispose();
