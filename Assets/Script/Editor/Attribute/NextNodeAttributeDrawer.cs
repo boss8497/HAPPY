@@ -77,7 +77,7 @@ namespace Script.Editor.Attribute {
               , _nodeName
             );
 
-            Guid = index >= 0 && _stateNodes[index] != null ? _stateNodes[index].guid : SerializeGuid.Empty();
+            Guid = index >= 0 && _stateNodes[index] != null ? _stateNodes[index].guid : SerializeGuid.Empty;
                 
             EditorGUILayout.EndHorizontal();
         }

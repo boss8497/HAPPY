@@ -4,6 +4,9 @@ using UnityEngine;
 namespace Script.GameInfo {
     [Serializable]
     public struct SerializeGuid : ISerializationCallbackReceiver, IEquatable<SerializeGuid> {
+        private static SerializeGuid _empty = new SerializeGuid(Guid.Empty);
+        public static  SerializeGuid Empty => _empty;
+
         [SerializeField] private uint v0;
         [SerializeField] private uint v1;
         [SerializeField] private uint v2;
@@ -31,10 +34,10 @@ namespace Script.GameInfo {
         public bool IsEmpty => Value == Guid.Empty;
 
         public SerializeGuid(Guid value) {
-            v0         = 0;
-            v1         = 0;
-            v2         = 0;
-            v3         = 0;
+            v0          = 0;
+            v1          = 0;
+            v2          = 0;
+            v3          = 0;
             _value      = value;
             _cacheValid = true;
             WriteGuidToFields(value);
@@ -42,10 +45,6 @@ namespace Script.GameInfo {
 
         public static SerializeGuid NewGuid() {
             return new SerializeGuid(Guid.NewGuid());
-        }
-
-        public static SerializeGuid Empty() {
-            return new SerializeGuid(Guid.Empty);
         }
 
         public void OnBeforeSerialize() {
@@ -73,11 +72,11 @@ namespace Script.GameInfo {
         public override int GetHashCode() {
             return Value.GetHashCode();
         }
-        
-        public static bool operator ==(SerializeGuid left, SerializeGuid right) => left.Equals(right);
-        public static bool operator !=(SerializeGuid left, SerializeGuid right) => !left.Equals(right);
-        public static implicit operator Guid(SerializeGuid value) => value.Value;
-        public static implicit operator SerializeGuid(Guid value) => new SerializeGuid(value);
+
+        public static                   bool operator ==(SerializeGuid left, SerializeGuid right) => left.Equals(right);
+        public static                   bool operator !=(SerializeGuid left, SerializeGuid right) => !left.Equals(right);
+        public static implicit operator Guid(SerializeGuid             value) => value.Value;
+        public static implicit operator SerializeGuid(Guid             value) => new SerializeGuid(value);
 
         private void WriteGuidToFields(Guid guid) {
             var bytes = guid.ToByteArray();

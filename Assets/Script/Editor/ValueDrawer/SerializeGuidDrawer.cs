@@ -21,7 +21,7 @@ namespace Script.Editor.ValueDrawer {
             }
 
             if (GUILayout.Button("Reset", GUILayout.Width(60))) {
-                value                 = SerializeGuid.Empty();
+                value                 = SerializeGuid.Empty;
                 ValueEntry.SmartValue = value;
                 ValueEntry.ApplyChanges();
                 UnityEngine.GUI.changed = true;

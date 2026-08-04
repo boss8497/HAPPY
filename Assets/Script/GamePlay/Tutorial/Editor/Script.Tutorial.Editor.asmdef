@@ -1,0 +1,23 @@
+{
+    "name": "Script.Tutorial.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:a01f2c0660dc2ba4bac7bf5b7a1b4a28",
+        "GUID:0b15bd74e4b091d4e8c54f4b7f272db8",
+        "GUID:1d5fd345428639340a7ac4cc5c7e1954",
+        "GUID:43bb8c28d1bcf044aa58c658421c367d",
+        "GUID:eb670f04037f4554c93ff50ee0bb28b9",
+        "GUID:709f4bab8a7a1004693d348cefe1e497"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

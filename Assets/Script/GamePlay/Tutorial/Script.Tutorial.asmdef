@@ -1,0 +1,27 @@
+{
+    "name": "Script.Tutorial",
+    "rootNamespace": "",
+    "references": [
+        "GUID:77221876cc6b8244180b96e320b1bcd4",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:1d5fd345428639340a7ac4cc5c7e1954",
+        "GUID:43bb8c28d1bcf044aa58c658421c367d",
+        "GUID:eb670f04037f4554c93ff50ee0bb28b9",
+        "GUID:d82625ecdf1eb2040a9da55eb945bb9c",
+        "GUID:8381d25136c024c47bc141aa127149b3",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:0b15bd74e4b091d4e8c54f4b7f272db8",
+        "GUID:0eed957a026b42e4c9a6a91bc28d4a41",
+        "GUID:854cf9f0c9798824e94ba2e712971f53",
+        "GUID:a377e2677a309924f862c77c2e14f6c1"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -12,6 +12,7 @@ namespace Script.GameInfo.Table {
             "PhaseTable",
             "RewardTable",
             "StatusTable",
+            "TutorialTable",
         };
     }
 }

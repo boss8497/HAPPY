@@ -35,6 +35,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 13cf9041eac6d2d48973ec9c4a258adf
+    m_Address: TutorialTable
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 14097491fad89ff4da348df591090c60
     m_Address: Assets/Script
     m_ReadOnly: 0
