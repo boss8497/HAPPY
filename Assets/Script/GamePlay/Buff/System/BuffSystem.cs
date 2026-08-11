@@ -222,6 +222,10 @@ namespace Script.Buff {
             }
 
             if (_buffs != null) {
+                foreach (var buff in _buffs) {
+                    ClassPool.Release(buff);
+                }
+
                 _buffs.Clear();
                 ListPool.Return(_buffs);
             }
