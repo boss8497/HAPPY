@@ -86,7 +86,7 @@ Initialized, Running, Jumping, Die, SystemControl, CollisionState, OutSideMap, I
 sequenceDiagram
     participant CB as CharacterBehaviour
     participant Node as ClientNodeBase (현재 노드)
-    participant Loop as UpdateTransition (병행 루프)
+    participant Watcher as UpdateTransition (병행 루프)
 
     CB->>Node: Start(cts)
     Node->>Node: CheckTransition(Begin) — 즉시 전환되면 여기서 return
@@ -94,11 +94,9 @@ sequenceDiagram
     par Update(cts) 대기
         Node->>Node: await Update(cts)
     and 매 프레임 Update Transition 검사
-        loop 프레임마다
-            Loop->>Loop: CheckTransition(Update)
-        end
+        Watcher->>Watcher: CheckTransition(Update) — 프레임마다 반복
     end
-    Note over Node,Loop: 둘 중 하나가 먼저 조건 성립 → generation 카운터로<br/>중복 전환 방지 후 CharacterBehaviour.OnTransition() 호출
+    Note over Node,Watcher: 둘 중 하나가 먼저 조건 성립 → generation 카운터로<br/>중복 전환 방지 후 CharacterBehaviour.OnTransition() 호출
     CB->>CB: OnTransition(node, transition)
     CB->>Node: node.Stop() → End()
     CB->>CB: nextNode = _nodesByGuid[transition.NextNodeGuid]
