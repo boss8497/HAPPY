@@ -1,6 +1,8 @@
-﻿using SW.GUI.Base;
+﻿using Sirenix.OdinInspector;
+using SW.GUI.Base;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace SW.GUI {
     public class SW_GUI_BUTTON_GROUP_ELEMENT : SW_GUI_BUTTON_GROUP_ELEMENT_BASE {
@@ -10,7 +12,24 @@ namespace SW.GUI {
         public UnityEvent OnSelect;
         public UnityEvent OnDeselect;
 
-        public override void Initialize() { }
+        #region Inspector
+
+        [SerializeField]
+        [OnValueChanged("InteractableGraphicChanged")]
+        private Graphic _targetGraphic;
+
+        [ToggleGroup("_interactable"), ShowIf("_interactable")]
+        [SerializeField]
+        private Color _interactableColor = new Color(210f, 210f, 210f, 0.5f);
+
+        [SerializeField]
+        private Color _baseGraphicColor;
+
+        #endregion
+
+        public override void Initialize() {
+            _baseGraphicColor = _targetGraphic?.color ?? Color.white;
+        }
 
         protected override void OnSelectEvent() {
             OnSelect?.Invoke();
@@ -19,6 +38,36 @@ namespace SW.GUI {
         protected override void OnDeselectEvent() {
             OnDeselect?.Invoke();
         }
+
+        private void InteractableGraphicColor() {
+            if (_targetGraphic == null) {
+                return;
+            }
+            _targetGraphic.color = _interactable ? _baseGraphicColor : _baseGraphicColor * _interactableColor;
+        }
+
+        #region Odin
+
+        protected override void InteractableChanged() {
+            InteractableGraphicColor();
+        }
+
+        private void InteractableGraphicChanged() {
+            void ChangedColor() {
+                if (_interactable)
+                    _baseGraphicColor = _targetGraphic?.color ?? Color.white;
+            }
+
+            if (_targetGraphic != null) {
+                _targetGraphic.UnregisterDirtyVerticesCallback(ChangedColor);
+                _targetGraphic.RegisterDirtyVerticesCallback(ChangedColor);
+            }
+
+            ChangedColor();
+            InteractableGraphicColor();
+        }
+
+        #endregion
 
 
         #region Editor
@@ -29,6 +78,10 @@ namespace SW.GUI {
         /// 못 찾으면 Parent에 SW_GUI_BUTTON_GROUP을 새로 추가한다.
         /// </summary>
         private void Reset() {
+            _targetGraphic    = GetComponent<Graphic>();
+            _baseGraphicColor = _targetGraphic?.color ?? Color.white;
+            InteractableGraphicChanged();
+
             if (transform.parent == null) {
                 Debug.LogWarning($"[{name}] SW_GUI_BUTTON_GROUP_ELEMENT는 Parent가 필요합니다. 그룹 자동 등록을 건너뜁니다.", this);
                 return;

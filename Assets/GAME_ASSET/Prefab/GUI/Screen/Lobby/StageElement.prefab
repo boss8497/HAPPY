@@ -125,6 +125,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _targetGraphic: {fileID: 1066096757577190941}
+  _interactableColor: {r: 0.2603773, g: 0.2603773, b: 0.2603773, a: 0.7254902}
+  _baseGraphicColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &5165236201076611773
 GameObject:
   m_ObjectHideFlags: 0

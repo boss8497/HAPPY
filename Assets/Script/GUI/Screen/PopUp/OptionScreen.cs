@@ -6,6 +6,7 @@ using Script.GUI.ScreenData.Interface;
 using Script.GUI.ViewModel;
 using Script.Localize.Text;
 using SW.GUI;
+using SW.GUI.Base;
 
 namespace Script.GUI.Screen {
     public class OptionScreen : Screen {
@@ -15,9 +16,11 @@ namespace Script.GUI.Screen {
 
         public SW_GUI_BUTTON_SIMPLE backBtn;
         public SW_GUI_BUTTON        changedButton;
+        public SW_GUI_BUTTON_BASE   cancelButton;
 
         public LocalizeText titleText;
         public LocalizeText messageText;
+
         #endregion
 
         private ReadOnlyReactiveProperty<bool> IsAudioChanged { get; set; }
@@ -42,6 +45,11 @@ namespace Script.GUI.Screen {
                     Back();
                 }
             });
+            
+            cancelButton.AddClickListener(() => {
+                audioOptionViewModel.ChangeAudioSetting(audioOptionViewModel.BackUpAudioSetting?.CurrentValue).Forget();
+                Back();
+            });
 
             changedButton.AddClickListener(() => {
                 if (_changedCts != null) {
@@ -58,7 +66,7 @@ namespace Script.GUI.Screen {
         private async UniTask ApplyAudioOption(CancellationToken ct) {
             var end     = false;
             var changed = false;
-            
+
             await ScreenManager.OpenMessage(titleText.GetText(), messageText.GetText(), null, MessageType.OkCancel,
                                             () => {
                                                 changed = true;
