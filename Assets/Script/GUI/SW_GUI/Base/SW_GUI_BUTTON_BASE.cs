@@ -10,7 +10,7 @@ namespace SW.GUI.Base {
         [ToggleGroup("_interactable", "버튼 사용 여부")]
         [SerializeField]
         [OnValueChanged("InteractableChanged")]
-        protected bool _interactable = false;
+        protected bool _interactable = true;
         public bool Interactable {
             get => _interactable;
             set {

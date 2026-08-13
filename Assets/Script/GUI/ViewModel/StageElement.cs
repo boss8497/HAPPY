@@ -5,6 +5,7 @@ using Script.GameInfo.Dungeon;
 using Script.GamePlay.Scene;
 using Script.GamePlay.Service.Interface;
 using Script.Utility.Runtime;
+using SW.GUI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,9 +27,8 @@ namespace Script.GUI.ViewModel {
         [SerializeField]
         private TMP_Text indexText;
 
-        [SerializeField]
-        public Button startBtn;
-        public Button errorBtn;
+        public SW_GUI_BUTTON_SIMPLE        errorBtn;
+        public SW_GUI_BUTTON_GROUP_ELEMENT selectBtn;
 
 
         public ReactiveProperty<Stage>        Stage         { get; set; } = new();
@@ -60,8 +60,9 @@ namespace Script.GUI.ViewModel {
 
             CanEnterStage.Subscribe(canEnter => {
                              errorBtn.SetActiveSafe(canEnter == false);
-                             if (startBtn != null) {
-                                 startBtn.interactable = canEnter;
+
+                             if (selectBtn != null) {
+                                 selectBtn.Interactable = canEnter;
                              }
                          })
                          .AddTo(ref _disposableBag);

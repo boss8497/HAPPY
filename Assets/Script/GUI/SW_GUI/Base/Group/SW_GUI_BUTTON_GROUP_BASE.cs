@@ -53,6 +53,9 @@ namespace SW.GUI.Base {
             element.Group                    = this;
             _elementsDictionary[element.Key] = element;
             _elementsList.Add(element);
+            
+            // 첫 등록시 선택된 상태로 만들지 않음
+            element.Selected = false;
         }
 
         public void Unregister(SW_GUI_BUTTON_GROUP_ELEMENT_BASE element) {

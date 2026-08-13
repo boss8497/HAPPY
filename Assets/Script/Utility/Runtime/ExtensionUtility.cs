@@ -16,19 +16,19 @@ namespace Script.Utility.Runtime {
         }
 
         public static void ClickAddListener(this Button btn, UnityAction listener, bool removeAll = true) {
-            if (btn == null || listener == null) return;
             if (removeAll) {
                 btn.onClick.RemoveAllListeners();
             }
-
+            
+            if (btn == null || listener == null) return;
             btn.onClick.AddListener(listener);
         }
         public static void AddListener(this UnityEvent unityEvent, UnityAction listener, bool removeAll = true) {
-            if (unityEvent == null || listener == null) return;
             if (removeAll) {
                 unityEvent.RemoveAllListeners();
             }
-
+            
+            if (unityEvent == null || listener == null) return;
             unityEvent.AddListener(listener);
         }
     }

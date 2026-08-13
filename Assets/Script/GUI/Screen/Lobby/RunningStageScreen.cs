@@ -13,6 +13,7 @@ using Script.GUI.ScreenData.Interface;
 using Script.GUI.ViewModel;
 using Script.Localize.Text;
 using Script.Utility.Runtime;
+using SW.GUI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -50,6 +51,9 @@ namespace Script.GUI.Screen {
         public RectTransform               stageContentRoot;
         public ErrorMessage                stageErrorMessage;
 
+        public SW_GUI_BUTTON_GROUP  stageGroup;
+        public SW_GUI_BUTTON_SIMPLE startBtn;
+
 
         // Character
         public AssetReferenceT<GameObject> characterElement;
@@ -70,6 +74,7 @@ namespace Script.GUI.Screen {
         public LocalizeText levelTextFormat;
 
 
+        private List<StageElement>     _stageElements;
         private List<CharacterElement> _characterElements;
 
         public override async UniTask OpenInternal(IScreenOption data) {
@@ -78,32 +83,42 @@ namespace Script.GUI.Screen {
             _dungeonInfo     = GameInfoManager.Instance.Get<DungeonInfo>(_dungeonProgress.dungeonUid);
             _stage           = _dungeonInfo.stages.FirstOrDefault(r => r.guid.Value == _dungeonProgress.stageGuid);
 
+            stageGroup.ReleaseSelector();
+            
+            if (_characterElements != null) {
+                ListPool.Return(_characterElements);
+            }
+            if (_stageElements != null) {
+                ListPool.Return(_stageElements);
+            }
+            _stageElements     = ListPool.Get<StageElement>();
+            _characterElements = ListPool.Get<CharacterElement>();
+            
             foreach (var stage in _dungeonInfo.stages) {
                 var obj                = PoolPop(this.stageElement.AssetGUID, stageContentRoot, true, false);
                 var stageElementScript = obj.GetComponent<StageElement>();
                 if (stageElementScript != null) {
                     stageElementScript.InitializeReactive();
                     stageElementScript.SetReactive(stage, _dungeonInfo);
-
-                    if (stageElementScript.startBtn != null) {
-                        stageElementScript.startBtn.ClickAddListener(() => {
-                            if (stageElementScript.Stage?.CurrentValue == null || stageElementScript.DungeonInfo?.CurrentValue == null) return;
-                            var selectCharacter = _characterElements.FirstOrDefault(r => r.Selected);
-                            _groupService.EnterDungeon(stageElementScript.DungeonInfo.CurrentValue, stageElementScript.Stage.CurrentValue, selectCharacter?.Item?.CurrentValue).Forget();
-                        });
-                    }
+                    stageGroup.Register(stageElementScript.selectBtn);
 
                     if (stageElementScript.errorBtn != null) {
-                        stageElementScript.errorBtn.ClickAddListener(() => { ScreenManager.OpenErrorMessage(stageErrorMessage, CancellationToken.None).Forget(); });
+                        stageElementScript.errorBtn.AddClickListener(() => { ScreenManager.OpenErrorMessage(stageErrorMessage, CancellationToken.None).Forget(); });
                     }
+                    
+                    _stageElements.Add(stageElementScript);
                 }
             }
-
-            if (_characterElements != null) {
-                ListPool.Return(_characterElements);
-            }
-
-            _characterElements = ListPool.Get<CharacterElement>();
+            // 처음 선택
+            _stageElements.FirstOrDefault(r => r.CanEnterStage?.CurrentValue == true)?.selectBtn?.OnClick();
+            
+            // 던전 입장
+            startBtn.AddClickListener(() => {
+                var stageElementScript = _stageElements.FirstOrDefault(r => r.selectBtn.Selected);
+                var selectCharacter    = _characterElements.FirstOrDefault(r => r.Selected);
+                _groupService.EnterDungeon(stageElementScript.DungeonInfo.CurrentValue, stageElementScript.Stage.CurrentValue, selectCharacter?.Item?.CurrentValue).Forget();
+            });
+            
             foreach (var character in GameInfoManager.Instance.GetCollection<CharacterInfo>().Where(r => r.type == CharacterType.Character)) {
                 var obj = PoolPop(this.characterElement.AssetGUID, characterContentRoot, true, false);
                 if (obj == null) continue;
@@ -128,7 +143,7 @@ namespace Script.GUI.Screen {
 
         private void SelectCharacter(CharacterInfo characterInfo) {
             if (characterInfo == null) return;
-            
+
             if (nameText != null) {
                 nameText.SetText(characterInfo.Name ?? "");
             }
@@ -146,10 +161,11 @@ namespace Script.GUI.Screen {
                 if (jumpText != null) {
                     jumpText.SetText(jumpTextFormat.GetText(0));
                 }
-                
+
                 if (levelExpText != null) {
                     levelExpText.SetText(levelExpTextFormat.GetText(0, 0));
                 }
+
                 if (levelText != null) {
                     levelText.SetText(levelTextFormat.GetText(0));
                 }
@@ -167,7 +183,7 @@ namespace Script.GUI.Screen {
                 if (jumpText != null) {
                     jumpText.SetText(jumpTextFormat.GetText(characterItem.Value.Jump));
                 }
-                
+
                 if (levelExpText != null) {
                     levelExpText.SetText(levelExpTextFormat.GetText(characterItem.Value.LevelExp, characterItem.Value.LevelExpMax));
                 }
@@ -179,6 +195,9 @@ namespace Script.GUI.Screen {
         }
 
         public override UniTask CloseInternal() {
+            if (_stageElements != null) {
+                ListPool.Return(_stageElements);
+            }
             if (_characterElements != null) {
                 ListPool.Return(_characterElements);
             }
