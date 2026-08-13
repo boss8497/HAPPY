@@ -66,17 +66,21 @@ namespace Script.GUI.ViewModel {
 
             UpdateChanged = new();
 
-            MasterVolume     = new(-1);
-            MasterVolumeMute = new();
+            MasterVolume       = new();
+            masterVolume.value = -1;
+            MasterVolumeMute   = new();
 
-            BgmVolume     = new(-1);
-            BgmVolumeMute = new();
+            BgmVolume       = new();
+            bgmVolume.value = -1;
+            BgmVolumeMute   = new();
 
-            EffectVolume     = new(-1);
-            EffectVolumeMute = new();
+            EffectVolume       = new();
+            effectVolume.value = -1;
+            EffectVolumeMute   = new();
 
-            VoiceVolume     = new(-1);
-            VoiceVolumeMute = new();
+            VoiceVolume       = new();
+            voiceVolume.value = -1;
+            VoiceVolumeMute   = new();
 
             BackUpAudioSetting = AudioManager.Select(i => i?.AudioSettingModel == null ? Observable.Empty<AudioSettingModel>() : Observable.Return(i.AudioSettingModel.Clone() as AudioSettingModel))
                                              .Switch()
@@ -131,12 +135,12 @@ namespace Script.GUI.ViewModel {
                         })
                         .AddTo(ref _disposableBag);
 
-            MasterVolumeMute.CombineLatest(AudioSetting, (mute, setting) => (mute, setting))
-                            .Subscribe((volume) => {
-                                if (volume.setting == null) return;
+            MasterVolumeMute.CombineLatest(AudioSetting, MasterVolume, IsInitialized, (mute, setting, volume, init) => (mute, setting, volume, init))
+                            .Subscribe((master) => {
+                                if (master.setting == null || master.init == false || master.volume < 0) return;
 
-                                if (volume.setting.masterMute != volume.mute) {
-                                    AudioManager.Value.SetMute(AudioGroup.Master, volume.mute, false);
+                                if (master.setting.masterMute != master.mute) {
+                                    AudioManager.Value.SetMute(AudioGroup.Master, master.mute, false);
                                     UpdateChanged.ForceNotify();
                                 }
                             })
@@ -154,12 +158,12 @@ namespace Script.GUI.ViewModel {
                      })
                      .AddTo(ref _disposableBag);
 
-            BgmVolumeMute.CombineLatest(AudioSetting, (mute, setting) => (mute, setting))
-                         .Subscribe((volume) => {
-                             if (volume.setting == null) return;
+            BgmVolumeMute.CombineLatest(AudioSetting, BgmVolume, IsInitialized, (mute, setting, volume, init) => (mute, setting, volume, init))
+                         .Subscribe((bgm) => {
+                             if (bgm.setting == null || bgm.init == false || bgm.volume < 0) return;
 
-                             if (volume.setting.bgmMute != volume.mute) {
-                                 AudioManager.Value.SetMute(AudioGroup.BGM, volume.mute, false);
+                             if (bgm.setting.bgmMute != bgm.mute) {
+                                 AudioManager.Value.SetMute(AudioGroup.BGM, bgm.mute, false);
                                  UpdateChanged.ForceNotify();
                              }
                          })
@@ -167,22 +171,22 @@ namespace Script.GUI.ViewModel {
 
 
             EffectVolume.CombineLatest(AudioSetting, IsInitialized, (volume, setting, init) => (volume, setting, init))
-                        .Subscribe((volume) => {
-                            if (volume.setting == null || volume.init == false || volume.volume < 0) return;
+                        .Subscribe((effect) => {
+                            if (effect.setting == null || effect.init == false || effect.volume < 0) return;
 
-                            if (Mathf.Abs(volume.setting.effectVolume - volume.volume) > float.Epsilon) {
-                                AudioManager.Value.SetVolume(AudioGroup.Effect, volume.volume, false);
+                            if (Mathf.Abs(effect.setting.effectVolume - effect.volume) > float.Epsilon) {
+                                AudioManager.Value.SetVolume(AudioGroup.Effect, effect.volume, false);
                                 UpdateChanged.ForceNotify();
                             }
                         })
                         .AddTo(ref _disposableBag);
 
-            EffectVolumeMute.CombineLatest(AudioSetting, (mute, setting) => (mute, setting))
-                            .Subscribe((volume) => {
-                                if (volume.setting == null) return;
+            EffectVolumeMute.CombineLatest(AudioSetting, EffectVolume, IsInitialized, (mute, setting, volume, init) => (mute, setting, volume, init))
+                            .Subscribe((effect) => {
+                                if (effect.setting == null || effect.init == false || effect.volume < 0) return;
 
-                                if (volume.setting.effectMute != volume.mute) {
-                                    AudioManager.Value.SetMute(AudioGroup.Effect, volume.mute, false);
+                                if (effect.setting.effectMute != effect.mute) {
+                                    AudioManager.Value.SetMute(AudioGroup.Effect, effect.mute, false);
                                     UpdateChanged.ForceNotify();
                                 }
                             })
@@ -190,22 +194,22 @@ namespace Script.GUI.ViewModel {
 
 
             VoiceVolume.CombineLatest(AudioSetting, IsInitialized, (volume, setting, init) => (volume, setting, init))
-                       .Subscribe((volume) => {
-                           if (volume.setting == null || volume.init == false || volume.volume < 0) return;
+                       .Subscribe((voice) => {
+                           if (voice.setting == null || voice.init == false || voice.volume < 0) return;
 
-                           if (Mathf.Abs(volume.setting.voiceVolume - volume.volume) > float.Epsilon) {
-                               AudioManager.Value.SetVolume(AudioGroup.Voice, volume.volume, false);
+                           if (Mathf.Abs(voice.setting.voiceVolume - voice.volume) > float.Epsilon) {
+                               AudioManager.Value.SetVolume(AudioGroup.Voice, voice.volume, false);
                                UpdateChanged.ForceNotify();
                            }
                        })
                        .AddTo(ref _disposableBag);
 
-            VoiceVolumeMute.CombineLatest(AudioSetting, (mute, setting) => (mute, setting))
-                           .Subscribe((volume) => {
-                               if (volume.setting == null) return;
+            VoiceVolumeMute.CombineLatest(AudioSetting, VoiceVolume, IsInitialized, (mute, setting, volume, init) => (mute, setting, volume, init))
+                           .Subscribe((voice) => {
+                               if (voice.setting == null || voice.init == false || voice.volume < 0) return;
 
-                               if (volume.setting.voiceMute != volume.mute) {
-                                   AudioManager.Value.SetMute(AudioGroup.Voice, volume.mute, false);
+                               if (voice.setting.voiceMute != voice.mute) {
+                                   AudioManager.Value.SetMute(AudioGroup.Voice, voice.mute, false);
                                    UpdateChanged.ForceNotify();
                                }
                            })

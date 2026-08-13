@@ -41,14 +41,11 @@ namespace SW.GUI.Base {
         /// notify가 false면 이벤트 호출 없이 상태 + 비주얼만 갱신한다. (데이터 로드 시 초기값 세팅 등)
         /// </summary>
         public void SetIsOn(bool isOn, bool notify) {
-            if (_isOn == isOn) return;
-
             _isOn = isOn;
-            InvokeToggleEvent(_isOn);
+            InvokeToggleEvent(_isOn, notify);
 
             if (notify) {
                 _scriptValueChangedEvent?.Invoke(_isOn);
-
                 // Inspector Event Call을 제일 마지막에 해준다.
                 onValueChanged?.Invoke(_isOn);
             }
@@ -69,7 +66,9 @@ namespace SW.GUI.Base {
             return _scriptValueChangedEvent;
         }
 
-        private void InvokeToggleEvent(bool isOn) {
+        private void InvokeToggleEvent(bool isOn, bool notify = true) {
+            if (notify == false) return;
+
             if (isOn) {
                 OnToggleOnEvent();
             }

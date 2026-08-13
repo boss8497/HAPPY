@@ -116,6 +116,7 @@ namespace Script.GUI.Screen {
             startBtn.AddClickListener(() => {
                 var stageElementScript = _stageElements.FirstOrDefault(r => r.selectBtn.Selected);
                 var selectCharacter    = _characterElements.FirstOrDefault(r => r.Selected);
+                if (stageElementScript == null) return;
                 _groupService.EnterDungeon(stageElementScript.DungeonInfo.CurrentValue, stageElementScript.Stage.CurrentValue, selectCharacter?.Item?.CurrentValue).Forget();
             });
             
