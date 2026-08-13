@@ -44,6 +44,10 @@ namespace SW.GUI.Base {
         }
         
         public void OnPointerClick(PointerEventData eventData) {
+            Click();
+        }
+
+        public void Click() {
             if (_interactable == false) return;
             
             var currentTime = Time.unscaledTime;
@@ -77,6 +81,11 @@ namespace SW.GUI.Base {
 
             _scriptClickEvent.AddListener(listener);
             return _scriptClickEvent;
+        }
+        
+        public void RemoveClickListener(UnityAction listener) {
+            if (_scriptClickEvent == null || listener == null) return;
+            _scriptClickEvent.RemoveListener(listener);
         }
 
         public UnityEvent AddListener(UnityEvent uniEvent, UnityAction listener, bool removeAll = true) {

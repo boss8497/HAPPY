@@ -5,16 +5,18 @@ using Cysharp.Threading.Tasks;
 using R3;
 using Script.GameInfo.Attribute;
 using Script.GameInfo.Info;
+using Script.GamePlay.Service.Interface;
 using Script.Tutorial.Interface;
 using Sirenix.OdinInspector;
 using SW.GUI.Base;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 
 namespace Script.Tutorial {
     public class TutorialFocus : MonoBehaviour, ITutorialFocus {
-        //[Inject] private IFocusService _focusService;
+        private ITutorialService _tutorialService;
 
         #region Reactive
 
@@ -76,6 +78,13 @@ namespace Script.Tutorial {
             StopAsync().Forget();
         }
 
+        
+        [Inject]
+        public void InjectSelf(
+            ITutorialService  tutorialService
+        ) {
+            _tutorialService = tutorialService;
+        }
 
         public UniTask OnInitialize() {
             Initialize();
@@ -120,14 +129,8 @@ namespace Script.Tutorial {
                 root = transform.GetComponentInParent<Canvas>()?.transform as RectTransform;
             }
 
-            // _focusService?.RegisterFocus(this);
+            _tutorialService?.RegisterFocus(this);
             Name     = FocusInfo.Select(x => x?.name).ToReadOnlyReactiveProperty().AddTo(ref _disposableBag);
-            //NickName = FocusInfo.Select(x => x?.nickName).ToReadOnlyReactiveProperty().AddTo(ref _disposableBag);
-
-
-            // _animationContainer = tfAnimation?.GetAnimationContainer((int)TFAnimationState.Show);
-            // _localMoveAnimation = _animationContainer?.Animations?.FirstOrDefault(r => r is LocalMoveAnimation) as LocalMoveAnimation;
-            // _sizeDeltaAnimation = _animationContainer?.Animations?.FirstOrDefault(r => r is SizeDeltaAnimation) as SizeDeltaAnimation;
 
             _baseAlpha = gardImages.First().color.a;
         }
@@ -186,29 +189,12 @@ namespace Script.Tutorial {
         }
 
         public UniTask SetFocusAnimation(TutorialFocusData focusData, FocusGuide focusGuide) {
-            // var focusTarget = focusData.rtf;
-            // if (focusTarget == null || _localMoveAnimation == null || _sizeDeltaAnimation == null || tfAnimation == null) {
-            //     Log.Error($"포커스 애니메이션에 필요한 데이터 초기화 불량");
-            //     return;
-            // }
-            //
-            // FocusInfo.Value = focusGuide;
-            // screen.gameObject.SetActive(true);
-            // await screen.ShowAsync();
-            // _target = focusData;
-            //
-            // _localMoveAnimation.StartValueAutoSave();
-            // _sizeDeltaAnimation.StartValueAutoSave();
-            //
-            // var (movePos, sizeDelta)                  = GetReSizeFocus();
-            // _localMoveAnimation.animationData.vValue  = movePos;
-            // _sizeDeltaAnimation.animationData.v2Value = sizeDelta;
-            //
-            // tfAnimation.Play((int)TFAnimationState.Show);
-            //
-            // SetSpeechPosition(focusGuide, movePos, sizeDelta);
-            // _onFocus        = true;
-            // updateFocusGard = true;
+            FocusInfo.Value = focusGuide;
+            var (movePos, sizeDelta)                  = GetReSizeFocus();
+            
+            SetSpeechPosition(focusGuide, movePos, sizeDelta);
+            _onFocus        = true;
+            updateFocusGard = true;
             return UniTask.CompletedTask;
         }
 

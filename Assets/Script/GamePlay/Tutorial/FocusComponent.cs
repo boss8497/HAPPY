@@ -1,25 +1,35 @@
 ﻿using Cysharp.Threading.Tasks;
+using Script.GamePlay.Service.Interface;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 
 namespace Script.Tutorial {
     public class FocusComponent : MonoBehaviour {
+        private ITutorialService _tutorialService;
+        
         [SerializeField, SerializeReference]
         private TutorialFocusData focusData;
 
         public TutorialFocusData FocusData => focusData;
 
         public bool showGizmos = false;
+        
+        
+        [Inject]
+        public void InjectSelf(
+            ITutorialService  tutorialService
+        ) {
+            _tutorialService = tutorialService;
+        }
 
         private void Start() {
             Initialized().Forget();
         }
 
-        private UniTask Initialized(bool register = true) {
-            // await UniTask.WaitUntil(() => _focusService != null);
-            if (focusData == null)
-                return UniTask.CompletedTask;
-
+        private async UniTask Initialized(bool register = true) {
+            await UniTask.WaitUntil(() => _tutorialService != null);
+            
             if (focusData.rtf == null) {
                 focusData.rtf = transform as RectTransform;
             }
@@ -45,26 +55,16 @@ namespace Script.Tutorial {
                     break;
             }
 
-            // if (register) {
-            //     _focusService.RegisterFocusData(focusData);
-            // }
-            return UniTask.CompletedTask;
+            if (register) {
+                _tutorialService.RegisterFocusData(focusData);
+            }
         }
 
 
         private void OnDestroy() {
-            // if (_focusService != null && focusData != null) {
-            //     _focusService.UnRegisterFocusData(focusData);
-            //     switch (focusData.type) {
-            //         case FocusType.CharacterList:
-            //             parentViewModel.PropertyChanged -= CharacterViewModelPropertyChanged;
-            //             break;
-            //     
-            //         case FocusType.ItemList:
-            //             parentViewModel.PropertyChanged -= CharacterViewModelPropertyChanged;
-            //             break;
-            //     }
-            // }
+            if (_tutorialService != null && focusData != null) {
+                _tutorialService.UnRegisterFocusData(focusData);
+            }
         }
 
         public void CreateFocusData(string id, FocusType type) {
