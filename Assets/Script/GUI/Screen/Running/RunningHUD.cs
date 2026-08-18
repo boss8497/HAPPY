@@ -44,10 +44,13 @@ namespace Script.GUI.Screen {
         public TMP_Text         runningText;
 
 
+        public GameObject jumpBtn;
+
         /// <summary>
         /// private
         /// </summary>
         private float _lastScore = 0f;
+
         private float _lastRunning = 0f;
 
         private DisposableBag           _disposableBag;
@@ -62,6 +65,9 @@ namespace Script.GUI.Screen {
         public override UniTask OpenInternal(IScreenOption data) {
             _disposableBag.Dispose();
             _disposableBag = new();
+            
+            // 모바일에서만 JumpBtn 활성화
+            jumpBtn.SetActive(Application.isMobilePlatform);
 
             // 플레이어 추가
             StopSubscribePlayer();
@@ -117,6 +123,7 @@ namespace Script.GUI.Screen {
             _stageManager.Score.Subscribe(score => { UpdateScore(score); })
                          .AddTo(ref _disposableBag);
         }
+
         private async UniTask SubscribeRunning(CancellationToken ct) {
             // Text가 지정 안됐으면 그냥 return
             if (runningText == null) return;
@@ -139,7 +146,7 @@ namespace Script.GUI.Screen {
             _lastScore = score;
             scoreText.SetText("Score : {0:0.0}", score);
         }
-        
+
         private void UpdateRunning(float running, bool force = false) {
             // scoreText가 Null이면 호출이 안되기 때문에 Null체크는 제외
             if (force == false && Mathf.Approximately(_lastRunning, running))
