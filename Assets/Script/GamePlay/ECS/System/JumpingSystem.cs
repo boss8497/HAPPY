@@ -1,7 +1,6 @@
 using Script.GamePlay.ECS.Component;
 using Unity.Burst;
 using Unity.Entities;
-using Unity.Mathematics;
 using Unity.Transforms;
 
 namespace Script.GamePlay.ECS.System {
@@ -54,9 +53,8 @@ namespace Script.GamePlay.ECS.System {
             ) {
                 // 낙사 구간(FallDeathY 이하)에서 점프 시작 차단 — 이미 진행 중인 점프는 유지
                 if (unit.IsPlayer != 0 && FallDeathEnabled != 0 && transform.Position.y <= FallDeathY && jumping.Timer == 0f) {
-                    input.Held             = 0;
-                    input.ReleaseRequested = 0;
-                    jumpingEnable.ValueRW  = false;
+                    input.Held            = 0;
+                    jumpingEnable.ValueRW = false;
                     return;
                 }
 
@@ -64,26 +62,12 @@ namespace Script.GamePlay.ECS.System {
                 if (unit.IsPlayer != 0)
                     jumping.GroundY = GroundY;
 
-                if (input.Held != 0 && jumping.CurrentJumpTime < jumping.MaxJumpTime) {
-                    jumping.CurrentJumpTime += Dt;
+                // Held 유지 && MaxJumpTime 이내 = 등속 상승, 그 외에는 즉시 중력 낙하
+                var rising = input.Held != 0 && jumping.Timer < jumping.MaxJumpTime;
 
-                    if (jumping.CurrentJumpTime > jumping.MaxJumpTime) {
-                        jumping.CurrentJumpTime = jumping.MaxJumpTime;
-                    }
-                }
-
-                if (input.ReleaseRequested != 0) {
-                    jumping.CurrentJumpTime = math.min(jumping.CurrentJumpTime, jumping.Timer);
-                    jumping.CurrentJumpTime = math.max(jumping.CurrentJumpTime, jumping.MinJumpTime);
-                    input.ReleaseRequested = 0;
-                }
-
-                if (jumping.Timer < jumping.CurrentJumpTime && jumping.JumpVelocity > 0f) {
-                    jumping.JumpVelocity -= jumping.Gravity * Dt * 0.5f;
-                }
-                else {
-                    jumping.JumpVelocity -= jumping.Gravity * jumping.FallGravity * Dt;
-                }
+                jumping.JumpVelocity = rising
+                    ? jumping.RiseSpeed
+                    : jumping.JumpVelocity - jumping.Gravity * jumping.FallGravity * Dt;
 
                 var position = transform.Position;
                 position.y += jumping.JumpVelocity * Dt;
@@ -92,9 +76,8 @@ namespace Script.GamePlay.ECS.System {
                     position.y = jumping.GroundY;
                     transform.Position = position;
 
-                    input.Held             = 0;
-                    input.ReleaseRequested = 0;
-                    jumpingEnable.ValueRW  = false;
+                    input.Held            = 0;
+                    jumpingEnable.ValueRW = false;
                     return;
                 }
 

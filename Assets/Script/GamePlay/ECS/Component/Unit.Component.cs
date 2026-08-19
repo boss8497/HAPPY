@@ -79,11 +79,9 @@ namespace Script.GamePlay.ECS.Component {
     /// <summary>
     /// Character -> ECS 입력 전달용
     /// Held: 지금 누르고 있는지
-    /// ReleaseRequested: 버튼을 뗀 순간 1회 전달용
     /// </summary>
     public struct JumpInputData : IComponentData {
         public byte Held;
-        public byte ReleaseRequested;
     }
 
     /// <summary>
@@ -98,14 +96,15 @@ namespace Script.GamePlay.ECS.Component {
     }
 
     /// <summary>
-    /// ECS 점프 런타임 데이터
-    /// 기존 JumpingAsync의 지역변수들을 옮긴 것
+    /// ECS 점프 런타임 데이터.
+    /// Held 유지 중(Timer &lt; MaxJumpTime)에는 RiseSpeed로 등속 상승해 MaxJumpTime 시점에
+    /// 정확히 Status.Jump 높이(RiseSpeed * MaxJumpTime)에 도달하고, 버튼을 떼거나
+    /// MaxJumpTime을 넘으면 즉시 중력 낙하로 전환된다.
     /// </summary>
     public struct JumpingData : IComponentData {
         public float GroundY;
-        public float CurrentJumpTime;
         public float MaxJumpTime;
-        public float MinJumpTime;
+        public float RiseSpeed;
         public float Gravity;
         public float FallGravity;
         public float Timer;

@@ -180,11 +180,6 @@ namespace Script.GamePlay.Character {
 
             input.Held = (byte)(PlayerControls.JumpHeld ? 1 : 0);
 
-            // 버튼을 뗀 순간은 놓치기 쉬우니 latch처럼 1회 기록
-            if (PlayerControls.JumpReleased) {
-                input.ReleaseRequested = 1;
-            }
-
             entityManager.SetComponentData(entity, input);
         }
 
@@ -199,12 +194,11 @@ namespace Script.GamePlay.Character {
 
             var input = entityManager.GetComponentData<JumpInputData>(entity);
 
-            input.Held             = 0;
-            input.ReleaseRequested = 1;
-            
+            input.Held = 0;
+
             entityManager.SetComponentData(entity, input);
         }
-        
+
 
         private void ResetJumpingStatus() {
             // 점프가 0이면 데이터 셋팅 안함
@@ -217,21 +211,22 @@ namespace Script.GamePlay.Character {
                 return;
 
             var entityManager = _stageEntityWorld.EntityManager;
-            
+
             entityManager.SetComponentData(entity, new JumpInputData {
-                Held             = (byte)(PlayerControls.JumpHeld ? 1 : 0),
-                ReleaseRequested = 0,
+                Held = (byte)(PlayerControls.JumpHeld ? 1 : 0),
             });
-            
+
+            // MaxJumpTime 동안 등속으로 Status.Jump 높이만큼 상승하도록 RiseSpeed 산출
+            var riseSpeed = Convert.ToSingle(Status.Jump) / _config.maxJumpTime;
+
             entityManager.SetComponentData(entity, new JumpingData {
-                GroundY         = transform.position.y,
-                CurrentJumpTime = 0f,
-                MaxJumpTime     = _config.maxJumpTime,
-                MinJumpTime     = _config.minJumpTime,
-                Gravity         = _config.gravity,
-                FallGravity     = _config.fallGravity,
-                Timer           = 0f,
-                JumpVelocity    = Convert.ToSingle(Status.Jump),
+                GroundY      = transform.position.y,
+                MaxJumpTime  = _config.maxJumpTime,
+                RiseSpeed    = riseSpeed,
+                Gravity      = _config.gravity,
+                FallGravity  = _config.fallGravity,
+                Timer        = 0f,
+                JumpVelocity = riseSpeed,
             });
         }
         #endregion

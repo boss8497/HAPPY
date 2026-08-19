@@ -18,7 +18,6 @@ MonoBehaviour:
     <Name>k__BackingField: 
     gravity: 50
     fallGravity: 1.5
-    minJumpTime: 0.15
     maxJumpTime: 0.3
     fallDetectionThreshold: 1
     lobby: 1

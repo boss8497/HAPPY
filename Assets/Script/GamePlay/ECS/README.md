@@ -72,8 +72,8 @@ flowchart TD
 | `UnitData` | Data | Uid/Team/원본 `GameObject`/`IsPlayer` 등 유닛 식별 정보 | [Component/Unit.Component.cs](Component/Unit.Component.cs) |
 | `HitBoxData` | Data | 충돌 판정용 형상(Rect/Circle), `GameInfo`의 [`Hitbox`](../../GameInfo/Character/Hitbox/Base/Hitbox.cs)로부터 변환 | [Component/Unit.Component.cs](Component/Unit.Component.cs) |
 | `RunningData` | Data | 이동 방향/속도 | [Component/Unit.Component.cs](Component/Unit.Component.cs) |
-| `JumpInputData` | Data | 점프 입력 (Held / ReleaseRequested, 가변 점프 높이용) | [Component/Unit.Component.cs](Component/Unit.Component.cs) |
-| `JumpingData` | Data | 점프 진행 상태 (Timer, JumpVelocity, Min/MaxJumpTime 등) | [Component/Unit.Component.cs](Component/Unit.Component.cs) |
+| `JumpInputData` | Data | 점프 입력 (Held, 가변 점프 높이용) | [Component/Unit.Component.cs](Component/Unit.Component.cs) |
+| `JumpingData` | Data | 점프 진행 상태 (Timer, JumpVelocity, RiseSpeed, MaxJumpTime 등) | [Component/Unit.Component.cs](Component/Unit.Component.cs) |
 | `FallingData` | Data | 낙하 속도/중력 계수 | [Component/Unit.Component.cs](Component/Unit.Component.cs) |
 | `UnitCollisionResult` | Buffer | 이번 프레임 충돌 상대 목록 (`DynamicBuffer`) | [Component/Unit.Component.cs](Component/Unit.Component.cs) |
 | `UnitCollisionDelay` | Buffer | 상대별 재충돌 방지 쿨다운 만료 시각 | [Component/Unit.Component.cs](Component/Unit.Component.cs) |
@@ -97,7 +97,7 @@ flowchart TD
 | `StageSyncSystem` | LateSimulation | ECS `LocalTransform` → 원본 `GameObject.transform` 반영, 화면 좌/우 이탈 시 FSM에 `InSideMap`/`OutSideMap` 상태 추가 | [System/StageSyncSystem.cs](System/StageSyncSystem.cs) |
 
 ### 점프 — 가변 높이(Variable Jump Height)
-`JumpingSystem`은 버튼을 누르고 있는 시간(`CurrentJumpTime`)만큼 상승 구간을 유지하다가, 버튼을 떼는 순간(`ReleaseRequested`) 상승 시간을 그 시점까지로 고정합니다. 이후 `JumpVelocity`가 남아있으면 절반 중력(`* 0.5f`)으로 완만하게, 그렇지 않으면 `FallGravity` 배율로 빠르게 하강시켜 마리오류 플랫포머 특유의 "짧게 누르면 낮게, 길게 누르면 높게" 점프감을 만듭니다.
+`JumpingSystem`은 `Held`가 유지되고 `Timer < MaxJumpTime`인 동안 `RiseSpeed`(= `Status.Jump / MaxJumpTime`)로 등속 상승시켜, 버튼을 `MaxJumpTime`만큼 누르고 있으면 정확히 `Status.Jump` 높이에 도달합니다. 버튼을 떼거나 `MaxJumpTime`을 넘는 순간 `JumpVelocity`에 `Gravity * FallGravity`가 매 틱 감산되며 낙하로 전환되어, "짧게 누르면 낮게, 길게 누르면 높게" 점프감을 만듭니다.
 
 ### 충돌 — 재충돌 쿨다운
 `CollisionSystem`은 매 프레임 전체 유닛을 순회하는 `O(N²)` 판정이지만, `[BurstCompile]` + `ScheduleParallelByRef`로 병렬화되어 있습니다. 한 번 충돌한 상대는 `UnitCollisionDelay` 버퍼에 만료 시각을 기록해, 겹쳐 있는 동안 매 프레임 콜백이 반복 발생하지 않도록 합니다.

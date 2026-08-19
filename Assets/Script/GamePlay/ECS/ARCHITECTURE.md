@@ -31,8 +31,8 @@ Unity DOTS(ECS + Burst + Jobs)를 사용해 이동·점프·충돌을 처리한�
 | `UnitEntityTag` | Tag | 유닛 엔티티 식별 |
 | `UnitData` | IComponentData | uid·team·GameObject 참조·IsPlayer |
 | `RunningData` | IComponentData | Direction·Speed (RunningSystem 입력) |
-| `JumpingData` | IComponentData | 점프 물리 전체 상태 (GroundY 포함) |
-| `JumpInputData` | IComponentData | 점프 버튼 입력 전달 (Held·ReleaseRequested) |
+| `JumpingData` | IComponentData | 점프 물리 전체 상태 (GroundY, RiseSpeed 포함) |
+| `JumpInputData` | IComponentData | 점프 버튼 입력 전달 (Held) |
 | `HitBoxData` | IComponentData | 충돌 박스 형태(Rect/Circle/Invisible)·Offset·Size·Radius |
 | `UnitCollisionResult` | IBufferElementData | 이번 프레임 충돌 결과 버퍼 |
 | `UnitCollisionDelay` | IBufferElementData | 충돌 쿨다운 (OtherUid·ExpireTime) |
@@ -94,7 +94,7 @@ StageSyncSystem        ← ECS → GameObject Transform 동기화
 ### JumpingSystem
 - 매 프레임 `MapGroundData`(`GroundY`, `FallDeathY`, `FallDeathEnabled`)를 읽어 Job에 전달
 - **낙사 구간 점프 시작 차단**: `FallDeathEnabled=1 && IsPlayer=1 && pos.y <= FallDeathY && jumping.Timer == 0f` → `UnitJumpingEnable=false` (이미 진행 중인 점프는 Timer > 0이므로 유지)
-- 점프 물리: 상승 구간은 `Gravity * 0.5`, 하강 구간은 `Gravity * FallGravity`
+- 점프 물리: `Held && Timer < MaxJumpTime`이면 `RiseSpeed`(`Status.Jump / MaxJumpTime`)로 등속 상승, 그 외에는 `Gravity * FallGravity`로 낙하
 - `position.y <= jumping.GroundY` 도달 시 착지 — `UnitJumpingEnable` 비활성화
 
 ### GravitySystem

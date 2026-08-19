@@ -12,7 +12,6 @@ namespace Script.GameInfo.Info {
         public float gravity;
         public float fallGravity;
 
-        public float minJumpTime;
         public float maxJumpTime;
 
         public float fallDetectionThreshold;
@@ -37,7 +36,6 @@ namespace Script.GameInfo.Info {
             return new() {
                 gravity          = gravity,
                 fallGravity      = fallGravity,
-                minJumpTime              = minJumpTime,
                 maxJumpTime              = maxJumpTime,
                 fallDetectionThreshold   = fallDetectionThreshold,
                 UID              = UID,
