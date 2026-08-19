@@ -65,9 +65,6 @@ namespace Script.GUI.Screen {
         public override UniTask OpenInternal(IScreenOption data) {
             _disposableBag.Dispose();
             _disposableBag = new();
-            
-            // 모바일에서만 JumpBtn 활성화
-            jumpBtn.SetActive(Application.isMobilePlatform);
 
             // 플레이어 추가
             StopSubscribePlayer();
