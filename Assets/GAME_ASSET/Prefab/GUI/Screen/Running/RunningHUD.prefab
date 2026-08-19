@@ -232,6 +232,7 @@ MonoBehaviour:
     hp: {fileID: 594995865096521927}
   scoreText: {fileID: 8049226474853569431}
   runningText: {fileID: 902968599548088788}
+  jumpBtn: {fileID: 6708281974281525454}
 --- !u!1 &1840109663287673225
 GameObject:
   m_ObjectHideFlags: 0
