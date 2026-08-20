@@ -3,7 +3,7 @@
 게임의 모든 화면(HUD, 팝업, 로딩, 스테이지 전환 등)을 관리하는 자체 UI 프레임워크입니다.
 [`AppLifetimeScope`](../LifetimeScope/AppLifetimeScope.cs)에서 Addressable로 프리팹을 Instantiate해 생성하며, `DontDestroyOnLoad`로 앱 실행 직후부터 종료까지 생존합니다.
 
-> 더 깊은 설계 배경: [ARCHITECTURE.md](ARCHITECTURE.md) (Screen 시스템) · [SW_GUI/ARCHITECTURE.md](SW_GUI/ARCHITECTURE.md) (커스텀 위젯)
+> 더 깊은 설계 배경: [ARCHITECTURE.md](ARCHITECTURE.md) (Screen 시스템) · [SW_GUI/README.md](SW_GUI/README.md) (커스텀 위젯)
 > 상위 문서: [최상위 CLAUDE.md](../../../CLAUDE.md)
 
 ## 이 폴더가 다루는 세 가지 시스템
@@ -171,7 +171,7 @@ SelectElement (MonoBehaviour)
 
 ## 3. SW_GUI — 커스텀 UI 위젯
 
-`Assets/Script/GUI/`(Screen 관리 시스템)와는 독립된 서브시스템으로, Unity 기본 `Button`/`Toggle`을 대체합니다. 상세 설계는 [SW_GUI/ARCHITECTURE.md](SW_GUI/ARCHITECTURE.md)에 정리되어 있고, 핵심만 요약하면 다음과 같습니다.
+`Assets/Script/GUI/`(Screen 관리 시스템)와는 독립된 서브시스템으로, Unity 기본 `Button`/`Toggle`을 대체합니다. 상세 설계는 [SW_GUI/README.md](SW_GUI/README.md)에 정리되어 있고, 핵심만 요약하면 다음과 같습니다.
 
 **왜 기본 Button을 안 쓰는가** — Unity 기본 `Button`은 쓰지 않는 기능(Transition, Navigation 등)까지 프리팹에 직렬화되어 에셋이 커지고 확장이 어렵습니다. `IPointerClickHandler`를 직접 구현해 필요한 기능만 가진 경량 버튼을 만들었습니다 ([`SW_GUI_BUTTON_BASE.cs`](SW_GUI/Base/SW_GUI_BUTTON_BASE.cs)).
 
@@ -185,7 +185,7 @@ SelectElement (MonoBehaviour)
 | [`Group/SW_GUI_BUTTON_GROUP.cs`](SW_GUI/Group/SW_GUI_BUTTON_GROUP.cs), [`Group/SW_GUI_BUTTON_GROUP_ELEMENT.cs`](SW_GUI/Group/SW_GUI_BUTTON_GROUP_ELEMENT.cs) | 실사용 구현체 (UnityEvent 노출) |
 | [`SW_GUI_BUTTON.cs`](SW_GUI/SW_GUI_BUTTON.cs), [`SW_GUI_BUTTON_SIMPLE.cs`](SW_GUI/SW_GUI_BUTTON_SIMPLE.cs), [`SW_GUI_TOGGLE.cs`](SW_GUI/SW_GUI_TOGGLE.cs) | 실사용 버튼/토글 |
 
-**asmdef로 참조 방향 강제:** `SW.GUI.Base` / `SW.GUI` / `SW.GUI.Interface`로 분리해 Base가 구현체를 참조하지 못하도록 강제합니다. 독립 라이브러리로 취급하며 기본 Unity/SDK/`Utility` 외의 어셈블리 참조를 금지합니다.
+**asmdef로 참조 방향 강제:** `SW.GUI.Base` / `SW.GUI` 2개로 분리해 Base가 구현체를 참조하지 못하도록 강제합니다. 독립 라이브러리로 취급하며 기본 Unity/SDK/`Utility` 외의 어셈블리 참조를 금지합니다.
 
 **버튼 그룹 등록 시 주의점:** `Register()`/`Initialize()`는 반드시 `element.Group = this`를 설정해야 합니다 — 이게 빠지면 요소의 `OnClick()`이 `Group == null`로 조용히 무시되어 클릭이 아예 반응하지 않는 버그가 생깁니다 (실제로 한 번 발생했던 이슈).
 
@@ -194,7 +194,7 @@ SelectElement (MonoBehaviour)
 ## 연관 문서 / 코드
 
 - [ARCHITECTURE.md](ARCHITECTURE.md) — Screen 시스템 설계 원칙 전문 (Queue 처리, IScreenManager 인터페이스 전체, ScreenKey 어트리뷰트)
-- [SW_GUI/ARCHITECTURE.md](SW_GUI/ARCHITECTURE.md) — SW_GUI 위젯 시스템 설계 원문
+- [SW_GUI/README.md](SW_GUI/README.md) — SW_GUI 위젯 시스템 상세 문서
 - [`ScreenKeyAttribute.cs`](../GameInfo/Attribute/ScreenKeyAttribute.cs) / [`ScreenKeyDrawer.cs`](../Editor/Attribute/ScreenKeyDrawer.cs) — Screen을 문자열 대신 Inspector 드롭다운으로 선택하는 어트리뷰트
 - [`AppLifetimeScope.cs`](../LifetimeScope/AppLifetimeScope.cs) — `ScreenManager` 생성 위치
 - [`UIPooling.cs`](../GamePlay/Pool/UIPooling.cs) — Screen 내부에서 사용하는 동적 UI GameObject 풀링
