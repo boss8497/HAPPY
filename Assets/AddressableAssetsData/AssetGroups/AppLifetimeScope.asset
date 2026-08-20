@@ -15,6 +15,12 @@ MonoBehaviour:
   m_GroupName: AppLifetimeScope
   m_GUID: 4231d7150af46584d964d56a5dfb292a
   m_SerializeEntries:
+  - m_GUID: 052faaac586de48259a63d0c4782560b
+    m_Address: Assets/Settings/InputSystem_Actions.inputactions
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AppLifetimeScope
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0bf431a10fc50764aa2d34d55873e060
     m_Address: AudioPlayerPrefab
     m_ReadOnly: 0
@@ -46,6 +52,12 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: afa9d29802d85304a8def575ac111a74
     m_Address: LocalizationSettings
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - AppLifetimeScope
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e1216959142f91a429a43ccbb4eea9dc
+    m_Address: Assets/Settings/InputSystem.inputsettings.asset
     m_ReadOnly: 0
     m_SerializedLabels:
     - AppLifetimeScope
