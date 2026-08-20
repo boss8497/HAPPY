@@ -232,7 +232,7 @@ MonoBehaviour:
     hp: {fileID: 594995865096521927}
   scoreText: {fileID: 8049226474853569431}
   runningText: {fileID: 902968599548088788}
-  jumpBtn: {fileID: 6708281974281525454}
+  jumpBtn: {fileID: 1122334455667788990}
 --- !u!1 &1840109663287673225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1268,7 +1268,7 @@ GameObject:
   - component: {fileID: 5007693287244041394}
   - component: {fileID: 5988688819953227973}
   - component: {fileID: 2725520334398118361}
-  - component: {fileID: 868786797619413449}
+  - component: {fileID: 1122334455667788990}
   m_Layer: 5
   m_Name: JumpBtn
   m_TagString: Untagged
@@ -1293,7 +1293,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -140, y: 140}
+  m_AnchoredPosition: {x: -160, y: 140}
   m_SizeDelta: {x: 250, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5988688819953227973
@@ -1334,7 +1334,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &868786797619413449
+--- !u!114 &1122334455667788990
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1343,10 +1343,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 6708281974281525454}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
+  m_Script: {fileID: 11500000, guid: d69b5318df6742368e8de23ed3541964, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.OnScreen.OnScreenButton
-  m_ControlPath: <Keyboard>/space
+  m_EditorClassIdentifier: SW.GUI::SW.GUI.SW_GUI_BUTTON
+  _interactable: 1
+  useDelay: 0
+  delay: 0.05
+  onClickEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onPressEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onReleaseEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  _targetGraphic: {fileID: 2725520334398118361}
+  _interactableColor: {r: 0.20754719, g: 0.20754719, b: 0.20754719, a: 0.5}
+  _baseGraphicColor: {r: 1, g: 1, b: 1, a: 0.39607844}
 --- !u!1 &7254603099326632876
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,9 +4,11 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using R3;
 using Script.GameInfo.Attribute;
+using Script.GamePlay.Input;
 using Script.GamePlay.Stage;
 using Script.GUI.ScreenData.Interface;
 using Script.Utility.Runtime;
+using SW.GUI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -44,7 +46,7 @@ namespace Script.GUI.Screen {
         public TMP_Text         runningText;
 
 
-        public GameObject jumpBtn;
+        public SW_GUI_BUTTON jumpBtn;
 
         /// <summary>
         /// private
@@ -53,13 +55,25 @@ namespace Script.GUI.Screen {
 
         private float _lastRunning = 0f;
 
+        private IPlayerControls _playerControls;
+
         private DisposableBag           _disposableBag;
         private CancellationTokenSource _subscribeCts;
 
         protected override void AwakeInternal() {
             base.AwakeInternal();
             optionBtn.ClickAddListener(OpenOption);
+            jumpBtn.AddPressListener(OnJumpBtnPressed);
+            jumpBtn.AddReleaseListener(OnJumpBtnReleased);
             SetHp(0, 0);
+        }
+
+        private void OnJumpBtnPressed() {
+            _playerControls?.PressJump();
+        }
+
+        private void OnJumpBtnReleased() {
+            _playerControls?.ReleaseJump();
         }
 
         public override UniTask OpenInternal(IScreenOption data) {
@@ -98,6 +112,8 @@ namespace Script.GUI.Screen {
             isCancel = await UniTask.WaitUntil(() => player.Initialized?.CurrentValue ?? false, cancellationToken: ct)
                                     .SuppressCancellationThrow();
             if (isCancel) return;
+
+            _playerControls = player.PlayerControls;
 
             // Initialize Hp
             SetHp((int)player.MaxHealth.CurrentValue, (int)player.Health.CurrentValue);
@@ -170,6 +186,8 @@ namespace Script.GUI.Screen {
         }
 
         private void StopSubscribePlayer() {
+            _playerControls = null;
+
             if (_subscribeCts is { IsCancellationRequested: false }) {
                 _subscribeCts.Cancel();
                 _subscribeCts.Dispose();

@@ -30,6 +30,14 @@ namespace SW.GUI {
 
         public override void OnClick() { }
 
+        protected override void OnPress() {
+            InteractableGraphicColor();
+        }
+
+        protected override void OnRelease() {
+            InteractableGraphicColor();
+        }
+
 
         private Button test;
 
@@ -37,12 +45,15 @@ namespace SW.GUI {
             if (_targetGraphic == null) {
                 return;
             }
-            _targetGraphic.color = _interactable ? _baseGraphicColor : _baseGraphicColor * _interactableColor;
+            // 비활성 상태이거나 눌린 상태(모바일 온스크린 버튼 피드백)일 때 동일한 Dim 컬러를 사용한다.
+            var dimmed = _interactable == false || IsPressed;
+            _targetGraphic.color = dimmed ? _baseGraphicColor * _interactableColor : _baseGraphicColor;
         }
 
         #region Odin
 
         protected override void InteractableChanged() {
+            base.InteractableChanged();
             InteractableGraphicColor();
         }
 

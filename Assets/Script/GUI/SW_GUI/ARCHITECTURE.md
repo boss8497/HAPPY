@@ -22,7 +22,7 @@ Unity 기본 `Button`은 안 쓰는 기능(Transition, Navigation 등)까지 프
 | 경로 | 역할 |
 |---|---|
 | `Base/SW_GUI_BASE.cs` | 모든 GUI 위젯(Button, Toggle, Slider 등)의 최상위 베이스. `Initialize()`만 선언 |
-| `Base/SW_GUI_BUTTON_BASE.cs` | `IPointerClickHandler` 구현. 클릭 이벤트 파이프라인(스크립트 리스너 → `OnClick()` → 인스펙터 이벤트) |
+| `Base/SW_GUI_BUTTON_BASE.cs` | `IPointerClickHandler`/`IPointerDownHandler`/`IPointerUpHandler` 구현. 클릭·Press·Release 이벤트 파이프라인(스크립트 리스너 → `OnClick()`/`OnPress()`/`OnRelease()` → 인스펙터 이벤트) |
 | `Base/Group/SW_GUI_BUTTON_GROUP_BASE.cs` | 버튼 그룹(탭 메뉴 등) 관리자 |
 | `Base/Group/SW_GUI_BUTTON_GROUP_ELEMENT_BASE.cs` | 그룹에 속하는 버튼 하나 |
 | `Group/SW_GUI_BUTTON_GROUP.cs`, `Group/SW_GUI_BUTTON_GROUP_ELEMENT.cs` | 실제 사용하는 구현체 (UnityEvent 노출) |
@@ -36,6 +36,19 @@ Unity 기본 `Button`은 안 쓰는 기능(Transition, Navigation 등)까지 프
 
 `SW_GUI_BASE.Initialize()`는 Unity 생명주기 콜백이 아니라 **사용자가 명시적으로 호출**해주는 방식으로 설계.
 단, Group만 예외로 `Awake()`에서 자동 호출한다 (`SW_GUI_BUTTON_GROUP_BASE.Awake() → Initialize()`), 인스펙터에 미리 등록해 둔 요소를 씬 시작 시점에 자동 연결하기 위함.
+
+---
+
+## Press / Release (누르고 있는 상태)
+
+`Click`과 별개로 `IsPressed`/`Press()`/`Release()`/`AddPressListener()`/`AddReleaseListener()`를 제공한다 — 모바일 온스크린 버튼처럼 "누르고 있는 동안" 상태가 필요한 경우(예: Jump 버튼) 사용.
+
+- `Press()`는 `OnPointerDown`, `Release()`는 `OnPointerUp`에서 호출되며, Click과 동일하게 스크립트 리스너 → `OnPress()`/`OnRelease()` 훅 → 인스펙터 이벤트 순으로 실행된다.
+- **안전장치 2개** — 눌린 상태(`IsPressed`)가 고정되는 것을 방지:
+  1. `OnDisable()` 시 눌린 상태면 강제로 `Release()` (오브젝트 비활성화/파괴 시 손을 못 뗀 걸로 간주)
+  2. `Interactable`이 `false`로 바뀔 때도 눌린 상태면 강제로 `Release()`
+- `SW_GUI_BUTTON`은 새 색상 필드 없이 기존 `_interactableColor`(비활성 시 dim 컬러)를 `IsPressed`일 때도 재사용한다 (`!_interactable || IsPressed`면 dim).
+- **Input System `OnScreenButton`은 쓰지 않는다** — controlPath마다 런타임에 `InputSystem.AddDevice()`로 새 가상 Device를 만드는데, 이미 Enable된 액션맵이 있으면 그 Device의 `Added` 이벤트가 Input System 내부 재해석 버그(assert 실패)를 유발한다. Editor에서는 재현이 안 되고 Standalone 빌드에서만 나타나 발견이 늦어지기 쉽다. 모바일 입력이 필요하면 이 Press/Release를 게임 로직(`IPlayerControls` 등)에 직접 연결할 것 (`RunningHUD`의 Jump 버튼 참고).
 
 ---
 
