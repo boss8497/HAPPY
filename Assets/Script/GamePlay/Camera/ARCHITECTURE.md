@@ -31,7 +31,8 @@ CM3의 `CinemachineCamera`는 파이프라인 컴포넌트(Body/Aim/Noise)가 **
 따라서 `vCamera.GetComponent<CinemachineBasicMultiChannelPerlin>()`로 바로 가져올 수 있다 (CM2처럼 `GetCinemachineComponent<T>()` 불필요).
 
 **씬 설정 요구사항:** `vCamera` GameObject에 `Cinemachine Basic Multi Channel Perlin` 컴포넌트가 붙어 있고
-`NoiseSettings` 프로파일(`Assets/Settings/ShakeCamera.asset`)이 지정돼 있어야 한다. 없으면 `CameraControls` 생성 시 에러 로그만 남기고 Shake는 무시된다.
+`NoiseSettings` 프로파일이 지정돼 있어야 한다. 없으면 `CameraControls` 생성 시 에러 로그만 남기고 Shake는 무시된다.
+프로파일은 프로젝트 자체 asset이 아니라 Cinemachine 패키지가 기본 제공하는 프리셋을 그대로 사용한다.
 
 ### Shake 흐름 (`CameraControls.cs`)
 
@@ -96,5 +97,4 @@ SetSpeedBoostFade(fadeFactor):
 - `Assets/Script/GamePlay/Buff/System/BuffSystem.cs` — `NotifySpeedFade()` / `Initialize(..., cameraControls)` / `Release()` (Speed Boost)
 - `Assets/Script/GamePlay/Character/Character.Buff.cs` — `InitializeBuff()`에서 Player일 때만 `CameraControls` 전달
 - `Assets/Script/LifetimeScope/StageLifetimeScope.cs`
-- `Assets/Settings/ShakeCamera.asset` — NoiseSettings 프로파일
-- `Assets/GAME_ASSET/Prefab/Logic/StageManager.prefab` — vCamera에 `CinemachineBasicMultiChannelPerlin`/`CinemachineFollow` 컴포넌트 배치
+- `Assets/GAME_ASSET/Prefab/Logic/StageManager.prefab` — vCamera에 `CinemachineBasicMultiChannelPerlin`/`CinemachineFollow` 컴포넌트 배치 (NoiseSettings는 Cinemachine 패키지 기본 프리셋 사용)
