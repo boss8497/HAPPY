@@ -11,7 +11,7 @@ using VContainer;
 
 namespace Script.Tutorial {
     public class FocusComponent : MonoBehaviour {
-        private ITutorialService _tutorialService;
+        private IFocusService _focusService;
         
         [SerializeField, SerializeReference]
         private TutorialFocusData focusData;
@@ -22,9 +22,9 @@ namespace Script.Tutorial {
         
         [Inject]
         public void InjectSelf(
-            ITutorialService  tutorialService
+            IFocusService  focusService
         ) {
-            _tutorialService = tutorialService;
+            _focusService = focusService;
         }
 
         private void Start() {
@@ -32,7 +32,7 @@ namespace Script.Tutorial {
         }
 
         private async UniTask Initialized(bool register = true) {
-            await UniTask.WaitUntil(() => _tutorialService != null);
+            await UniTask.WaitUntil(() => _focusService != null);
             
             if (focusData.rtf == null) {
                 focusData.rtf = transform as RectTransform;
@@ -60,14 +60,14 @@ namespace Script.Tutorial {
             }
 
             if (register) {
-                _tutorialService.RegisterFocusData(focusData);
+                _focusService.RegisterFocusData(focusData);
             }
         }
 
 
         private void OnDestroy() {
-            if (_tutorialService != null && focusData != null) {
-                _tutorialService.UnRegisterFocusData(focusData);
+            if (_focusService != null && focusData != null) {
+                _focusService.UnRegisterFocusData(focusData);
             }
         }
 

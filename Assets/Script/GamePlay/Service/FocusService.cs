@@ -13,7 +13,7 @@ using SW.GUI.Base;
 using VContainer.Unity;
 
 namespace Script.GamePlay.Service {
-    public class TutorialService : ITutorialService, IInitializable, IDisposable {
+    public class FocusService : IFocusService, IInitializable, IDisposable {
         private const string FocusScreenKey = "TutorialFocus";
 
         public bool Initialized { get; private set; }
@@ -29,7 +29,7 @@ namespace Script.GamePlay.Service {
 
         private event Action OnComplete;
 
-        public TutorialService(IScreenManager screenManager) {
+        public FocusService(IScreenManager screenManager) {
             _screenManager = screenManager;
         }
 
