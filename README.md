@@ -48,3 +48,23 @@ Unity와 서버가 공유할 수 있는 코드(`GameInfo`)와 Unity 클라이언
 - **경량 UI 상호작용 컴포넌트**: Unity 기본 Button/Toggle 대신 `IPointerClickHandler`를 직접 구현해 prefab 용량과 기능을 최소화 ([`Assets/Script/GUI/SW_GUI`](Assets/Script/GUI/SW_GUI))
 - **LinkedList 기반 Screen 스택**: "특정 화면 뒤에 열기", "특정 화면만 닫기" 요구에 대응하기 위해 Stack 대신 LinkedList로 구현
 - **CodeGen 기반 Factory**: Stage Action/Trigger 추가 시 switch 분기를 자동 생성해 휴먼 에러 방지
+- **비동기 FSM 캐릭터 런타임**: `GameInfo`의 노드/전환 기획 데이터를 읽어 UniTask 기반 비동기 FSM으로 실행, Node/Transition은 `ClassPool`로 재사용해 GC 압박 최소화 ([`Assets/Script/GamePlay/Character`](Assets/Script/GamePlay/Character))
+- **MonoBehaviour 없는 카메라 제어**: 경계 계산·Shake·스피드 버프 줌을 순수 C# 클래스로 구현해 `StageLifetimeScope`가 VContainer로 주입 — 씬 GameObject 없이 테스트/교체가 쉬운 구조 ([`Assets/Script/GamePlay/Camera`](Assets/Script/GamePlay/Camera))
+- **튜토리얼 스포트라이트 시스템**: 대상 UI 위에 겹치는 투명 대리 버튼으로 클릭을 가로챈 뒤 실제 버튼에 전달, 4방향 마스크로 별도 shader 없이 스포트라이트 연출 ([`Assets/Script/GamePlay/Tutorial`](Assets/Script/GamePlay/Tutorial))
+- **오디오 매니저**: `AudioMixer` 기반 그룹별 동시 재생 제한 — 상한 초과 시 거부 대신 가장 오래 재생 중인 인스턴스를 강제 종료해 자리를 내주는 방식 ([`Assets/Script/GamePlay/Audio`](Assets/Script/GamePlay/Audio/ARCHITECTURE.md))
+- **시차 스크롤 배경**: 점프 등 단기 Y 변화로 배경이 출렁이지 않도록 Dead Zone + SmoothDamp로 Y축을 스무딩, 카메라 이동에 맞춰 타일을 무한 루프 배치 ([`Assets/Script/GamePlay/BackGround`](Assets/Script/GamePlay/BackGround))
+- **수식 연산 엔진**: 수식 문자열을 Shunting-yard로 RPN 바이트코드 컴파일 후 `stackalloc` 기반 스택 VM으로 실행(런타임 힙 할당 없음), Unity 비의존 순수 C# ([`Assets/Script/Expression`](Assets/Script/Expression))
+
+## 더 살펴보기
+
+핵심 아키텍처 외에, 각자 하나의 역할만 담당하는 작은 지원 모듈들입니다.
+
+| 모듈 | 역할 |
+|---|---|
+| [`Assets/Script/Addressable`](Assets/Script/Addressable) | Addressable 초기화·카탈로그 업데이트·다운로드·인터넷 연결 확인 |
+| [`Assets/Script/Client`](Assets/Script/Client) | 서버 통신 인터페이스 (`IClient`) — 현재는 로컬 DB로 동작, 서버 완성 시 구현체만 교체 |
+| [`Assets/Script/GameSetting`](Assets/Script/GameSetting) | 프레임레이트/V-Sync 등 실행 설정을 Addressable 에셋에서 로드 |
+| [`Assets/Script/GameTimer`](Assets/Script/GameTimer) | 일시정지 상태를 반영하는 앱 전역 타이머 |
+| [`Assets/Script/Localize`](Assets/Script/Localize) | Unity Localization 패키지 래퍼 |
+| [`Assets/Script/SceneLoader`](Assets/Script/SceneLoader) | Addressable Additive 로드 기반 씬 전환 |
+| [`Assets/Script/Guid`](Assets/Script/Guid) | Unity가 직렬화 못 하는 `System.Guid`를 `uint` 4개로 분할해 래핑 |
