@@ -29,7 +29,7 @@ namespace Script.GUI.Screen {
         private CancellationTokenSource _changedCts;
         private DisposableBag           _disposableBag;
 
-        public override UniTask OpenInternal(IScreenOption screenOption) {
+        public override UniTask OpenInternal(IScreenOption screenOption, CancellationToken ct = default) {
             InitializeReactiveProperty();
 
             backBtn.AddClickListener(() => {

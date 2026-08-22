@@ -109,10 +109,6 @@ namespace Script.GamePlay.Service {
             return null;
         }
 
-        public bool IsScreenShow() {
-            return _focus.IsScreenShow?.CurrentValue ?? false;
-        }
-
         private void SafeArea(bool on) {
             // if (_safeArea == null) return;
             // if (on) {

@@ -210,6 +210,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc741d12941e1104bae2e9d43ee258e5
+    m_Address: SafeArea
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d114d28b9e4be7c4584fc9c1c89d57c1
     m_Address: BuffTable
     m_ReadOnly: 0

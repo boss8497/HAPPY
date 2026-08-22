@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Table;
 using Script.GamePlay.Scene;
@@ -55,7 +56,7 @@ namespace Script.GUI.Screen {
             _stageManager?.ReStart().Forget();
         }
 
-        public override UniTask OpenInternal(IScreenOption data) {
+        public override UniTask OpenInternal(IScreenOption data, CancellationToken ct = default) {
             _stageManager.Pause();
             _stageManager.AddState(StageState.SystemControl);
             return UniTask.CompletedTask;

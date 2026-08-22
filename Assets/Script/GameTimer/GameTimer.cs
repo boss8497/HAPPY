@@ -6,11 +6,12 @@ using VContainer.Unity;
 
 namespace Script.GameTimer {
     public class GameTimer : IGameTimer, IInitializable, IDisposable {
-        public float Elapsed      { get; private set; } = 0f;
-        public float FixedElapsed { get; private set; } = 0f;
-        public float DeltaTime    { get; private set; } = 0f;
-        public float FixedTime    { get; private set; } = 0f;
-        public bool  IsPaused     { get; private set; }
+        public float Elapsed           { get; private set; } = 0f;
+        public float FixedElapsed      { get; private set; } = 0f;
+        public float DeltaTime         { get; private set; } = 0f;
+        public float UnscaledDeltaTime { get; private set; } = 0f;
+        public float FixedTime         { get; private set; } = 0f;
+        public bool  IsPaused          { get; private set; }
 
         private CancellationTokenSource _cts;
 
@@ -22,8 +23,9 @@ namespace Script.GameTimer {
 
         private async UniTask UpdateTimer(CancellationToken ct) {
             while (!ct.IsCancellationRequested) {
-                DeltaTime =  IsPaused ? 0f : Time.unscaledDeltaTime;
-                Elapsed   += DeltaTime;
+                UnscaledDeltaTime =  Time.unscaledDeltaTime;
+                DeltaTime         =  IsPaused ? 0f : Time.unscaledDeltaTime;
+                Elapsed           += DeltaTime;
 
                 var isCancel = await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken: ct).SuppressCancellationThrow();
                 if (isCancel) {

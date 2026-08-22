@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GUI.ScreenData;
 using Script.GUI.ScreenData.Interface;
@@ -36,7 +37,7 @@ namespace Script.GUI.Screen.PopUp {
 
         private MessageBoxOption _messageBoxOption;
         
-        public override UniTask OpenInternal(IScreenOption data) {
+        public override UniTask OpenInternal(IScreenOption data, CancellationToken ct = default) {
             if (data is MessageBoxOption option) {
                 _messageBoxOption = option;
                 

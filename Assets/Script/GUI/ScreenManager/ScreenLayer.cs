@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GUI.Screen.Interface;
 using Script.GUI.ScreenData.Interface;
@@ -17,17 +18,17 @@ namespace Script.GUI.Screen {
             _root          = root;
         }
 
-        public async UniTask OpenScreen(IScreen screen, IScreenOption screenOption) {
+        public async UniTask OpenScreen(IScreen screen, IScreenOption screenOption, CancellationToken ct = default) {
             screen.RectTransform.SetParent(_root, false);
             
             _screens.Add(screen);
             
-            await screen.OpenAsync(screenOption);
+            await screen.OpenAsync(screenOption, ct);
             
             screen.GameObject.SetActiveSafe(true);
-            await screen.OpenAnimationAsync();
+            await screen.OpenAnimationAsync(ct);
             
-            await screen.OpenLateInternal();
+            await screen.OpenLateInternal(ct);
         }
         
         public async UniTask CloseScreen(IScreen screen, bool force = false) {

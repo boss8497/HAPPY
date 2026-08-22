@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GUI.Screen.Enum;
 using Script.GUI.Screen.Interface;
@@ -54,7 +55,7 @@ namespace Script.GUI.Screen {
         /// <summary>
         /// ScreenOpen 시 제일 먼저 호출되는 메서드, 호출 후 Active가 켜진다!!
         /// </summary>
-        public async UniTask OpenAsync(IScreenOption data) {
+        public async UniTask OpenAsync(IScreenOption data, CancellationToken ct = default) {
             _pools = ListPool.Get<GameObject>();
             await OpenInternal(data);
         }
@@ -62,16 +63,20 @@ namespace Script.GUI.Screen {
         /// <summary>
         /// ScreenOpen 시 제일 먼저 호출되는 메서드, 호출 후 Active가 켜진다!!
         /// </summary>
-        public abstract UniTask OpenInternal(IScreenOption screenOption);
+        public abstract UniTask OpenInternal(IScreenOption screenOption, CancellationToken ct = default);
 
         /// <summary>
         /// ScreenOpen 시 제일 마지막 호출되는 메서드
         /// </summary>
-        public virtual UniTask OpenLateInternal() {
+        public virtual UniTask OpenLateInternal(CancellationToken ct = default) {
             return UniTask.CompletedTask;
         }
 
-        public virtual UniTask OpenAnimationAsync() {
+        public virtual UniTask OpenAnimationAsync(CancellationToken ct = default) {
+            return UniTask.CompletedTask;
+        }
+
+        public virtual UniTask OpenChangeOptionAsync(IScreenOption data, CancellationToken ct = default) {
             return UniTask.CompletedTask;
         }
 

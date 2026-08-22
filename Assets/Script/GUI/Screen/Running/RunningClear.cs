@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameData.Diff;
 using Script.GameInfo.Table;
@@ -51,7 +52,7 @@ namespace Script.GUI.Screen {
             lobbyBtn.ClickAddListener(EnterLobby, false);
         }
 
-        public override async UniTask OpenInternal(IScreenOption data) {
+        public override async UniTask OpenInternal(IScreenOption data, CancellationToken ct = default) {
             if (diffResultViewModel != null && data is ItemDiff diffResult) {
                 await UniTask.WaitUntil(() => diffResultViewModel.IsInitialize);
                 diffResultViewModel.DiffResult.OnNext(diffResult);

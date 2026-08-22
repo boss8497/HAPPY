@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using R3;
 using Script.GameInfo.Attribute;
 using Script.GameInfo.Info;
 using Script.GamePlay.Service.Interface;
+using Script.GUI.ScreenData.Interface;
+using Script.Tutorial;
 using Script.Tutorial.Interface;
 using Sirenix.OdinInspector;
 using SW.GUI.Base;
@@ -14,59 +17,54 @@ using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 
-namespace Script.Tutorial {
-    public class TutorialFocus : MonoBehaviour, ITutorialFocus {
+namespace Script.GUI.Screen.Tutorial {
+    public class TutorialFocusScreen : Screen, ITutorialFocus {
         private ITutorialService _tutorialService;
 
-        #region Reactive
-
-        public ReactiveProperty<FocusGuide>   FocusInfo    { get; private set; } = new();
-        public ReadOnlyReactiveProperty<bool> IsScreenShow { get; private set; }
-
-        public ReadOnlyReactiveProperty<string> Name     { get; private set; }
-        public ReadOnlyReactiveProperty<string> NickName { get; private set; }
-
-        #endregion
-
-        #region Inspector
-
-        public bool          updateFocusGard = false;
-        public RectTransform root;
-        public RectTransform focus;
-        public RectTransform top;
-        public RectTransform bottom;
-        public RectTransform left;
-        public RectTransform right;
-
-        public RectTransform speechParent;
-        public TMP_Text      speechText;
-
-        public SpeechObject LeftSpeechObjectData;
-        public SpeechObject RightSpeechObjectData;
-
-        public Vector2 speechMargin;
-
-        public SW_GUI_BUTTON_BASE focusButton;
-        public SW_GUI_BUTTON_BASE FocusButton => focusButton;
-
-        public List<Image> rayCastImage;
-        public List<Image> gardImages;
-
-        #endregion
 
         private TutorialFocusData _target;
 
         private float _baseAlpha = 0.8f;
+        private bool _updateFocus = false;
         
-        private bool  _onFocus   = false;
-        public  bool  OnFocus => _onFocus;
+        private DisposableBag _disposableBag = new();
+
+        
+        #region Reactive
+        public ReactiveProperty<FocusGuide>     FocusInfo { get; private set; } = new();
+        public ReadOnlyReactiveProperty<string> Name      { get; private set; }
+
+        #endregion
+
+        #region Inspector
+        [SerializeField] private RectTransform root;
+        [SerializeField] private RectTransform focus;
+        [SerializeField] private RectTransform top;
+        [SerializeField] private RectTransform bottom;
+        [SerializeField] private RectTransform left;
+        [SerializeField] private RectTransform right;
+
+        [SerializeField] private RectTransform speechParent;
+        [SerializeField] private TMP_Text      speechText;
+
+        [SerializeField] private SpeechObject leftSpeech;
+        [SerializeField] private SpeechObject rightSpeech;
+
+        [SerializeField] private Vector2 speechMargin;
+
+        [SerializeField] private SW_GUI_BUTTON_BASE focusButton;
+
+        [SerializeField] private List<Image> rayCastImage;
+        [SerializeField] private List<Image> gardImages;
+        #endregion
+
+        public SW_GUI_BUTTON_BASE FocusButton => focusButton;
 
 
         public TutorialFocusData testObject;
 
         [Focus]
         public Guid testGuideGuid;
-        private DisposableBag _disposableBag = new();
 
         [Button("TestStartFocus")]
         public void TestStartFocus() {
@@ -78,149 +76,101 @@ namespace Script.Tutorial {
             StopAsync().Forget();
         }
 
-        
+
         [Inject]
         public void InjectSelf(
-            ITutorialService  tutorialService
+            ITutorialService tutorialService
         ) {
             _tutorialService = tutorialService;
+            _tutorialService.RegisterFocus(this);
         }
 
-        public UniTask OnInitialize() {
-            Initialize();
-
-            SetScreen();
-
-            // IsScreenShow = screen?.IsShow.Select(i => i)
-            //                      .DistinctUntilChanged()
-            //                      .ToReadOnlyReactiveProperty()
-            //                      .AddTo(ref _disposableBag);
-            //
-            // if (screen != null) screen.gameObject.SetActive(false);
-            return UniTask.CompletedTask;
-        }
-
-        public void ReleaseAddressable() {
-            LeftSpeechObjectData?.Dispose();
-            RightSpeechObjectData?.Dispose();
-        }
-
-        public void OnFinalize() {
-            ReleaseAddressable();
-            _disposableBag.Dispose();
-        }
-
-        private void SetScreen() {
-            // if (screen == null) {
-            //     screen = GetComponent<Screen>();
-            // }
-            //
-            // if (screen == null) {
-            //     screen = GetComponentInParent<Screen>();
-            // }
-            //
-            // if (screen == null) {
-            //     screen = GetComponentInChildren<Screen>();
-            // }
-        }
-
-        private void Initialize() {
-            if (root == null) {
-                root = transform as RectTransform;
-            }
-
-            _tutorialService?.RegisterFocus(this);
-            Name     = FocusInfo.Select(x => x?.name).ToReadOnlyReactiveProperty().AddTo(ref _disposableBag);
-
+        protected override void AwakeInternal() {
+            // 포커스 검정색 영역을 투명하게 해주기 위해서 처음 알파를 저장해둠
             _baseAlpha = gardImages.First().color.a;
         }
 
-        public void SetRayCast(bool isRayCast) {
+        public override UniTask OpenInternal(IScreenOption screenOption, CancellationToken ct = default) {
+            _disposableBag.Dispose();
+            _disposableBag = new();
+
+            Name = FocusInfo.Select(x => x?.name).ToReadOnlyReactiveProperty().AddTo(ref _disposableBag);
+
+            return UniTask.CompletedTask;
+        }
+
+        public override async UniTask CloseInternal() {
+            await Release();
+        }
+
+        public override UniTask Release() {
+            ReleaseSprite();
+            _disposableBag.Dispose();
+            return UniTask.CompletedTask;
+        }
+
+        private void ReleaseSprite() {
+            leftSpeech?.Dispose();
+            rightSpeech?.Dispose();
+        }
+
+        private void SetRayCast(bool isRayCast) {
             foreach (var image in rayCastImage) {
                 image.raycastTarget = isRayCast;
             }
         }
 
-        public bool IsShow() {
-            //return screen.IsShow.CurrentValue;
-            return false;
-        }
-
         public void Stop(bool hide = true) {
-            updateFocusGard = false;
-            _onFocus        = false;
-            _target         = null;
+            _updateFocus = false;
+            _target          = null;
+            ReleaseSprite();
 
-            // if (hide && screen != null) {
-            //     screen.Hide();
-            //     FocusInfo.Value = null;
-            // }
+            if (hide) {
+                Back();
+            }
         }
 
-        public UniTask ScreenHide() {
-            // await screen.HideAsync();
-            // screen.gameObject.SetActive(false);
-            return UniTask.CompletedTask;
+        public async UniTask ScreenHide() {
+            await BackAsync();
         }
 
-        public UniTask StopAsync(bool hide = true) {
-            updateFocusGard = false;
-            _onFocus        = false;
-            _target         = null;
+        public async UniTask StopAsync(bool hide = true) {
+            _updateFocus = false;
+            _target          = null;
+            ReleaseSprite();
 
-            // if (hide && screen != null) {
-            //     await screen.HideAsync();
-            //     screen.gameObject.SetActive(false);
-            // }
-
-            LeftSpeechObjectData?.Dispose();
-            RightSpeechObjectData?.Dispose();
-            return UniTask.CompletedTask;
+            if (hide) {
+                await ScreenHide();
+            }
         }
 
         public void SetFocus(TutorialFocusData focusData, FocusGuide focusGuide) {
-            // screen?.gameObject.SetActive(true);
-            // screen?.Show();
             _target = focusData;
             var focusSize = ReSizeFocus();
             ResizeGard();
             SetSpeechPosition(focusGuide, focus.localPosition, focusSize);
-            _onFocus = true;
-        }
-
-        public UniTask SetFocusAnimation(TutorialFocusData focusData, FocusGuide focusGuide) {
-            FocusInfo.Value = focusGuide;
-            var (movePos, sizeDelta)                  = GetReSizeFocus();
-            
-            SetSpeechPosition(focusGuide, movePos, sizeDelta);
-            _onFocus        = true;
-            updateFocusGard = true;
-            return UniTask.CompletedTask;
+            _updateFocus = true;
         }
 
         public UniTask SetFocusAsync(TutorialFocusData focusData, FocusGuide focusGuide) {
             FocusInfo.Value = focusGuide;
-            // screen.gameObject.SetActive(true);
-            // await screen.ShowAsync();
-            _target = focusData;
+            _target         = focusData;
             var focusSize = ReSizeFocus();
             ResizeGard();
             SetSpeechPosition(focusGuide, focus.localPosition, focusSize);
-            _onFocus = true;
-            FocusUpdate(focusData, focusGuide).Forget();
+
+            _updateFocus = true;
             return UniTask.CompletedTask;
         }
-
-        private async UniTask FocusUpdate(TutorialFocusData focusData, FocusGuide focusGuide) {
-            while (_onFocus) {
-                _target = focusData;
+        
+        private void Update() {
+            if (_updateFocus && FocusInfo?.CurrentValue != null) {
                 var focusSize = ReSizeFocus();
                 ResizeGard();
-                SetSpeechPosition(focusGuide, focus.localPosition, focusSize);
-                await UniTask.WaitForFixedUpdate();
+                SetSpeechPosition(FocusInfo.CurrentValue, focus.localPosition, focusSize);
             }
         }
-
+        
         private void ResizeGard() {
             var canvasSize = root.sizeDelta;
 
@@ -313,7 +263,7 @@ namespace Script.Tutorial {
                 posX += speechMargin.x;
             }
 
-            LeftSpeechObjectData.On(focusGuide.iconPath, focusGuide.flip);
+            leftSpeech.On(focusGuide.iconPath, focusGuide.flip);
 
             posX += focusPosition.x;
 
@@ -335,12 +285,6 @@ namespace Script.Tutorial {
         public void SetButton(bool enable) {
             focusButton.enabled = enable;
             SetRayCast(enable);
-        }
-
-        private void Update() {
-            if (updateFocusGard) {
-                ResizeGard();
-            }
         }
     }
 }

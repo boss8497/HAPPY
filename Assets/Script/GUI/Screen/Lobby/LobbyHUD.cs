@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System.Threading;
+using Cysharp.Threading.Tasks;
 using Script.GameInfo.Attribute;
 using Script.GamePlay.Audio.Interface;
 using Script.GUI.ScreenData.Interface;
@@ -41,7 +42,7 @@ namespace Script.GUI.Screen {
             });
         }
         
-        public override UniTask OpenInternal(IScreenOption data) {
+        public override UniTask OpenInternal(IScreenOption data, CancellationToken ct = default) {
             return UniTask.CompletedTask;
         }
 

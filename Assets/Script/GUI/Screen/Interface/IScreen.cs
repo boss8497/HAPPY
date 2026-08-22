@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GUI.Screen.Enum;
 using Script.GUI.ScreenData.Interface;
@@ -31,10 +32,12 @@ namespace Script.GUI.Screen {
         RectTransform   RectTransform { get; }
         GameObject      GameObject    { get; }
 
-        UniTask OpenAsync(IScreenOption    data);
-        UniTask OpenInternal(IScreenOption screenOption);
-        UniTask OpenLateInternal();
-        UniTask OpenAnimationAsync();
+        UniTask OpenAsync(IScreenOption              data,         CancellationToken ct = default);
+        UniTask OpenInternal(IScreenOption           screenOption, CancellationToken ct = default);
+        UniTask OpenLateInternal(CancellationToken   ct = default);
+        UniTask OpenAnimationAsync(CancellationToken ct = default);
+
+        UniTask OpenChangeOptionAsync(IScreenOption data, CancellationToken ct = default);
 
         void          Back();
         UniTask       BackAsync();
@@ -46,9 +49,9 @@ namespace Script.GUI.Screen {
 
 
         UniTask Release();
-        
-        void    ResetState();
-        void    AddState(ScreenState    state);
-        void    RemoveState(ScreenState state);
+
+        void ResetState();
+        void AddState(ScreenState    state);
+        void RemoveState(ScreenState state);
     }
 }

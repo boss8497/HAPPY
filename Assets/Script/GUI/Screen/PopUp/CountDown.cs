@@ -1,3 +1,4 @@
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Script.GUI.ScreenData;
@@ -19,7 +20,7 @@ namespace Script.GUI.Screen {
         private RectTransform _textRect;
         private Sequence      _sequence;
 
-        public override UniTask OpenInternal(IScreenOption screenOption) {
+        public override UniTask OpenInternal(IScreenOption screenOption, CancellationToken ct = default) {
             _textRect ??= (RectTransform)countDownText.transform;
 
             countDownText.SetText(screenOption is CountDownOption option

@@ -98,6 +98,11 @@ namespace Script.GUI.Screen {
             return instanceObj;
         }
 
+        private void InjectGameObject(GameObject obj) {
+            var lastChildScope = _scopeLocator.GetLastChildScope();
+            lastChildScope.Container.Inject(obj);
+        }
+
         /// <summary>
         /// Screen을 Open하는 메서드입니다.
         /// await으로 기다리면 오픈까지 확실히 기다려 줍니다.
@@ -116,8 +121,11 @@ namespace Script.GUI.Screen {
                 return;
             }
 
-            if (ExistsScreen(key.AsSpan())) {
-                Debug.LogError($"Screen ID {key} is already opened");
+            if (ExistsScreen(key.AsSpan(), out var openedScreen)) {
+                // 이미 열려있으면 데이터 교체
+                if (screenOption != null) {
+                    await openedScreen.OpenChangeOptionAsync(screenOption, ct);
+                }
                 return;
             }
 
@@ -129,10 +137,12 @@ namespace Script.GUI.Screen {
                                                  , cancellationToken: ct)
                                         .SuppressCancellationThrow();
 
+            await ShowSafeAreaAsync();
             AddState(ScreenManagerState.OpeningScreen);
 
             // Cancel이 되어버려 열리지 못한 Child들 return해주기
             if (_openWaitQueue.Contains(key) == false) {
+                await HideSafeAreaAsync();
                 RemoveState(ScreenManagerState.OpeningScreen);
                 return;
             }
@@ -147,23 +157,31 @@ namespace Script.GUI.Screen {
                     _openWaitQueue.Dequeue();
                 }
 
+                await HideSafeAreaAsync();
                 RemoveState(ScreenManagerState.OpeningScreen);
                 return;
             }
 
             var screenKey = _openWaitQueue.Dequeue();
             if (_screens.TryGetValue(screenKey, out ScreenAsset screenAsset) == false) {
+                
+                await HideSafeAreaAsync();
                 RemoveState(ScreenManagerState.OpeningScreen);
                 Debug.LogError($"Screen ID {screenKey} not found");
                 return;
             }
 
             // 이미 로드된 Screen인지 확인
-            if (_loadedScreens.TryGetValue(screenKey, out var screenScript) == false) {
+            if (_loadedScreens.TryGetValue(screenKey, out var screenScript)) {
+                // 재사용 시 다시 Inject
+                InjectGameObject(screenScript.GameObject);
+            }
+            else {
                 var obj = await LoadScreen(screenAsset.screen);
                 screenScript = obj.GetComponent<IScreen>();
                 if (screenScript == null) {
                     Destroy(obj);
+                    await HideSafeAreaAsync();
                     RemoveState(ScreenManagerState.OpeningScreen);
                     Debug.LogError($"Screen Script {screenKey} not found");
                     return;
@@ -171,11 +189,13 @@ namespace Script.GUI.Screen {
 
                 _loadedScreens.Add(screenKey, screenScript);
             }
-
+            
             InsertScreen(screenScript);
 
             var layer = _layers[(int)screenScript.LayerType];
-            await layer.OpenScreen(screenScript, screenOption);
+            await layer.OpenScreen(screenScript, screenOption, ct);
+            
+            await HideSafeAreaAsync();
             RemoveState(ScreenManagerState.OpeningScreen);
         }
 
@@ -420,16 +440,15 @@ namespace Script.GUI.Screen {
             return null;
         }
 
-        private bool ExistsScreen(ReadOnlySpan<char> key) {
-            var currentScreen = _firstScreen;
-            while (currentScreen != null) {
-                if (currentScreen.Key.AsSpan() == key) {
+        private bool ExistsScreen(ReadOnlySpan<char> key, out IScreen screen) {
+            screen = _firstScreen;
+            while (screen != null) {
+                if (screen.Key.AsSpan() == key) {
                     return true;
                 }
 
-                currentScreen = currentScreen.Next;
+                screen = screen.Next;
             }
-
             return false;
         }
 

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.Client;
 using Script.GameInfo.Attribute;
@@ -77,7 +78,7 @@ namespace Script.GUI.Screen {
             return _scopeFactory.CreateScope(ScopeType.Group);
         }
 
-        public override UniTask OpenInternal(IScreenOption data) {
+        public override UniTask OpenInternal(IScreenOption data, CancellationToken ct = default) {
             return UniTask.CompletedTask;
         }
 

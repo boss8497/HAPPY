@@ -77,7 +77,7 @@ namespace Script.GUI.Screen {
         private List<StageElement>     _stageElements;
         private List<CharacterElement> _characterElements;
 
-        public override async UniTask OpenInternal(IScreenOption data) {
+        public override async UniTask OpenInternal(IScreenOption data, CancellationToken ct = default) {
             await UniTask.WaitUntil(() => _groupService.Initialized);
             _dungeonProgress = _groupService.GetDungeon(Category.Running);
             _dungeonInfo     = GameInfoManager.Instance.Get<DungeonInfo>(_dungeonProgress.dungeonUid);

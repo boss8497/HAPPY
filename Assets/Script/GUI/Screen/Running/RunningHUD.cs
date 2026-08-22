@@ -76,7 +76,7 @@ namespace Script.GUI.Screen {
             _playerControls?.ReleaseJump();
         }
 
-        public override UniTask OpenInternal(IScreenOption data) {
+        public override UniTask OpenInternal(IScreenOption data, CancellationToken ct = default) {
             _disposableBag.Dispose();
             _disposableBag = new();
 
