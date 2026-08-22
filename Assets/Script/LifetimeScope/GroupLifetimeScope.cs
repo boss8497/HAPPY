@@ -14,6 +14,9 @@ namespace Script.LifetimeScope {
             
             builder.RegisterEntryPoint<ItemService>(Lifetime.Singleton)
                    .As<IItemService>();
+            
+            builder.RegisterEntryPoint<TutorialService>(Lifetime.Singleton)
+                   .As<ITutorialService>();
         }
     }
 }

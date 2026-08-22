@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace Script.Tutorial {
+    [Serializable]
     public class SpeechObject : IDisposable {
         public Image         image;
-        public RectTransform speechArrow;
         public RectTransform imageParent;
 
         private readonly AddressableHandle<Sprite> _iconAsset = new();
@@ -17,10 +17,7 @@ namespace Script.Tutorial {
 
         public void On(string imagePath, bool flip) {
             image.sprite = _iconAsset.Load(imagePath);
-            if (speechArrow != null) {
-                speechArrow.gameObject.SetActive(true);
-            }
-
+            
             var scale = imageParent.localScale;
             if (flip) {
                 imageParent.localScale = new(Mathf.Abs(scale.x) * -1f, scale.y, scale.z);
@@ -33,10 +30,6 @@ namespace Script.Tutorial {
         }
 
         public void Off() {
-            if (speechArrow != null) {
-                speechArrow.gameObject.SetActive(false);
-            }
-
             imageParent.gameObject.SetActive(false);
         }
 

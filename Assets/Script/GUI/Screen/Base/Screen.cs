@@ -92,13 +92,13 @@ namespace Script.GUI.Screen {
         public void Back() {
             if (_backRequested) return;
             _backRequested = true;
-            _screenManager.Back().Forget();
+            _screenManager.BackAsync().Forget();
         }
 
-        public async UniTask BackAsync() {
+        public async UniTask BackAsync(CancellationToken ct = default) {
             if (_backRequested) return;
             _backRequested = true;
-            await _screenManager.Back();
+            await _screenManager.BackAsync(ct);
         }
 
         /// <summary>

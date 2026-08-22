@@ -6,7 +6,6 @@ using Script.Tutorial.Interface;
 namespace Script.GamePlay.Service.Interface {
     public interface ITutorialService : IService {
         public bool BlockButton { get; set; }
-        void        RegisterFocus(ITutorialFocus focus);
 
 
         void RegisterFocusData(TutorialFocusData   data);
@@ -14,6 +13,5 @@ namespace Script.GamePlay.Service.Interface {
 
 
         TutorialFocusData          GetFocusData(GuideBase      guide);
-        UniTask<TutorialFocusData> GetRetryFocusData(GuideBase guide, int maxRetryCount = 100);
     }
 }

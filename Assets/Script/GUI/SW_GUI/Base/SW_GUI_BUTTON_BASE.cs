@@ -1,4 +1,6 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -6,11 +8,12 @@ using UnityEngine.EventSystems;
 namespace SW.GUI.Base {
     public abstract class SW_GUI_BUTTON_BASE : SW_GUI_BASE, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler {
         #region Inspector
-        
+
         [ToggleGroup("_interactable", "버튼 사용 여부")]
         [SerializeField]
         [OnValueChanged("InteractableChanged")]
         protected bool _interactable = true;
+
         public bool Interactable {
             get => _interactable;
             set {
@@ -42,10 +45,14 @@ namespace SW.GUI.Base {
         public bool IsPressed { get; private set; }
 
 
-        private UnityEvent _scriptClickEvent = new();
-        private UnityEvent _scriptPressEvent = new();
-        private UnityEvent _scriptReleaseEvent = new();
-        private float _nextDelayTime;
+        private UnityEvent    _scriptClickEvent   = new();
+        private UnityEvent    _scriptPressEvent   = new();
+        private UnityEvent    _scriptReleaseEvent = new();
+        private Func<UniTask> _scriptClickAsyncEvent;
+        private float         _nextDelayTime;
+        
+        // Event가 다 호출됐는지 확인하는 스위치
+        private bool          _processEvent;
 
         public abstract override void Initialize();
 
@@ -76,24 +83,37 @@ namespace SW.GUI.Base {
         }
 
         public void Click() {
-            if (_interactable == false) return;
-
-            var currentTime = Time.unscaledTime;
-            if (useDelay && currentTime < _nextDelayTime) {
+            if (_interactable == false || _processEvent) return;
+            if (useDelay && Time.unscaledTime < _nextDelayTime) {
                 return;
             }
 
+            ClickAsync().Forget();
+        }
+
+        private async UniTaskVoid ClickAsync() {
+            _processEvent = true;
             _scriptClickEvent?.Invoke();
+
+            if (_scriptClickAsyncEvent != null) {
+                var invocationList = _scriptClickAsyncEvent.GetInvocationList();
+                var tasks          = new UniTask[invocationList.Length];
+                for (var i = 0; i < invocationList.Length; i++) {
+                    tasks[i] = ((Func<UniTask>)invocationList[i]).Invoke();
+                }
+
+                await UniTask.WhenAll(tasks);
+            }
+
             OnClick();
 
             // Inspector Event Call을 제일 마지막에 해준다.
             onClickEvent?.Invoke();
-
-
             // Delay를 사용하는 경우, 다음 클릭 가능 시간을 갱신한다.
             if (useDelay) {
-                _nextDelayTime = currentTime + delay;
+                _nextDelayTime = Time.unscaledTime + delay;
             }
+            _processEvent = false;
         }
 
         public void Press() {
@@ -122,12 +142,9 @@ namespace SW.GUI.Base {
 
         public abstract void OnClick();
 
-        protected virtual void OnPress() {
-        }
+        protected virtual void OnPress() { }
 
-        protected virtual void OnRelease() {
-        }
-
+        protected virtual void OnRelease() { }
 
 
         public UnityEvent AddClickListener(UnityAction listener, bool removeAll = true) {
@@ -140,10 +157,24 @@ namespace SW.GUI.Base {
             _scriptClickEvent.AddListener(listener);
             return _scriptClickEvent;
         }
-        
+
         public void RemoveClickListener(UnityAction listener) {
             if (_scriptClickEvent == null || listener == null) return;
             _scriptClickEvent.RemoveListener(listener);
+        }
+
+        public void AddClickAsyncListener(Func<UniTask> listener, bool removeAll = true) {
+            if (listener == null) return;
+            if (removeAll) {
+                _scriptClickAsyncEvent = null;
+            }
+
+            _scriptClickAsyncEvent += listener;
+        }
+
+        public void RemoveClickAsyncListener(Func<UniTask> listener) {
+            if (listener == null) return;
+            _scriptClickAsyncEvent -= listener;
         }
 
         public UnityEvent AddPressListener(UnityAction listener, bool removeAll = true) {

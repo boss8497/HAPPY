@@ -3,11 +3,6 @@ using Script.GameInfo;
 using UnityEngine;
 
 namespace Script.Tutorial {
-    public enum FocusOption {
-        None,
-        MoveAnimation,
-    }
-
     public enum FocusType {
         None,
         Button,

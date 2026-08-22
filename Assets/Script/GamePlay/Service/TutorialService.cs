@@ -1,126 +1,112 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Info;
 using Script.GamePlay.Service.Interface;
+using Script.GUI.Screen.Interface;
+using Script.GUI.ScreenData;
 using Script.Tutorial;
 using Script.Tutorial.Interface;
 using SW.GUI.Base;
 using VContainer.Unity;
 
 namespace Script.GamePlay.Service {
-    public class TutorialService : ITutorialService, IInitializable {
-        public bool Initialized  { get; private set; }
-        
-        
-        public void Initialize() {
-            throw new System.NotImplementedException();
-        }
-        
-        private Dictionary<string, TutorialFocusData> _focusDatas = new();
-        public  bool                                  IsInitialized => _focusDatas.Count > 0;
+    public class TutorialService : ITutorialService, IInitializable, IDisposable {
+        private const string FocusScreenKey = "FocusScreen";
+
+        public bool Initialized { get; private set; }
+
+        private Dictionary<string, TutorialFocusData> _focusDic = new();
+
         //서버에게 Req를 보내고 Ack를 받는 상황의 Ui에서 막아주는게 필요
-        public  bool                          BlockButton   { get; set; } = false;
+        public bool BlockButton { get; set; } = false;
 
 
-        //private IDialogSafeArea _safeArea;
-        private ITutorialFocus _focus;
-        private event Action   OnComplete;
+        private          ITutorialFocus _focus;
+        private readonly IScreenManager _screenManager;
 
-        public void RegisterFocus(ITutorialFocus focus) {
-            _focus = focus;
+        private event Action OnComplete;
+
+        public TutorialService(IScreenManager screenManager) {
+            _screenManager = screenManager;
         }
+
+        public void Initialize() { }
 
         public void RegisterFocusData(TutorialFocusData data) {
-            _focusDatas[data.id] = data;
+            _focusDic[data.id] = data;
         }
 
         public void UnRegisterFocusData(TutorialFocusData data) {
-            _focusDatas.Remove(data.id);
+            _focusDic.Remove(data.id);
         }
 
-        public async UniTask StartAsync(GuideBase guide, Action onComplete = null, Action onSkip = null, int enumOption = 0) {
-            if (_focus == null) {
-                onComplete?.Invoke();
-                return;
-            }
-            
-            await StopAsync(false);
+        public async UniTask StartFocusAsync(GuideBase guide, Action onComplete = null, Action onSkip = null, CancellationToken ct = default) {
+            await SafeArea(true);
+            await StopFocusAsync(false, ct);
 
-            var data = await GetRetryFocusData(guide, 100);
+            // UI가 열리기 전 실행 됐을 때 대기 타임
+            var data = await GetRetryFocusData(guide, 100, ct);
             if (data == null) {
                 onComplete?.Invoke();
                 return;
             }
 
-            // if (guide is FocusGuide focusGuide) {
-            //     var uiBase =  data.rtf.GetComponentInParent<IScreen>();
-            //     
-            //     if (uiBase != null) {
-            //         await UniTask.WaitUntil(()=> data.rtf.gameObject.activeSelf);
-            //         await UniTask.Yield();
-            //     }
-            //     
-            //     switch ((FocusOption)enumOption) {
-            //         case FocusOption.None:
-            //             await _focus.SetFocusAsync(data, focusGuide);
-            //             break;
-            //         case FocusOption.MoveAnimation:
-            //             await _focus.SetFocusAnimation(data, focusGuide);
-            //             break;
-            //     }
-            //     SafeArea(false);
-            // }
-            
-            SetCompleteCallBack(data, onComplete, false);
+            if (guide is FocusGuide focusGuide) {
+                _focus = await _screenManager.OpenAsync(new FocusOption() {
+                                                            TutorialFocusData = data,
+                                                            FocusGuide        = focusGuide
+                                                        }, FocusScreenKey, ct) as ITutorialFocus;
+                await SafeArea(false);
+            }
+
+            SetFocusCompleteCallBack(data, onComplete);
         }
 
-        public async UniTask StopAsync(bool hide) {
-            await _focus.StopAsync(hide);
+        public async UniTask StopFocusAsync(bool hide, CancellationToken ct = default) {
             OnComplete = null;
+            if (_focus == null) return;
+            await _focus.StopAsync(hide, ct);
         }
 
-        public async UniTask ScreenHide() {
-            await _focus.ScreenHide();
-        }
-
-        public async UniTask<TutorialFocusData> GetRetryFocusData(GuideBase guiedData, int maxRetryCount = 100) {
+        private async UniTask<TutorialFocusData> GetRetryFocusData(GuideBase guiedData, int maxRetryCount = 100, CancellationToken ct = default) {
             var               retryCount = 0;
             TutorialFocusData data       = null;
-            while (retryCount <= maxRetryCount && data == null) {
-                data       = GetFocusData(guiedData);
+            while (retryCount <= maxRetryCount && data == null && !ct.IsCancellationRequested) {
+                data = GetFocusData(guiedData);
                 ++retryCount;
-                await UniTask.DelayFrame(2);
+                var isCancel = await UniTask.DelayFrame(2, cancellationToken: ct).SuppressCancellationThrow();
+                if (isCancel) break;
             }
-            
             return data;
         }
 
         public TutorialFocusData GetFocusData(GuideBase guide) {
             if (guide is FocusGuide focusGuide) {
                 if (string.IsNullOrEmpty(focusGuide.id)) {
-                    return _focusDatas.FirstOrDefault(r => r.Value.Guid == focusGuide.focusGuid).Value; 
+                    return _focusDic.FirstOrDefault(r => r.Value.Guid == focusGuide.focusGuid).Value;
                 }
-                
-                return _focusDatas.GetValueOrDefault(focusGuide.id);
-            }
 
+                return _focusDic.GetValueOrDefault(focusGuide.id);
+            }
             return null;
         }
 
-        private void SafeArea(bool on) {
-            // if (_safeArea == null) return;
-            // if (on) {
-            //     _safeArea.On();
-            // }
-            // else {
-            //     _safeArea.Off();
-            // }
+        private async UniTask SafeArea(bool on) {
+            if (_screenManager == null) return;
+            if (on) {
+                await _screenManager.ShowSafeAreaAsync();
+            }
+            else {
+                await _screenManager.HideSafeAreaAsync();
+            }
         }
 
-        private void SetCompleteCallBack(TutorialFocusData data, Action completeCallBack, bool isShortCut = false) {
+        private void SetFocusCompleteCallBack(TutorialFocusData data, Action completeCallBack, bool isShortCut = false) {
             OnComplete = completeCallBack;
+
             void OnCompleteEvent() {
                 OnComplete?.Invoke();
                 OnComplete = null;
@@ -136,27 +122,24 @@ namespace Script.GamePlay.Service {
                         OnCompleteEvent();
                         return;
                     }
-                    
+
                     if (isShortCut) {
                         btn.Click();
                         OnCompleteEvent();
                     }
                     else {
-                        
-                        void OnClickEvent() {
+                        async UniTask OnClickAsyncEvent() {
                             if (BlockButton) return;
-                            SafeArea(true);
-                            _focus.FocusButton.RemoveClickListener(OnClickEvent);
+                            await SafeArea(true);
+                            _focus.FocusButton.RemoveClickAsyncListener(OnClickAsyncEvent);
                             btn.Click();
                             OnCompleteEvent();
                             _focus.SetButton(false);
                         }
-                        
+
                         _focus.SetButton(true);
-                        _focus.FocusButton.AddClickListener(OnClickEvent);
+                        _focus.FocusButton.AddClickAsyncListener(OnClickAsyncEvent, false);
                     }
-
-
                 }
                     break;
 
@@ -166,42 +149,48 @@ namespace Script.GamePlay.Service {
                         OnCompleteEvent();
                         return;
                     }
-                    
+
                     if (isShortCut) {
                         tfToggle.SetIsOn(true, true);
                         OnCompleteEvent();
                     }
                     else {
-                        void OnClickEvent() {
+                        async UniTask OnClickAsyncEvent() {
                             if (BlockButton) return;
-                            SafeArea(true);
-                            _focus.FocusButton.RemoveClickListener(OnClickEvent);
+                            await SafeArea(true);
+                            _focus.FocusButton.RemoveClickAsyncListener(OnClickAsyncEvent);
                             tfToggle.OnClick();
                             OnCompleteEvent();
                             _focus.SetButton(false);
                         }
-                        
-                        _focus.SetButton(true);
-                        _focus.FocusButton.AddClickListener(OnClickEvent);
-                    }
 
+                        _focus.SetButton(true);
+                        _focus.FocusButton.AddClickAsyncListener(OnClickAsyncEvent);
+                    }
                 }
                     break;
-                
+
                 case FocusType.Image:
                 case FocusType.None: {
-                    void OnClickEvent() {
+                    async UniTask OnClickAsyncEvent() {
                         if (BlockButton) return;
-                        SafeArea(true);
-                        _focus.FocusButton.RemoveClickListener(OnClickEvent);
+                        await SafeArea(true);
+                        _focus.FocusButton.RemoveClickAsyncListener(OnClickAsyncEvent);
                         OnCompleteEvent();
                         _focus.SetButton(false);
                     }
+
                     _focus.SetButton(true);
-                    _focus.FocusButton.AddClickListener(OnClickEvent);
+                    _focus.FocusButton.AddClickAsyncListener(OnClickAsyncEvent);
                 }
                     break;
             }
+        }
+
+        public void Dispose() {
+            StopFocusAsync(true).Forget();
+            _focusDic.Clear();
+            _focusDic = null;
         }
     }
 }

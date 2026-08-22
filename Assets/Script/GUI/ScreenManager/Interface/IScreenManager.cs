@@ -13,15 +13,15 @@ namespace Script.GUI.Screen.Interface {
         ScreenManagerState State       { get; }
         bool               Initialized { get; }
 
-        void    Initialize();
-        UniTask OpenAsync(string        key,          CancellationToken ct                        = default);
-        UniTask OpenAsync(IScreenOption screenOption, string            key, CancellationToken ct = default);
+        void             Initialize();
+        UniTask<IScreen> OpenAsync(string        key,          CancellationToken ct                        = default);
+        UniTask<IScreen> OpenAsync(IScreenOption screenOption, string            key, CancellationToken ct = default);
 
 
-        UniTask CloseAllAsync(bool force = false);
-        UniTask Back();
-        UniTask CloseAsync(ReadOnlyMemory<char> key,    bool force = false);
-        UniTask CloseAsync(IScreen              screen, bool force = false);
+        UniTask CloseAllAsync(bool              force              = false);
+        UniTask BackAsync(CancellationToken     ct                 = default);
+        UniTask CloseAsync(ReadOnlyMemory<char> key,    bool force = false, CancellationToken ct = default);
+        UniTask CloseAsync(IScreen              screen, bool force = false, CancellationToken ct = default);
         UniTask ResourceClear();
 
         /// <summary>
@@ -33,6 +33,9 @@ namespace Script.GUI.Screen.Interface {
         /// StageTransition Layer로 덮어둔 화면을 Fade Out으로 걷어낸다. 덮여 있지 않으면 아무 것도 하지 않는다.
         /// </summary>
         UniTask HideStageTransitionAsync();
+
+        UniTask ShowSafeAreaAsync();
+        UniTask HideSafeAreaAsync();
 
         GameObject PoolPop(string      key, Transform parent = null, bool active = true, bool worldPositionStays = true);
         bool       PoolPush(GameObject obj);

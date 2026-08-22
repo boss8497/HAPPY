@@ -4,39 +4,35 @@ using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using R3;
-using Script.GameInfo.Attribute;
 using Script.GameInfo.Info;
-using Script.GamePlay.Service.Interface;
 using Script.GUI.ScreenData.Interface;
 using Script.Tutorial;
 using Script.Tutorial.Interface;
-using Sirenix.OdinInspector;
 using SW.GUI.Base;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using VContainer;
+using FocusOption = Script.GUI.ScreenData.FocusOption;
 
 namespace Script.GUI.Screen.Tutorial {
     public class TutorialFocusScreen : Screen, ITutorialFocus {
-        private ITutorialService _tutorialService;
-
-
         private TutorialFocusData _target;
 
-        private float _baseAlpha = 0.8f;
-        private bool _updateFocus = false;
-        
+        private float _baseAlpha   = 0.8f;
+        private bool  _updateFocus = false;
+
         private DisposableBag _disposableBag = new();
 
-        
+
         #region Reactive
+
         public ReactiveProperty<FocusGuide>     FocusInfo { get; private set; } = new();
         public ReadOnlyReactiveProperty<string> Name      { get; private set; }
 
         #endregion
 
         #region Inspector
+
         [SerializeField] private RectTransform root;
         [SerializeField] private RectTransform focus;
         [SerializeField] private RectTransform top;
@@ -56,34 +52,11 @@ namespace Script.GUI.Screen.Tutorial {
 
         [SerializeField] private List<Image> rayCastImage;
         [SerializeField] private List<Image> gardImages;
+
         #endregion
 
         public SW_GUI_BUTTON_BASE FocusButton => focusButton;
-
-
-        public TutorialFocusData testObject;
-
-        [Focus]
-        public Guid testGuideGuid;
-
-        [Button("TestStartFocus")]
-        public void TestStartFocus() {
-            SetFocusAsync(testObject, null).Forget();
-        }
-
-        [Button("TestStopFocus")]
-        public void TestStopFocus() {
-            StopAsync().Forget();
-        }
-
-
-        [Inject]
-        public void InjectSelf(
-            ITutorialService tutorialService
-        ) {
-            _tutorialService = tutorialService;
-            _tutorialService.RegisterFocus(this);
-        }
+        
 
         protected override void AwakeInternal() {
             // 포커스 검정색 영역을 투명하게 해주기 위해서 처음 알파를 저장해둠
@@ -96,6 +69,17 @@ namespace Script.GUI.Screen.Tutorial {
 
             Name = FocusInfo.Select(x => x?.name).ToReadOnlyReactiveProperty().AddTo(ref _disposableBag);
 
+            if (screenOption is FocusOption focusOption) {
+                SetFocusAsync(focusOption.TutorialFocusData, focusOption.FocusGuide).Forget();
+            }
+            
+            return UniTask.CompletedTask;
+        }
+
+        public override UniTask OpenChangeOptionAsync(IScreenOption screenOption, CancellationToken ct = default) {
+            if (screenOption is FocusOption focusOption) {
+                SetFocusAsync(focusOption.TutorialFocusData, focusOption.FocusGuide).Forget();
+            }
             return UniTask.CompletedTask;
         }
 
@@ -122,7 +106,7 @@ namespace Script.GUI.Screen.Tutorial {
 
         public void Stop(bool hide = true) {
             _updateFocus = false;
-            _target          = null;
+            _target      = null;
             ReleaseSprite();
 
             if (hide) {
@@ -130,21 +114,20 @@ namespace Script.GUI.Screen.Tutorial {
             }
         }
 
-        public async UniTask ScreenHide() {
-            await BackAsync();
-        }
-
-        public async UniTask StopAsync(bool hide = true) {
+        public async UniTask StopAsync(bool hide = true, CancellationToken ct = default) {
             _updateFocus = false;
-            _target          = null;
+            _target      = null;
             ReleaseSprite();
-
             if (hide) {
-                await ScreenHide();
+                await BackAsync(ct);
             }
         }
 
-        public void SetFocus(TutorialFocusData focusData, FocusGuide focusGuide) {
+        private void SetFocus(TutorialFocusData focusData, FocusGuide focusGuide) {
+            if (focusData == null || focusGuide == null) {
+                return;
+            }
+            FocusInfo.OnNext(focusGuide);
             _target = focusData;
             var focusSize = ReSizeFocus();
             ResizeGard();
@@ -153,16 +136,13 @@ namespace Script.GUI.Screen.Tutorial {
         }
 
         public UniTask SetFocusAsync(TutorialFocusData focusData, FocusGuide focusGuide) {
-            FocusInfo.Value = focusGuide;
-            _target         = focusData;
-            var focusSize = ReSizeFocus();
-            ResizeGard();
-            SetSpeechPosition(focusGuide, focus.localPosition, focusSize);
-
-            _updateFocus = true;
+            if (focusData == null || focusGuide == null) {
+                return UniTask.CompletedTask;
+            }
+            SetFocus(focusData, focusGuide);
             return UniTask.CompletedTask;
         }
-        
+
         private void Update() {
             if (_updateFocus && FocusInfo?.CurrentValue != null) {
                 var focusSize = ReSizeFocus();
@@ -170,7 +150,7 @@ namespace Script.GUI.Screen.Tutorial {
                 SetSpeechPosition(FocusInfo.CurrentValue, focus.localPosition, focusSize);
             }
         }
-        
+
         private void ResizeGard() {
             var canvasSize = root.sizeDelta;
 

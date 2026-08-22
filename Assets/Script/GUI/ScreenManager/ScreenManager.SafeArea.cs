@@ -9,7 +9,7 @@ namespace Script.GUI.Screen {
         private IScreen _safeAreaScreen;
         private bool    _safeAreaScreenShown;
 
-        private async UniTask ShowSafeAreaAsync() {
+        public async UniTask ShowSafeAreaAsync() {
             if (_safeAreaScreenShown) return;
 
             if (_safeAreaScreen == null) {
@@ -26,7 +26,7 @@ namespace Script.GUI.Screen {
             await _layers[(int)ScreenLayerType.SafeArea].OpenScreen(_safeAreaScreen, null);
         }
 
-        private async UniTask HideSafeAreaAsync() {
+        public async UniTask HideSafeAreaAsync() {
             if (_safeAreaScreenShown == false) return;
 
             _safeAreaScreenShown = false;

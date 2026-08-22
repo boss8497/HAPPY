@@ -225,6 +225,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8f95f2d0cd1bc54cb7d7700b396f378
+    m_Address: TutorialFocus
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: db2d6ed0af7e289488ab3883322a7967
     m_Address: RunningFail
     m_ReadOnly: 0

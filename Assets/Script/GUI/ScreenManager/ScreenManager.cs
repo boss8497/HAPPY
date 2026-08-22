@@ -111,14 +111,14 @@ namespace Script.GUI.Screen {
         /// <param name="ct"></param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="KeyNotFoundException"></exception>
-        public async UniTask OpenAsync(string key, CancellationToken ct = default) {
-            await OpenAsync(null, key, ct);
+        public async UniTask<IScreen> OpenAsync(string key, CancellationToken ct = default) {
+            return await OpenAsync(null, key, ct);
         }
 
-        public async UniTask OpenAsync(IScreenOption screenOption, string key, CancellationToken ct = default) {
+        public async UniTask<IScreen> OpenAsync(IScreenOption screenOption, string key, CancellationToken ct = default) {
             if (string.IsNullOrEmpty(key)) {
                 Debug.LogError("Screen ID cannot be null or empty");
-                return;
+                return null;
             }
 
             if (ExistsScreen(key.AsSpan(), out var openedScreen)) {
@@ -126,7 +126,7 @@ namespace Script.GUI.Screen {
                 if (screenOption != null) {
                     await openedScreen.OpenChangeOptionAsync(screenOption, ct);
                 }
-                return;
+                return null;
             }
 
             _openWaitQueue.Enqueue(key);
@@ -144,7 +144,7 @@ namespace Script.GUI.Screen {
             if (_openWaitQueue.Contains(key) == false) {
                 await HideSafeAreaAsync();
                 RemoveState(ScreenManagerState.OpeningScreen);
-                return;
+                return null;
             }
 
             // 만약 Cancel로 중지 됐다면 하위에 요청한거 까지 다 지워주자
@@ -159,7 +159,7 @@ namespace Script.GUI.Screen {
 
                 await HideSafeAreaAsync();
                 RemoveState(ScreenManagerState.OpeningScreen);
-                return;
+                return null;
             }
 
             var screenKey = _openWaitQueue.Dequeue();
@@ -168,7 +168,7 @@ namespace Script.GUI.Screen {
                 await HideSafeAreaAsync();
                 RemoveState(ScreenManagerState.OpeningScreen);
                 Debug.LogError($"Screen ID {screenKey} not found");
-                return;
+                return null;
             }
 
             // 이미 로드된 Screen인지 확인
@@ -184,7 +184,7 @@ namespace Script.GUI.Screen {
                     await HideSafeAreaAsync();
                     RemoveState(ScreenManagerState.OpeningScreen);
                     Debug.LogError($"Screen Script {screenKey} not found");
-                    return;
+                    return null;
                 }
 
                 _loadedScreens.Add(screenKey, screenScript);
@@ -197,6 +197,7 @@ namespace Script.GUI.Screen {
             
             await HideSafeAreaAsync();
             RemoveState(ScreenManagerState.OpeningScreen);
+            return screenScript;
         }
 
         private void InsertScreen(IScreen screen) {
@@ -286,32 +287,32 @@ namespace Script.GUI.Screen {
         /// <summary>
         /// Screen을 하나씩 Back하는 메서드입니다. CloseAsync 보다는 이거를 적극 사용!
         /// </summary>
-        public async UniTask Back() {
+        public async UniTask BackAsync(CancellationToken ct = default) {
             var screen = BackScreen();
             screen.AddState(ScreenState.Closing);
             Debug.Log($"Back Screen {screen.Key}");
-            await CloseAsync(screen);
+            await CloseAsync(screen, false, ct);
         }
 
         /// <summary>
         /// Screen을 지정해서 Close하는 메서드입니다.
         /// </summary>
         /// <para>Close는 특별하게 사용하고 대부분 Back을 사용하는게 좋습니다.</para>
-        public async UniTask CloseAsync(ReadOnlyMemory<char> key, bool force = false) {
+        public async UniTask CloseAsync(ReadOnlyMemory<char> key, bool force = false, CancellationToken ct = default) {
             var screen = FindScreen(key.Span);
             if (screen == null) {
                 Debug.LogError($"Screen ID {key.ToString()} not found");
                 return;
             }
 
-            await CloseAsync(screen, force);
+            await CloseAsync(screen, force, ct);
         }
 
         /// <summary>
         /// Screen을 지정해서 Close하는 메서드입니다.
         /// </summary>
         /// <para>Close는 특별하게 사용하고 대부분 Back을 사용하는게 좋습니다.</para>
-        public async UniTask CloseAsync(IScreen screen, bool force = false) {
+        public async UniTask CloseAsync(IScreen screen, bool force = false, CancellationToken ct = default) {
             if (screen == null) {
                 return;
             }
@@ -322,7 +323,7 @@ namespace Script.GUI.Screen {
             //  뒤에서 FindScreen()==null 체크로 "대기 중 이미 닫힌 경우"를 안전하게 처리하므로 별도 가드가 필요 없다.)
             _closeWaitQueue.Enqueue(screen.Key);
 
-            await UniTask.WaitUntil(() => ClosingScreen == false && _closeWaitQueue.Peek().AsSpan().SequenceEqual(screen.Key.AsSpan()));
+            await UniTask.WaitUntil(() => ClosingScreen == false && _closeWaitQueue.Peek().AsSpan().SequenceEqual(screen.Key.AsSpan()), cancellationToken:ct);
 
             AddState(ScreenManagerState.ClosingScreen);
 

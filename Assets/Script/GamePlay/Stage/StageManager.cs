@@ -89,7 +89,7 @@ namespace Script.GamePlay.Stage {
                 if (ct.IsCancellationRequested) return;
 
                 var endTime = _gameTimer.Elapsed + 1.0f;
-                await _screenManager.OpenAsync(new CountDownOption { Text = CountDownSteps[i] }, _countDownKey);
+                await _screenManager.OpenAsync(new CountDownOption { Text = CountDownSteps[i] }, _countDownKey, ct);
 
                 if (lastIndex == i) {
                     RemoveState(StageState.SystemControl);
@@ -99,7 +99,7 @@ namespace Script.GamePlay.Stage {
                                              .SuppressCancellationThrow();
                 if (canceled) return;
 
-                await _screenManager.CloseAsync(_countDownKey.AsMemory());
+                await _screenManager.CloseAsync(_countDownKey.AsMemory(), ct: ct);
             }
         }
 

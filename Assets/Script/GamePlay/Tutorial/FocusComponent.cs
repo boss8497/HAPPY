@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Script.GamePlay.Service.Interface;
+using SW.GUI.Base;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -37,7 +38,7 @@ namespace Script.Tutorial {
             switch (focusData.type) {
                 case FocusType.Button:
                     if (focusData.target == null) {
-                        focusData.target = transform.GetComponent<Image>();
+                        focusData.target = transform.GetComponent<SW_GUI_BUTTON_BASE>();
                     }
 
                     break;
@@ -49,7 +50,7 @@ namespace Script.Tutorial {
                     break;
                 case FocusType.Toggle:
                     if (focusData.target == null) {
-                        focusData.target = transform.GetComponent<Image>();
+                        focusData.target = transform.GetComponent<SW_GUI_TOGGLE_BASE>();
                     }
 
                     break;
