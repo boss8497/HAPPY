@@ -39,8 +39,8 @@ namespace Script.GUI.Screen {
 
         UniTask OpenChangeOptionAsync(IScreenOption data, CancellationToken ct = default);
 
-        void          Back();
-        UniTask       BackAsync(CancellationToken ct = default);
+        void          Back(bool      force = false);
+        UniTask       BackAsync(bool force = false, CancellationToken ct = default);
         UniTask       CloseAsync();
         UniTask       CloseInternal();
         UniTask       CloseLateInternal();

@@ -1,5 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
+using Script.GameInfo.Attribute;
+using Script.GameInfo.Info;
+using Script.GameInfo.Table;
 using Script.GamePlay.Service.Interface;
+using Sirenix.OdinInspector;
 using SW.GUI.Base;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,7 +19,6 @@ namespace Script.Tutorial {
         public TutorialFocusData FocusData => focusData;
 
         public bool showGizmos = false;
-        
         
         [Inject]
         public void InjectSelf(

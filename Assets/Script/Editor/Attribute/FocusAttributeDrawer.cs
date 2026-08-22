@@ -44,7 +44,7 @@ namespace Script.Editor.Attribute {
             }
             set {
                 Property.ValueEntry.WeakSmartValue = Property.ValueEntry.TypeOfValue switch {
-                    { } t when t == typeof(Guid)   => value,
+                    { } t when t == typeof(SerializeGuid)   => value,
                     { } t when t == typeof(string) => value.ToString(),
                     _                              => Property.ValueEntry.WeakSmartValue
                 };

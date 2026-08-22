@@ -119,7 +119,7 @@ namespace Script.GUI.Screen.Tutorial {
             _target      = null;
             ReleaseSprite();
             if (hide) {
-                await BackAsync(ct);
+                await BackAsync(true, ct);
             }
         }
 
@@ -152,10 +152,10 @@ namespace Script.GUI.Screen.Tutorial {
         }
 
         private void ResizeGard() {
-            var canvasSize = root.sizeDelta;
+            var canvasSize = root.rect;
 
-            var screenWidth  = canvasSize.x;
-            var screenHeight = canvasSize.y;
+            var screenWidth  = canvasSize.width;
+            var screenHeight = canvasSize.height;
 
             var centerSize     = focus.sizeDelta;
             var centerPosition = focus.anchoredPosition;
@@ -243,11 +243,11 @@ namespace Script.GUI.Screen.Tutorial {
                 posX += speechMargin.x;
             }
 
-            leftSpeech.On(focusGuide.iconPath, focusGuide.flip);
+            //leftSpeech.On(focusGuide.iconPath, focusGuide.flip);
 
             posX += focusPosition.x;
 
-            var overFlowX = Mathf.Abs(focusPosition.x) + speechParent.sizeDelta.x * 0.5f - root.sizeDelta.x * 0.5f;
+            var overFlowX = Mathf.Abs(focusPosition.x) + speechParent.sizeDelta.x * 0.5f - root.rect.width * 0.5f;
             if (overFlowX > 0) {
                 posX = isLeft ? posX - overFlowX : posX + overFlowX;
             }

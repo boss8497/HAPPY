@@ -12,7 +12,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31ac1f00cc3d08c48a7b6ab4ab320dd9, type: 3}
   m_Name: TutorialTable
   m_EditorClassIdentifier: Script.Table::Script.GameInfo.Table.TutorialTable
-  TutorialInfos: []
+  TutorialInfos:
+  - rid: 5200153937462689945
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 5200153937462689945
+      type: {class: TutorialInfo, ns: Script.GameInfo.Info, asm: Script.GameInfo}
+      data:
+        <UID>k__BackingField: 1
+        <ID>k__BackingField: Test
+        <Name>k__BackingField: "\uD14C\uC2A4\uD2B8"
+        sets:
+        - rid: 5200153937462689951
+        systemControl: 0
+        allCloseScreen: 0
+    - rid: 5200153937462689951
+      type: {class: FocusGuide, ns: Script.GameInfo.Info, asm: Script.GameInfo}
+      data:
+        id: 
+        delayTime: 0
+        fadeInTime: 0
+        fadeOutTime: 0
+        focusGuid:
+          v0: 3429672465
+          v1: 1162090890
+          v2: 2660620695
+          v3: 2046769015
+        flip: 0
+        name: "\uAC00\uC774\uB4DC"
+        guideText: "\uC548\uB1FD\uD558\uC138\uC694."
+        iconPath: 33d167e8eafad414585408720c33a0be

@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using Script.GameInfo.Attribute;
 using Script.GameInfo.Base;
-using Sirenix.Serialization;
+using UnityEngine;
 
 namespace Script.GameInfo.Info {
     [AutoEditorTable(true)]
     [System.Serializable]
     public class TutorialInfo : InfoBase {
-        [OdinSerialize]
-        public List<GuideBase> sets = new List<GuideBase>();
+        [SerializeReference]
+        public GuideBase[] sets = Array.Empty<GuideBase>();
 
         public bool systemControl;
         public bool allCloseScreen;

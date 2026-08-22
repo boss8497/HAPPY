@@ -89,16 +89,16 @@ namespace Script.GUI.Screen {
 
         #region Close
 
-        public void Back() {
+        public void Back(bool force = false) {
             if (_backRequested) return;
             _backRequested = true;
             _screenManager.BackAsync().Forget();
         }
 
-        public async UniTask BackAsync(CancellationToken ct = default) {
+        public async UniTask BackAsync(bool force = false, CancellationToken ct = default) {
             if (_backRequested) return;
             _backRequested = true;
-            await _screenManager.BackAsync(ct);
+            await _screenManager.BackAsync(force, ct);
         }
 
         /// <summary>

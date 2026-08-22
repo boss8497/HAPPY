@@ -121,12 +121,12 @@ namespace Script.GUI.Screen {
                 return null;
             }
 
-            if (ExistsScreen(key.AsSpan(), out var openedScreen)) {
+            if (ExistsScreen(key, out var openedScreen)) {
                 // 이미 열려있으면 데이터 교체
                 if (screenOption != null) {
                     await openedScreen.OpenChangeOptionAsync(screenOption, ct);
                 }
-                return null;
+                return openedScreen;
             }
 
             _openWaitQueue.Enqueue(key);
@@ -287,11 +287,11 @@ namespace Script.GUI.Screen {
         /// <summary>
         /// Screen을 하나씩 Back하는 메서드입니다. CloseAsync 보다는 이거를 적극 사용!
         /// </summary>
-        public async UniTask BackAsync(CancellationToken ct = default) {
+        public async UniTask BackAsync(bool force = false, CancellationToken ct = default) {
             var screen = BackScreen();
             screen.AddState(ScreenState.Closing);
             Debug.Log($"Back Screen {screen.Key}");
-            await CloseAsync(screen, false, ct);
+            await CloseAsync(screen, force, ct);
         }
 
         /// <summary>
@@ -350,12 +350,7 @@ namespace Script.GUI.Screen {
                     var layer = _layers[(int)target.LayerType];
 
                     // DontClose는 명시적으로 닫을 때만 force
-                    if (target.DontClose) {
-                        await layer.CloseScreen(target, force);
-                    }
-                    else {
-                        await layer.CloseScreen(target, force);
-                    }
+                    await layer.CloseScreen(target, force);
                 }
 
                 targets.Clear();
@@ -441,10 +436,10 @@ namespace Script.GUI.Screen {
             return null;
         }
 
-        private bool ExistsScreen(ReadOnlySpan<char> key, out IScreen screen) {
+        private bool ExistsScreen(string key, out IScreen screen) {
             screen = _firstScreen;
             while (screen != null) {
-                if (screen.Key.AsSpan() == key) {
+                if (screen.Key == key) {
                     return true;
                 }
 

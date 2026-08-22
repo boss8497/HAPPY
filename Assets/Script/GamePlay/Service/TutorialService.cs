@@ -14,7 +14,7 @@ using VContainer.Unity;
 
 namespace Script.GamePlay.Service {
     public class TutorialService : ITutorialService, IInitializable, IDisposable {
-        private const string FocusScreenKey = "FocusScreen";
+        private const string FocusScreenKey = "TutorialFocus";
 
         public bool Initialized { get; private set; }
 

@@ -4,6 +4,7 @@ using Script.GameInfo.Attribute;
 using Script.GamePlay.Audio.Interface;
 using Script.GUI.ScreenData.Interface;
 using Script.Utility.Runtime;
+using SW.GUI;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -11,37 +12,34 @@ using VContainer;
 namespace Script.GUI.Screen {
     public class LobbyHUD : Screen {
         private IAudioManager _audioManager;
-        
+
         [SerializeField, ScreenKey]
         private string runningStageScreen;
-        public Button runningStageScreenBtn;
-        
+
+        public SW_GUI_BUTTON runningStageScreenBtn;
+
         [SerializeField, ScreenKey]
         private string logLikeScreen;
-        
+
         [SerializeField, ScreenKey]
         private string optionScreen;
+
         public Button optionScreenBtn;
-        
+
         [Inject]
         public void InjectSelf(
-            IAudioManager  audioManager
+            IAudioManager audioManager
         ) {
             _audioManager = audioManager;
         }
-        
-        
+
+
         protected override void AwakeInternal() {
             base.AwakeInternal();
-            runningStageScreenBtn.ClickAddListener(() => {
-                ScreenManager.OpenAsync(runningStageScreen);
-            });
-            
-            optionScreenBtn.ClickAddListener(() => {
-                ScreenManager.OpenAsync(optionScreen);
-            });
+            runningStageScreenBtn.AddClickListener(() => { ScreenManager.OpenAsync(runningStageScreen); });
+            optionScreenBtn.ClickAddListener(() => { ScreenManager.OpenAsync(optionScreen); });
         }
-        
+
         public override UniTask OpenInternal(IScreenOption data, CancellationToken ct = default) {
             return UniTask.CompletedTask;
         }

@@ -18,10 +18,10 @@ namespace Script.GUI.Screen.Interface {
         UniTask<IScreen> OpenAsync(IScreenOption screenOption, string            key, CancellationToken ct = default);
 
 
-        UniTask CloseAllAsync(bool              force              = false);
-        UniTask BackAsync(CancellationToken     ct                 = default);
-        UniTask CloseAsync(ReadOnlyMemory<char> key,    bool force = false, CancellationToken ct = default);
-        UniTask CloseAsync(IScreen              screen, bool force = false, CancellationToken ct = default);
+        UniTask CloseAllAsync(bool              force = false);
+        UniTask BackAsync(bool                  force = false, CancellationToken ct    = default);
+        UniTask CloseAsync(ReadOnlyMemory<char> key,           bool              force = false, CancellationToken ct = default);
+        UniTask CloseAsync(IScreen              screen,        bool              force = false, CancellationToken ct = default);
         UniTask ResourceClear();
 
         /// <summary>

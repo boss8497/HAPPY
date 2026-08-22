@@ -56,7 +56,7 @@ namespace Script.GUI.Screen.PopUp {
                 case MessageType.Ok:
                     okButton.SetActiveSafe(true);
                     okButton.ClickAddListener(option.OkAction);
-                    okButton.ClickAddListener(Back, false);
+                    okButton.ClickAddListener(() => Back(false), false);
                     
                     cancelButton.SetActiveSafe(false);
                     yesButton.SetActiveSafe(false);
@@ -65,10 +65,10 @@ namespace Script.GUI.Screen.PopUp {
                 case MessageType.OkCancel:
                     okButton.SetActiveSafe(true);
                     okButton.ClickAddListener(option.OkAction);
-                    okButton.ClickAddListener(Back, false);
+                    okButton.ClickAddListener(() => Back(false), false);
                     cancelButton.SetActiveSafe(true);
                     cancelButton.ClickAddListener(option.CancelAction);
-                    cancelButton.ClickAddListener(Back, false);
+                    cancelButton.ClickAddListener(() => Back(false), false);
                     
                     yesButton.SetActiveSafe(false);
                     noButton.SetActiveSafe(false);
@@ -79,10 +79,10 @@ namespace Script.GUI.Screen.PopUp {
                     
                     yesButton.SetActiveSafe(true);
                     yesButton.ClickAddListener(option.YesAction);
-                    yesButton.ClickAddListener(Back, false);
+                    yesButton.ClickAddListener(() => Back(false), false);
                     noButton.SetActiveSafe(true);
                     noButton.ClickAddListener(option.NoAction);
-                    noButton.ClickAddListener(Back, false);
+                    noButton.ClickAddListener(() => Back(false), false);
                     break;
             }
         }

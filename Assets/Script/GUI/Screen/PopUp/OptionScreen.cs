@@ -47,7 +47,7 @@ namespace Script.GUI.Screen {
             });
             
             cancelButton.AddClickListener(() => {
-                audioOptionViewModel.ChangeAudioSetting(audioOptionViewModel.BackUpAudioSetting?.CurrentValue).Forget();
+                audioOptionViewModel.ChangeAudioSetting(audioOptionViewModel.BackUpAudioSetting?.CurrentValue, ct).Forget();
                 Back();
             });
 

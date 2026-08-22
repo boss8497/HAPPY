@@ -20,7 +20,7 @@ namespace Script.GUI.Screen {
 
         private void SetBackButtons() {
             foreach (var backButton in _backButtons) {
-                backButton.ClickAddListener(Back);
+                backButton.ClickAddListener(() => Back(false));
             }
         }
     }

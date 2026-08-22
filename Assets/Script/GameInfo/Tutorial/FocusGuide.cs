@@ -3,6 +3,7 @@ using Script.GameInfo.Attribute;
 using UnityEngine;
 
 namespace Script.GameInfo.Info {
+    [System.Serializable]
     public class FocusGuide : GuideBase {
         [Focus]
         public SerializeGuid focusGuid;
