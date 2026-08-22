@@ -19,7 +19,8 @@ namespace Script.GUI.Screen.SafeArea {
         }
 
         public override UniTask OpenInternal(IScreenOption screenOption, CancellationToken ct = default) {
-            AutoBack(ct).Forget();
+            _cts = new();
+            AutoBack(_cts.Token).Forget();
             return UniTask.CompletedTask;
         }
 

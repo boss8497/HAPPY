@@ -25,6 +25,9 @@ namespace Script.GUI.Screen {
         private ScreenLayerType layerType = ScreenLayerType.None;
 
         private List<GameObject> _pools;
+        
+        // 한 화면에서 중복 Back 호출을 막기 위한 스위치
+        private bool _backRequested;
 
         public ScreenLayerType LayerType => layerType;
 
@@ -56,8 +59,9 @@ namespace Script.GUI.Screen {
         /// ScreenOpen 시 제일 먼저 호출되는 메서드, 호출 후 Active가 켜진다!!
         /// </summary>
         public async UniTask OpenAsync(IScreenOption data, CancellationToken ct = default) {
-            _pools = ListPool.Get<GameObject>();
-            await OpenInternal(data);
+            _pools         = ListPool.Get<GameObject>();
+            _backRequested = false;
+            await OpenInternal(data, ct);
         }
 
         /// <summary>
@@ -86,15 +90,19 @@ namespace Script.GUI.Screen {
         #region Close
 
         public void Back() {
+            if (_backRequested) return;
+            _backRequested = true;
             _screenManager.Back().Forget();
         }
 
         public async UniTask BackAsync() {
+            if (_backRequested) return;
+            _backRequested = true;
             await _screenManager.Back();
         }
 
         /// <summary>
-        /// Close를 Ui Event 접근을 막기 위해서 사용.
+        /// Close를 Ui Event[Unity Event] 접근을 막기 위해서 사용.
         /// 정식 적으로는 Back을 사용하고 필요 시 Close 호출
         /// </summary>
         /// <param name="force"></param>
