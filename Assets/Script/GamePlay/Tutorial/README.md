@@ -5,10 +5,6 @@
 > 설계 배경 원문: [ARCHITECTURE.md](ARCHITECTURE.md)
 > 상위 문서: [GamePlay/ARCHITECTURE.md](../ARCHITECTURE.md) · [최상위 CLAUDE.md](../../../../CLAUDE.md)
 
-## 왜 다시 만들었나
-
-기존 `TutorialFocus.cs`는 `ScreenManager`의 Layer/캐싱/입력 차단(SafeArea) 정책과 무관하게 독자적으로 동작해서, 다른 화면 위/아래 순서가 꼬이거나 입력 차단 타이밍을 매번 수동으로 맞춰야 했습니다. `TutorialFocusScreen`을 일반 `Screen`으로 만들어 `Tutorial` 전용 [Layer](../../GUI/README.md#layer-시스템--렌더링-순서-제어)에 태우고, 입력 차단은 `ScreenManager`가 이미 갖고 있는 [SafeArea](../../GUI/README.md#safearea--입력-차단--자동-복구-워치독) API를 그대로 재사용하도록 바꿨습니다. 등록도 씬에 배치된 `FocusComponent`가 자동으로 처리해서, 튜토리얼 대상이 늘어나도 별도 배선 없이 컴포넌트만 붙이면 됩니다.
-
 ## 전체 흐름
 
 ```mermaid
