@@ -48,7 +48,9 @@ namespace Script.GUI.Screen {
 
         private async UniTask EnterLobbyAsync() {
             var lobbyDungeonInfo = GameInfoManager.Instance.LobbyDungeonInfo;
+            await ScreenManager.ShowStageTransitionAsync();
             await _groupService.EnterDungeon(lobbyDungeonInfo, lobbyDungeonInfo.stages.FirstOrDefault());
+            await ScreenManager.HideStageTransitionAsync();
             _enterLobby = false;
         }
 
