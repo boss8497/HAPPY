@@ -36,9 +36,10 @@ Canvas 아래에 Layer별 RectTransform을 생성해 렌더링 순서를 제어�
 | `None` | 1 | 기본 레이어 |
 | `Popup` | 2 | 팝업 창 |
 | `Overlay` | 3 | 오버레이 |
-| `StageTransition` | 4 | 스테이지 시작/재시작 시 화면을 얼려 덮는 전환 오버레이 |
-| `Loading` | 5 | 로딩 화면 |
-| `SafeArea` | 6 | 입력 차단 레이어 (최상위) |
+| `Tutorial` | 4 | 튜토리얼 Focus 스포트라이트/가이드 오버레이 (`GamePlay/Tutorial/ARCHITECTURE.md` 참고) |
+| `StageTransition` | 5 | 스테이지 시작/재시작 시 화면을 얼려 덮는 전환 오버레이 |
+| `Loading` | 6 | 로딩 화면 |
+| `SafeArea` | 7 | 입력 차단 레이어 (최상위) |
 
 각 Layer는 앵커 (0,0)~(1,1), 오프셋 0으로 전체 영역을 차지한다.
 
@@ -63,7 +64,10 @@ public bool DontClose => option.HasFlag(ScreenOption.DontClose);
 ## SafeArea (입력 차단)
 
 Screen이 열리는 동안 사용자 입력을 차단한다.  
-`SafeArea` Layer(가장 높은 레이어)에 투명 Screen을 열어 하위 레이어의 GraphicRaycaster를 막는다.
+`SafeArea` Layer(가장 높은 레이어)에 전용 `SafeArea` Screen(`Screen/SafeArea/SafeArea.cs`)을 열어 하위 레이어의 GraphicRaycaster를 막는다.  
+`ScreenManager.ShowSafeAreaAsync()`/`HideSafeAreaAsync()`가 `IScreenManager` 공개 API로 노출되어 있어(`ScreenManager.SafeArea.cs`), 필요한 곳(예: 튜토리얼 Focus 시스템)에서 직접 열고 닫을 수 있다.
+
+**자동 복구(auto-back) 워치독:** `SafeArea.OpenInternal()`이 열릴 때마다 `autoBackTimer`(기본 5초) 카운트다운을 시작하고, 그 안에 `HideSafeAreaAsync()`로 닫히지 않으면 자동으로 `BackAsync()`를 호출해 입력 차단이 영구히 걸리는 사고를 막는다 — `HideSafeAreaAsync()` 호출을 누락하는 버그가 있어도 최악의 경우 5초 후 자동 복구된다. 타이머는 `IGameTimer`(전역 타이머, Pause 상태 반영) 기준으로 흐른다.
 
 ---
 
@@ -164,15 +168,15 @@ Close     → SetActive(false) — _loadedScreens에서 제거 안함 (메모리
 ## IScreenManager 인터페이스
 
 ```csharp
-// Open
-UniTask OpenAsync(string key, CancellationToken ct = default);
-UniTask OpenAsync(IScreenOption screenOption, string key, CancellationToken ct = default);
+// Open — 연 Screen 인스턴스를 그대로 반환한다 (Focus 시스템처럼 연 직후 바로 참조가 필요한 경우 대비)
+UniTask<IScreen> OpenAsync(string key, CancellationToken ct = default);
+UniTask<IScreen> OpenAsync(IScreenOption screenOption, string key, CancellationToken ct = default);
 
 // Close
 UniTask CloseAllAsync(bool force = false);               // 전체 닫기
-UniTask Back();                                          // tail(최상위) 닫기
-UniTask CloseAsync(ReadOnlyMemory<char> key, bool force = false);
-UniTask CloseAsync(IScreen screen, bool force = false);
+UniTask BackAsync(bool force = false, CancellationToken ct = default);  // tail(최상위) 닫기
+UniTask CloseAsync(ReadOnlyMemory<char> key, bool force = false, CancellationToken ct = default);
+UniTask CloseAsync(IScreen screen, bool force = false, CancellationToken ct = default);
 
 // 리소스
 UniTask ResourceClear();                                 // 씬 이동 시 호출
@@ -180,6 +184,10 @@ UniTask ResourceClear();                                 // 씬 이동 시 호�
 // 스테이지 전환 오버레이
 UniTask ShowStageTransitionAsync();                      // 현재 화면 캡처 후 덮기
 UniTask HideStageTransitionAsync();                       // Fade Out 후 걷어내기
+
+// SafeArea (입력 차단) — 아래 SafeArea 섹션 참고
+UniTask ShowSafeAreaAsync();
+UniTask HideSafeAreaAsync();
 
 // UI 풀링 (Pool 기반 동적 UI)
 GameObject PoolPop(string key, Transform parent = null, bool active = true, bool worldPositionStays = true);

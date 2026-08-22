@@ -22,7 +22,7 @@ Unity 기본 `Button`은 안 쓰는 기능(Transition, Navigation 등)까지 프
 | 경로 | 역할 |
 |---|---|
 | `Base/SW_GUI_BASE.cs` | 모든 GUI 위젯(Button, Toggle, Slider 등)의 최상위 베이스. `Initialize()`만 선언 |
-| `Base/SW_GUI_BUTTON_BASE.cs` | `IPointerClickHandler`/`IPointerDownHandler`/`IPointerUpHandler` 구현. 클릭·Press·Release 이벤트 파이프라인(스크립트 리스너 → `OnClick()`/`OnPress()`/`OnRelease()` → 인스펙터 이벤트) |
+| `Base/SW_GUI_BUTTON_BASE.cs` | `IPointerClickHandler`/`IPointerDownHandler`/`IPointerUpHandler` 구현. 클릭·Press·Release 이벤트 파이프라인(스크립트 리스너 → `OnClick()`/`OnPress()`/`OnRelease()` → 인스펙터 이벤트). `AddClickAsyncListener`/`RemoveClickAsyncListener`로 `Func<UniTask>` 비동기 리스너도 등록 가능 — Click은 내부적으로 `ClickAsync()`(`UniTaskVoid`)를 `Forget()`으로 실행하며, 동기 `_scriptClickEvent`와 같은 위치(`OnClick()`/인스펙터 이벤트보다 앞)에서 등록된 비동기 리스너 전부를 `UniTask.WhenAll`로 await한다. 튜토리얼 Focus 시스템이 "대상 버튼을 실제로 클릭하기 전에 SafeArea를 먼저 켠다" 같은 비동기 선행 작업을 걸기 위해 도입 (`FocusService.SetFocusCompleteCallBack` 참고) |
 | `Base/Group/SW_GUI_BUTTON_GROUP_BASE.cs` | 버튼 그룹(탭 메뉴 등) 관리자 |
 | `Base/Group/SW_GUI_BUTTON_GROUP_ELEMENT_BASE.cs` | 그룹에 속하는 버튼 하나 |
 | `Group/SW_GUI_BUTTON_GROUP.cs`, `Group/SW_GUI_BUTTON_GROUP_ELEMENT.cs` | 실제 사용하는 구현체 (UnityEvent 노출) |

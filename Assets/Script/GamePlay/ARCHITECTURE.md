@@ -67,7 +67,8 @@ Unit (MonoBehaviour) → UnitManager.RegisterUnit() → ECS Entity
 | `Unit/` | ECS 엔티티 ↔ GameObject 연결 (`UnitManager`) |
 | `Pool/` | GameObject/컴포넌트 풀링 |
 | `Buff/` | 버프/디버프 시스템 |
-| `Service/` | 게임 데이터 접근 (Item, Group 등) |
+| `Service/` | 게임 데이터 접근 (Item, Group, Focus 등) |
+| `Tutorial/` | 튜토리얼 스포트라이트(Focus) 시스템 (상세: `Tutorial/ARCHITECTURE.md`) |
 | `Input/` | 플레이어 입력 (`PlayerControls`, New Input System) |
 | `Camera/` | 카메라 제어 (Cinemachine) |
 | `BackGround/` | 시차 스크롤 배경 (상세: `BackGround/README.md`) |

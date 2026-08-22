@@ -97,6 +97,27 @@ Click/Press/Release 모두 **스크립트 리스너 → 가상 메서드 훅 →
 
 `Click()`은 `useDelay`가 켜져 있으면 `delay`(초) 동안 재클릭을 무시합니다 ([`SW_GUI_BUTTON_BASE.cs`](Base/SW_GUI_BUTTON_BASE.cs)).
 
+### Click의 비동기 버전 — `AddClickAsyncListener`
+
+동기 `_scriptClickEvent`(`UnityEvent`)와 별개로 `Func<UniTask>` 시그니처의 비동기 리스너도 등록할 수 있습니다. `Click()`은 내부적으로 `ClickAsync()`(`async UniTaskVoid`)를 `Forget()`으로 실행하며, 등록된 비동기 리스너 전부를 `OnClick()`/인스펙터 이벤트보다 먼저(동기 `_scriptClickEvent`와 같은 위치에서) `UniTask.WhenAll`로 `await`합니다. 여러 리스너가 등록돼 있으면 전부 완료될 때까지 기다린 뒤에야 `OnClick()`으로 넘어갑니다.
+
+```csharp
+public void AddClickAsyncListener(Func<UniTask> listener, bool removeAll = true);
+public void RemoveClickAsyncListener(Func<UniTask> listener);
+```
+
+**도입 배경:** 튜토리얼 Focus 시스템([`GamePlay/Tutorial/ARCHITECTURE.md`](../../GamePlay/Tutorial/ARCHITECTURE.md))이 오버레이의 대리 버튼을 클릭했을 때 "실제 대상 버튼에 클릭을 전달하기 전에 SafeArea부터 켠다" 같은 비동기 선행 작업을 걸어야 해서 추가됐습니다 ([`FocusService.SetFocusCompleteCallBack()`](../../GamePlay/Service/FocusService.cs)).
+
+```csharp
+async UniTask OnClickAsyncEvent() {
+    await SafeArea(true);                      // 클릭 전 SafeArea부터 켠다
+    _focus.FocusButton.RemoveClickAsyncListener(OnClickAsyncEvent);
+    btn.Click();                                // 실제 대상 버튼으로 클릭 전달
+    OnCompleteEvent();
+}
+_focus.FocusButton.AddClickAsyncListener(OnClickAsyncEvent, false);
+```
+
 ## Toggle — `SW_GUI_TOGGLE_BASE`
 
 `SW_GUI_BUTTON_BASE`를 상속해 On/Off 상태를 추가합니다. `OnClick()`을 오버라이드해 클릭 시 `!_isOn`으로 반전시킵니다.
