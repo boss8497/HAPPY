@@ -2,14 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Script.Addressable;
 using Script.DataBase.Interface;
 using Script.GameData.Model;
 using Script.GameInfo.Info;
 using Script.GamePlay.Audio.Interface;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.Audio;
-using UnityEngine.ResourceManagement.AsyncOperations;
 using VContainer.Unity;
 
 namespace Script.GamePlay.Audio {
@@ -29,12 +28,13 @@ namespace Script.GamePlay.Audio {
             { AudioGroup.Voice, 3 },
         };
 
-        private readonly IDataBase     _dataBase;
-        private readonly AudioSetting  _audioSetting;
-        private readonly IAudioPooling _audioPooling;
+        private readonly IDataBase           _dataBase;
+        private readonly IAddressableService _addressableService;
+        private readonly AudioSetting        _audioSetting;
+        private readonly IAudioPooling       _audioPooling;
 
-        private          AsyncOperationHandle<AudioMixer>            _mixerHandle;
-        private          AudioMixer                                  _mixer;
+        private          AddressableCacheHandle<AudioMixer>      _mixerHandle;
+        private          AudioMixer                              _mixer;
         private readonly Dictionary<AudioGroup, AudioMixerGroup> _mixerGroups = new();
 
         private AudioSource _bgmSource;
@@ -44,10 +44,11 @@ namespace Script.GamePlay.Audio {
         public bool              Initialized       { get; private set; }
         public AudioSettingModel AudioSettingModel => _audioSetting?.Model;
 
-        public AudioManager(IDataBase dataBase, IAudioPooling audioPooling) {
-            _dataBase     = dataBase ?? throw new ArgumentNullException(nameof(dataBase));
-            _audioPooling = audioPooling ?? throw new ArgumentNullException(nameof(audioPooling));
-            _audioSetting = new AudioSetting(dataBase);
+        public AudioManager(IDataBase dataBase, IAddressableService addressableService, IAudioPooling audioPooling) {
+            _dataBase           = dataBase ?? throw new ArgumentNullException(nameof(dataBase));
+            _addressableService = addressableService ?? throw new ArgumentNullException(nameof(addressableService));
+            _audioPooling       = audioPooling ?? throw new ArgumentNullException(nameof(audioPooling));
+            _audioSetting       = new AudioSetting(dataBase);
         }
 
         public void Initialize() {
@@ -93,20 +94,10 @@ namespace Script.GamePlay.Audio {
         }
 
         private async UniTask LoadMixerAsync(CancellationToken ct) {
-            _mixerHandle = Addressables.LoadAssetAsync<AudioMixer>(MixerKey);
-
-            while (!_mixerHandle.IsDone) {
-                ct.ThrowIfCancellationRequested();
-                await UniTask.Yield(PlayerLoopTiming.Update, ct);
-            }
-
-            if (_mixerHandle.Status != AsyncOperationStatus.Succeeded) {
-                throw new Exception($"AudioMixer Load failed. key: {MixerKey}");
-            }
-
             // AudioMixerGroup은 AudioMixer 서브 에셋을 그대로 참조하므로(Instantiate 복사본이 아님)
-            // ScreenManager._loadedScreens처럼 앱 생존 기간 동안 핸들을 유지한 채로 사용한다.
-            _mixer = _mixerHandle.Result;
+            // ScreenManager._loadedScreens처럼 앱 생존 기간 동안 Handle을 Dispose하지 않고 유지한다.
+            _mixerHandle = await _addressableService.LoadAsync<AudioMixer>(MixerKey, ct);
+            _mixer       = _mixerHandle.Value;
         }
 
         private void CacheMixerGroups() {
@@ -140,9 +131,7 @@ namespace Script.GamePlay.Audio {
 
             _cts?.Dispose();
 
-            if (_mixerHandle.IsValid()) {
-                Addressables.Release(_mixerHandle);
-            }
+            _mixerHandle?.Dispose();
         }
     }
 }

@@ -1,18 +1,18 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Script.Addressable;
 using Script.GameInfo.Info;
 using Script.GamePlay.Audio.Interface;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Script.GamePlay.Audio {
     public partial class AudioManager {
-        // 자주 쓰는 오디오는 여기 계속 캐시되어 있다가 ReleaseClip/ReleaseAllClips로만 해제된다.
+        // loop=true 이거나 autoRelease=false인 클립만 여기서 pin되어 ReleaseClip/ReleaseAllClips로만 해제된다.
         // (ScreenManager._loadedScreens / ResourceClear()와 동일한 정책)
-        private readonly Dictionary<string, AsyncOperationHandle<AudioClip>> _loadedClips = new();
+        // pin되지 않은 클립(loop=false && autoRelease=true)은 재생 시작 직후 여기서 손을 떼지만,
+        // 중앙 Addressable 캐시가 자체 유예시간 동안 재사용을 위해 따로 들고 있는다.
+        private readonly Dictionary<string, AddressableCacheHandle<AudioClip>> _loadedClips = new();
 
         // InstanceId 기준으로 현재 재생 중인 AudioPlayer를 추적한다.
         // _activeGroups는 player가 Track()으로 인해 파괴됐을 때(player.IsAlive == false)도 그룹 카운트를
@@ -46,7 +46,8 @@ namespace Script.GamePlay.Audio {
                 return Replay(existing, group, loop, pitch, is3D, position, track);
             }
 
-            var clip = await GetOrLoadClipAsync(key, ct);
+            // loop=true거나 autoRelease=false면 재생이 끝나도 캐시에 pin해서 재사용에 대비한다.
+            var clip = await GetOrLoadClipAsync(key, loop || !autoRelease, ct);
 
             // MaxCount 체크는 실제로 풀 슬롯을 점유하기 직전(로드 완료 후)에 한다.
             // 상한을 넘었으면 거부하는 대신 그룹에서 가장 오래 재생 중인 플레이어를 강제 종료(Dequeue)하고 자리를 내준다.
@@ -68,13 +69,6 @@ namespace Script.GamePlay.Audio {
 
             RegisterActive(handle, player, group);
 
-            // 요청대로 단발 재생(loop=false) + autoRelease면 재생 시작 직후 Addressable 핸들만 Release한다.
-            // AudioSource는 이미 clip을 참조 중이라 재생 자체는 계속 이어진다(압축 스트리밍 클립은 예외적 위험 있음, ARCHITECTURE.md 참고).
-            // loop=true(BGM 등)는 재생 중 캐시를 지우면 안 되므로 autoRelease를 무시한다.
-            if (loop == false && autoRelease) {
-                ReleaseClipHandle(key);
-            }
-
             return handle;
         }
 
@@ -94,7 +88,8 @@ namespace Script.GamePlay.Audio {
                 return Replay(existing, audioData.type, audioData.loop, audioData.pitch, audioData.is3D, position, track);
             }
 
-            var clip = await GetOrLoadClipAsync(audioData.key, ct);
+            // loop=true거나 autoRelease=false면 재생이 끝나도 캐시에 pin해서 재사용에 대비한다.
+            var clip = await GetOrLoadClipAsync(audioData.key, audioData.loop || !audioData.autoRelease, ct);
 
             // MaxCount 체크는 실제로 풀 슬롯을 점유하기 직전(로드 완료 후)에 한다.
             // 상한을 넘었으면 거부하는 대신 그룹에서 가장 오래 재생 중인 플레이어를 강제 종료(Dequeue)하고 자리를 내준다.
@@ -115,13 +110,6 @@ namespace Script.GamePlay.Audio {
             player.Source.Play();
 
             RegisterActive(handle, player, audioData.type);
-
-            // 요청대로 단발 재생(loop=false) + autoRelease면 재생 시작 직후 Addressable 핸들만 Release한다.
-            // AudioSource는 이미 clip을 참조 중이라 재생 자체는 계속 이어진다(압축 스트리밍 클립은 예외적 위험 있음, ARCHITECTURE.md 참고).
-            // loop=true(BGM 등)는 재생 중 캐시를 지우면 안 되므로 autoRelease를 무시한다.
-            if (audioData.loop == false && audioData.autoRelease) {
-                ReleaseClipHandle(audioData.key);
-            }
 
             return handle;
         }
@@ -224,7 +212,8 @@ namespace Script.GamePlay.Audio {
                 return;
             }
             
-            var clip = await GetOrLoadClipAsync(key, ct);
+            // BGM은 항상 loop처럼 취급해 캐시에 pin해둔다.
+            var clip = await GetOrLoadClipAsync(key, true, ct);
 
             _bgmSource.Stop();
             _bgmSource.clip = clip;
@@ -274,11 +263,22 @@ namespace Script.GamePlay.Audio {
             }
         }
 
+        /// <summary>
+        /// Handle만 반환 실제로 Addressable Release가 아님
+        /// </summary>
+        /// <param name="key"></param>
         public void ReleaseClip(string key) {
             StopAllByClip(key);
-            ReleaseClipHandle(key);
+
+            if (_loadedClips.TryGetValue(key, out var handle) == false) return;
+
+            handle.Dispose();
+            _loadedClips.Remove(key);
         }
 
+        /// <summary>
+        /// Handle만 반환 실제로 Addressable Release가 아님
+        /// </summary>
         public void ReleaseAllClips() {
             _finishedBuffer.Clear();
             _finishedBuffer.AddRange(_activePlayers.Values);
@@ -288,7 +288,7 @@ namespace Script.GamePlay.Audio {
             }
 
             foreach (var handle in _loadedClips.Values) {
-                Addressables.Release(handle);
+                handle.Dispose();
             }
 
             _loadedClips.Clear();
@@ -308,32 +308,21 @@ namespace Script.GamePlay.Audio {
             }
         }
 
-        private void ReleaseClipHandle(string key) {
-            if (_loadedClips.TryGetValue(key, out var handle) == false)
-                return;
-
-            Addressables.Release(handle);
-            _loadedClips.Remove(key);
-        }
-
-        private async UniTask<AudioClip> GetOrLoadClipAsync(string key, CancellationToken ct) {
-            if (_loadedClips.TryGetValue(key, out var cached)) {
-                return cached.Result;
+        private async UniTask<AudioClip> GetOrLoadClipAsync(string key, bool pin, CancellationToken ct) {
+            if (_loadedClips.TryGetValue(key, out var pinned)) {
+                return pinned.Value;
             }
 
-            var loadHandle = Addressables.LoadAssetAsync<AudioClip>(key);
+            var handle = await _addressableService.LoadAsync<AudioClip>(key, ct);
 
-            while (!loadHandle.IsDone) {
-                ct.ThrowIfCancellationRequested();
-                await UniTask.Yield(PlayerLoopTiming.Update, ct);
+            if (pin) {
+                _loadedClips[key] = handle;
+                return handle.Value;
             }
 
-            if (loadHandle.Status != AsyncOperationStatus.Succeeded) {
-                throw new Exception($"AudioClip Load failed. key: {key}");
-            }
-
-            _loadedClips[key] = loadHandle;
-            return loadHandle.Result;
+            var clip = handle.Value;
+            handle.Dispose();
+            return clip;
         }
 
         private bool IsOverLimit(AudioGroup group) {

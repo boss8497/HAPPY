@@ -32,8 +32,8 @@ namespace Script.LifetimeScope {
         /// IsInitialize 같은 대기를 위해서
         /// </summary>
         protected override void Configure(IContainerBuilder builder) {
-            builder.RegisterEntryPoint<Addressable.Addressable>(Lifetime.Singleton)
-                   .As<Addressable.IAddressable>();
+            builder.RegisterEntryPoint<Addressable.AddressableService>(Lifetime.Singleton)
+                   .As<Addressable.IAddressableService>();
             
             builder.RegisterEntryPoint<GameSetting.GameSetting>(Lifetime.Singleton)
                    .As<IGameSetting>();

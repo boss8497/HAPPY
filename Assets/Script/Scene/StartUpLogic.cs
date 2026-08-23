@@ -14,7 +14,7 @@ using VContainer;
 
 namespace Script.Scene {
     public class StartUpLogic : MonoBehaviour {
-        private IAddressable   _addressable;
+        private IAddressableService   _addressableService;
         private IScopeFactory  _scopeFactory;
         private IGameSetting   _gameSetting;
         private IAudioManager  _audioManager;
@@ -23,14 +23,14 @@ namespace Script.Scene {
 
         [Inject]
         public void Constructor(
-            IAddressable   addressable,
+            IAddressableService   addressableService,
             IScopeFactory  scopeFactory,
             IGameSetting   gameSetting,
             IAudioManager  audioManager,
             IScreenManager screenManager,
             ISceneLoader   sceneLoader
         ) {
-            _addressable   = addressable;
+            _addressableService   = addressableService;
             _scopeFactory  = scopeFactory;
             _gameSetting   = gameSetting;
             _audioManager  = audioManager;
@@ -58,8 +58,8 @@ namespace Script.Scene {
         /// </summary>
         /// <exception cref="Exception"></exception>
         private async UniTask InitializeAddressable() {
-            await UniTask.WaitUntil(() => _addressable?.IsInitialized ?? false);
-            await _addressable.LoadAppLabelsAsync();
+            await UniTask.WaitUntil(() => _addressableService?.IsInitialized ?? false);
+            await _addressableService.LoadAppLabelsAsync();
         }
 
         private async UniTask CreateClientScope() {

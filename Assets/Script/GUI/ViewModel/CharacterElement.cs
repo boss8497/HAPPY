@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Cysharp.Threading.Tasks;
 using R3;
+using Script.Addressable;
 using Script.GameData.Data;
 using Script.GameInfo.Item;
 using Script.GameInfo.Table;
@@ -8,22 +9,23 @@ using Script.GamePlay.Service.Interface;
 using Script.Utility.Runtime;
 using Spine.Unity;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
-using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.UI;
 using VContainer;
 using CharacterInfo = Script.GameInfo.Character.CharacterInfo;
 
 namespace Script.GUI.ViewModel {
     public class CharacterElement : SelectElement {
-        private IItemService _itemService;
+        private IItemService  _itemService;
+        private IAddressableService  _addressableService;
 
         [Inject]
         public void Inject(
-            IItemService itemService
+            IItemService itemService,
+            IAddressableService addressableService
         ) {
             _itemService = itemService;
+            _addressableService = addressableService;
         }
 
         public Button selectButton;
@@ -42,7 +44,7 @@ namespace Script.GUI.ViewModel {
         public ReadOnlyReactiveProperty<bool>     HasItem { get; set; }
 
 
-        private AsyncOperationHandle<SkeletonDataAsset> _skeletonHandle;
+        private AddressableCacheHandle<SkeletonDataAsset> _skeletonHandle;
 
         private DisposableBag _disposableBag;
         private DisposableBag _subScribeDisposableBag;
@@ -94,14 +96,12 @@ namespace Script.GUI.ViewModel {
             var isOn = info != null;
             skeletonGraphic.SetActiveSafe(isOn);
 
-            if (_skeletonHandle.IsValid()) {
-                Addressables.Release(_skeletonHandle);
-            }
+            _skeletonHandle?.Dispose();
+            _skeletonHandle = null;
 
             if (isOn) {
-                _skeletonHandle = Addressables.LoadAssetAsync<SkeletonDataAsset>(info.skeletonDataAsset);
-                await _skeletonHandle.Task;
-                skeletonGraphic.skeletonDataAsset = _skeletonHandle.Result;
+                _skeletonHandle = await _addressableService.LoadAsync<SkeletonDataAsset>(info.skeletonDataAsset);
+                skeletonGraphic.skeletonDataAsset = _skeletonHandle.Value;
 
                 skeletonGraphic.Initialize(true);
                 skeletonGraphic.StartAnimation("IDLE", true);
@@ -115,9 +115,8 @@ namespace Script.GUI.ViewModel {
         public void Release() {
             _disposableBag.Dispose();
             _subScribeDisposableBag.Dispose();
-            if (_skeletonHandle.IsValid()) {
-                Addressables.Release(_skeletonHandle);
-            }
+            _skeletonHandle?.Dispose();
+            _skeletonHandle = null;
 
             CharacterInfo.OnNext(null);
             ItemInfo.OnNext(null);

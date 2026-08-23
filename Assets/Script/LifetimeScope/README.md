@@ -53,7 +53,7 @@ StartUp 씬에 GameObject로 배치되어 있고, `Addressable`/`GameSetting` �
 
 | 인터페이스 | 구현체 | 비고 |
 |---|---|---|
-| `IAddressable` | `Addressable` | Addressable 에셋 관리 |
+| `IAddressableService` | `AddressableService` | Addressable 에셋 관리 + 중앙 캐시 |
 | `IGameSetting` | `GameSetting` | 프레임레이트 등 게임 설정 |
 | `IAudioPooling` | `AudioPooling` | 오디오 소스 풀링 |
 | `IAudioManager` | `AudioManager` | 오디오 재생/믹서 제어 |

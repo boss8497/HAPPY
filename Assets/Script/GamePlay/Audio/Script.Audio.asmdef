@@ -8,6 +8,7 @@
         "Unity.Addressables",
         "Unity.ResourceManager",
         "Script.Audio.Interface",
+        "Script.Addressable.Interface",
         "Script.DataBase",
         "Script.GamePlay.Pool",
         "Script.Utility.Runtime",

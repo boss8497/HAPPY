@@ -6,5 +6,8 @@ namespace Script.GameSetting.Data {
     public struct GameSettingData {
         public int frameRate;
         public int vSyncCount;
+
+        public float addressableCacheCheckIntervalSeconds;
+        public float addressableCacheReleaseGraceSeconds;
     }
 }

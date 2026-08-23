@@ -64,7 +64,7 @@ Assets/Script/GamePlay/Pool/
 `IInitializable.Initialize()`는 비워둔다 — Addressable/DataBase가 준비되기 전에 컨테이너 빌드 시점에서 자동 실행되면 안 되기 때문.
 
 ```
-LoadMixerAsync()         — Addressables.LoadAssetAsync<AudioMixer>("AudioMixer"), 핸들은 앱 생존 기간 유지
+LoadMixerAsync()         — IAddressableService.LoadAsync<AudioMixer>("AudioMixer"), 핸들은 앱 생존 기간 Dispose하지 않고 유지
 CacheMixerGroups()       — FindMatchingGroups(string.Empty) 순회 후 그룹 이름으로 enum 매칭
 CreateBgmSource()        — BGM 전용 AudioSource 1개를 별도 GameObject로 생성(DontDestroyOnLoad)
 AudioSetting.LoadAsync() — DataBase.Initialized 대기 후 로드, 없으면 기본값 생성+저장
@@ -119,14 +119,20 @@ MonitorAsync() 시작      — 매 프레임 재생 종료된(loop=false) 플레
   이미 캐시된 클립이면 체크가 거의 즉시 이뤄지지만, 처음 로드하는 클립은 로드 완료 시점까지 상한 체크가
   지연되므로 이론상 동시에 여러 요청이 몰리면 짧은 순간 상한을 넘길 수 있다(엄격한 실시간 보장이 필요한 값은
   아니라고 판단해 감수함).
-- **autoRelease 주의사항**: `loop == false && autoRelease`면 `Play()` 호출 직후 Addressable 핸들을 바로 Release한다(요청 사양).
-  `loop == true`(BGM 등)는 재생 도중 캐시를 지우면 안 되므로 autoRelease를 무시한다.
+- **autoRelease 동작**: `loop == false && autoRelease`면 `GetOrLoadClipAsync(key, pin: false, ct)`로 로드하고,
+  `AddressableCacheHandle<AudioClip>.Value`만 복사해 즉시 `Dispose()`한다 — `_loadedClips`에는 pin되지 않는다.
+  `loop == true`거나 `autoRelease == false`면 `pin: true`로 `_loadedClips`에 남아 `ReleaseClip`/`ReleaseAllClips`가
+  호출될 때까지 유지된다. `Dispose()`는 [중앙 Addressable 캐시](../../Addressable/README.md)의 RefCount를
+  감소시킬 뿐 즉시 `Addressables.Release()`하지 않으므로, pin되지 않은 클립도 유예시간(기본 5분) 안에는
+  캐시에 남아 재사용된다 — 예전처럼 재생 시작 직후 완전히 Release되던 것과 달리, 짧게 겹쳐 재생되는 SFX가
+  다시 요청되면 재로드 없이 그대로 재사용될 가능성이 높다.
   `AudioSource.clip`이 이미 로드된 `AudioClip` 객체를 참조 중이므로 대부분의 경우 재생은 문제없이 이어지지만,
-  Addressable 설정이 스트리밍/압축 해제 지연 로드인 클립이라면 재생 도중 언로드될 위험이 이론상 존재한다.
-  자주 겹쳐 재생되는 SFX처럼 위험을 감수할 만한 케이스에만 `autoRelease=true`를 쓰고,
-  자주 재사용되는 오디오는 `autoRelease=false`로 캐시에 남겨 로드 비용을 줄인다.
-- 캐시(`_loadedClips`)는 명시적으로 `ReleaseClip(key)` / `ReleaseAllClips()`를 호출하기 전까지 유지된다
-  (`ScreenManager.ResourceClear()`와 동일한 정책 — 씬 전환 등 필요한 시점에 호출).
+  Addressable 설정이 스트리밍/압축 해제 지연 로드인 클립이라면 유예시간이 지나 실제 Release된 뒤 재생 도중
+  언로드될 위험이 이론상 존재한다(예전보다는 훨씬 늦게 발생하지만 여전히 이론적 위험은 남아있음).
+  자주 재사용되는 오디오는 `autoRelease=false`로 명시적으로 pin해 이 위험 자체를 없애는 쪽을 권장한다.
+- 캐시(`_loadedClips`)에 pin된 항목은 명시적으로 `ReleaseClip(key)` / `ReleaseAllClips()`를 호출하기 전까지 유지된다
+  (`ScreenManager.ResourceClear()`와 동일한 정책 — 씬 전환 등 필요한 시점에 호출). 단, 이 두 메서드도 중앙 캐시의
+  `Dispose()`를 호출할 뿐이라 실제 메모리 해제는 즉시가 아니라 유예시간 이후에 이뤄진다.
 
 ## 풀링 — AudioPlayer / AudioPooling
 

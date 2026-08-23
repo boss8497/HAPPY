@@ -18,8 +18,9 @@ namespace Script.GamePlay.Audio.Interface {
         /// <summary>
         /// 오디오 재생. loop=false면 재생이 끝나는 즉시 자동으로 풀에 반환된다(= 단발 재생).
         /// loop=true면 명시적으로 Stop()을 호출해야 반환된다. BGM은 이 메서드 대신 PlayBGM을 사용한다.
-        /// loop=false && autoRelease=true면 재생 시작 직후 Addressable 핸들을 즉시 Release한다
-        /// (loop=true일 때는 재생 중 캐시를 지우면 안 되므로 autoRelease를 무시한다).
+        /// loop=false && autoRelease=true면 재생 시작 직후 클립 캐시를 pin하지 않는다 — 중앙 Addressable 캐시가
+        /// 자체 유예시간 동안 재사용 여부에 따라 알아서 들고 있다가 해제한다.
+        /// loop=true거나 autoRelease=false면 ReleaseClip/ReleaseAllClips로 명시적으로 놓아줄 때까지 캐시에 pin된다.
         /// 그룹 볼륨은 AudioMixer에서 dB로 이미 적용되므로 AudioSource 자체 볼륨은 항상 최대(1)로 재생한다.
         /// 같은 key가 이미 재생 중이면 새로 빌리지 않고 그 인스턴스를 재사용해 처음부터 다시 재생한다
         /// (새 슬롯을 점유하지 않으므로 그룹이 상한이어도 이 재생 요청은 통과됨).
@@ -78,12 +79,14 @@ namespace Script.GamePlay.Audio.Interface {
         void  SetMute(AudioGroup   group, bool mute, bool save = true);
 
         /// <summary>
-        /// 캐시된 특정 클립을 해제한다. 재생 중이면 먼저 정지시킨다.
+        /// 재생 중이면 먼저 정지시키고, 해당 key로 pin해뒀던 클립 캐시를 놓아준다.
+        /// 실제 메모리 해제는 즉시가 아니라 중앙 Addressable 캐시의 유예시간이 지난 뒤 이뤄진다.
         /// </summary>
         void ReleaseClip(string key);
 
         /// <summary>
-        /// ScreenManager.ResourceClear()와 동일한 패턴 — 캐시된 모든 클립을 일괄 해제.
+        /// ScreenManager.ResourceClear()와 동일한 패턴 — 재생 중인 모든 인스턴스를 정지하고 pin해뒀던 클립 캐시를 모두 놓아준다.
+        /// 실제 메모리 해제는 즉시가 아니라 중앙 Addressable 캐시의 유예시간이 지난 뒤 이뤄진다.
         /// </summary>
         void ReleaseAllClips();
     }

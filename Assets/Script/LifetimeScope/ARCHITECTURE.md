@@ -37,7 +37,7 @@ StartUp 씬에 GameObject 컴포넌트로 배치.
 
 | 인터페이스 | 구현체 | 비고 |
 |---|---|---|
-| `IAddressable` | `Addressable` | Addressable 에셋 관리 |
+| `IAddressableService` | `AddressableService` | Addressable 에셋 관리 + 중앙 캐시 |
 | `IGameSetting` | `GameSetting` | 게임 설정 |
 | `IScopeLocator` | `ScopeLocator` | Scope 중앙 관리 |
 | `IGameTimer` | `GameTimer` | 전역 타이머 |

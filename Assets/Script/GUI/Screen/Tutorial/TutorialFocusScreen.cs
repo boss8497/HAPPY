@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using R3;
+using Script.Addressable;
 using Script.GameInfo.Info;
 using Script.GUI.ScreenData.Interface;
 using Script.Tutorial;
@@ -12,11 +13,14 @@ using SW.GUI.Base;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 using FocusOption = Script.GUI.ScreenData.FocusOption;
 
 namespace Script.GUI.Screen.Tutorial {
     public class TutorialFocusScreen : Screen, ITutorialFocus {
-        private TutorialFocusData _target;
+        private IAddressableService            _addressableService;
+        private AddressableCacheHandle<Sprite> _leftIcon;
+        private TutorialFocusData              _target;
 
         private float _baseAlpha   = 0.8f;
         private bool  _updateFocus = false;
@@ -43,21 +47,24 @@ namespace Script.GUI.Screen.Tutorial {
         [SerializeField] private RectTransform speechParent;
         [SerializeField] private TMP_Text      speechText;
 
-        [SerializeField] private SpeechObject leftSpeech;
-        [SerializeField] private SpeechObject rightSpeech;
+        [SerializeField] private Image leftIcon;
 
         [SerializeField] private Vector2 speechMargin;
 
         [SerializeField] private SW_GUI_BUTTON_BASE focusButton;
 
-        [SerializeField] private List<Image> rayCastImage;
-        [SerializeField] private List<Image> gardImages;
+        [SerializeField] private List<Image>  rayCastImage;
+        [SerializeField] private List<Image>  gardImages;
 
         #endregion
 
         public SW_GUI_BUTTON_BASE FocusButton => focusButton;
-        
 
+        [Inject]
+        public void SelfInject(IAddressableService addressableService) {
+            _addressableService =  addressableService;
+        }
+        
         protected override void AwakeInternal() {
             // 포커스 검정색 영역을 투명하게 해주기 위해서 처음 알파를 저장해둠
             _baseAlpha = gardImages.First().color.a;
@@ -88,14 +95,8 @@ namespace Script.GUI.Screen.Tutorial {
         }
 
         public override UniTask Release() {
-            ReleaseSprite();
             _disposableBag.Dispose();
             return UniTask.CompletedTask;
-        }
-
-        private void ReleaseSprite() {
-            leftSpeech?.Dispose();
-            rightSpeech?.Dispose();
         }
 
         private void SetRayCast(bool isRayCast) {
@@ -107,7 +108,6 @@ namespace Script.GUI.Screen.Tutorial {
         public void Stop(bool hide = true) {
             _updateFocus = false;
             _target      = null;
-            ReleaseSprite();
 
             if (hide) {
                 Back();
@@ -117,16 +117,12 @@ namespace Script.GUI.Screen.Tutorial {
         public async UniTask StopAsync(bool hide = true, CancellationToken ct = default) {
             _updateFocus = false;
             _target      = null;
-            ReleaseSprite();
             if (hide) {
                 await BackAsync(true, ct);
             }
         }
 
         private void SetFocus(TutorialFocusData focusData, FocusGuide focusGuide) {
-            if (focusData == null || focusGuide == null) {
-                return;
-            }
             FocusInfo.OnNext(focusGuide);
             _target = focusData;
             var focusSize = ReSizeFocus();
@@ -135,12 +131,13 @@ namespace Script.GUI.Screen.Tutorial {
             _updateFocus = true;
         }
 
-        public UniTask SetFocusAsync(TutorialFocusData focusData, FocusGuide focusGuide) {
+        public async UniTask SetFocusAsync(TutorialFocusData focusData, FocusGuide focusGuide, CancellationToken ct = default) {
             if (focusData == null || focusGuide == null) {
-                return UniTask.CompletedTask;
+                return;
             }
+
+            await SetLeftImage(focusGuide, ct);
             SetFocus(focusData, focusGuide);
-            return UniTask.CompletedTask;
         }
 
         private void Update() {
@@ -148,6 +145,19 @@ namespace Script.GUI.Screen.Tutorial {
                 var focusSize = ReSizeFocus();
                 ResizeGard();
                 SetSpeechPosition(FocusInfo.CurrentValue, focus.localPosition, focusSize);
+            }
+        }
+
+        private async UniTask SetLeftImage(FocusGuide focusGuide, CancellationToken ct = default) {
+            _leftIcon?.Dispose();
+            _leftIcon       = await _addressableService.LoadAsync<Sprite>(focusGuide.iconPath, ct);
+            leftIcon.sprite = _leftIcon.Value;
+            var scale = leftIcon.transform.localScale;
+            if (focusGuide.flip) {
+                leftIcon.transform.localScale = new(Mathf.Abs(scale.x) * -1f, scale.y, scale.z);
+            }
+            else {
+                leftIcon.transform.localScale = new(Mathf.Abs(scale.x), scale.y, scale.z);
             }
         }
 
@@ -242,8 +252,6 @@ namespace Script.GUI.Screen.Tutorial {
             else {
                 posX += speechMargin.x;
             }
-
-            //leftSpeech.On(focusGuide.iconPath, focusGuide.flip);
 
             posX += focusPosition.x;
 

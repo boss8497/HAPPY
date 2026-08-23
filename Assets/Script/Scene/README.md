@@ -14,7 +14,7 @@ StartUp → Title → Lobby → GameScene(게임플레이 씬들)
 ### StartUpLogic.cs (`StartUp.unity`)
 - `AppLifetimeScope`에서 주입받아 실행 (EntryPoint)
 - 흐름:
-  1. `IAddressable.InitializeAsync()` — Addressable 초기화
+  1. `IAddressableService.IsInitialized` 대기 후 `LoadAppLabelsAsync()` — Addressable 초기화
   2. `IGameSetting.InitializeAsync()` — 게임 설정 로드
   3. `IAudioManager.InitializeAudioManager()` — AudioMixer 로드 + 그룹 볼륨/뮤트 설정 적용
   4. `IScopeFactory.CreateScope(ScopeType.Client)` — `ClientLifetimeScope` 생성
