@@ -14,14 +14,15 @@ using UnityEngine;
 //Runtime에 생성되는 부분들
 namespace Script.GamePlay.Character {
     public partial class Character {
-        public override Vector2       Position                   => Transform.position;
-        public override Transform     Transform                  => gameObject.transform;
-        public override CharacterType CharacterType              => CharacterInfo.type;
-        public          GameObject    GameObject                 => gameObject;
+        public override Vector2       Position      => Transform.position;
+        public override Transform     Transform     => gameObject.transform;
+        public override CharacterType CharacterType => CharacterInfo.type;
+        public          GameObject    GameObject    => gameObject;
+        public          bool          IsAlive       => this != null;
 
 
-        private         bool          _isPlayer;
-        public override bool          IsPlayer      => _isPlayer;
+        private         bool _isPlayer;
+        public override bool IsPlayer => _isPlayer;
 
 
         [SerializeReference, SerializeField, ReadOnly]
@@ -33,11 +34,13 @@ namespace Script.GamePlay.Character {
         // 기본적으로 Initialize할 때 찾지만 Prefab에서 등록 가능하도록 설정
         [ShowInInspector]
         private SkeletonAnimation _skeletonAnimation;
+
         public SkeletonAnimation SkeletonAnimation => _skeletonAnimation;
 
 
         [SerializeReference, SerializeField]
         private DieAnimation _dieAnimation;
+
         public DieAnimation DieAnimation => _dieAnimation;
 
         private string[] _animationNames;
@@ -72,8 +75,8 @@ namespace Script.GamePlay.Character {
                     _dieAnimation = GetComponentInChildren<DieAnimation>();
                 }
             }
-            
-            
+
+
             _characterBehaviour ??= ClassPool.Get<CharacterBehaviour>();
             _characterBehaviour.Initialize(BehaviourInfo, this);
 
@@ -82,22 +85,17 @@ namespace Script.GamePlay.Character {
 
 
         private void ReleaseGamePlay() {
-            if (_characterBehaviour != null) {
-                ClassPool.Release<CharacterBehaviour>(_characterBehaviour);
-                _characterBehaviour = null;
-            }
-
-            if (_status != null) {
-                ClassPool.Release<Status>(_status);
-                _status = null;
-            }
+            ClassPool.Release<CharacterBehaviour>(_characterBehaviour);
+            ClassPool.Release<Status>(_status);
+            _status             = null;
+            _characterBehaviour = null;
         }
 
         // 상대방에게 캐릭터를 다시 받는 DelayTime ECS에서 사용하고 이 시간이 지나야
         // 상대방과 충돌 시 데미지를 받음
         public override float GetCollisionDelayTime()
             => CharacterInfo?.type switch {
-                _                       => 1f
+                _ => 1f
             };
 
 

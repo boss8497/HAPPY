@@ -33,6 +33,7 @@ namespace Script.GamePlay.Character {
 
         Transform  Transform  { get; }
         GameObject GameObject { get; }
+        bool       IsAlive    { get; }
 
 
         void    Initialize(int team, bool isPlayer = false);

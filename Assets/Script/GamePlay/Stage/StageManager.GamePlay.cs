@@ -8,38 +8,51 @@ namespace Script.GamePlay.Stage {
     public partial class StageManager {
         private void ReleaseCharacter() {
             if (_players != null) {
-                var characterPool = ListPool<ICharacter>.Get();
-                characterPool.AddRange(_players);
-                foreach (var character in characterPool) {
-                    RemoveCharacter(character);
+                foreach (var character in _players) {
+                    ReleaseCharacter(character);
                 }
-                
-                characterPool.Clear();
-                ListPool.Return(characterPool);
+
                 _players.Clear();
+                ListPool.Return(_players);
+                _players = null;
             }
-            
+
             if (_enemies != null) {
-                var characterPool = ListPool<ICharacter>.Get();
-                characterPool.AddRange(_enemies);
                 foreach (var character in _enemies) {
-                    character.Release();
-                    StagePooling?.Push(character.GameObject);
+                    ReleaseCharacter(character);
                 }
-                
-                characterPool.Clear();
-                ListPool.Return(characterPool);
+
                 _enemies.Clear();
+                ListPool.Return(_enemies);
+                _enemies = null;
             }
-            
+
             _removeEnemies?.Clear();
         }
-        
+
+        private bool ReleaseCharacter(ICharacter characterScript) {
+            if (characterScript == null) {
+                Debug.LogError($"캐릭터 스크립트를 찾을 수 없습니다.");
+                return false;
+            }
+
+            if (characterScript.IsAlive == false) {
+                return false;
+            }
+
+            //카메라 셋팅
+            _targetGroup.RemoveMember(characterScript.Transform);
+            characterScript.Release();
+            StagePooling?.Push(characterScript.GameObject);
+            return true;
+        }
+
         public bool AddCharacter(GameObject obj) {
             // Child 검색 안하는 이유는 규칙상 Character Script가 최상위 GameObject여야 합니다.
             var characterScript = obj.GetComponent<ICharacter>();
             return AddCharacter(characterScript);
         }
+
         public bool AddCharacter(ICharacter characterScript) {
             if (characterScript == null) {
                 Debug.LogError($"캐릭터 스크립트를 찾을 수 없습니다.");
@@ -48,8 +61,10 @@ namespace Script.GamePlay.Stage {
 
             if (_vCamera.LookAt == null) {
                 _vCamera.LookAt = _targetGroup.transform;
-                _vCamera.Follow = _targetGroup.transform;;
+                _vCamera.Follow = _targetGroup.transform;
+                ;
             }
+
             //카메라 셋팅
             _targetGroup.AddMember(characterScript.Transform, 1, 1);
 
@@ -58,54 +73,42 @@ namespace Script.GamePlay.Stage {
             return true;
         }
 
-        private bool RemoveCharacter(GameObject obj) {
-            var characterScript = obj.GetComponent<ICharacter>();
-            return RemoveCharacter(characterScript);
-        }
-
-        private bool RemoveCharacter(ICharacter characterScript) {
-            if (characterScript == null) {
-                Debug.LogError($"캐릭터 스크립트를 찾을 수 없습니다.");
-                return false;
-            }
-            
-            //카메라 셋팅
-            _targetGroup.RemoveMember(characterScript.Transform);
-            
-            _players.Remove(characterScript);
-            characterScript.Release();
-            StagePooling.Push(characterScript.GameObject);
-            return true;
-        }
 
         public bool AddEnemy(GameObject obj) {
             var characterScript = obj.GetComponent<ICharacter>();
             return AddEnemy(characterScript);
         }
-        
+
         public bool AddEnemy(ICharacter characterScript) {
             if (characterScript == null) {
                 Debug.LogError($"캐릭터 스크립트를 찾을 수 없습니다.");
                 return false;
             }
+
             characterScript.Initialize(1, false);
             characterScript.GameObject.SetActiveSafe(true);
             _enemies.Add(characterScript);
             return true;
         }
-        
+
         private bool RemoveEnemy(GameObject obj) {
             var characterScript = obj.GetComponent<ICharacter>();
             return RemoveEnemy(characterScript);
         }
-        
+
         private bool RemoveEnemy(ICharacter characterScript) {
             if (characterScript == null) {
                 Debug.LogError($"캐릭터 스크립트를 찾을 수 없습니다.");
                 return false;
             }
-            
+
             _enemies.Remove(characterScript);
+
+            // RemoveCharacter와 동일한 이유(씬 언로드 시 Unity가 먼저 파괴) - 조용히 건너뛴다.
+            if (characterScript.IsAlive == false) {
+                return false;
+            }
+
             characterScript.Release();
             StagePooling.Push(characterScript.GameObject);
             return true;
@@ -114,7 +117,7 @@ namespace Script.GamePlay.Stage {
         public void AddItemScore(float score) {
             ItemScore.OnNext(ItemScore.Value + score);
         }
-        
+
         public void Pause() {
             AddState(StageState.SystemControl);
             _gameTimer.Pause();
@@ -126,7 +129,7 @@ namespace Script.GamePlay.Stage {
             _gameTimer.Resume();
             SetPause(false);
         }
-        
+
         private void SetPause(bool pause) {
             var entityManager = _entityWorld.EntityManager;
             var query         = entityManager.CreateEntityQuery(typeof(EGameTimer));
@@ -135,12 +138,12 @@ namespace Script.GamePlay.Stage {
                 query.Dispose();
                 return;
             }
-            
+
             var entity   = query.GetSingletonEntity();
             var gameTime = entityManager.GetComponentData<EGameTimer>(entity);
             gameTime.IsPaused = pause;
             entityManager.SetComponentData(entity, gameTime);
-            
+
             query.Dispose();
         }
     }

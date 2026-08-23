@@ -23,30 +23,16 @@ namespace Script.Utility.Runtime {
         public static T Get<T>() where T : class, new() {
             var type = typeof(T);
 
-            if (Pools.TryGetValue(type, out var set) && set.Count > 0) {
-                var obj = Take(set);
+            if (Pools.TryGetValue(type, out var set)) {
+                var obj = Take<T>(set);
                 if (obj is IClassPool p) p.OnRent();
                 return (T)obj;
             }
+            
+            set         = new HashSet<object>(ReferenceComparer.Instance);
+            Pools[type] = set;
 
             var created = new T();
-            if (created is IClassPool cp) cp.OnRent();
-            return created;
-        }
-
-        public static T Get<T>(Func<T> factory) where T : class {
-            if (factory == null) throw new ArgumentNullException(nameof(factory));
-
-            var type = typeof(T);
-
-            if (Pools.TryGetValue(type, out var set) && set.Count > 0) {
-                var obj = Take(set);
-                if (obj is IClassPool p) p.OnRent();
-                return (T)obj;
-            }
-
-            var created = factory();
-            if (created == null) throw new InvalidOperationException("factory returned null.");
             if (created is IClassPool cp) cp.OnRent();
             return created;
         }
@@ -54,7 +40,7 @@ namespace Script.Utility.Runtime {
         public static void Release<T>(T obj) where T : class {
             if (obj == null) return;
 
-            var type = typeof(T);
+            var type = obj.GetType();
 
             if (!Pools.TryGetValue(type, out var set)) {
                 set         = new HashSet<object>(ReferenceComparer.Instance);
@@ -69,7 +55,13 @@ namespace Script.Utility.Runtime {
             if (obj is IClassPool p) p.OnReturn();
         }
         
-        private static object Take(HashSet<object> set) {
+        private static object Take<T>(HashSet<object> set) where T : class, new() {
+            if (set.Count <= 0) {
+                var created = new T();
+                if (created is IClassPool cp) cp.OnRent();
+                return created;
+            }
+            
             using var e = set.GetEnumerator();
             e.MoveNext();
             var obj = e.Current;
