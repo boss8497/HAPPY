@@ -6,6 +6,7 @@ namespace Script.GUI.Screen {
     public partial class ScreenManager {
         private readonly string _safeAreaScreenKey = "SafeArea";
 
+        // ※ ScreenManagerDebugWindow.cs가 리플렉션으로 참조함 (Editor/README.md 체크리스트 참고)
         private IScreen _safeAreaScreen;
         private bool    _safeAreaScreenShown;
 

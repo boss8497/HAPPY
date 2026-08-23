@@ -16,6 +16,8 @@ namespace Script.Utility.Runtime {
             int IEqualityComparer<object>.           GetHashCode(object obj) => RuntimeHelpers.GetHashCode(obj);
         }
 
+        // ※ ClassListPoolDebugWindow.cs(Tools/Debug/Class & List Pool)가 리플렉션으로 직접 참조함
+        // (Editor/README.md 체크리스트 참고)
         private static readonly Dictionary<Type, HashSet<object>> Pools = new(64);
 
         public static T Get<T>() where T : class, new() {

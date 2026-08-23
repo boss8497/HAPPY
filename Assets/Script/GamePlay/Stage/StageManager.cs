@@ -247,7 +247,7 @@ namespace Script.GamePlay.Stage {
             // CloseAllAsync()가 같은 Screen을 건드리기 전에 확실히 멈춘 뒤 진행한다.
             StopCountDown();
 
-            await _screenManager.CloseAllAsync(true);
+            await _screenManager.CloseAllAsync();
             StopLoop();
 
             ResetCamera();

@@ -24,6 +24,10 @@ namespace Script.Addressable {
 
         private CancellationTokenSource cts;
 
+        // ※ _cache/_cacheCheckIntervalSeconds/_cacheReleaseGraceSeconds/_cacheMonitorCts/_appLabels와
+        // CacheEntry의 Handle/RefCount/ReleasePendingSince(LoadingTask 제외)는
+        // AddressableServiceDebugWindow.cs(Tools/Debug/Addressable Service)가 리플렉션으로 직접 참조한다.
+        // 이름을 바꾸거나 구조를 바꾸면 그 파일의 FieldInfo 캐시도 같이 확인할 것 (Editor/README.md 체크리스트 참고).
         private readonly Dictionary<string, CacheEntry> _cache = new();
         private          CancellationTokenSource        _cacheMonitorCts;
 

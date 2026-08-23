@@ -32,11 +32,10 @@ namespace Script.GUI.Screen {
         }
         
         public async UniTask CloseScreen(IScreen screen, bool force = false) {
-            _screens.Remove(screen);
-            
             if (force == false && screen.DontClose) {
                 return;
             }
+            _screens.Remove(screen);
 
             await screen.CloseAsync();
             await screen.CloseAnimationAsync();

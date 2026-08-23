@@ -11,6 +11,7 @@ namespace Script.GUI.Screen {
     public partial class ScreenManager {
         private readonly string _loadingScreenKey = "Loading";
 
+        // ※ ScreenManagerDebugWindow.cs가 리플렉션으로 참조함 (Editor/README.md 체크리스트 참고)
         private IScreen _loadingScreen;
         private bool    _loadingScreenShown;
 

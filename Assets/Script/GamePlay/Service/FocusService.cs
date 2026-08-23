@@ -40,6 +40,8 @@ namespace Script.GamePlay.Service {
         }
 
         public void UnRegisterFocusData(TutorialFocusData data) {
+            // 강제 종료 시 이미 Dispose 되어서 에러나는 경우가 있음
+            // if (_focusDic == null) return;
             _focusDic.Remove(data.id);
         }
 
@@ -189,8 +191,6 @@ namespace Script.GamePlay.Service {
 
         public void Dispose() {
             StopFocusAsync(true).Forget();
-            _focusDic.Clear();
-            _focusDic = null;
         }
     }
 }

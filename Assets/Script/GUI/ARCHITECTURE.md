@@ -57,7 +57,7 @@ public bool DontClose => option.HasFlag(ScreenOption.DontClose);
 
 - LinkedList 앞쪽에 배치되어 일반 Close 영향을 받지 않음
 - `force: true`로만 닫을 수 있음
-- `CloseAllAsync(force: true)` — 씬 이동 시 전체 강제 닫기에 사용
+- `CloseAllAsync()` — 항상 강제(force=true)로 닫는다, 씬 이동 시 전체 닫기에 사용
 
 ---
 
@@ -160,7 +160,7 @@ Close     → SetActive(false) — _loadedScreens에서 제거 안함 (메모리
 한 번 열린 화면을 메모리에 유지하는 방식으로 재오픈 속도를 보장한다.
 
 **씬 이동 시 정리 순서** (`SceneLoader.cs`에서 호출):
-1. `CloseAllAsync(force: true)` — 모든 Screen 닫기
+1. `CloseAllAsync()` — 모든 Screen 닫기 (항상 강제)
 2. `ResourceClear()` — `_loadedScreens` 전체 Destroy + UIPooling Clear
 
 ---
@@ -173,7 +173,7 @@ UniTask<IScreen> OpenAsync(string key, CancellationToken ct = default);
 UniTask<IScreen> OpenAsync(IScreenOption screenOption, string key, CancellationToken ct = default);
 
 // Close
-UniTask CloseAllAsync(bool force = false);               // 전체 닫기
+UniTask CloseAllAsync();                                 // 전체 닫기 (항상 강제)
 UniTask BackAsync(bool force = false, CancellationToken ct = default);  // tail(최상위) 닫기
 UniTask CloseAsync(ReadOnlyMemory<char> key, bool force = false, CancellationToken ct = default);
 UniTask CloseAsync(IScreen screen, bool force = false, CancellationToken ct = default);

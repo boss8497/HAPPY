@@ -13,7 +13,7 @@ Addressable 기반 비동기 씬 전환을 담당한다.
 ## LoadScene 동작 순서
 
 ```
-1. ScreenManager.CloseAllAsync(force: true)   — 열린 화면 전체 강제 닫기
+1. ScreenManager.CloseAllAsync()               — 열린 화면 전체 강제 닫기 (항상 force)
 2. ScreenManager.ResourceClear()              — UI 리소스 메모리 해제
 3. 현재 활성 씬 참조 저장
 4. Addressables.LoadSceneAsync(scenePath, Additive)  — 새 씬 Additive 로드

@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace Script.Utility.Runtime {
     public static class ListPool {
+        // ※ ClassListPoolDebugWindow.cs(Tools/Debug/Class & List Pool)가 리플렉션으로 직접 참조함
+        // (Editor/README.md 체크리스트 참고)
         private static readonly Dictionary<Type, Stack<ICollection>> Pools = new Dictionary<Type, Stack<ICollection>>(64);
 
         public static List<T> Get<T>() {

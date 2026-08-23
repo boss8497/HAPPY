@@ -28,6 +28,10 @@ namespace Script.GUI.Screen {
         [SerializeField]
         private RectTransform layerParent;
 
+        // ※ 이 파일의 _screens/_loadedScreens/_firstScreen/_openWaitQueue/_closeWaitQueue와
+        // ScreenManager.Loading.cs/SafeArea.cs/StageTransition.cs의 오버레이 필드는
+        // ScreenManagerDebugWindow.cs(Tools/Debug/Screen Manager)가 리플렉션으로 직접 참조한다.
+        // 이름을 바꾸거나 구조를 바꾸면 그 파일의 FieldInfo 캐시도 같이 확인할 것 (Editor/README.md 체크리스트 참고).
         private ScreenLayer[]                   _layers = new ScreenLayer[(int)ScreenLayerType.Max];
         private Dictionary<string, ScreenAsset> _screens;
 
@@ -276,10 +280,10 @@ namespace Script.GUI.Screen {
             screen.Next     = null;
         }
 
-        public async UniTask CloseAllAsync(bool force = false) {
+        public async UniTask CloseAllAsync() {
             var lastScreen = LastScreen();
             while (lastScreen != null) {
-                await CloseAsync(_firstScreen, force);
+                await CloseAsync(_firstScreen, true);
                 lastScreen = LastScreen();
             }
         }
@@ -344,6 +348,10 @@ namespace Script.GUI.Screen {
                 CollectCloseTargets(current, targets);
 
                 foreach (var target in targets) {
+                    if (force == false && target.DontClose) {
+                        continue;
+                    }
+                    
                     // 리스트에서 먼저 제거
                     DetachScreen(target);
 
@@ -351,13 +359,13 @@ namespace Script.GUI.Screen {
 
                     // DontClose는 명시적으로 닫을 때만 force
                     await layer.CloseScreen(target, force);
+                    
+                    target.AddState(ScreenState.Closed);
+                    target.RemoveState(ScreenState.Closing);
                 }
 
                 targets.Clear();
                 ListPool.Return(targets);
-                
-                current.AddState(ScreenState.Closed);
-                current.RemoveState(ScreenState.Closing);
             }
             finally {
                 RemoveState(ScreenManagerState.ClosingScreen);

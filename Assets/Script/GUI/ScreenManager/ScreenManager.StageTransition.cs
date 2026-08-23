@@ -14,7 +14,9 @@ namespace Script.GUI.Screen {
 
         private RawImage    _stageTransitionImage;
         private CanvasGroup _stageTransitionCanvasGroup;
-        private Texture2D   _stageTransitionSnapshot;
+
+        // ※ ScreenManagerDebugWindow.cs가 리플렉션으로 참조함 (Editor/README.md 체크리스트 참고)
+        private Texture2D _stageTransitionSnapshot;
 
         private CancellationTokenSource _stageTransitionFadeCts;
 
