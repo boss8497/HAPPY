@@ -10,10 +10,15 @@ namespace Script.GamePlay.Pool {
         private readonly IStagePooling _manager;
         private readonly string        _key;
 
+        // ※ GameObjectPoolDebugWindow.cs(Tools/Debug/GameObject Pool)가 아래 필드들을 리플렉션으로 직접 참조한다.
+        // 필드명은 문자열로 하드코딩하지 않고 이 FieldName 상수(nameof 기반)로만 참조하게 했다 —
+        // 리네임되면 여기가 즉시 컴파일 에러로 알려준다.
+        public const string PooledFieldName    = nameof(_pooled);
+        public const string InstanceFieldName  = nameof(_instance);
+        public const string IsDisposedFieldName = nameof(_isDisposed);
+
         // 대여 가능한 인스턴스 보관 + Push 시 중복 반환 확인을 이 HashSet 하나로 겸한다
         // (Contains == 대여 가능, Add 실패 == 이미 반환된 인스턴스).
-        // ※ _pooled/_instance/_isDisposed는 GameObjectPoolDebugWindow.cs(Tools/Debug/GameObject Pool)가
-        // 리플렉션으로 직접 참조한다. 이름을 바꾸면 그 파일의 FieldInfo 캐시도 같이 확인할 것 (Editor/README.md 체크리스트 참고).
         private readonly HashSet<GameObject> _pooled = new();
 
         private GameObject _instance;

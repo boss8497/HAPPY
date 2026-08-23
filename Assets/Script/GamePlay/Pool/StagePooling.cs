@@ -8,7 +8,9 @@ using Object = UnityEngine.Object;
 
 namespace Script.GamePlay.Pool {
     public class StagePooling : IInitializable, IDisposable, IStagePooling {
-        // ※ GameObjectPoolDebugWindow.cs가 리플렉션으로 직접 참조함 (Editor/README.md 체크리스트 참고)
+        // ※ GameObjectPoolDebugWindow.cs가 리플렉션으로 직접 참조함 — 필드명은 아래 상수(nameof)로만 참조할 것
+        public const string ObjectPoolsFieldName = nameof(_objectPools);
+
         private readonly Dictionary<string, GameObjectPool> _objectPools = new(StringComparer.Ordinal);
 
         public Transform       Root     { get; private set; }

@@ -56,29 +56,42 @@ GameInfoManager.Instance.Release() → Load()
 
 ### ⚠️ 프로덕션 코드 수정 시 체크리스트 (필독)
 
-리플렉션 기반이라 아래 표에 있는 필드/구조를 바꿔도 **컴파일 에러가 안 나고, IDE "사용처 찾기"에도 안 걸린다** — 조용히
-깨진다. 아래 파일들을 수정할 때는 반드시 대응하는 Debug 창을 Play 모드에서 열어 정상 동작하는지 확인할 것
-(각 필드 선언부에도 `※ ...DebugWindow.cs가 리플렉션으로 참조함` 주석을 남겨뒀다).
+리플렉션 기반이라 대상 필드/구조를 바꾸면 **컴파일 에러가 안 나고, IDE "사용처 찾기"에도 안 걸린다** — 조용히 깨진다.
+2026-08-24에 `ScreenManager._firstScreen`을 `_rootScreen`으로 리네임했을 때 실제로 이 방식(문자열 리터럴 `"_firstScreen"`)이
+조용히 깨지는 걸 겪은 뒤, **필드명 하드코딩을 전부 없애고 `nameof` 기반 `FieldName` 상수로 바꿨다**:
 
-| 프로덕션 파일 | 리플렉션 대상 | 확인할 창 |
+```csharp
+// 프로덕션 클래스(ScreenManager, AddressableService, GameObjectPool, UIPooling/AudioPooling/StagePooling,
+// ClassPool, ListPool) 쪽에 이렇게 노출해두고
+public const string RootScreenFieldName = nameof(_rootScreen);
+
+// Debug Window는 문자열 리터럴이 아니라 이 상수만 참조한다
+typeof(ScreenManager).GetField(ScreenManager.RootScreenFieldName, ...)
+```
+필드가 리네임되면 `nameof(_rootScreen)` 줄 자체가 컴파일 에러가 나므로, **필드명 변경은 이제 조용히 안 깨지고 빌드가 막힌다.**
+`private class`(예: `AddressableService.CacheEntry`)의 멤버도 마찬가지 — 그 중첩 타입은 밖에서 이름으로 못 건드리지만,
+`nameof(CacheEntry.Handle)`은 **enclosing type인 `AddressableService` 자신의 코드 안에서는** 접근 가능해서 문제없이
+컴파일되고, 그 결과 문자열만 `public const`로 바깥에 노출한다(타입 자체의 캡슐화는 그대로 유지).
+
+| 프로덕션 파일 | 리플렉션 대상 (FieldName 상수) | 확인할 창 |
 |---|---|---|
-| `GUI/ScreenManager/ScreenManager.cs` | `_screens`, `_loadedScreens`, `_firstScreen`, `_openWaitQueue`, `_closeWaitQueue` | Screen Manager |
-| `GUI/ScreenManager/ScreenManager.Loading.cs` | `_loadingScreen`, `_loadingScreenShown` | Screen Manager |
-| `GUI/ScreenManager/ScreenManager.SafeArea.cs` | `_safeAreaScreen`, `_safeAreaScreenShown` | Screen Manager |
-| `GUI/ScreenManager/ScreenManager.StageTransition.cs` | `_stageTransitionSnapshot` | Screen Manager |
-| `GUI/ScreenManager/ScreenManager.State.cs` | `Initialized`/`OpeningScreen`/`ClosingScreen`(public, 이름 유지 시 안전) | Screen Manager |
-| `GUI/Screen/Interface/IScreen.cs`, `Screen/Base/Screen.cs` | `IScreen`의 `Previous`/`Next`/`Key`/`LayerType`/`State`/`DontClose`/`GameObject`(public) — 특히 **DontClose 화면이 `_firstScreen` 체인에 남아있다는 전제** | Screen Manager |
-| `Addressable/AddressableService.cs` | `_cache`, `_cacheCheckIntervalSeconds`, `_cacheReleaseGraceSeconds`, `_cacheMonitorCts`, `_appLabels`, 중첩 `CacheEntry`의 `Handle`/`RefCount`/`ReleasePendingSince`(`LoadingTask`는 창이 안 씀) | Addressable Service |
-| `GamePlay/Pool/GameObjectPool.cs` | `_pooled`, `_instance`, `_isDisposed` (`Key`/`BaseScale`은 public이라 이름 유지 시 안전) | GameObject Pool |
-| `GamePlay/Pool/UIPooling.cs` / `AudioPooling.cs` / `StagePooling.cs` | `_objectPools` (세 클래스 모두 동일 필드명) | GameObject Pool |
-| `Utility/Runtime/ClassPool.cs` | `Pools`(static) | Class & List Pool |
-| `Utility/Public/ListPool.cs` | `Pools`(static) — `Get<T>`/`GetCollection<T>` 두 경로가 key 의미를 다르게 씀 | Class & List Pool |
+| `GUI/ScreenManager/ScreenManager.cs` | `ScreensFieldName`, `LoadedScreensFieldName`, `RootScreenFieldName`, `OpenWaitQueueFieldName`, `CloseWaitQueueFieldName` | Screen Manager |
+| `GUI/ScreenManager/ScreenManager.Loading.cs` | `LoadingScreenFieldName`, `LoadingScreenShownFieldName` | Screen Manager |
+| `GUI/ScreenManager/ScreenManager.SafeArea.cs` | `SafeAreaScreenFieldName`, `SafeAreaScreenShownFieldName` | Screen Manager |
+| `GUI/ScreenManager/ScreenManager.StageTransition.cs` | `StageTransitionSnapshotFieldName` | Screen Manager |
+| `GUI/ScreenManager/ScreenManager.State.cs` | `Initialized`/`OpeningScreen`/`ClosingScreen`(public 프로퍼티라 상수 없이 직접 참조) | Screen Manager |
+| `GUI/Screen/Interface/IScreen.cs`, `Screen/Base/Screen.cs` | `IScreen`의 `Previous`/`Next`/`Key`/`LayerType`/`State`/`DontClose`/`GameObject`(public) — 특히 **DontClose 화면이 `_rootScreen` 체인에 남아있다는 전제** | Screen Manager |
+| `Addressable/AddressableService.cs` | `CacheFieldName`, `CacheCheckIntervalSecondsFieldName`, `CacheReleaseGraceSecondsFieldName`, `CacheMonitorCtsFieldName`, `AppLabelsFieldName`, `CacheEntryTypeName`, `CacheEntryHandleFieldName`, `CacheEntryRefCountFieldName`, `CacheEntryReleasePendingSinceFieldName`(`LoadingTask`는 창이 안 씀) | Addressable Service |
+| `GamePlay/Pool/GameObjectPool.cs` | `PooledFieldName`, `InstanceFieldName`, `IsDisposedFieldName` (`Key`/`BaseScale`은 public이라 상수 없이 직접 참조) | GameObject Pool |
+| `GamePlay/Pool/UIPooling.cs` / `AudioPooling.cs` / `StagePooling.cs` | `ObjectPoolsFieldName` (세 클래스 각자 선언, 값은 전부 `"_objectPools"`) | GameObject Pool |
+| `Utility/Runtime/ClassPool.cs` | `PoolsFieldName`(static) | Class & List Pool |
+| `Utility/Public/ListPool.cs` | `PoolsFieldName`(static) — `Get<T>`/`GetCollection<T>` 두 경로가 key 의미를 다르게 씀 | Class & List Pool |
 
-**필드명이 바뀐 경우**: 해당 Debug 창 상단의 `FieldInfo`/`Type.GetNestedType` 캐시 한 줄만 고치면 된다(각 창이 리플렉션 실패를
-try/catch로 잡아 에러 메시지로 알려주므로 무엇을 고쳐야 하는지는 창을 열어보면 바로 안다). **더 위험한 건 이름은 안 바뀌었는데
-의미/구조가 바뀌는 경우**(예: `_firstScreen` 체인이 더 이상 "열려있는 화면 전체"를 뜻하지 않게 된다거나, `GameObjectPool`이
-대여 인스턴스를 추적하기 시작하는 등) — 이런 변경은 리플렉션이 실패하지 않으므로 창이 아무 경고 없이 잘못된 정보를 보여줄 수
-있다. 그래서 이름 변경 여부와 무관하게, 위 표의 파일을 건드릴 때마다 관련 창을 한 번 열어서 눈으로 확인하는 습관이 필요하다.
+**필드명이 바뀐 경우**: 위 표의 `nameof(...)` 줄이 자동으로 컴파일 에러를 내므로, 그 줄의 `nameof` 인자를 새 이름으로
+고치기만 하면 끝난다(Debug Window 쪽은 상수만 참조하므로 손댈 필요 없음). **더 위험한 건 이름은 안 바뀌었는데 의미/구조가
+바뀌는 경우**(예: `_rootScreen` 체인이 더 이상 "열려있는 화면 전체"를 뜻하지 않게 된다거나, `GameObjectPool`이 대여
+인스턴스를 추적하기 시작하는 등) — `nameof`는 이런 변화를 못 잡으므로 창이 아무 경고 없이 잘못된 정보를 보여줄 수 있다.
+그래서 위 표의 파일을 건드릴 때마다(특히 로직/구조 변경 시) 관련 창을 한 번 열어서 눈으로 확인하는 습관은 여전히 필요하다.
 
 또 하나 공유하는 패턴: `[AssetPath]` 기반 필드(`CharacterInfo.skeletonDataAsset` 등)는 Addressable key 자체가 GUID
 원본 문자열이라 사람이 못 읽는다. Addressable Service/GameObject Pool 창 둘 다 "로드가 끝났으면 실제 로드된
@@ -91,7 +104,7 @@ Play 모드에서 `ScreenManager`의 런타임 상태를 관찰한다.
 
 - **ScreenManager 상태**: `Initialized`/`OpeningScreen`/`ClosingScreen` 플래그, Open/Close 대기열 내용
 - **특수 오버레이**: Loading/SafeArea/StageTransition — 이 셋은 `OpenAsync`를 거치지 않고 ScreenManager가 직접 관리해서 아래 스택에는 나타나지 않는다는 걸 창에서 명시. StageTransition은 캡처된 스냅샷을 실시간 썸네일로 미리보기
-- **열려있는 Screen 스택**: `_firstScreen`부터 `Next`를 따라간 LinkedList 순회 결과(DontClose는 `[고정]` 표시), 각 Screen의 `ScreenState` 플래그를 색상 칩으로 표시
+- **열려있는 Screen 스택**: `_rootScreen`부터 `Next`를 따라간 LinkedList 순회 결과(DontClose는 `[고정]` 표시), 각 Screen의 `ScreenState` 플래그를 색상 칩으로 표시
 - **Layer별 보기**: 위 스택을 `ScreenLayerType` 순서로 그룹핑, Loading/SafeArea는 오버레이 항목도 함께 표기
 - **로드된 Screen**: `_loadedScreens`(Addressable Instantiate 완료 후 캐시)와 등록 레지스트리를 대조해 Addressable 주소를 표시
 - **등록된 전체 Screen 레지스트리**: `ScreenData` 애셋을 직접 읽어오므로 Play 모드가 아니어도 확인 가능

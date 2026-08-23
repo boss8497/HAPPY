@@ -28,10 +28,17 @@ namespace Script.GUI.Screen {
         [SerializeField]
         private RectTransform layerParent;
 
-        // ※ 이 파일의 _screens/_loadedScreens/_firstScreen/_openWaitQueue/_closeWaitQueue와
-        // ScreenManager.Loading.cs/SafeArea.cs/StageTransition.cs의 오버레이 필드는
+        // ※ 아래 필드들(+ Loading.cs/SafeArea.cs/StageTransition.cs의 오버레이 필드)은
         // ScreenManagerDebugWindow.cs(Tools/Debug/Screen Manager)가 리플렉션으로 직접 참조한다.
-        // 이름을 바꾸거나 구조를 바꾸면 그 파일의 FieldInfo 캐시도 같이 확인할 것 (Editor/README.md 체크리스트 참고).
+        // 필드명은 직접 문자열로 하드코딩하지 않고 아래 FieldName 상수(nameof 기반)를 통해서만 참조하게 했다 —
+        // 필드명이 바뀌면 nameof가 즉시 컴파일 에러를 내서 Debug Window가 조용히 깨지는 걸 막아준다.
+        // 단, 타입/구조가 바뀌는 경우(이름은 그대로)까지는 못 잡으니 Editor/README.md 체크리스트도 같이 참고할 것.
+        public const string ScreensFieldName        = nameof(_screens);
+        public const string LoadedScreensFieldName  = nameof(_loadedScreens);
+        public const string RootScreenFieldName     = nameof(_rootScreen);
+        public const string OpenWaitQueueFieldName  = nameof(_openWaitQueue);
+        public const string CloseWaitQueueFieldName = nameof(_closeWaitQueue);
+
         private ScreenLayer[]                   _layers = new ScreenLayer[(int)ScreenLayerType.Max];
         private Dictionary<string, ScreenAsset> _screens;
 
@@ -43,7 +50,7 @@ namespace Script.GUI.Screen {
         private Queue<string> _openWaitQueue  = new Queue<string>();
         private Queue<string> _closeWaitQueue = new Queue<string>();
 
-        private IScreen _firstScreen;
+        private IScreen _rootScreen;
 
 
         public void Initialize() {
@@ -214,8 +221,8 @@ namespace Script.GUI.Screen {
             screen.Previous = null;
             screen.Next     = null;
 
-            if (_firstScreen == null) {
-                _firstScreen = screen;
+            if (_rootScreen == null) {
+                _rootScreen = screen;
                 return;
             }
 
@@ -229,15 +236,15 @@ namespace Script.GUI.Screen {
 
         private void InsertDontCloseScreen(IScreen screen) {
             // 첫 화면이 일반 Screen이면 맨 앞에 삽입
-            if (_firstScreen.DontClose == false) {
-                screen.Next           = _firstScreen;
-                _firstScreen.Previous = screen;
-                _firstScreen          = screen;
+            if (_rootScreen.DontClose == false) {
+                screen.Next           = _rootScreen;
+                _rootScreen.Previous = screen;
+                _rootScreen          = screen;
                 return;
             }
 
             // 마지막 DontClose 뒤에 삽입
-            var current = _firstScreen;
+            var current = _rootScreen;
             while (current.Next != null && current.Next.DontClose) {
                 current = current.Next;
             }
@@ -252,7 +259,7 @@ namespace Script.GUI.Screen {
         }
 
         private void InsertNormalScreen(IScreen screen) {
-            var last = LastScreen();
+            var last = GetLastScreen();
             last.Next       = screen;
             screen.Previous = last;
         }
@@ -268,8 +275,8 @@ namespace Script.GUI.Screen {
             if (previous != null) {
                 previous.Next = next;
             }
-            else if (ReferenceEquals(_firstScreen, screen)) {
-                _firstScreen = next;
+            else if (ReferenceEquals(_rootScreen, screen)) {
+                _rootScreen = next;
             }
 
             if (next != null) {
@@ -281,11 +288,15 @@ namespace Script.GUI.Screen {
         }
 
         public async UniTask CloseAllAsync() {
-            var lastScreen = LastScreen();
+            var lastScreen = GetLastScreen();
             while (lastScreen != null) {
-                await CloseAsync(_firstScreen, true);
-                lastScreen = LastScreen();
+                await CloseAsync(_rootScreen, true);
+                lastScreen = GetLastScreen();
             }
+        }
+        public async UniTask CloseAllWithOutDontCloseAsync() {
+            var firstScreen = GetFirstScreenWithOutDontClose();
+            await CloseAsync(firstScreen, true);
         }
 
         /// <summary>
@@ -342,12 +353,13 @@ namespace Script.GUI.Screen {
                 var trigger = await current.CloseTrigger();
                 if (trigger == false) return;
 
-                var targets = ListPool.Get<IScreen>();
+                var targetQueue = ListPool.GetCollection<Queue<IScreen>>();
                 
                 // 해당 상황이 안나오게 Close를 직접 호출하지 않는게 중요
-                CollectCloseTargets(current, targets);
+                CollectCloseChild(current, targetQueue);
 
-                foreach (var target in targets) {
+                while (targetQueue.Count > 0) {
+                    var target =  targetQueue.Dequeue();
                     if (force == false && target.DontClose) {
                         continue;
                     }
@@ -364,31 +376,35 @@ namespace Script.GUI.Screen {
                     target.RemoveState(ScreenState.Closing);
                 }
 
-                targets.Clear();
-                ListPool.Return(targets);
+                targetQueue.Clear();
+                ListPool.ReturnCollection(targetQueue);
             }
             finally {
                 RemoveState(ScreenManagerState.ClosingScreen);
             }
         }
 
-        private void CollectCloseTargets(IScreen screen, List<IScreen> targets) {
+        private void CollectCloseChild(IScreen screen, Queue<IScreen> targets) {
             if (screen == null) {
                 return;
             }
 
             // DontClose는 자기 자신만 닫음
+            // root(dt) -> screen(dt) -> other -> other -> ...
+            // root(dt) -> other -> other -> ...
+            // DontClose는 자기 자신만
             if (screen.DontClose) {
-                targets.Add(screen);
+                targets.Enqueue(screen);
                 return;
             }
 
             // 일반 Screen은 자신 ~ tail 까지 닫되,
             // 실제 Close 순서는 tail -> ... -> self
-            var current = LastScreen(screen);
+            var current = GetLastScreen(screen);
             while (current != null) {
-                targets.Add(current);
-
+                // 순서 주의!
+                // 바뀌면 자기 자신 포함 안됨
+                targets.Enqueue(current);
                 if (ReferenceEquals(current, screen)) {
                     break;
                 }
@@ -398,7 +414,7 @@ namespace Script.GUI.Screen {
         }
         
         private IScreen BackScreen() {
-            var lastScreen = _firstScreen;
+            var lastScreen = _rootScreen;
             while (lastScreen?.Next != null) {
                 lastScreen = lastScreen?.Next;
             }
@@ -411,8 +427,8 @@ namespace Script.GUI.Screen {
             return backScreen;
         }
 
-        private IScreen LastScreen() {
-            var lastScreen = _firstScreen;
+        private IScreen GetLastScreen() {
+            var lastScreen = _rootScreen;
             while (lastScreen?.Next != null) {
                 lastScreen = lastScreen?.Next;
             }
@@ -420,7 +436,7 @@ namespace Script.GUI.Screen {
             return lastScreen;
         }
 
-        private IScreen LastScreen(IScreen screen) {
+        private IScreen GetLastScreen(IScreen screen) {
             var lastScreen = screen;
             while (lastScreen.Next != null) {
                 lastScreen = lastScreen.Next;
@@ -428,10 +444,18 @@ namespace Script.GUI.Screen {
 
             return lastScreen;
         }
+        
+        private IScreen GetFirstScreenWithOutDontClose() {
+            var lastScreen = _rootScreen;
+            while (lastScreen.Next != null && lastScreen.DontClose) {
+                lastScreen = lastScreen.Next;
+            }
+            return lastScreen;
+        }
 
         [CanBeNull]
         private IScreen FindScreen(ReadOnlySpan<char> key) {
-            var currentScreen = _firstScreen;
+            var currentScreen = _rootScreen;
 
             while (currentScreen != null) {
                 if (currentScreen.Key.AsSpan().SequenceEqual(key)) {
@@ -445,7 +469,7 @@ namespace Script.GUI.Screen {
         }
 
         private bool ExistsScreen(string key, out IScreen screen) {
-            screen = _firstScreen;
+            screen = _rootScreen;
             while (screen != null) {
                 if (screen.Key == key) {
                     return true;

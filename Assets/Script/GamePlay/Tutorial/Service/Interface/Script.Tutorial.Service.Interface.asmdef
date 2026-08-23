@@ -1,0 +1,19 @@
+{
+    "name": "Script.Tutorial.Service.Interface",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ed9ac4f9a88b1fe4196a34836bdd0fc9",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:77221876cc6b8244180b96e320b1bcd4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

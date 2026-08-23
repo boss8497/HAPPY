@@ -6,7 +6,10 @@ namespace Script.GUI.Screen {
     public partial class ScreenManager {
         private readonly string _safeAreaScreenKey = "SafeArea";
 
-        // ※ ScreenManagerDebugWindow.cs가 리플렉션으로 참조함 (Editor/README.md 체크리스트 참고)
+        // ※ ScreenManagerDebugWindow.cs가 리플렉션으로 참조함 — 필드명은 아래 FieldName 상수(nameof)로만 참조할 것
+        public const string SafeAreaScreenFieldName      = nameof(_safeAreaScreen);
+        public const string SafeAreaScreenShownFieldName = nameof(_safeAreaScreenShown);
+
         private IScreen _safeAreaScreen;
         private bool    _safeAreaScreenShown;
 

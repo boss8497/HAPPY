@@ -15,18 +15,19 @@ namespace Script.Editor {
     /// 프로덕션 코드에 디버그용 public 접근자를 추가하는 대신 읽기 전용 리플렉션으로 들여다본다.
     /// 세 매니저 모두 MonoBehaviour가 아닌 VContainer Singleton이라 씬 탐색으로 못 찾고,
     /// UIPooling/AudioPooling은 AppLifetimeScope에서, StagePooling은 StageLifetimeScope(게임 씬에만 존재)에서
-    /// Container.Resolve로 얻는다.
+    /// Container.Resolve로 얻는다. 필드명은 문자열로 하드코딩하지 않고 각 프로덕션 클래스가 노출하는
+    /// nameof 기반 FieldName 상수로만 참조한다 — 리네임되면 그 상수 자체가 컴파일 에러를 낸다.
     /// </summary>
     public sealed class GameObjectPoolDebugWindow : EditorWindow {
         private const BindingFlags InstanceNonPublic = BindingFlags.NonPublic | BindingFlags.Instance;
 
-        private static readonly FieldInfo UIPoolsField    = typeof(UIPooling).GetField("_objectPools", InstanceNonPublic);
-        private static readonly FieldInfo AudioPoolsField = typeof(AudioPooling).GetField("_objectPools", InstanceNonPublic);
-        private static readonly FieldInfo StagePoolsField = typeof(StagePooling).GetField("_objectPools", InstanceNonPublic);
+        private static readonly FieldInfo UIPoolsField    = typeof(UIPooling).GetField(UIPooling.ObjectPoolsFieldName, InstanceNonPublic);
+        private static readonly FieldInfo AudioPoolsField = typeof(AudioPooling).GetField(AudioPooling.ObjectPoolsFieldName, InstanceNonPublic);
+        private static readonly FieldInfo StagePoolsField = typeof(StagePooling).GetField(StagePooling.ObjectPoolsFieldName, InstanceNonPublic);
 
-        private static readonly FieldInfo PoolPooledField   = typeof(GameObjectPool).GetField("_pooled", InstanceNonPublic);
-        private static readonly FieldInfo PoolInstanceField = typeof(GameObjectPool).GetField("_instance", InstanceNonPublic);
-        private static readonly FieldInfo PoolDisposedField = typeof(GameObjectPool).GetField("_isDisposed", InstanceNonPublic);
+        private static readonly FieldInfo PoolPooledField   = typeof(GameObjectPool).GetField(GameObjectPool.PooledFieldName, InstanceNonPublic);
+        private static readonly FieldInfo PoolInstanceField = typeof(GameObjectPool).GetField(GameObjectPool.InstanceFieldName, InstanceNonPublic);
+        private static readonly FieldInfo PoolDisposedField = typeof(GameObjectPool).GetField(GameObjectPool.IsDisposedFieldName, InstanceNonPublic);
 
         private static readonly Color GreenColor  = new(0.42f, 0.85f, 0.42f);
         private static readonly Color OrangeColor = new(1f, 0.6f, 0.2f);
@@ -104,7 +105,7 @@ namespace Script.Editor {
             catch (Exception e) {
                 EditorGUILayout.HelpBox(
                     $"Pooling 내부 구조가 바뀐 것 같습니다(리플렉션 실패): {e.Message}\n" +
-                    "필드명이 바뀌었다면 이 파일 상단의 FieldInfo 캐시를 갱신해야 합니다.",
+                    "필드 리네임은 nameof 상수가 컴파일 에러로 막아주니, 이 에러는 필드/타입 구조 자체가 바뀐 경우일 겁니다.",
                     MessageType.Error);
             }
         }

@@ -16,21 +16,23 @@ namespace Script.Editor {
     /// AddressableService의 중앙 캐시(_cache, RefCount+유예시간)는 전부 private — 프로덕션 코드에 디버그용
     /// public 접근자를 추가하는 대신 읽기 전용 리플렉션으로 들여다본다. AddressableService는 MonoBehaviour가
     /// 아니라 VContainer App Scope Singleton이라 씬 탐색으로 못 찾고, AppLifetimeScope.Container.Resolve로 얻는다.
+    /// 필드명은 문자열로 하드코딩하지 않고 AddressableService가 노출하는 nameof 기반 FieldName 상수로만 참조한다 —
+    /// 리네임되면 그 상수 자체가 컴파일 에러를 내서 여기가 조용히 깨지는 걸 막아준다.
     /// </summary>
     public sealed class AddressableServiceDebugWindow : EditorWindow {
         private const BindingFlags InstanceNonPublic = BindingFlags.NonPublic | BindingFlags.Instance;
         private const BindingFlags EntryPublicInstance = BindingFlags.Public | BindingFlags.Instance;
 
-        private static readonly FieldInfo CacheField          = typeof(AddressableService).GetField("_cache", InstanceNonPublic);
-        private static readonly FieldInfo CheckIntervalField  = typeof(AddressableService).GetField("_cacheCheckIntervalSeconds", InstanceNonPublic);
-        private static readonly FieldInfo ReleaseGraceField   = typeof(AddressableService).GetField("_cacheReleaseGraceSeconds", InstanceNonPublic);
-        private static readonly FieldInfo CacheMonitorCtsField = typeof(AddressableService).GetField("_cacheMonitorCts", InstanceNonPublic);
-        private static readonly FieldInfo AppLabelsField      = typeof(AddressableService).GetField("_appLabels", InstanceNonPublic);
+        private static readonly FieldInfo CacheField          = typeof(AddressableService).GetField(AddressableService.CacheFieldName, InstanceNonPublic);
+        private static readonly FieldInfo CheckIntervalField  = typeof(AddressableService).GetField(AddressableService.CacheCheckIntervalSecondsFieldName, InstanceNonPublic);
+        private static readonly FieldInfo ReleaseGraceField   = typeof(AddressableService).GetField(AddressableService.CacheReleaseGraceSecondsFieldName, InstanceNonPublic);
+        private static readonly FieldInfo CacheMonitorCtsField = typeof(AddressableService).GetField(AddressableService.CacheMonitorCtsFieldName, InstanceNonPublic);
+        private static readonly FieldInfo AppLabelsField      = typeof(AddressableService).GetField(AddressableService.AppLabelsFieldName, InstanceNonPublic);
 
-        private static readonly Type      CacheEntryType              = typeof(AddressableService).GetNestedType("CacheEntry", InstanceNonPublic);
-        private static readonly FieldInfo EntryHandleField             = CacheEntryType?.GetField("Handle", EntryPublicInstance);
-        private static readonly FieldInfo EntryRefCountField           = CacheEntryType?.GetField("RefCount", EntryPublicInstance);
-        private static readonly FieldInfo EntryReleasePendingSinceField = CacheEntryType?.GetField("ReleasePendingSince", EntryPublicInstance);
+        private static readonly Type      CacheEntryType              = typeof(AddressableService).GetNestedType(AddressableService.CacheEntryTypeName, InstanceNonPublic);
+        private static readonly FieldInfo EntryHandleField             = CacheEntryType?.GetField(AddressableService.CacheEntryHandleFieldName, EntryPublicInstance);
+        private static readonly FieldInfo EntryRefCountField           = CacheEntryType?.GetField(AddressableService.CacheEntryRefCountFieldName, EntryPublicInstance);
+        private static readonly FieldInfo EntryReleasePendingSinceField = CacheEntryType?.GetField(AddressableService.CacheEntryReleasePendingSinceFieldName, EntryPublicInstance);
 
         private static readonly Color GreenColor  = new(0.42f, 0.85f, 0.42f);
         private static readonly Color YellowColor = new(0.95f, 0.85f, 0.25f);
@@ -96,7 +98,7 @@ namespace Script.Editor {
             catch (Exception e) {
                 EditorGUILayout.HelpBox(
                     $"AddressableService 내부 구조가 바뀐 것 같습니다(리플렉션 실패): {e.Message}\n" +
-                    "필드명이 바뀌었다면 이 파일 상단의 FieldInfo 캐시를 갱신해야 합니다.",
+                    "필드 리네임은 nameof 상수가 컴파일 에러로 막아주니, 이 에러는 필드/타입 구조 자체가 바뀐 경우일 겁니다.",
                     MessageType.Error);
             }
         }

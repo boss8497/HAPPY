@@ -73,11 +73,11 @@ namespace Script.GamePlay.Service {
             await _focus.StopAsync(hide, ct);
         }
 
-        private async UniTask<TutorialFocusData> GetRetryFocusData(GuideBase guiedData, int maxRetryCount = 100, CancellationToken ct = default) {
+        public async UniTask<TutorialFocusData> GetRetryFocusData(GuideBase guideData, int maxRetryCount = 100, CancellationToken ct = default) {
             var               retryCount = 0;
             TutorialFocusData data       = null;
             while (retryCount <= maxRetryCount && data == null && !ct.IsCancellationRequested) {
-                data = GetFocusData(guiedData);
+                data = GetFocusData(guideData);
                 ++retryCount;
                 var isCancel = await UniTask.DelayFrame(2, cancellationToken: ct).SuppressCancellationThrow();
                 if (isCancel) break;

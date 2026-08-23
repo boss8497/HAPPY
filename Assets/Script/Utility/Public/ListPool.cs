@@ -5,8 +5,10 @@ using UnityEngine;
 
 namespace Script.Utility.Runtime {
     public static class ListPool {
-        // ※ ClassListPoolDebugWindow.cs(Tools/Debug/Class & List Pool)가 리플렉션으로 직접 참조함
-        // (Editor/README.md 체크리스트 참고)
+        // ※ ClassListPoolDebugWindow.cs(Tools/Debug/Class & List Pool)가 리플렉션으로 직접 참조함 —
+        // 필드명은 아래 상수(nameof)로만 참조할 것 (Editor/README.md 체크리스트 참고)
+        public const string PoolsFieldName = nameof(Pools);
+
         private static readonly Dictionary<Type, Stack<ICollection>> Pools = new Dictionary<Type, Stack<ICollection>>(64);
 
         public static List<T> Get<T>() {

@@ -11,23 +11,26 @@ using UnityEngine.AddressableAssets;
 
 namespace Script.Editor {
     /// <summary>
-    /// ScreenManager는 캡슐화를 위해 상태(_screens/_loadedScreens/_firstScreen 등)를 대부분 private으로 들고 있다.
-    /// 이 창은 디버깅 전용이라 프로덕션 코드에 public 접근자를 추가하는 대신 읽기 전용 리플렉션으로 들여다본다 —
-    /// 런타임 동작에는 전혀 관여하지 않으며, ScreenManager 내부 필드명이 바뀌면 아래 섹션이 에러 메시지로 알려준다.
+    /// ScreenManager는 캡슐화를 위해 상태(_screens/_loadedScreens/_rootScreen 등)를 대부분 private으로 들고 있다.
+    /// 이 창은 디버깅 전용이라 프로덕션 코드에 public 접근자를 추가하는 대신 읽기 전용 리플렉션으로 들여다본다.
+    /// 필드명은 문자열로 직접 하드코딩하지 않고 ScreenManager가 노출하는 nameof 기반 FieldName 상수로만 참조한다 —
+    /// 필드가 리네임되면 그 상수 자체가 컴파일 에러가 나서 여기까지 오지 못한다(2026-08-24, _firstScreen→_rootScreen
+    /// 리네임 때 문자열 리터럴이라 조용히 깨졌던 걸 겪고 나서 적용). 그래도 타입/구조가 바뀌는 건 못 잡으니
+    /// 리플렉션 실패는 여전히 try/catch로 잡아 에러 메시지로 알려준다.
     /// </summary>
     public sealed class ScreenManagerDebugWindow : EditorWindow {
         private const BindingFlags InstanceNonPublic = BindingFlags.NonPublic | BindingFlags.Instance;
 
-        private static readonly FieldInfo ScreensField        = typeof(ScreenManager).GetField("_screens", InstanceNonPublic);
-        private static readonly FieldInfo LoadedScreensField  = typeof(ScreenManager).GetField("_loadedScreens", InstanceNonPublic);
-        private static readonly FieldInfo FirstScreenField    = typeof(ScreenManager).GetField("_firstScreen", InstanceNonPublic);
-        private static readonly FieldInfo OpenQueueField      = typeof(ScreenManager).GetField("_openWaitQueue", InstanceNonPublic);
-        private static readonly FieldInfo CloseQueueField     = typeof(ScreenManager).GetField("_closeWaitQueue", InstanceNonPublic);
-        private static readonly FieldInfo LoadingScreenField  = typeof(ScreenManager).GetField("_loadingScreen", InstanceNonPublic);
-        private static readonly FieldInfo LoadingShownField   = typeof(ScreenManager).GetField("_loadingScreenShown", InstanceNonPublic);
-        private static readonly FieldInfo SafeAreaScreenField = typeof(ScreenManager).GetField("_safeAreaScreen", InstanceNonPublic);
-        private static readonly FieldInfo SafeAreaShownField  = typeof(ScreenManager).GetField("_safeAreaScreenShown", InstanceNonPublic);
-        private static readonly FieldInfo StageSnapshotField  = typeof(ScreenManager).GetField("_stageTransitionSnapshot", InstanceNonPublic);
+        private static readonly FieldInfo ScreensField        = typeof(ScreenManager).GetField(ScreenManager.ScreensFieldName, InstanceNonPublic);
+        private static readonly FieldInfo LoadedScreensField  = typeof(ScreenManager).GetField(ScreenManager.LoadedScreensFieldName, InstanceNonPublic);
+        private static readonly FieldInfo RootScreenField     = typeof(ScreenManager).GetField(ScreenManager.RootScreenFieldName, InstanceNonPublic);
+        private static readonly FieldInfo OpenQueueField      = typeof(ScreenManager).GetField(ScreenManager.OpenWaitQueueFieldName, InstanceNonPublic);
+        private static readonly FieldInfo CloseQueueField     = typeof(ScreenManager).GetField(ScreenManager.CloseWaitQueueFieldName, InstanceNonPublic);
+        private static readonly FieldInfo LoadingScreenField  = typeof(ScreenManager).GetField(ScreenManager.LoadingScreenFieldName, InstanceNonPublic);
+        private static readonly FieldInfo LoadingShownField   = typeof(ScreenManager).GetField(ScreenManager.LoadingScreenShownFieldName, InstanceNonPublic);
+        private static readonly FieldInfo SafeAreaScreenField = typeof(ScreenManager).GetField(ScreenManager.SafeAreaScreenFieldName, InstanceNonPublic);
+        private static readonly FieldInfo SafeAreaShownField  = typeof(ScreenManager).GetField(ScreenManager.SafeAreaScreenShownFieldName, InstanceNonPublic);
+        private static readonly FieldInfo StageSnapshotField  = typeof(ScreenManager).GetField(ScreenManager.StageTransitionSnapshotFieldName, InstanceNonPublic);
 
         private static readonly Color GreenColor  = new(0.42f, 0.85f, 0.42f);
         private static readonly Color YellowColor = new(0.95f, 0.85f, 0.25f);
@@ -113,7 +116,7 @@ namespace Script.Editor {
                 catch (Exception e) {
                     EditorGUILayout.HelpBox(
                         $"ScreenManager 내부 구조가 바뀐 것 같습니다(리플렉션 실패): {e.Message}\n" +
-                        "필드명이 바뀌었다면 이 파일 상단의 FieldInfo 캐시를 갱신해야 합니다.",
+                        "필드 리네임은 nameof 상수가 컴파일 에러로 막아주니, 이 에러는 필드/타입 구조 자체가 바뀐 경우일 겁니다.",
                         MessageType.Error);
                 }
             }
@@ -167,7 +170,7 @@ namespace Script.Editor {
 
         private int CountOpenScreens() {
             var count   = 0;
-            var current = (IScreen)FirstScreenField.GetValue(_manager);
+            var current = (IScreen)RootScreenField.GetValue(_manager);
             while (current != null) {
                 count++;
                 current = current.Next;
@@ -218,7 +221,7 @@ namespace Script.Editor {
             _foldoutStack = EditorGUILayout.Foldout(_foldoutStack, "열려있는 Screen 스택 (LinkedList 순서, [고정]=DontClose)", true);
             if (_foldoutStack == false) return;
 
-            var first = (IScreen)FirstScreenField.GetValue(_manager);
+            var first = (IScreen)RootScreenField.GetValue(_manager);
             if (first == null) {
                 EditorGUILayout.LabelField("열려있는 Screen이 없습니다.", EditorStyles.miniLabel);
                 return;
@@ -265,7 +268,7 @@ namespace Script.Editor {
             if (_foldoutLayers == false) return;
 
             var openScreens = new List<IScreen>();
-            var current     = (IScreen)FirstScreenField.GetValue(_manager);
+            var current     = (IScreen)RootScreenField.GetValue(_manager);
             while (current != null) {
                 openScreens.Add(current);
                 current = current.Next;
@@ -309,7 +312,7 @@ namespace Script.Editor {
             var registry = (Dictionary<string, ScreenAsset>)ScreensField.GetValue(_manager);
 
             var openKeys = new HashSet<string>();
-            var current  = (IScreen)FirstScreenField.GetValue(_manager);
+            var current  = (IScreen)RootScreenField.GetValue(_manager);
             while (current != null) {
                 openKeys.Add(current.Key);
                 current = current.Next;

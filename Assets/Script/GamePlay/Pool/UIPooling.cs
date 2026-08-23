@@ -12,7 +12,9 @@ namespace Script.GamePlay.Pool {
     /// Screen에서 사용할 Pooling들 ScrollRect의 Element 등 UI Pool
     /// </summary>
     public class UIPooling : IInitializable, IDisposable, IUIPooling {
-        // ※ GameObjectPoolDebugWindow.cs가 리플렉션으로 직접 참조함 (Editor/README.md 체크리스트 참고)
+        // ※ GameObjectPoolDebugWindow.cs가 리플렉션으로 직접 참조함 — 필드명은 아래 상수(nameof)로만 참조할 것
+        public const string ObjectPoolsFieldName = nameof(_objectPools);
+
         private readonly Dictionary<string, GameObjectPool> _objectPools = new(StringComparer.Ordinal);
         private readonly IScopeLocator                      _locator;
 

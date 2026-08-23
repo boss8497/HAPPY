@@ -8,6 +8,8 @@ namespace Script.GamePlay.Service.Interface {
     public interface IFocusService : IService {
         public bool BlockButton { get; set; }
 
+        UniTask<TutorialFocusData> GetRetryFocusData(GuideBase guideData, int maxRetryCount = 100, CancellationToken ct = default);
+
         UniTask StartFocusAsync(GuideBase guide, Action            onComplete = null, Action onSkip = null, CancellationToken ct = default);
         UniTask StopFocusAsync(bool       hide,  CancellationToken ct         = default);
 

@@ -13,12 +13,13 @@ namespace Script.Editor {
     /// 필요 없다 — 타입 자체에서 바로 리플렉션으로 읽는다(BindingFlags.Static). 그래서 다른 세 디버그 창과 달리
     /// Play 모드가 아니어도 창이 죽지 않는다(대부분 비어 보이겠지만). 둘 다 순수 C# 오브젝트(POCO)를 풀링하는 거라
     /// Hierarchy/Project에 Ping할 대상이 없어 "선택" 버튼은 없다 — 타입별 수량만 보여주는 순수 관찰용 창.
+    /// 필드명은 문자열로 하드코딩하지 않고 ClassPool/ListPool이 노출하는 nameof 기반 FieldName 상수로만 참조한다.
     /// </summary>
     public sealed class ClassListPoolDebugWindow : EditorWindow {
         private const BindingFlags StaticNonPublic = BindingFlags.NonPublic | BindingFlags.Static;
 
-        private static readonly FieldInfo ClassPoolsField = typeof(ClassPool).GetField("Pools", StaticNonPublic);
-        private static readonly FieldInfo ListPoolsField  = typeof(ListPool).GetField("Pools", StaticNonPublic);
+        private static readonly FieldInfo ClassPoolsField = typeof(ClassPool).GetField(ClassPool.PoolsFieldName, StaticNonPublic);
+        private static readonly FieldInfo ListPoolsField  = typeof(ListPool).GetField(ListPool.PoolsFieldName, StaticNonPublic);
 
         private static readonly Color GreenColor = new(0.42f, 0.85f, 0.42f);
         private static readonly Color BlueColor  = new(0.4f, 0.75f, 1f);
@@ -75,7 +76,7 @@ namespace Script.Editor {
             catch (Exception e) {
                 EditorGUILayout.HelpBox(
                     $"ClassPool/ListPool 내부 구조가 바뀐 것 같습니다(리플렉션 실패): {e.Message}\n" +
-                    "필드명이 바뀌었다면 이 파일 상단의 FieldInfo 캐시를 갱신해야 합니다.",
+                    "필드 리네임은 nameof 상수가 컴파일 에러로 막아주니, 이 에러는 필드/타입 구조 자체가 바뀐 경우일 겁니다.",
                     MessageType.Error);
             }
         }

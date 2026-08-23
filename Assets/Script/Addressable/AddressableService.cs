@@ -24,10 +24,23 @@ namespace Script.Addressable {
 
         private CancellationTokenSource cts;
 
-        // ※ _cache/_cacheCheckIntervalSeconds/_cacheReleaseGraceSeconds/_cacheMonitorCts/_appLabels와
-        // CacheEntry의 Handle/RefCount/ReleasePendingSince(LoadingTask 제외)는
-        // AddressableServiceDebugWindow.cs(Tools/Debug/Addressable Service)가 리플렉션으로 직접 참조한다.
-        // 이름을 바꾸거나 구조를 바꾸면 그 파일의 FieldInfo 캐시도 같이 확인할 것 (Editor/README.md 체크리스트 참고).
+        // ※ AddressableServiceDebugWindow.cs(Tools/Debug/Addressable Service)가 아래 필드들과
+        // CacheEntry의 Handle/RefCount/ReleasePendingSince(LoadingTask 제외)를 리플렉션으로 직접 참조한다.
+        // 필드명은 문자열로 하드코딩하지 않고 이 FieldName 상수(nameof 기반)로만 참조하게 했다 —
+        // 리네임되면 여기가 즉시 컴파일 에러로 알려준다. 구조가 바뀌는 경우는 Editor/README.md 체크리스트 참고.
+        public const string CacheFieldName                      = nameof(_cache);
+        public const string CacheCheckIntervalSecondsFieldName  = nameof(_cacheCheckIntervalSeconds);
+        public const string CacheReleaseGraceSecondsFieldName   = nameof(_cacheReleaseGraceSeconds);
+        public const string CacheMonitorCtsFieldName            = nameof(_cacheMonitorCts);
+        public const string AppLabelsFieldName                  = nameof(_appLabels);
+
+        // CacheEntry 자체는 private이라 밖에서 타입 이름으로 못 건드리지만, nameof(CacheEntry)/nameof(CacheEntry.Handle)은
+        // 이 클래스(바깥쪽, CacheEntry의 enclosing type) 안에서는 접근 가능해서 문제없이 컴파일된다.
+        public const string CacheEntryTypeName                     = nameof(CacheEntry);
+        public const string CacheEntryHandleFieldName              = nameof(CacheEntry.Handle);
+        public const string CacheEntryRefCountFieldName            = nameof(CacheEntry.RefCount);
+        public const string CacheEntryReleasePendingSinceFieldName = nameof(CacheEntry.ReleasePendingSince);
+
         private readonly Dictionary<string, CacheEntry> _cache = new();
         private          CancellationTokenSource        _cacheMonitorCts;
 
