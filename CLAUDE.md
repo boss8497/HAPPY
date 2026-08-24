@@ -76,7 +76,7 @@
   - **LinkedList 기반 Stack**: "특정 UI 뒤에 열기", "특정 UI만 닫기" 요청에 유연하게 대응하기 위해 Stack 대신 LinkedList 채택 (Stack 동작 지향)
   - **DontClose Screen**: 리스트 앞쪽에 고정 배치. `force: true`가 아니면 닫히지 않음 (HUD, Navigation 등)
   - **Layer 시스템**: `HUD(0) → None(1) → Popup(2) → Overlay(3) → Tutorial(4) → StageTransition(5) → Loading(6) → SafeArea(7)` 순서로 렌더링
-  - **SafeArea**: 전용 `SafeArea` Screen을 최상위 레이어에 열어 입력 차단 (`ShowSafeAreaAsync`/`HideSafeAreaAsync`). 열릴 때마다 `autoBackTimer`(기본 5초) 워치독이 돌아서 닫기 호출이 누락돼도 자동으로 `BackAsync()` 복구
+  - **SafeArea**: 전용 `SafeArea` Screen을 최상위 레이어에 열어 입력 차단 (`ShowSafeAreaAsync`/`HideSafeAreaAsync`). 열릴 때마다 `defaultTimer`(기본 5초, `SafeAreaOption.Time`으로 Show 시점에 오버라이드 가능) 워치독이 돌아서 닫기 호출이 누락돼도 자기 자신을 강제 `CloseAsync`로 자동 복구
   - **Queue 처리**: 다중 Open/Close 요청을 순서대로 처리. `OpenAsync()` await 시 화면이 완전히 열릴 때까지 대기 보장
   - **캐싱**: 한 번 열린 Screen은 Close 후에도 `_loadedScreens`에 유지 → 재오픈 시 로딩 없음
   - **씬 이동 시**: `CloseAllAsync(force:true)` → `ResourceClear()` 로 전체 Destroy
@@ -190,13 +190,14 @@
   - AudioListener는 이 모듈 범위 밖 — 씬마다 정확히 하나만 있어야 해서(Lobby/Title은 LifetimeScope GameObject, GameScene은 자체 카메라) 재사용되는 StageManager.prefab에는 붙이지 않음(중복 방지)
   - 상세 내용: `Assets/Script/GamePlay/Audio/ARCHITECTURE.md`
 
-  ### Tutorial/Focus — 튜토리얼 스포트라이트 시스템
-  - 위치: `Assets/Script/GamePlay/Tutorial/`(등록/데이터), `Assets/Script/GamePlay/Service/FocusService.cs`(오케스트레이션), `Assets/Script/GUI/Screen/Tutorial/TutorialFocusScreen.cs`(렌더링), `Assets/Script/GUI/ScreenOption/FocusOption.cs`(Open 파라미터)
+  ### Tutorial — 튜토리얼 오케스트레이션 + Focus(스포트라이트)/Narration(대사창)
+  - 위치: `Assets/Script/GamePlay/Tutorial/`(오케스트레이션 `TutorialService`/등록/데이터), `Assets/Script/GamePlay/Service/`(`FocusService`/`NarrationService`), `Assets/Script/GUI/Screen/Tutorial/`(`TutorialFocusScreen`/`TutorialNarrationScreen`), `Assets/Script/GUI/ScreenOption/`(`FocusOption`/`NarrationOption`)
+  - `ITutorialService.StartTutorial(uid)` → `TutorialService`가 `TutorialInfo.sets`(GameInfo, `GuideBase[]`)를 순서대로 진행, 가이드 타입별로 `FocusService`/`NarrationService`에 분기하고 각 스텝의 완료 콜백을 실제로 기다린 뒤 다음 스텝으로 넘어감(타입이 바뀌면 이전 화면을 강제 종료)
   - 씬의 UI 요소에 `FocusComponent`를 붙이면 `Start()` 시점에 `IFocusService.RegisterFocusData()`로 자동 등록(`OnDestroy()`에서 자동 해제)
-  - `FocusService.StartFocusAsync(GuideBase guide, ...)` — `TutorialInfo.sets`(GameInfo, `GuideBase[]`) 중 `FocusGuide`를 넘기면 id/focusGuid로 등록된 대상을 찾아(최대 100회 재시도 — UI가 아직 로딩 중인 타이밍 문제 흡수) `TutorialFocusScreen`을 열고 스포트라이트 + 가이드 텍스트 표시
+  - `FocusService.StartAsync(GuideBase guide, ...)`(`IFocusService`/`INarrationService` 공통 `ITutorial` 인터페이스 — 이름이 같은 인터페이스가 여러 계층에 있어 헷갈리기 쉬움, ARCHITECTURE.md 참고) — `FocusGuide`를 넘기면 id/focusGuid로 등록된 대상을 찾아(최대 100회 재시도 — UI가 아직 로딩 중인 타이밍 문제 흡수) `TutorialFocusScreen`을 열고 스포트라이트 + 가이드 텍스트 표시
   - 완료 조건은 `FocusType`(Button/Toggle/Image/None)별로 분기 — 오버레이 위에 대상과 정확히 겹치는 투명 대리 버튼(`FocusButton`)을 두고, 그 버튼의 비동기 클릭 리스너(`AddClickAsyncListener`)에서 실제 `target.Click()`을 대신 호출한 뒤 완료 처리
+  - `NarrationGuide`는 클릭 대상 없이 아이콘+텍스트만 보여주고 다음 버튼을 누르면 완료 — `NarrationService`가 대상 조회 없이 곧바로 `TutorialNarrationScreen`을 열고 닫음
   - 스텝 전환마다 `ShowSafeAreaAsync()`/`HideSafeAreaAsync()`로 다른 곳 클릭을 막음
-  - **주의**: `FocusTest.cs`의 테스트 루프는 `StartFocusAsync`가 사용자의 실제 클릭을 기다리지 않고 콜백만 걸어둔 채 즉시 반환한다는 점을 고려하지 않은 상태 — 여러 스텝을 실제로 순차 진행시키려면 완료 대기 오케스트레이션이 추가로 필요함
   - 상세 내용: `Assets/Script/GamePlay/Tutorial/ARCHITECTURE.md`
 
   ### GameTimer — 전역 타이머

@@ -36,7 +36,7 @@ Canvas 아래에 Layer별 RectTransform을 생성해 렌더링 순서를 제어�
 | `None` | 1 | 기본 레이어 |
 | `Popup` | 2 | 팝업 창 |
 | `Overlay` | 3 | 오버레이 |
-| `Tutorial` | 4 | 튜토리얼 Focus 스포트라이트/가이드 오버레이 (`GamePlay/Tutorial/ARCHITECTURE.md` 참고) |
+| `Tutorial` | 4 | 튜토리얼 Focus 스포트라이트/Narration 대사창 오버레이 (`GamePlay/Tutorial/ARCHITECTURE.md` 참고) |
 | `StageTransition` | 5 | 스테이지 시작/재시작 시 화면을 얼려 덮는 전환 오버레이 |
 | `Loading` | 6 | 로딩 화면 |
 | `SafeArea` | 7 | 입력 차단 레이어 (최상위) |
@@ -67,7 +67,7 @@ Screen이 열리는 동안 사용자 입력을 차단한다.
 `SafeArea` Layer(가장 높은 레이어)에 전용 `SafeArea` Screen(`Screen/SafeArea/SafeArea.cs`)을 열어 하위 레이어의 GraphicRaycaster를 막는다.  
 `ScreenManager.ShowSafeAreaAsync()`/`HideSafeAreaAsync()`가 `IScreenManager` 공개 API로 노출되어 있어(`ScreenManager.SafeArea.cs`), 필요한 곳(예: 튜토리얼 Focus 시스템)에서 직접 열고 닫을 수 있다.
 
-**자동 복구(auto-back) 워치독:** `SafeArea.OpenInternal()`이 열릴 때마다 `autoBackTimer`(기본 5초) 카운트다운을 시작하고, 그 안에 `HideSafeAreaAsync()`로 닫히지 않으면 자동으로 `BackAsync()`를 호출해 입력 차단이 영구히 걸리는 사고를 막는다 — `HideSafeAreaAsync()` 호출을 누락하는 버그가 있어도 최악의 경우 5초 후 자동 복구된다. 타이머는 `IGameTimer`(전역 타이머, Pause 상태 반영) 기준으로 흐른다.
+**자동 복구(auto-back) 워치독:** `SafeArea`가 열리거나 옵션이 갱신될 때마다(`OpenInternal`/`OpenChangeOptionAsync`) `defaultTimer`(기본 5초, `Show` 시점에 `SafeAreaOption.Time`으로 개별 오버라이드 가능) 카운트다운을 시작하고, 그 안에 `HideSafeAreaAsync()`로 닫히지 않으면 자기 자신을 `CloseAsync(true, ct)`로 강제 종료해 입력 차단이 영구히 걸리는 사고를 막는다 — `HideSafeAreaAsync()` 호출을 누락하는 버그가 있어도 최악의 경우 타이머 만료 후 자동 복구된다. 타이머는 `IGameTimer`(전역 타이머, Pause 상태 반영) 기준으로 흐른다. (2026-08-24 "Screen이 꼬이는 문제 수정" 커밋 이전에는 `ScreenManager.BackAsync()`로 Screen 스택의 최상단 화면을 닫아버려 SafeArea 자신이 아닌 엉뚱한 화면이 닫히는 버그가 있었음 — 지금은 `Screen` 베이스에 추가된 `protected CloseAsync(force, ct)`로 자기 자신만 닫는다.)
 
 ---
 

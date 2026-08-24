@@ -1,11 +1,22 @@
-# Tutorial/Focus — 튜토리얼 스포트라이트 시스템
+# Tutorial — 튜토리얼 오케스트레이션 + Focus/Narration
 
-씬 위의 특정 UI 요소(버튼/이미지/토글)에 스포트라이트를 비추고 가이드 텍스트를 보여준 뒤, **그 요소를 실제로 클릭해야** 다음 단계로 넘어가는 온보딩 튜토리얼 시스템입니다. 기존에는 `TutorialFocus.cs`(MonoBehaviour 단일 클래스, 346줄)가 Screen 관리 시스템 바깥에서 독자적으로 UI를 그리고 있었는데, 이번에 [`Assets/Script/GUI/`](../../GUI/README.md)의 Screen/Layer/캐싱 정책을 그대로 따르도록 `FocusService` + `TutorialFocusScreen` + `FocusComponent` 조합으로 다시 설계했습니다.
+`TutorialInfo.sets`에 나열된 가이드를 순서대로 진행시키는 온보딩 튜토리얼 시스템입니다. 가이드는 두 종류입니다 — 씬 위의 특정 UI 요소(버튼/이미지/토글)에 스포트라이트를 비추고 **그 요소를 실제로 클릭해야** 넘어가는 **Focus**, 아이콘+대사 텍스트를 보여주고 **다음 버튼을 눌러야** 넘어가는 **Narration**. `TutorialService`가 이 둘을 순서대로, 한 스텝의 완료를 기다렸다가 다음 스텝으로 넘어가는 방식으로 오케스트레이션합니다.
 
-> 설계 배경 원문: [ARCHITECTURE.md](ARCHITECTURE.md)
+기존에는 `TutorialFocus.cs`(MonoBehaviour 단일 클래스, 346줄)가 Screen 관리 시스템 바깥에서 독자적으로 UI를 그리고 있었는데, [`Assets/Script/GUI/`](../../GUI/README.md)의 Screen/Layer/캐싱 정책을 그대로 따르도록 `FocusService` + `TutorialFocusScreen` + `FocusComponent` 조합으로 다시 설계했고, 이후 오케스트레이터 `TutorialService`와 Narration 가이드(`NarrationService` + `TutorialNarrationScreen`)가 추가됐습니다.
+
+> 설계 배경 원문(더 상세): [ARCHITECTURE.md](ARCHITECTURE.md) — 특히 이름이 겹치는 `ITutorial`류 인터페이스 정리는 여기 참고
 > 상위 문서: [GamePlay/ARCHITECTURE.md](../ARCHITECTURE.md) · [최상위 CLAUDE.md](../../../../CLAUDE.md)
 
-## 전체 흐름
+## 0. 오케스트레이션 — `TutorialService`
+
+`ITutorialService.StartTutorial(uid)`를 호출하면 `TutorialInfo.sets[]`를 순서대로 하나씩 진행합니다. 가이드 타입(`FocusGuide`/`NarrationGuide`)에 따라 `FocusService`/`NarrationService`로 분기해 `StartAsync()`를 호출하고, 그 가이드의 완료 콜백이 호출될 때까지 실제로 기다린 뒤에야 다음 가이드로 넘어갑니다. 다음 가이드가 이전과 다른 타입이면 시작 전에 이전 서비스의 화면을 강제로 닫아 화면이 겹치지 않게 합니다.
+
+```csharp
+// FocusTest.cs — 트리거는 이제 TutorialService 하나만 호출
+_tutorialService.StartTutorial(testTutorialInfo);
+```
+
+## 전체 흐름 (Focus 기준)
 
 ```mermaid
 sequenceDiagram
@@ -16,7 +27,7 @@ sequenceDiagram
 
     FC->>FS: Start() 시점 RegisterFocusData(data)
 
-    Note over FS: StartFocusAsync(guide) 호출됨
+    Note over FS: StartAsync(guide) 호출됨 (TutorialService가 호출)
     FS->>SM: ShowSafeAreaAsync()
     FS->>FS: id/focusGuid로 등록된 data 조회<br/>(최대 100회, 2프레임 간격 재시도)
     FS->>SM: OpenAsync(FocusOption, "TutorialFocus")
@@ -42,23 +53,29 @@ sequenceDiagram
 | 클래스 | 역할 |
 |---|---|
 | [`TutorialInfo`](../../GameInfo/Tutorial/TutorialInfo.cs) | 테이블 자동 생성 대상. `GuideBase[] sets`로 튜토리얼 한 세트를 순서대로 정의 |
-| [`GuideBase`](../../GameInfo/Tutorial/GuideBase.cs) | 가이드 공통 필드(`id`, `delayTime`, `fadeInTime`, `fadeOutTime`)만 가진 추상 클래스 — "현재는 Focus만 존재"(코드 주석)하지만 다른 가이드 타입으로 확장 가능하도록 분리해 둠 |
+| [`GuideBase`](../../GameInfo/Tutorial/GuideBase.cs) | 가이드 공통 필드(`id`, `delayTime`, `fadeInTime`, `fadeOutTime`)만 가진 추상 클래스 — 코드 주석엔 "현재는 Focus만 존재"라 적혀 있지만 실제로는 `FocusGuide`/`NarrationGuide` 둘이 상속 중(주석 미갱신) |
 | [`FocusGuide`](../../GameInfo/Tutorial/FocusGuide.cs) | `GuideBase` 구현체. `focusGuid`([`[Focus]`](../../GameInfo/Attribute/FocusAttribute.cs) 어트리뷰트로 인스펙터에서 등록된 대상을 드롭다운 선택), `guideText`, `iconPath`, `flip` |
+| [`NarrationGuide`](../../GameInfo/Tutorial/NarrationGuide.cs) | `GuideBase` 구현체. `name`, `guideText`, `iconPath`, `flip` — 클릭 대상(`focusGuid`)이 없는 대신 아이콘+텍스트만 보여주는 말풍선용 |
 
-대상 매칭은 `FocusService.GetFocusData()`가 **`id` 우선, 없으면 `focusGuid`** 순으로 조회합니다.
+대상 매칭은 `FocusService.GetFocusData()`가 **`id` 우선, 없으면 `focusGuid`** 순으로 조회합니다(Narration은 클릭 대상이 없어 이 매칭 자체가 없습니다).
 
-## 3. 진행 — `FocusService.StartFocusAsync()`
+## 3. 진행 — `FocusService.StartAsync()`
+
+`IFocusService`/`INarrationService`는 공통 `ITutorial` 인터페이스를 상속해서, 메서드명이 `StartFocusAsync`/`StopFocusAsync`가 아니라 **`StartAsync`/`StopAsync`**로 통일돼 있습니다(이름이 겹치는 인터페이스가 여러 개라 헷갈리기 쉬움 — [ARCHITECTURE.md](ARCHITECTURE.md) 참고).
 
 ```csharp
-await _focusService.StartFocusAsync(focusGuide, onComplete: () => {
-    _focusService.StopFocusAsync(true);
+// 보통은 TutorialService가 호출하지만, 직접 호출도 가능
+await _focusService.StartAsync(focusGuide, onComplete: () => {
+    _focusService.StopAsync(true);
 });
 ```
 
 1. `ShowSafeAreaAsync()` — 전환 중 다른 곳 클릭 방지
-2. 대상 `TutorialFocusData`를 **최대 100회, 2프레임 간격**으로 재시도 조회 — `StartFocusAsync` 호출 시점에 대상 UI가 아직 로딩/오픈 중이라 `FocusComponent.Start()`(등록)가 안 끝났을 수 있는 타이밍 문제를 흡수하기 위함. 100회 재시도 후에도 못 찾으면 스포트라이트 없이 그냥 `onComplete`만 호출하고 넘어갑니다 — 대상이 씬에 없다고 튜토리얼 전체가 멈추지 않도록 하는 안전장치입니다.
+2. 대상 `TutorialFocusData`를 **최대 100회, 2프레임 간격**으로 재시도 조회 — `StartAsync` 호출 시점에 대상 UI가 아직 로딩/오픈 중이라 `FocusComponent.Start()`(등록)가 안 끝났을 수 있는 타이밍 문제를 흡수하기 위함. 100회 재시도 후에도 못 찾으면 스포트라이트 없이 그냥 `onComplete`만 호출하고 넘어갑니다 — 대상이 씬에 없다고 튜토리얼 전체가 멈추지 않도록 하는 안전장치입니다.
 3. `ScreenManager.OpenAsync()`로 `TutorialFocusScreen`을 열고 `HideSafeAreaAsync()`
 4. `FocusType`별로 완료 조건을 겁니다.
+
+**Narration은 이보다 훨씬 단순합니다** — 클릭할 실제 대상이 없으므로 위 재시도 로직 없이 곧바로 `TutorialNarrationScreen`을 열고, `nextButton`을 누르면 바로 완료 콜백을 호출합니다. 연속된 Narration 가이드는 화면을 새로 열지 않고 `OpenChangeOptionAsync()`로 텍스트/아이콘만 갱신합니다.
 
 ## 4. 완료 조건 — `FocusType`별 분기
 
@@ -90,25 +107,30 @@ _focus.FocusButton.AddClickAsyncListener(OnClickAsyncEvent, false);
 
 ## 6. SafeArea 연동
 
-스텝 전환마다(스포트라이트 준비 중, 대상 클릭 처리 중) `ShowSafeAreaAsync()`/`HideSafeAreaAsync()`를 짝지어 호출해 사용자가 엉뚱한 곳을 누르지 못하게 막습니다. `SafeArea` Screen 자체에 5초 자동 복구 워치독이 있어서, 이 짝을 맞추는 걸 실수로 빼먹어도 입력이 영구히 막히지는 않습니다 (자세한 내용: [GUI/README.md](../../GUI/README.md#safearea--입력-차단--자동-복구-워치독)).
+스텝 전환마다(화면 준비 중, 클릭 처리 중) `ShowSafeAreaAsync()`/`HideSafeAreaAsync()`를 짝지어 호출해 사용자가 엉뚱한 곳을 누르지 못하게 막습니다. `SafeArea` Screen 자체에 기본 5초 자동 복구 워치독이 있어서, 이 짝을 맞추는 걸 실수로 빼먹어도 입력이 영구히 막히지는 않습니다 (자세한 내용: [GUI/README.md](../../GUI/README.md#safearea--입력-차단--자동-복구-워치독)).
+
+## 7. 여러 스텝 순차 진행 — 이제 `TutorialService`가 담당
+
+과거에는 `FocusTest.cs`가 `FocusService.StartFocusAsync()`를 완료를 기다리지 않고 계속 호출해서, 여러 스텝짜리 튜토리얼을 실제 사용자 클릭에 맞춰 순차 진행시킬 방법이 없었습니다. 지금은 최상단 "0. 오케스트레이션" 절에서 설명한 `TutorialService.UpdateLoop()`가 각 스텝의 완료 콜백을 `await`로 기다렸다가 다음 스텝을 시작하므로, `FocusTest.cs`는 `StartTutorial(uid)` 한 번만 호출하면 됩니다.
 
 ## 파일 구조
 
 | 경로 | 역할 |
 |---|---|
+| [`Service/TutorialService.cs`](Service/TutorialService.cs) / [`Service/Interface/ITutorialService.cs`](Service/Interface/ITutorialService.cs) | 오케스트레이션 — `sets[]` 순차 진행, Focus/Narration 분기 |
 | [`FocusComponent.cs`](FocusComponent.cs) | 씬 배치용 등록 컴포넌트 |
-| [`FocusTest.cs`](FocusTest.cs) | 디버그 테스트 트리거 (아래 "아직 비어있는 부분" 참고) |
+| [`FocusTest.cs`](FocusTest.cs) | 디버그 테스트 트리거 — `ITutorialService.StartTutorial(uid)` 호출만 |
 | [`Data/TutorialFocusData.cs`](Data/TutorialFocusData.cs) | 등록되는 대상 정보 + `FocusType` enum |
-| [`Interface/ITutorialFocus.cs`](Interface/ITutorialFocus.cs) | `TutorialFocusScreen`이 구현하는 인터페이스 |
+| [`Interface/ITutorial.cs`](Interface/ITutorial.cs) | ⚠️ 파일명과 다르게 `ITutorialScreen` 인터페이스 정의 (`StopAsync`만) |
+| [`Interface/ITutorialFocus.cs`](Interface/ITutorialFocus.cs) | `ITutorialScreen` 확장 — `TutorialFocusScreen`이 구현 |
 | [`Editor/TutorialFocusDataManager.cs`](Editor/TutorialFocusDataManager.cs) | 에디터 전용 관리 도구 |
-| [`../Service/FocusService.cs`](../Service/FocusService.cs) / [`Interface/IFocusService.cs`](../Service/Interface/IFocusService.cs) | 오케스트레이션 |
+| [`../Service/FocusService.cs`](../Service/FocusService.cs) / [`Interface/IFocusService.cs`](../Service/Interface/IFocusService.cs) | Focus 진행 |
+| [`../Service/NarrationService.cs`](../Service/NarrationService.cs) / [`Interface/INarrationService.cs`](../Service/Interface/INarrationService.cs) | Narration 진행 |
 | [`../../GUI/Screen/Tutorial/TutorialFocusScreen.cs`](../../GUI/Screen/Tutorial/TutorialFocusScreen.cs) | 스포트라이트/가이드 렌더링 |
-| [`../../GUI/ScreenOption/FocusOption.cs`](../../GUI/ScreenOption/FocusOption.cs) | `OpenAsync`에 전달하는 파라미터 |
-| [`../../GameInfo/Tutorial/`](../../GameInfo/Tutorial/) | `TutorialInfo`/`GuideBase`/`FocusGuide` 기획 데이터 |
-
-## 아직 비어있는 부분
-
-[`FocusTest.cs`](FocusTest.cs)(Odin `[Button]` 디버그 트리거)는 `TutorialInfo.sets`를 순회하며 `await StartFocusAsync(...)`를 호출하는데, `StartFocusAsync`는 **사용자가 실제로 클릭할 때까지 기다리지 않고** 완료 콜백을 걸어둔 뒤 즉시 반환합니다. 즉 이 루프는 각 스텝의 "셋업"만 순서대로 실행할 뿐이고, 다음 반복이 시작되며 이전 스텝의 클릭 리스너를 곧바로 정리해버립니다. 여러 스텝짜리 튜토리얼을 실제로 순차 진행시키려면 `onComplete`를 `await` 가능하게 감싸는 오케스트레이션(예: `UniTaskCompletionSource`)이 추가로 필요합니다.
+| [`../../GUI/Screen/Tutorial/TutorialNarrationScreen.cs`](../../GUI/Screen/Tutorial/TutorialNarrationScreen.cs) | 아이콘+텍스트+다음버튼 렌더링 |
+| [`../../GUI/ScreenOption/FocusOption.cs`](../../GUI/ScreenOption/FocusOption.cs) | Focus `OpenAsync`에 전달하는 파라미터 |
+| [`../../GUI/ScreenOption/NarrationOption.cs`](../../GUI/ScreenOption/NarrationOption.cs) | Narration `OpenAsync`에 전달하는 파라미터 |
+| [`../../GameInfo/Tutorial/`](../../GameInfo/Tutorial/) | `TutorialInfo`/`GuideBase`/`FocusGuide`/`NarrationGuide` 기획 데이터 |
 
 ## 연관 문서 / 코드
 

@@ -40,7 +40,7 @@ UI가 쌓이는 형태는 논리적으로 Stack이지만, 실제 요구사항은
 | `None` | 1 | 기본 레이어 (별도 설정 없으면 여기) |
 | `Popup` | 2 | 팝업 창 |
 | `Overlay` | 3 | 오버레이 |
-| `Tutorial` | 4 | 튜토리얼 Focus 스포트라이트/가이드 오버레이 ([`GamePlay/Tutorial/ARCHITECTURE.md`](../GamePlay/Tutorial/ARCHITECTURE.md)) |
+| `Tutorial` | 4 | 튜토리얼 Focus 스포트라이트/Narration 대사창 오버레이 ([`GamePlay/Tutorial/ARCHITECTURE.md`](../GamePlay/Tutorial/ARCHITECTURE.md)) |
 | `StageTransition` | 5 | 스테이지 시작/재시작 전환 오버레이 |
 | `Loading` | 6 | 로딩 화면 |
 | `SafeArea` | 7 | 입력 차단 (최상위) |
@@ -110,7 +110,7 @@ HideStageTransitionAsync()
 
 가장 높은 `SafeArea` Layer에 전용 [`SafeArea.cs`](Screen/SafeArea/SafeArea.cs) Screen을 열어 하위 레이어의 클릭을 막습니다. `IScreenManager.ShowSafeAreaAsync()`/`HideSafeAreaAsync()`([`ScreenManager.SafeArea.cs`](ScreenManager/ScreenManager.SafeArea.cs))로 어디서든 열고 닫을 수 있습니다.
 
-열릴 때마다 `autoBackTimer`(기본 5초, `IGameTimer` 기준) 카운트다운이 시작되고, 그 안에 `HideSafeAreaAsync()`로 닫히지 않으면 자동으로 `BackAsync()`가 호출됩니다 — `HideSafeAreaAsync()` 호출 누락 같은 버그가 있어도 입력 차단이 영구히 걸리지 않도록 하는 안전장치입니다. 튜토리얼 Focus 시스템([`GamePlay/Tutorial/ARCHITECTURE.md`](../GamePlay/Tutorial/ARCHITECTURE.md))이 스텝 전환 중 사용자가 다른 곳을 클릭하지 못하게 막는 용도로 이 API를 직접 호출합니다.
+열릴 때마다 `defaultTimer`(기본 5초, `IGameTimer` 기준, Show 시점에 `SafeAreaOption.Time`으로 개별 오버라이드 가능) 카운트다운이 시작되고, 그 안에 `HideSafeAreaAsync()`로 닫히지 않으면 자기 자신을 `CloseAsync(true, ct)`로 강제 종료합니다 — `HideSafeAreaAsync()` 호출 누락 같은 버그가 있어도 입력 차단이 영구히 걸리지 않도록 하는 안전장치입니다(예전엔 `BackAsync()`로 스택 최상단의 엉뚱한 화면을 닫는 버그가 있었으나 2026-08-24에 수정됨). 튜토리얼 Focus/Narration 시스템([`GamePlay/Tutorial/ARCHITECTURE.md`](../GamePlay/Tutorial/ARCHITECTURE.md))이 스텝 전환 중 사용자가 다른 곳을 클릭하지 못하게 막는 용도로 이 API를 직접 호출합니다.
 
 ---
 
@@ -127,8 +127,8 @@ HideStageTransitionAsync()
 | `Screen/Interface/` | Screen 인터페이스 + 상태 Flags | [`IScreen.cs`](Screen/Interface/IScreen.cs) |
 | `Screen/Loading/`, `Screen/PopUp/`, `Screen/Title/`, `Screen/Lobby/`, `Screen/Running/` | 실제 화면 구현 예시 | [`CountDown.cs`](Screen/PopUp/CountDown.cs), [`MessageBox.cs`](Screen/PopUp/MessageBox.cs), [`Loading.cs`](Screen/Loading/Loading.cs), [`TitleHUD.cs`](Screen/Title/TitleHUD.cs), [`LobbyHUD.cs`](Screen/Lobby/LobbyHUD.cs), [`RunningHUD.cs`](Screen/Running/RunningHUD.cs) 등 |
 | `Screen/SafeArea/` | 입력 차단 + 자동 복구 워치독 화면 | [`SafeArea.cs`](Screen/SafeArea/SafeArea.cs) |
-| `Screen/Tutorial/` | 튜토리얼 Focus 스포트라이트/가이드 화면 (상세: [`GamePlay/Tutorial/ARCHITECTURE.md`](../GamePlay/Tutorial/ARCHITECTURE.md)) | [`TutorialFocusScreen.cs`](Screen/Tutorial/TutorialFocusScreen.cs) |
-| `ScreenOption/` | `OpenAsync`에 전달하는 화면별 파라미터 (`IScreenOption`) | [`Interface/IScreenOption.cs`](ScreenOption/Interface/IScreenOption.cs), [`MessageBoxOption.cs`](ScreenOption/MessageBoxOption.cs) (`IClassPool`로 재사용), [`CountDownOption.cs`](ScreenOption/CountDownOption.cs), [`MessageBoxError.cs`](ScreenOption/MessageBoxError.cs), [`FocusOption.cs`](ScreenOption/FocusOption.cs) (Tutorial Focus 대상/가이드 데이터 전달) |
+| `Screen/Tutorial/` | 튜토리얼 Focus 스포트라이트/Narration 대사창 화면 (상세: [`GamePlay/Tutorial/ARCHITECTURE.md`](../GamePlay/Tutorial/ARCHITECTURE.md)) | [`TutorialFocusScreen.cs`](Screen/Tutorial/TutorialFocusScreen.cs), [`TutorialNarrationScreen.cs`](Screen/Tutorial/TutorialNarrationScreen.cs) |
+| `ScreenOption/` | `OpenAsync`에 전달하는 화면별 파라미터 (`IScreenOption`) | [`Interface/IScreenOption.cs`](ScreenOption/Interface/IScreenOption.cs), [`MessageBoxOption.cs`](ScreenOption/MessageBoxOption.cs) (`IClassPool`로 재사용), [`CountDownOption.cs`](ScreenOption/CountDownOption.cs), [`MessageBoxError.cs`](ScreenOption/MessageBoxError.cs), [`FocusOption.cs`](ScreenOption/FocusOption.cs)/[`NarrationOption.cs`](ScreenOption/NarrationOption.cs) (Tutorial Focus/Narration 데이터 전달), [`SafeAreaOption.cs`](ScreenOption/SafeAreaOption.cs) (SafeArea 워치독 타이머 오버라이드) |
 | `ViewModel/` | 반응형 데이터 바인딩 | 아래 [ViewModel 섹션](#2-viewmodel--반응형-데이터-바인딩) 참고 |
 | `Base/` | 리스트 아이템 선택 상태 관리 | [`SelectElement.cs`](Base/SelectElement.cs), [`Selector.cs`](Base/Selector.cs) |
 | `SW_GUI/` | 커스텀 UI 위젯 (독립 서브시스템) | 아래 [SW_GUI 섹션](#3-sw_gui--커스텀-ui-위젯) 참고 |
