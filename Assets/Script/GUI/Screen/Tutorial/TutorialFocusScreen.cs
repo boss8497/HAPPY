@@ -118,7 +118,7 @@ namespace Script.GUI.Screen.Tutorial {
             _updateFocus = false;
             _target      = null;
             if (hide) {
-                await BackAsync(true, ct);
+                await CloseAsync(true, ct);
             }
         }
 

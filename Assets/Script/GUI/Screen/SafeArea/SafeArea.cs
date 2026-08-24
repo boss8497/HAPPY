@@ -1,15 +1,18 @@
 ﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameTimer;
+using Script.GUI.ScreenData;
 using Script.GUI.ScreenData.Interface;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VContainer;
 
 namespace Script.GUI.Screen.SafeArea {
     public class SafeArea : Screen {
         private IGameTimer _gameTimer;
+        private float      _maxTime;
 
-        [SerializeField] private float autoBackTimer = 5.0f;
+        [SerializeField] private float defaultTimer = 5.0f;
 
         private CancellationTokenSource _cts;
 
@@ -19,9 +22,20 @@ namespace Script.GUI.Screen.SafeArea {
         }
 
         public override UniTask OpenInternal(IScreenOption screenOption, CancellationToken ct = default) {
-            _cts = new();
-            AutoBack(_cts.Token).Forget();
+            Run(screenOption);
             return UniTask.CompletedTask;
+        }
+
+        public override UniTask OpenChangeOptionAsync(IScreenOption screenOption, CancellationToken ct = default) {
+            Run(screenOption);
+            return UniTask.CompletedTask;
+        }
+
+        private void Run(IScreenOption screenOption) {
+            ReleaseAuto();
+            _maxTime = screenOption is SafeAreaOption option ? option.Time : defaultTimer;
+            _cts     = new();
+            AutoBack().Forget();
         }
 
         public override UniTask CloseInternal() {
@@ -29,17 +43,17 @@ namespace Script.GUI.Screen.SafeArea {
             return UniTask.CompletedTask;
         }
 
-        private async UniTask AutoBack(CancellationToken ct) {
+        private async UniTask AutoBack() {
             var timer    = 0f;
             var isCancel = false;
-            while (timer < autoBackTimer && !ct.IsCancellationRequested) {
+            while (timer < _maxTime && !_cts.Token.IsCancellationRequested) {
                 timer    += _gameTimer?.UnscaledDeltaTime ?? Time.unscaledDeltaTime;
-                isCancel =  await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken: ct).SuppressCancellationThrow();
+                isCancel =  await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken: _cts.Token).SuppressCancellationThrow();
                 if (isCancel) break;
             }
 
             if (!isCancel) {
-                BackAsync().Forget();
+                await CloseAsync(true, _cts.Token);
             }
         }
 

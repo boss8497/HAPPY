@@ -37,7 +37,7 @@ namespace Script.GUI.Screen {
             }
             _screens.Remove(screen);
 
-            await screen.CloseAsync();
+            await screen.CloseEventAsync();
             await screen.CloseAnimationAsync();
 
             await screen.CloseLateInternal();

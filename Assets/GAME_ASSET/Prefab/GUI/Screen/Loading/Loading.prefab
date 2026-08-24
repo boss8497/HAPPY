@@ -361,7 +361,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Script.GUI.Screen::Script.GUI.Screen.Loading
   key: Loading
-  layerType: 5
+  layerType: 6
   option: 0
   _backButtons: []
 --- !u!1 &2784875164850318577

@@ -31,6 +31,7 @@ namespace Script.GamePlay.Service {
 
         public FocusService(IScreenManager screenManager) {
             _screenManager = screenManager;
+            Initialized    = true;
         }
 
         public void Initialize() { }

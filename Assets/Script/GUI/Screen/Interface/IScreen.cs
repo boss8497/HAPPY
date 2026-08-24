@@ -41,7 +41,7 @@ namespace Script.GUI.Screen {
 
         void          Back(bool      force = false);
         UniTask       BackAsync(bool force = false, CancellationToken ct = default);
-        UniTask       CloseAsync();
+        UniTask       CloseEventAsync();
         UniTask       CloseInternal();
         UniTask       CloseLateInternal();
         UniTask       CloseAnimationAsync();

@@ -50,9 +50,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Script.GUI.Screen::Script.GUI.Screen.SafeArea.SafeArea
   key: SafeArea
-  layerType: 6
-  option: 0
+  layerType: 7
+  option: 1
   _backButtons: []
+  defaultTimer: 5
 --- !u!1 &2784875164850318577
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,28 +8,21 @@ using VContainer;
 
 namespace Script.Tutorial {
     public class FocusTest : MonoBehaviour {
-        private IFocusService _focusService;
+        private ITutorialService _tutorialService;
 
         [Tutorial]
         public int testTutorialInfo;
         
         [Button]
         public async void Test() {
-            var tutorialInfo = GameInfoManager.Instance.Get<TutorialInfo>(testTutorialInfo);
-            foreach (var set in tutorialInfo.sets) {
-                if (set is FocusGuide focusGuide) {
-                    await _focusService.StartFocusAsync(focusGuide, () => {
-                        _focusService.StopFocusAsync(true);
-                    });
-                }
-            }
+            _tutorialService.StartTutorial(testTutorialInfo);
         }
         
         [Inject]
         public void InjectSelf(
-            IFocusService  focusService
+            ITutorialService  tutorialService
         ) {
-            _focusService = focusService;
+            _tutorialService = tutorialService;
         }
     }
 }

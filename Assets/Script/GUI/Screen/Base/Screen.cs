@@ -113,12 +113,21 @@ namespace Script.GUI.Screen {
 
             _screenManager.CloseAsync(this).Forget();
         }
+        
+        protected async UniTask CloseAsync(bool force = false, CancellationToken  ct = default) {
+            if (force == false && DontClose) {
+                return;
+            }
+
+            await _screenManager.CloseAsync(this, force, ct);
+        }
 
 
         /// <summary>
         /// Close 시 제일 먼저 호출되는 메서드
+        /// 이벤트 호출용이지 
         /// </summary>
-        public async UniTask CloseAsync() {
+        public async UniTask CloseEventAsync() {
             await CloseInternal();
             foreach (var pool in _pools.ToArray()) {
                 PoolPush(pool);

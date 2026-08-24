@@ -34,7 +34,7 @@ namespace Script.GUI.Screen {
             if (_safeAreaScreenShown == false) return;
 
             _safeAreaScreenShown = false;
-            await _layers[(int)ScreenLayerType.SafeArea].CloseScreen(_safeAreaScreen);
+            await _layers[(int)ScreenLayerType.SafeArea].CloseScreen(_safeAreaScreen, true);
         }
     }
 }

@@ -101,12 +101,7 @@ MonoBehaviour:
   right: {fileID: 3510446504501046047}
   speechParent: {fileID: 4797481192947466453}
   speechText: {fileID: 4433009316312956170}
-  leftSpeech:
-    image: {fileID: 1806229218150576507}
-    imageParent: {fileID: 2753742652540778167}
-  rightSpeech:
-    image: {fileID: 3638067603087467301}
-    imageParent: {fileID: 7195142799597209053}
+  leftIcon: {fileID: 1806229218150576507}
   speechMargin: {x: 0, y: 0}
   focusButton: {fileID: 1045386326579573553}
   rayCastImage: []

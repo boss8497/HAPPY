@@ -13,7 +13,7 @@ using UnityEngine;
 using VContainer;
 
 namespace Script.GamePlay.Service {
-    public class TutorialService : ITutorialService {
+    public class TutorialService : ITutorialService, IDisposable {
         private IFocusService  _focusService;
         private IScopeLocator  _scopeLocator;
         private IScreenManager _screenManager;
@@ -55,29 +55,21 @@ namespace Script.GamePlay.Service {
             return Initialized && (_focusService?.Initialized ?? false);
         }
 
-        public void StopTutorial(CancellationToken ct = default) {
-            SetSafeArea(false);
-            if (_cts is { IsCancellationRequested: false }) {
-                _cts.Cancel();
-                _cts.Dispose();
-                _cts = null;
-            }
-        }
-
-        public async UniTask StartTutorial(int uid, CancellationToken ct = default) {
+        public void StartTutorial(int uid) {
             if (_waitQueue.Contains(uid) || _currentTutorialUid == uid) return;
             var guideInfo = GameInfoManager.Instance.Get<TutorialInfo>(uid);
             if (guideInfo == null) {
                 return;
             }
 
-            await StartTutorial(guideInfo, ct);
+            StartTutorial(guideInfo);
         }
 
-        public UniTask StartTutorial(TutorialInfo tutorialInfo, CancellationToken ct = default) {
+        public void StartTutorial(TutorialInfo tutorialInfo) {
             if (_waitQueue.Contains(tutorialInfo.UID) || _currentTutorialUid == tutorialInfo.UID) {
-                return UniTask.CompletedTask;
+                return;
             }
+
             // 상시 Update Loop로 뺴자
             _waitQueue.Enqueue(tutorialInfo.UID);
 
@@ -86,27 +78,25 @@ namespace Script.GamePlay.Service {
                 var token = _cts.Token;
                 UpdateLoop(token).Forget();
             }
-
-            return UniTask.CompletedTask;
         }
-
-        private void SetSafeArea(bool isOn) {
-            if (isOn) {
-                _screenManager.ShowSafeAreaAsync();
-            }
-            else {
-                _screenManager.HideSafeAreaAsync();
+        
+        public void StopTutorial() {
+            SetSafeArea(false);
+            if (_cts is { IsCancellationRequested: false }) {
+                _cts.Cancel();
+                _cts.Dispose();
+                _cts = null;
             }
         }
 
         private async UniTask UpdateLoop(CancellationToken ct = default) {
-            bool isCancel = false;
+            var isCancel = await UniTask.WaitUntil(IsInitialized, cancellationToken: ct).SuppressCancellationThrow();
+            if (isCancel) return;
+
             while (!ct.IsCancellationRequested && _waitQueue.Count > 0) {
                 _currentTutorialUid = _waitQueue.Dequeue();
                 var tutorialInfo = CurrentTutorialInfo;
-
-                SetSafeArea(true);
-
+                
                 if (tutorialInfo.systemControl) {
                     SetSystemControl(true);
                 }
@@ -177,13 +167,21 @@ namespace Script.GamePlay.Service {
                 if (tutorialInfo.systemControl) {
                     SetSystemControl(false);
                 }
+                _currentTutorialUid = -1;
             }
-
-            SetSafeArea(false);
             
             _cts?.Cancel();
             _cts?.Dispose();
             _cts = null;
+        }
+
+        private void SetSafeArea(bool isOn) {
+            if (isOn) {
+                _screenManager.ShowSafeAreaAsync();
+            }
+            else {
+                _screenManager.HideSafeAreaAsync();
+            }
         }
 
         private void SetSystemControl(bool enable) {

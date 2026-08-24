@@ -40,8 +40,10 @@
         "GUID:320d9ee2dbd710a43a5c8e405f512b3c",
         "GUID:c5c8f8894fdbae4488f68edcf3e7b9bb",
         "GUID:c09615db8c8cf6140bd016c0c39dbb91",
-        "Script.Audio",
-        "Script.Audio.Interface"
+        "GUID:496a726b44ca4584da7ad606c7c0d5b9",
+        "GUID:fa801717cc701074b83f625315680f93",
+        "GUID:c8c688dd9b4cc484e8e63b8c13e6e2e8",
+        "GUID:11e510fa97009e4469163976812a12db"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
