@@ -34,6 +34,9 @@ namespace Script.GUI.Screen.Interface {
         /// </summary>
         UniTask HideStageTransitionAsync();
 
+        UniTask ShowLoadingAsync();
+        UniTask HideLoadingAsync();
+
         UniTask ShowSafeAreaAsync();
         UniTask HideSafeAreaAsync();
 

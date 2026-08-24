@@ -275,6 +275,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc06d7528cc5edf45a85b71262cbf5e2
+    m_Address: TutorialNarration
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ff5520d113746314f90b6bef03234075
     m_Address: UNIT_COIN
     m_ReadOnly: 0

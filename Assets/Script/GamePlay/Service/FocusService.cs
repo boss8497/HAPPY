@@ -46,9 +46,9 @@ namespace Script.GamePlay.Service {
             _focusDic.Remove(data.id);
         }
 
-        public async UniTask StartFocusAsync(GuideBase guide, Action onComplete = null, Action onSkip = null, CancellationToken ct = default) {
+        public async UniTask StartAsync(GuideBase guide, Action onComplete = null, Action onSkip = null, CancellationToken ct = default) {
             await SafeArea(true);
-            await StopFocusAsync(false, ct);
+            await StopAsync(false, ct);
 
             // UI가 열리기 전 실행 됐을 때 대기 타임
             var data = await GetRetryFocusData(guide, 100, ct);
@@ -68,7 +68,7 @@ namespace Script.GamePlay.Service {
             SetFocusCompleteCallBack(data, onComplete);
         }
 
-        public async UniTask StopFocusAsync(bool hide, CancellationToken ct = default) {
+        public async UniTask StopAsync(bool hide, CancellationToken ct = default) {
             OnComplete = null;
             if (_focus == null) return;
             await _focus.StopAsync(hide, ct);
@@ -191,7 +191,7 @@ namespace Script.GamePlay.Service {
         }
 
         public void Dispose() {
-            StopFocusAsync(true).Forget();
+            StopAsync(true).Forget();
         }
     }
 }

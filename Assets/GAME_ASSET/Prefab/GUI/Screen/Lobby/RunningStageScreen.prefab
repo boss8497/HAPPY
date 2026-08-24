@@ -1006,7 +1006,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
+  m_fontSize: 23.25
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1973,6 +1973,7 @@ GameObject:
   - component: {fileID: 660975291420924473}
   - component: {fileID: 1692126130394723912}
   - component: {fileID: 9123770670815317357}
+  - component: {fileID: 1210853353650398193}
   m_Layer: 5
   m_Name: StartBtn
   m_TagString: Untagged
@@ -2056,6 +2057,48 @@ MonoBehaviour:
   onClickEvent:
     m_PersistentCalls:
       m_Calls: []
+  onPressEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onReleaseEvent:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &1210853353650398193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4717896478013852107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 258a26fd71014074b295f65ed3d09f49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Script.Tutorial::Script.Tutorial.FocusComponent
+  focusData:
+    rid: 5200153988198039651
+  showGizmos: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 5200153988198039651
+      type: {class: TutorialFocusData, ns: Script.Tutorial, asm: Script.Tutorial.Data}
+      data:
+        guid:
+          v0: 3035404999
+          v1: 1110060362
+          v2: 2806766003
+          v3: 3772952447
+        id: RunningStartButton
+        type: 1
+        rtf: {fileID: 4396659810094816156}
+        target: {fileID: 9123770670815317357}
+        useGard: 1
+        targetType: 
+        characterGuid: 
+        itemGuid: 
+        sizeOffset: {x: 0, y: 0}
+        positionOffset: {x: 0, y: 0}
 --- !u!1 &5167230882207367568
 GameObject:
   m_ObjectHideFlags: 0

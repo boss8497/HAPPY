@@ -18,7 +18,7 @@ namespace Script.GUI.Screen {
         private IScreen _loadingScreen;
         private bool    _loadingScreenShown;
 
-        private async UniTask ShowLoadingAsync() {
+        public async UniTask ShowLoadingAsync() {
             if (_loadingScreenShown) return;
 
             if (_loadingScreen == null) {
@@ -35,7 +35,7 @@ namespace Script.GUI.Screen {
             await _layers[(int)ScreenLayerType.Loading].OpenScreen(_loadingScreen, null);
         }
 
-        private async UniTask HideLoadingAsync() {
+        public async UniTask HideLoadingAsync() {
             if (_loadingScreenShown == false) return;
 
             _loadingScreenShown = false;

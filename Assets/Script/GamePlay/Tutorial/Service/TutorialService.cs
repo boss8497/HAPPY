@@ -113,10 +113,11 @@ namespace Script.GamePlay.Service {
                 }
 
 
-                var dialogCount = tutorialInfo.sets.Length;
+                var       dialogCount     = tutorialInfo.sets.Length;
+                ITutorial previousService = null;
                 for (int i = 0; i < dialogCount; i++) {
-                    var guide     = tutorialInfo.sets[i];
-                    var nextGuide = i + 1 >= dialogCount ? null : tutorialInfo.sets[i + 1];
+                    var       guide     = tutorialInfo.sets[i];
+                    var       nextGuide = i + 1 >= dialogCount ? null : tutorialInfo.sets[i + 1];
 
                     if (ct.IsCancellationRequested) break;
 
@@ -142,7 +143,12 @@ namespace Script.GamePlay.Service {
                         var focusComplete = false;
 
                         SetSafeArea(true);
-                        await _focusService.StartFocusAsync(guide, () => { focusComplete = true; }, ct: ct);
+                        // 시작 전 이전의 서비스를 꺼주자. 같은 서비스가 아니면 종료.
+                        if (previousService is not null && previousService is not IFocusService) {
+                            await previousService.StopAsync(true, ct);
+                        }
+                        
+                        await _focusService.StartAsync(guide, () => { focusComplete = true; }, ct: ct);
                         SetSafeArea(false);
 
                         isCancel = await UniTask.WaitUntil(() => focusComplete, cancellationToken: ct).SuppressCancellationThrow();
@@ -160,7 +166,8 @@ namespace Script.GamePlay.Service {
                             break;
                         }
 
-                        await _focusService.StopFocusAsync(nextGuide is not FocusGuide, ct);
+                        await _focusService.StopAsync(nextGuide is not FocusGuide, ct);
+                        previousService = _focusService;
                     }
                 }
 

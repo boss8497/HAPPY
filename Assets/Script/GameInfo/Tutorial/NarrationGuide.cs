@@ -2,15 +2,12 @@
 using UnityEngine;
 
 namespace Script.GameInfo.Info {
-    [System.Serializable]
-    public class FocusGuide : GuideBase {
-        [Focus]
-        public SerializeGuid focusGuid;
-        public bool          flip;
-
+    public class NarrationGuide : GuideBase {
         public string name      = string.Empty;
+        
+        [TextArea]
         public string guideText = string.Empty;
-
+        
         [AssetPath(typeof(Sprite))]
         public string iconPath = string.Empty;
     }

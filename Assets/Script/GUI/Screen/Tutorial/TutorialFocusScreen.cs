@@ -46,6 +46,7 @@ namespace Script.GUI.Screen.Tutorial {
 
         [SerializeField] private RectTransform speechParent;
         [SerializeField] private TMP_Text      speechText;
+        [SerializeField] private TMP_Text      speechNameText;
 
         [SerializeField] private Image leftIcon;
 
@@ -70,24 +71,27 @@ namespace Script.GUI.Screen.Tutorial {
             _baseAlpha = gardImages.First().color.a;
         }
 
-        public override UniTask OpenInternal(IScreenOption screenOption, CancellationToken ct = default) {
+        public override async UniTask OpenInternal(IScreenOption screenOption, CancellationToken ct = default) {
             _disposableBag.Dispose();
             _disposableBag = new();
 
             Name = FocusInfo.Select(x => x?.name).ToReadOnlyReactiveProperty().AddTo(ref _disposableBag);
+            Name.Subscribe(speechName => {
+                    if (speechNameText != null) {
+                        speechNameText.SetText(speechName);
+                    }
+                })
+                .AddTo(ref _disposableBag);
 
             if (screenOption is FocusOption focusOption) {
-                SetFocusAsync(focusOption.TutorialFocusData, focusOption.FocusGuide).Forget();
+                await SetFocusAsync(focusOption.TutorialFocusData, focusOption.FocusGuide, ct);
             }
-            
-            return UniTask.CompletedTask;
         }
 
-        public override UniTask OpenChangeOptionAsync(IScreenOption screenOption, CancellationToken ct = default) {
+        public override async UniTask OpenChangeOptionAsync(IScreenOption screenOption, CancellationToken ct = default) {
             if (screenOption is FocusOption focusOption) {
-                SetFocusAsync(focusOption.TutorialFocusData, focusOption.FocusGuide).Forget();
+                await SetFocusAsync(focusOption.TutorialFocusData, focusOption.FocusGuide, ct);
             }
-            return UniTask.CompletedTask;
         }
 
         public override async UniTask CloseInternal() {

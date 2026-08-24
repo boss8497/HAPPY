@@ -104,3 +104,10 @@ MonoBehaviour:
       m_SubObjectType: 
       m_SubObjectGUID: 
       m_EditorAssetChanged: 1
+  - id: TutorialNarration
+    screen:
+      m_AssetGUID: fc06d7528cc5edf45a85b71262cbf5e2
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 1
