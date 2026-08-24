@@ -14,9 +14,10 @@ using VContainer;
 
 namespace Script.GamePlay.Service {
     public class TutorialService : ITutorialService, IDisposable {
-        private IFocusService  _focusService;
-        private IScopeLocator  _scopeLocator;
-        private IScreenManager _screenManager;
+        private IFocusService     _focusService;
+        private INarrationService _narrationService;
+        private IScopeLocator     _scopeLocator;
+        private IScreenManager    _screenManager;
 
         public bool Initialized { get; private set; }
 
@@ -36,14 +37,16 @@ namespace Script.GamePlay.Service {
 
 
         public TutorialService(
-            IFocusService  focusService,
-            IScopeLocator  scopeLocator,
-            IScreenManager screenManager
+            IFocusService     focusService,
+            IScopeLocator     scopeLocator,
+            IScreenManager    screenManager,
+            INarrationService narrationService
         ) {
-            _focusService  = focusService;
-            _scopeLocator  = scopeLocator;
-            _screenManager = screenManager;
-            Initialized    = true;
+            _focusService     = focusService;
+            _scopeLocator     = scopeLocator;
+            _screenManager    = screenManager;
+            _narrationService = narrationService;
+            Initialized       = true;
         }
 
         private IStageManager GetStageManager() {
@@ -79,7 +82,7 @@ namespace Script.GamePlay.Service {
                 UpdateLoop(token).Forget();
             }
         }
-        
+
         public void StopTutorial() {
             SetSafeArea(false);
             if (_cts is { IsCancellationRequested: false }) {
@@ -96,7 +99,7 @@ namespace Script.GamePlay.Service {
             while (!ct.IsCancellationRequested && _waitQueue.Count > 0) {
                 _currentTutorialUid = _waitQueue.Dequeue();
                 var tutorialInfo = CurrentTutorialInfo;
-                
+
                 if (tutorialInfo.systemControl) {
                     SetSystemControl(true);
                 }
@@ -116,10 +119,42 @@ namespace Script.GamePlay.Service {
                 var       dialogCount     = tutorialInfo.sets.Length;
                 ITutorial previousService = null;
                 for (int i = 0; i < dialogCount; i++) {
-                    var       guide     = tutorialInfo.sets[i];
-                    var       nextGuide = i + 1 >= dialogCount ? null : tutorialInfo.sets[i + 1];
+                    var guide     = tutorialInfo.sets[i];
+                    var nextGuide = i + 1 >= dialogCount ? null : tutorialInfo.sets[i + 1];
 
                     if (ct.IsCancellationRequested) break;
+
+
+                    if (guide is NarrationGuide nGuide) {
+                        var focusComplete = false;
+
+                        SetSafeArea(true);
+                        // 시작 전 이전의 서비스를 꺼주자. 같은 서비스가 아니면 종료.
+                        if (previousService is not null && previousService is not IFocusService) {
+                            await previousService.StopAsync(true, ct);
+                        }
+
+                        await _narrationService.StartAsync(guide, () => { focusComplete = true; }, ct: ct);
+                        SetSafeArea(false);
+
+                        isCancel = await UniTask.WaitUntil(() => focusComplete, cancellationToken: ct).SuppressCancellationThrow();
+                        if (isCancel) {
+                            SetSafeArea(false);
+                            Debug.LogError($"Tutorial UpdateLoop is Cancelled.");
+                            break;
+                        }
+
+                        SetSafeArea(true);
+                        isCancel = await UniTask.DelayFrame(2, PlayerLoopTiming.FixedUpdate, ct).SuppressCancellationThrow();
+                        if (isCancel) {
+                            SetSafeArea(false);
+                            Debug.LogError($"Tutorial UpdateLoop is Cancelled.");
+                            break;
+                        }
+
+                        await _narrationService.StopAsync(nextGuide is not FocusGuide, ct);
+                        previousService = _narrationService;
+                    }
 
                     //포커스
                     if (guide is FocusGuide fGuide) {
@@ -147,7 +182,7 @@ namespace Script.GamePlay.Service {
                         if (previousService is not null && previousService is not IFocusService) {
                             await previousService.StopAsync(true, ct);
                         }
-                        
+
                         await _focusService.StartAsync(guide, () => { focusComplete = true; }, ct: ct);
                         SetSafeArea(false);
 
@@ -174,9 +209,10 @@ namespace Script.GamePlay.Service {
                 if (tutorialInfo.systemControl) {
                     SetSystemControl(false);
                 }
+
                 _currentTutorialUid = -1;
             }
-            
+
             _cts?.Cancel();
             _cts?.Dispose();
             _cts = null;

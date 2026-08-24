@@ -24,6 +24,7 @@ MonoBehaviour:
         <ID>k__BackingField: Test
         <Name>k__BackingField: "\uD14C\uC2A4\uD2B8"
         sets:
+        - rid: 5200153988198039671
         - rid: 5200153937462689951
         - rid: 5200153988198039652
         systemControl: 0
@@ -60,3 +61,14 @@ MonoBehaviour:
         name: "\uAC00\uC774\uB4DC"
         guideText: "\uC77C\uB2E8\\n\uC2DC\uC791\uD574 \uBCFC\uAE4C\uC694!?"
         iconPath: afad3987ab25afe41b19df1deba9b2e6
+    - rid: 5200153988198039671
+      type: {class: NarrationGuide, ns: Script.GameInfo.Info, asm: Script.GameInfo}
+      data:
+        id: 
+        delayTime: 0
+        fadeInTime: 0
+        fadeOutTime: 0
+        name: "\uAC00\uC774\uB4DC"
+        guideText: "\uC5B4\uC11C\uC640 \uCC98\uC74C\uC774\uC9C0!!"
+        iconPath: 508b44a41d7e0e243861e8ab812817ea
+        flip: 0

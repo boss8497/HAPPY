@@ -10,5 +10,7 @@ namespace Script.GameInfo.Info {
         
         [AssetPath(typeof(Sprite))]
         public string iconPath = string.Empty;
+
+        public bool flip;
     }
 }

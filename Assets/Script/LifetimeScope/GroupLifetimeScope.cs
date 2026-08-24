@@ -20,6 +20,10 @@ namespace Script.LifetimeScope {
             
             builder.RegisterEntryPoint<FocusService>(Lifetime.Singleton)
                    .As<IFocusService>();
+            
+            builder.RegisterEntryPoint<NarrationService>(Lifetime.Singleton)
+                   .As<INarrationService>();
+            
         }
     }
 }
