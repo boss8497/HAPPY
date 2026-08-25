@@ -2,8 +2,10 @@
 
 Unity 6 기반 개인 포트폴리오 프로젝트. 장르는 러닝 게임이지만, 목표는 게임 자체보다 **여러 장르에 재사용 가능한 클라이언트 아키텍처**를 처음부터 끝까지 혼자 설계하는 것입니다.
 
+- GitHub 저장소: [boss8497/HAPPY](https://github.com/boss8497/HAPPY)
 - 데모 영상: [플레이 영상](https://youtu.be/cPMAi_6IVBo) / [최적화 작업 영상](https://youtu.be/yu9KNhfChl4)
-- 빌드: [Windows 빌드 다운로드](https://drive.google.com/file/d/1HkHU9NtVqA8sHvXHYHd3pBpviKZ9EYxP/view?usp=drive_link) [APK 다운로드](https://drive.google.com/file/d/1HMmcxvKTH1KIafnQBOwepF52pNRseN1Q/view?usp=drive_link)
+- 빌드: [Windows 빌드 다운로드](https://drive.google.com/file/d/1Hp_Nag2OQNoWnqUTHR-A6GmTdxsX61g7/view?usp=sharing) [APK 다운로드](https://drive.google.com/file/d/1SDlyjQkX_kLM3wCini6YGiWT7o8IOCrq/view?usp=sharing)
+- Notion: [이력서](https://sprinkle-quesadilla-28e.notion.site/3c57f18c7c7080f49daac2604fcdc5fa) / [경력기술서](https://sprinkle-quesadilla-28e.notion.site/3c57f18c7c7080f49f2ac41962de395a) / [포트폴리오](https://sprinkle-quesadilla-28e.notion.site/3c57f18c7c7080448b02e26b6f3b0687)
 
 ## 프로젝트 목표
 
