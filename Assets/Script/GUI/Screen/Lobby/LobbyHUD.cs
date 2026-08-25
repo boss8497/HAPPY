@@ -1,7 +1,9 @@
 ﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameInfo.Attribute;
+using Script.GameInfo.Info;
 using Script.GamePlay.Audio.Interface;
+using Script.GamePlay.Service.Interface;
 using Script.GUI.ScreenData.Interface;
 using Script.Utility.Runtime;
 using SW.GUI;
@@ -13,6 +15,10 @@ using VContainer;
 namespace Script.GUI.Screen {
     public class LobbyHUD : Screen {
         private IAudioManager _audioManager;
+        private ITutorialService _tutorialService;
+
+        [SerializeField, Tutorial]
+        private int _lobbyTutorialUid; 
 
         [SerializeField, ScreenKey]
         private string runningStageScreen;
@@ -29,9 +35,11 @@ namespace Script.GUI.Screen {
 
         [Inject]
         public void InjectSelf(
-            IAudioManager audioManager
+            IAudioManager    audioManager,
+            ITutorialService tutorialService
         ) {
-            _audioManager = audioManager;
+            _audioManager    = audioManager;
+            _tutorialService = tutorialService;
         }
 
 
@@ -42,6 +50,7 @@ namespace Script.GUI.Screen {
         }
 
         public override UniTask OpenInternal(IScreenOption data, CancellationToken ct = default) {
+            _tutorialService.StartTutorial(_lobbyTutorialUid);
             return UniTask.CompletedTask;
         }
 

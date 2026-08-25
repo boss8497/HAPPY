@@ -24,7 +24,7 @@ namespace Script.GameData.Data {
 
         public bool CanPlayTutorial(TutorialProgress progress) {
             if (Model?.Value == null) return false;
-            return (int)progress <= (int)TutorialProgress.CurrentValue + 1;
+            return (int)progress == (int)TutorialProgress.CurrentValue + 1;
         }
 
         public void Dispose() {

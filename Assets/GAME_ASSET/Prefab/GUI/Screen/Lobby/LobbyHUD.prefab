@@ -226,6 +226,7 @@ MonoBehaviour:
   layerType: 0
   option: 1
   _backButtons: []
+  _lobbyTutorialUid: 1
   runningStageScreen: RunningStageScreen
   runningStageScreenBtn: {fileID: 720483142965225907}
   logLikeScreen: 

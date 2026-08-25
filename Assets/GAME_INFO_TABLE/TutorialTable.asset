@@ -107,7 +107,7 @@ MonoBehaviour:
         flip: 0
         name: "\uAC00\uC774\uB4DC"
         guideText: "\uC5EC\uAE30\uC11C \uC635\uC158\uC744 \uC124\uC815\uD560 \uC218
-          \uC788\uC5B4!!"
+          \uC788\uC5B4!!\\n\uD3EC\uCEE4\uC2F1 \uD654\uBA74\uC744 \uD074\uB9AD\uD574!!"
         iconPath: 8593908a37a47a44f9c674317c1aec0a
     - rid: 5200154010822377580
       type: {class: FocusGuide, ns: Script.GameInfo.Info, asm: Script.GameInfo}
