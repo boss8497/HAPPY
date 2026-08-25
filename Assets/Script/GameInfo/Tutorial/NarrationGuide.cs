@@ -2,6 +2,7 @@
 using UnityEngine;
 
 namespace Script.GameInfo.Info {
+    [System.Serializable]
     public class NarrationGuide : GuideBase {
         public string name      = string.Empty;
         

@@ -153,5 +153,9 @@ namespace Script.GamePlay.Service {
             }
             return UniTask.CompletedTask;
         }
+
+        public void Dispose() {
+            // TODO release managed resources here
+        }
     }
 }

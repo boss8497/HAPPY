@@ -160,6 +160,12 @@ MonoBehaviour:
   onClickEvent:
     m_PersistentCalls:
       m_Calls: []
+  onPressEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onReleaseEvent:
+    m_PersistentCalls:
+      m_Calls: []
   _isOn: 0
   onValueChanged:
     m_PersistentCalls:
@@ -328,6 +334,12 @@ MonoBehaviour:
   useDelay: 0
   delay: 0.05
   onClickEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onPressEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onReleaseEvent:
     m_PersistentCalls:
       m_Calls: []
   _isOn: 0
@@ -838,6 +850,7 @@ GameObject:
   - component: {fileID: 2204526598624198791}
   - component: {fileID: 4855479005220990062}
   - component: {fileID: 1031359007443563199}
+  - component: {fileID: 2806060387446008990}
   m_Layer: 5
   m_Name: CancelButton
   m_TagString: Untagged
@@ -921,6 +934,48 @@ MonoBehaviour:
   onClickEvent:
     m_PersistentCalls:
       m_Calls: []
+  onPressEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onReleaseEvent:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &2806060387446008990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1679041971133701587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 258a26fd71014074b295f65ed3d09f49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Script.Tutorial::Script.Tutorial.FocusComponent
+  focusData:
+    rid: 5200154010822377576
+  showGizmos: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 5200154010822377576
+      type: {class: TutorialFocusData, ns: Script.Tutorial, asm: Script.Tutorial.Data}
+      data:
+        guid:
+          v0: 2442117096
+          v1: 1318519237
+          v2: 2181626811
+          v3: 3519558963
+        id: OptionWindowCancel
+        type: 1
+        rtf: {fileID: 2351285433412187537}
+        target: {fileID: 1031359007443563199}
+        useGard: 1
+        targetType: 
+        characterGuid: 
+        itemGuid: 
+        sizeOffset: {x: 0, y: 0}
+        positionOffset: {x: 0, y: 0}
 --- !u!1 &1752501972531858792
 GameObject:
   m_ObjectHideFlags: 0
@@ -1597,6 +1652,12 @@ MonoBehaviour:
   useDelay: 0
   delay: 0.05
   onClickEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onPressEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onReleaseEvent:
     m_PersistentCalls:
       m_Calls: []
   _isOn: 0
@@ -3252,6 +3313,12 @@ MonoBehaviour:
   onClickEvent:
     m_PersistentCalls:
       m_Calls: []
+  onPressEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onReleaseEvent:
+    m_PersistentCalls:
+      m_Calls: []
   _isOn: 0
   onValueChanged:
     m_PersistentCalls:
@@ -3412,6 +3479,7 @@ GameObject:
   - component: {fileID: 5245759779730383038}
   - component: {fileID: 3326726860295256038}
   - component: {fileID: 698881122611737781}
+  - component: {fileID: 254117666568891365}
   m_Layer: 5
   m_Name: BackGround
   m_TagString: Untagged
@@ -3496,6 +3564,42 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &254117666568891365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5185523144750319846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 258a26fd71014074b295f65ed3d09f49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Script.Tutorial::Script.Tutorial.FocusComponent
+  focusData:
+    rid: 5200154010822377600
+  showGizmos: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 5200154010822377600
+      type: {class: TutorialFocusData, ns: Script.Tutorial, asm: Script.Tutorial.Data}
+      data:
+        guid:
+          v0: 1449728239
+          v1: 1323404968
+          v2: 1303435668
+          v3: 1321218288
+        id: OptionWindowImage
+        type: 2
+        rtf: {fileID: 5108200765863101451}
+        target: {fileID: 698881122611737781}
+        useGard: 1
+        targetType: 
+        characterGuid: 
+        itemGuid: 
+        sizeOffset: {x: 0, y: 0}
+        positionOffset: {x: 0, y: 0}
 --- !u!1 &5276124221718250495
 GameObject:
   m_ObjectHideFlags: 0
@@ -4196,6 +4300,12 @@ MonoBehaviour:
   onClickEvent:
     m_PersistentCalls:
       m_Calls: []
+  onPressEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onReleaseEvent:
+    m_PersistentCalls:
+      m_Calls: []
   option: 0
   OnSelect:
     m_PersistentCalls:
@@ -4846,6 +4956,12 @@ MonoBehaviour:
   onClickEvent:
     m_PersistentCalls:
       m_Calls: []
+  onPressEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onReleaseEvent:
+    m_PersistentCalls:
+      m_Calls: []
   _targetGraphic: {fileID: 3752265445652309963}
   _interactableColor: {r: 0.5169811, g: 0.5169811, b: 0.5169811, a: 0.5}
   _baseGraphicColor: {r: 0.8631092, g: 0.86415094, b: 0.49403343, a: 1}
@@ -5456,6 +5572,12 @@ MonoBehaviour:
   useDelay: 0
   delay: 0.05
   onClickEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onPressEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onReleaseEvent:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &8529946155298835747

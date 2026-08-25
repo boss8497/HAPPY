@@ -121,7 +121,7 @@ namespace Script.Tutorial.Editor {
 
             switch (focusData.type) {
                 case FocusType.Button: {
-                    var targetField = new PropertyField() { label = "TFButton" };
+                    var targetField = new PropertyField() { label = "SW_Button" };
                     targetField.BindProperty(spTargetField);
                     createScriptElement.Add(targetField);
                     targetField.RegisterValueChangeCallback(evt => {
@@ -135,7 +135,7 @@ namespace Script.Tutorial.Editor {
                 }
                     break;
                 case FocusType.Image: {
-                    var targetField = new PropertyField() { label = "TFImage" };
+                    var targetField = new PropertyField() { label = "Image" };
                     targetField.BindProperty(spTargetField);
                     createScriptElement.Add(targetField);
                     targetField.RegisterValueChangeCallback(evt => {
@@ -150,7 +150,7 @@ namespace Script.Tutorial.Editor {
                     break;
 
                 case FocusType.Toggle: {
-                    var targetField = new PropertyField() { label = "TFToggle" };
+                    var targetField = new PropertyField() { label = "SW_Toggle" };
                     targetField.BindProperty(spTargetField);
                     createScriptElement.Add(targetField);
                     targetField.RegisterValueChangeCallback(evt => {

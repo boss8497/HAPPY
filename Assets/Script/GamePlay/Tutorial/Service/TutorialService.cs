@@ -18,6 +18,7 @@ namespace Script.GamePlay.Service {
         private INarrationService _narrationService;
         private IScopeLocator     _scopeLocator;
         private IScreenManager    _screenManager;
+        private IGroupService     _groupService;
 
         public bool Initialized { get; private set; }
 
@@ -40,12 +41,14 @@ namespace Script.GamePlay.Service {
             IFocusService     focusService,
             IScopeLocator     scopeLocator,
             IScreenManager    screenManager,
-            INarrationService narrationService
+            INarrationService narrationService,
+            IGroupService     groupService
         ) {
             _focusService     = focusService;
             _scopeLocator     = scopeLocator;
             _screenManager    = screenManager;
             _narrationService = narrationService;
+            _groupService     = groupService;
             Initialized       = true;
         }
 
@@ -99,6 +102,12 @@ namespace Script.GamePlay.Service {
             while (!ct.IsCancellationRequested && _waitQueue.Count > 0) {
                 _currentTutorialUid = _waitQueue.Dequeue();
                 var tutorialInfo = CurrentTutorialInfo;
+
+                // 실행 가능한 튜토리얼인지 확인
+                if (!_groupService.CanPlayTutorial(tutorialInfo)) {
+                    _currentTutorialUid = -1;
+                    continue;
+                }
 
                 if (tutorialInfo.systemControl) {
                     SetSystemControl(true);
@@ -210,9 +219,11 @@ namespace Script.GamePlay.Service {
                     SetSystemControl(false);
                 }
 
+                await _groupService.UpdateTutorialProgress(tutorialInfo, ct);
                 _currentTutorialUid = -1;
             }
 
+            _currentTutorialUid = -1;
             _cts?.Cancel();
             _cts?.Dispose();
             _cts = null;

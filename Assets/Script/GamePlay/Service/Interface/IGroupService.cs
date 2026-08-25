@@ -1,15 +1,18 @@
 ﻿using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Script.GameData.Data;
 using Script.GameData.Data.Interface;
 using Script.GameData.Model;
 using Script.GameInfo.Dungeon;
+using Script.GameInfo.Info;
 
 namespace Script.GamePlay.Service.Interface {
     public interface IGroupService : IService {
         IGroupData GroupData { get; }
         long       GroupUid  { get; }
 
+        #region Dungeon
         DungeonProgress           GetDungeon(Category        dungeonCategory);
         bool                      IsCleared(DungeonInfo      dungeonInfo, Stage stage);
         bool                      CanEnterStage(DungeonInfo  dungeonInfo, Stage stage);
@@ -18,5 +21,13 @@ namespace Script.GamePlay.Service.Interface {
         UniTask                   EnterDungeon(DungeonInfo   dungeonInfo, Stage stage, ItemData character, bool loadScene = true);
         Tuple<DungeonInfo, Stage> GetEnterDungeon();
         ItemData                  GetCharacterItem();
+        #endregion
+        
+        #region Tutorial
+
+        bool    CanPlayTutorial(TutorialInfo        info);
+        UniTask UpdateTutorialProgress(TutorialInfo info, CancellationToken ct = default);
+
+        #endregion
     }
 }

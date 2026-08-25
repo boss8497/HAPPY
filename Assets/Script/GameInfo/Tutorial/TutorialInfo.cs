@@ -7,6 +7,8 @@ namespace Script.GameInfo.Info {
     [AutoEditorTable(true)]
     [System.Serializable]
     public class TutorialInfo : InfoBase {
+        public TutorialProgress type;
+
         [SerializeReference]
         public GuideBase[] sets = Array.Empty<GuideBase>();
 

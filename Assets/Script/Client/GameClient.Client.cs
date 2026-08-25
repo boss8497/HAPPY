@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Expression;
@@ -8,6 +9,7 @@ using Script.GameData.Model;
 using Script.GameInfo;
 using Script.GameInfo.Dungeon;
 using Script.GameInfo.Enum;
+using Script.GameInfo.Info;
 using Script.GameInfo.Info.Enum;
 using Script.GameInfo.Item;
 using Script.GameInfo.Table;
@@ -72,7 +74,7 @@ namespace Script.Client {
             return _groupModel;
         }
 
-        public async UniTask Req_SaveGroup(GroupModel model) {
+        public async UniTask Req_SaveGroup(GroupModel model, CancellationToken ct = default) {
             await _dataBase.SaveAsync(_groupPath, model, DataType.Json);
         }
 
@@ -214,6 +216,15 @@ namespace Script.Client {
         public DungeonProgress GetDungeon(Category dungeonCategory) {
             var category = (int)dungeonCategory;
             return _groupModel.dungeonProgresses?.FirstOrDefault(r => r.category == category);
+        }
+
+        public async UniTask<(GroupModel model, bool result)> Req_UpdateTutorial(TutorialProgress progress, CancellationToken ct = default) {
+            if ((int)_groupModel.tutorialProgress + 1 != (int)progress) {
+                return (_groupModel, false);
+            }
+            _groupModel.tutorialProgress = progress;
+            await Req_SaveGroup(_groupModel, ct);
+            return (_groupModel, true);
         }
 
 

@@ -39,5 +39,9 @@ namespace Script.GamePlay.Service {
                 onComplete?.Invoke();
             }
         }
+
+        public void Dispose() {
+            // TODO release managed resources here
+        }
     }
 }

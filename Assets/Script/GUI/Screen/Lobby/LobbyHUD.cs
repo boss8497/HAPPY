@@ -5,6 +5,7 @@ using Script.GamePlay.Audio.Interface;
 using Script.GUI.ScreenData.Interface;
 using Script.Utility.Runtime;
 using SW.GUI;
+using SW.GUI.Base;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -24,7 +25,7 @@ namespace Script.GUI.Screen {
         [SerializeField, ScreenKey]
         private string optionScreen;
 
-        public Button optionScreenBtn;
+        public SW_GUI_BUTTON_BASE optionScreenBtn;
 
         [Inject]
         public void InjectSelf(
@@ -37,7 +38,7 @@ namespace Script.GUI.Screen {
         protected override void AwakeInternal() {
             base.AwakeInternal();
             runningStageScreenBtn.AddClickListener(() => { ScreenManager.OpenAsync(runningStageScreen); });
-            optionScreenBtn.ClickAddListener(() => { ScreenManager.OpenAsync(optionScreen); });
+            optionScreenBtn.AddClickAsyncListener(async () => { await ScreenManager.OpenAsync(optionScreen); });
         }
 
         public override UniTask OpenInternal(IScreenOption data, CancellationToken ct = default) {

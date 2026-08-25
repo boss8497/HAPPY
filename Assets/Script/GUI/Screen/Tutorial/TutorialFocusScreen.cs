@@ -32,6 +32,7 @@ namespace Script.GUI.Screen.Tutorial {
 
         public ReactiveProperty<FocusGuide>     FocusInfo { get; private set; } = new();
         public ReadOnlyReactiveProperty<string> Name      { get; private set; }
+        public ReadOnlyReactiveProperty<string> Text      { get; private set; }
 
         #endregion
 
@@ -76,9 +77,16 @@ namespace Script.GUI.Screen.Tutorial {
             _disposableBag = new();
 
             Name = FocusInfo.Select(x => x?.name).ToReadOnlyReactiveProperty().AddTo(ref _disposableBag);
+            Text = FocusInfo.Select(x => x?.guideText).ToReadOnlyReactiveProperty().AddTo(ref _disposableBag);
             Name.Subscribe(speechName => {
                     if (speechNameText != null) {
                         speechNameText.SetText(speechName);
+                    }
+                })
+                .AddTo(ref _disposableBag);
+            Text.Subscribe(text => {
+                    if (speechText != null) {
+                        speechText.SetText(text);
                     }
                 })
                 .AddTo(ref _disposableBag);
@@ -243,10 +251,10 @@ namespace Script.GUI.Screen.Tutorial {
                 return;
             }
 
-            speechText.text = focusGuide.guideText;
-            speechParent.gameObject.SetActive(true);
+            var with = speechParent.rect.width;
+            var height = speechParent.rect.height;
 
-            var posY = focusPosition.y <= 0 ? (focusSize.y * 0.5f + focusPosition.y + speechParent.sizeDelta.y + speechMargin.y) : focusPosition.y - speechParent.sizeDelta.y - speechMargin.y - focusSize.y * 0.5f;
+            var posY = focusPosition.y <= 0 ? (focusSize.y * 0.5f + focusPosition.y + height + speechMargin.y) : focusPosition.y - height - speechMargin.y - focusSize.y * 0.5f;
 
             var isLeft = focusPosition.x > 0;
             var posX   = 0f;
@@ -259,7 +267,7 @@ namespace Script.GUI.Screen.Tutorial {
 
             posX += focusPosition.x;
 
-            var overFlowX = Mathf.Abs(focusPosition.x) + speechParent.sizeDelta.x * 0.5f - root.rect.width * 0.5f;
+            var overFlowX = Mathf.Abs(focusPosition.x) + with * 0.5f - root.rect.width * 0.5f;
             if (overFlowX > 0) {
                 posX = isLeft ? posX - overFlowX : posX + overFlowX;
             }

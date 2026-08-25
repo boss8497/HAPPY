@@ -23,8 +23,12 @@ MonoBehaviour:
         <UID>k__BackingField: 1
         <ID>k__BackingField: Test
         <Name>k__BackingField: "\uD14C\uC2A4\uD2B8"
+        type: 1
         sets:
         - rid: 5200153988198039671
+        - rid: 5200154010822377578
+        - rid: 5200154010822377579
+        - rid: 5200154010822377580
         - rid: 5200153937462689951
         - rid: 5200153988198039652
         systemControl: 0
@@ -43,7 +47,7 @@ MonoBehaviour:
           v3: 2046769015
         flip: 0
         name: "\uAC00\uC774\uB4DC"
-        guideText: "\uC548\uB1FD\uD558\uC138\uC694."
+        guideText: "\uB7EC\uB2DD \uBAA8\uB4DC\uB97C \uC120\uD0DD\uD574 \uBCF4\uC790!!"
         iconPath: c44178f904e583e45b2c0bce3d8db6e4
     - rid: 5200153988198039652
       type: {class: FocusGuide, ns: Script.GameInfo.Info, asm: Script.GameInfo}
@@ -72,3 +76,52 @@ MonoBehaviour:
         guideText: "\uC5B4\uC11C\uC640 \uCC98\uC74C\uC774\uC9C0!!"
         iconPath: 508b44a41d7e0e243861e8ab812817ea
         flip: 0
+    - rid: 5200154010822377578
+      type: {class: FocusGuide, ns: Script.GameInfo.Info, asm: Script.GameInfo}
+      data:
+        id: 
+        delayTime: 0
+        fadeInTime: 0
+        fadeOutTime: 0
+        focusGuid:
+          v0: 1556138387
+          v1: 1119862779
+          v2: 4167620995
+          v3: 1810115078
+        flip: 0
+        name: "\uAC00\uC774\uB4DC"
+        guideText: "\uC635\uC158\uC774\uC57C!!"
+        iconPath: 65df13acd5ced294ba181461f2871ff7
+    - rid: 5200154010822377579
+      type: {class: FocusGuide, ns: Script.GameInfo.Info, asm: Script.GameInfo}
+      data:
+        id: 
+        delayTime: 0
+        fadeInTime: 0
+        fadeOutTime: 0
+        focusGuid:
+          v0: 1449728239
+          v1: 1323404968
+          v2: 1303435668
+          v3: 1321218288
+        flip: 0
+        name: "\uAC00\uC774\uB4DC"
+        guideText: "\uC5EC\uAE30\uC11C \uC635\uC158\uC744 \uC124\uC815\uD560 \uC218
+          \uC788\uC5B4!!"
+        iconPath: 8593908a37a47a44f9c674317c1aec0a
+    - rid: 5200154010822377580
+      type: {class: FocusGuide, ns: Script.GameInfo.Info, asm: Script.GameInfo}
+      data:
+        id: 
+        delayTime: 0
+        fadeInTime: 0
+        fadeOutTime: 0
+        focusGuid:
+          v0: 2442117096
+          v1: 1318519237
+          v2: 2181626811
+          v3: 3519558963
+        flip: 0
+        name: "\uAC00\uC774\uB4DC"
+        guideText: "\uCC3D\uC744 \uB2EB\uC544 \uBCFC\uAE4C!?"
+        iconPath: 148b738ee04708747bb54f1952603e76
