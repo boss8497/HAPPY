@@ -46,16 +46,14 @@ Unity와 서버가 공유할 수 있는 코드(`GameInfo`)와 Unity 클라이언
 
 ## 눈여겨볼 만한 구현
 
-- **ECS + Burst 이동/충돌**: Default World 대신 별도 World를 생성해 Managed 코드와 계산 영역을 분리 ([`Assets/Script/GamePlay/ECS`](Assets/Script/GamePlay/ECS))
-- **경량 UI 상호작용 컴포넌트**: Unity 기본 Button/Toggle 대신 `IPointerClickHandler`를 직접 구현해 prefab 용량과 기능을 최소화 ([`Assets/Script/GUI/SW_GUI`](Assets/Script/GUI/SW_GUI))
-- **LinkedList 기반 Screen 스택**: "특정 화면 뒤에 열기", "특정 화면만 닫기" 요구에 대응하기 위해 Stack 대신 LinkedList로 구현
-- **CodeGen 기반 Factory**: Stage Action/Trigger 추가 시 switch 분기를 자동 생성해 휴먼 에러 방지
+- **ECS + Burst 이동/충돌**: Default World 대신 별도 World를 만들어 Managed 코드와 계산 영역을 분리, Unity 기본 충돌 대신 진행 방향 기준으로 직접 판정 ([`Assets/Script/GamePlay/ECS`](Assets/Script/GamePlay/ECS))
+- **UI 시스템 직접 구축**: "특정 화면 뒤에 열기", "특정 화면만 닫기"에 대응하려 Stack 대신 LinkedList 기반 Screen 스택으로 구현하고, Unity 기본 Button/Toggle 대신 상호작용만 남긴 경량 컴포넌트로 prefab 용량을 줄임 ([`Assets/Script/GUI`](Assets/Script/GUI/ARCHITECTURE.md))
+- **R3 반응형 데이터 계층**: Model(불변 구조체) → Data(R3 래퍼) → Service → View로 계층을 나누고, 구독을 `DisposableBag`으로 화면 수명에 묶어 `event +=` 방식에서 반복되던 구독 해제 누락을 없앰. 서버가 붙으면 Model을 채우는 경로만 교체되고 UI 바인딩은 유지 ([`Assets/Script/GameData`](Assets/Script/GameData/ARCHITECTURE.md))
 - **비동기 FSM 캐릭터 런타임**: `GameInfo`의 노드/전환 기획 데이터를 읽어 UniTask 기반 비동기 FSM으로 실행, Node/Transition은 `ClassPool`로 재사용해 GC 압박 최소화 ([`Assets/Script/GamePlay/Character`](Assets/Script/GamePlay/Character))
-- **MonoBehaviour 없는 카메라 제어**: 경계 계산·Shake·스피드 버프 줌을 순수 C# 클래스로 구현해 `StageLifetimeScope`가 VContainer로 주입 — 씬 GameObject 없이 테스트/교체가 쉬운 구조 ([`Assets/Script/GamePlay/Camera`](Assets/Script/GamePlay/Camera))
-- **튜토리얼 스포트라이트 시스템**: 대상 UI 위에 겹치는 투명 대리 버튼으로 클릭을 가로챈 뒤 실제 버튼에 전달, 4방향 마스크로 별도 shader 없이 스포트라이트 연출 ([`Assets/Script/GamePlay/Tutorial`](Assets/Script/GamePlay/Tutorial))
-- **오디오 매니저**: `AudioMixer` 기반 그룹별 동시 재생 제한 — 상한 초과 시 거부 대신 가장 오래 재생 중인 인스턴스를 강제 종료해 자리를 내주는 방식 ([`Assets/Script/GamePlay/Audio`](Assets/Script/GamePlay/Audio/ARCHITECTURE.md))
+- **MonoBehaviour 없는 카메라 제어**: 경계 계산, Shake, 스피드 버프 줌을 순수 C# 클래스로 구현해 `StageLifetimeScope`가 VContainer로 주입 — 씬 GameObject 없이 테스트/교체가 쉬운 구조 ([`Assets/Script/GamePlay/Camera`](Assets/Script/GamePlay/Camera))
+- **튜토리얼 스포트라이트 시스템**: 대상 UI 위에 겹치는 투명 대리 버튼으로 클릭을 가로챈 뒤 실제 버튼에 전달, 4방향 마스크로 별도 shader 없이 스포트라이트 연출, 엑셀 데이터로 기획자가 순서를 직접 구성 ([`Assets/Script/GamePlay/Tutorial`](Assets/Script/GamePlay/Tutorial))
 - **Addressable 중앙 캐시**: RefCount + 유예시간(grace period) 기반 캐시로 여러 시스템(Audio/Spine/GameSetting)이 같은 에셋을 로드해도 실제 로드는 한 번만, 사용이 끝나도 일정 시간 재사용 대기 후 해제 ([`Assets/Script/Addressable`](Assets/Script/Addressable/README.md))
-- **시차 스크롤 배경**: 점프 등 단기 Y 변화로 배경이 출렁이지 않도록 Dead Zone + SmoothDamp로 Y축을 스무딩, 카메라 이동에 맞춰 타일을 무한 루프 배치 ([`Assets/Script/GamePlay/BackGround`](Assets/Script/GamePlay/BackGround))
+- **런타임 디버그 에디터 창 4종**: Screen 스택 / Addressable 캐시 / 오브젝트 풀 / 클래스 풀의 내부 상태를 리플렉션으로 들여다보는 Editor 창. 필드 리네임에 조용히 깨지는 문제를 `nameof` 기반 상수 참조로 방어 ([`Assets/Script/Editor`](Assets/Script/Editor/README.md))
 - **수식 연산 엔진**: 수식 문자열을 Shunting-yard로 RPN 바이트코드 컴파일 후 `stackalloc` 기반 스택 VM으로 실행(런타임 힙 할당 없음), Unity 비의존 순수 C# ([`Assets/Script/Expression`](Assets/Script/Expression))
 
 ## 더 살펴보기
